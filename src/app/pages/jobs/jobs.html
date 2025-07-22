@@ -1,0 +1,710 @@
+<!-- Header -->
+<header class="header">
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-brand">
+        <a href="index.html">
+          <img src="images/logo.svg" alt="منصة التوظيف" class="logo" />
+        </a>
+      </div>
+
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a href="search.html" class="nav-link">الوظائف</a>
+        </li>
+        <li class="nav-item">
+          <a href="companies.html" class="nav-link">الشركات</a>
+        </li>
+        <li class="nav-item">
+          <a href="salaries.html" class="nav-link">الرواتب</a>
+        </li>
+        <li class="nav-item">
+          <a href="resources.html" class="nav-link">الموارد</a>
+        </li>
+      </ul>
+
+      <div class="navbar-actions">
+        <a href="login.html" class="btn btn-secondary">تسجيل الدخول</a>
+        <a href="signup.html" class="btn btn-primary">إنشاء حساب</a>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" aria-label="فتح القائمة">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Search Header -->
+<section class="search-page-header">
+  <div class="container">
+    <form class="search-form" style="max-width: 100%; margin: 0">
+      <div class="search-fields">
+        <div class="field-group">
+          <input
+            type="text"
+            id="job-title"
+            class="form-input"
+            placeholder="عنوان الوظيفة أو الكلمات المفتاحية"
+            value="مطور"
+          />
+        </div>
+
+        <div class="field-group">
+          <select id="location" class="form-select">
+            <option value="">جميع المواقع</option>
+            <option value="sanaa" selected>صنعاء</option>
+            <option value="aden">عدن</option>
+            <option value="taiz">تعز</option>
+            <option value="hodeidah">الحديدة</option>
+            <option value="ibb">إب</option>
+            <option value="mukalla">المكلا</option>
+            <option value="remote">عمل عن بُعد</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <select id="category" class="form-select">
+            <option value="">جميع الفئات</option>
+            <option value="tech" selected>تقنية المعلومات</option>
+            <option value="engineering">الهندسة</option>
+            <option value="marketing">التسويق</option>
+            <option value="finance">المالية والمحاسبة</option>
+            <option value="healthcare">الرعاية الصحية</option>
+            <option value="education">التعليم</option>
+            <option value="sales">المبيعات</option>
+            <option value="hr">الموارد البشرية</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary search-btn">
+        <span class="icon-search"></span>
+        بحث
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- Search Results -->
+<section class="search-results-section">
+  <div class="container">
+    <div class="search-results-container">
+      <!-- Filters Sidebar -->
+      <aside class="filters-sidebar">
+        <div class="filter-section">
+          <h3 class="filter-title">نوع الوظيفة</h3>
+          <div class="filter-options">
+            <div class="filter-option" onclick="toggleFilter('fulltime')">
+              <div class="filter-checkbox"></div>
+              <span>دوام كامل</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(234)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('parttime')">
+              <div class="filter-checkbox"></div>
+              <span>دوام جزئي</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(89)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('contract')">
+              <div class="filter-checkbox"></div>
+              <span>عقد مؤقت</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(45)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('remote')">
+              <div class="filter-checkbox"></div>
+              <span>عمل عن بُعد</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(67)</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3 class="filter-title">مستوى الخبرة</h3>
+          <div class="filter-options">
+            <div class="filter-option" onclick="toggleFilter('entry')">
+              <div class="filter-checkbox"></div>
+              <span>مبتدئ (0-2 سنة)</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(156)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('mid')">
+              <div class="filter-checkbox"></div>
+              <span>متوسط (3-5 سنوات)</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(198)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('senior')">
+              <div class="filter-checkbox"></div>
+              <span>خبير (6+ سنوات)</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(89)</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3 class="filter-title">نطاق الراتب</h3>
+          <div class="filter-options">
+            <div class="filter-option" onclick="toggleFilter('salary1')">
+              <div class="filter-checkbox"></div>
+              <span>أقل من 500 ريال</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(34)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('salary2')">
+              <div class="filter-checkbox"></div>
+              <span>500-1000 ريال</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(167)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('salary3')">
+              <div class="filter-checkbox"></div>
+              <span>1000-1500 ريال</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(89)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('salary4')">
+              <div class="filter-checkbox"></div>
+              <span>أكثر من 1500 ريال</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(45)</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3 class="filter-title">تاريخ النشر</h3>
+          <div class="filter-options">
+            <div class="filter-option" onclick="toggleFilter('today')">
+              <div class="filter-checkbox"></div>
+              <span>اليوم</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(12)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('week')">
+              <div class="filter-checkbox"></div>
+              <span>آخر أسبوع</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(78)</span
+              >
+            </div>
+            <div class="filter-option" onclick="toggleFilter('month')">
+              <div class="filter-checkbox"></div>
+              <span>آخر شهر</span>
+              <span style="margin-right: auto; color: var(--gray-500)"
+                >(234)</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem">
+          <button class="btn btn-small btn-primary" onclick="applyFilters()">
+            تطبيق
+          </button>
+          <button
+            class="btn btn-small btn-secondary"
+            onclick="clearAllFilters()"
+          >
+            مسح الكل
+          </button>
+        </div>
+      </aside>
+
+      <!-- Results Content -->
+      <main class="results-content">
+        <div class="results-header">
+          <div class="results-count">
+            <strong>289 وظيفة</strong> تطابق بحثك عن "مطور" في صنعاء
+          </div>
+          <div class="sort-dropdown">
+            <label for="sort">ترتيب حسب:</label>
+            <select id="sort" class="form-select" style="width: auto">
+              <option value="relevance">الأكثر صلة</option>
+              <option value="date">الأحدث</option>
+              <option value="salary">الراتب</option>
+              <option value="company">اسم الشركة</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="job-results">
+          <!-- Job Card 1 -->
+          <article class="job-card-horizontal" data-job-id="101">
+            <img
+              src="images/company-logo-1.jpg"
+              alt="شعار الشركة"
+              class="company-logo"
+            />
+
+            <div class="job-info">
+              <h3 class="job-title">
+                <a
+                  href="job-details.html?id=101"
+                  style="text-decoration: none; color: inherit"
+                >
+                  مطور تطبيقات الويب الأمامية
+                </a>
+              </h3>
+              <p class="company-name">شركة التقنيات المتقدمة</p>
+
+              <div class="job-meta">
+                <span>📍 صنعاء</span>
+                <span>💰 800-1200 ريال/شهر</span>
+                <span>⏰ دوام كامل</span>
+                <span>📅 منذ يومين</span>
+              </div>
+
+              <p
+                style="
+                  color: var(--gray-600);
+                  margin: 0.5rem 0;
+                  line-height: 1.5;
+                "
+              >
+                نبحث عن مطور ويب متمرس للانضمام إلى فريقنا. المرشح المثالي يجب
+                أن يكون لديه خبرة في React, Vue.js, وتطوير واجهات المستخدم
+                التفاعلية.
+              </p>
+
+              <div class="job-tags">
+                <span class="job-tag">React</span>
+                <span class="job-tag">JavaScript</span>
+                <span class="job-tag">CSS</span>
+                <span class="job-tag">Vue.js</span>
+              </div>
+            </div>
+
+            <div
+              class="job-actions"
+              style="display: flex; flex-direction: column; gap: 0.5rem"
+            >
+              <button
+                class="btn btn-small btn-primary apply-btn"
+                onclick="applyToJob('101')"
+              >
+                تقديم الآن
+              </button>
+              <button
+                class="btn btn-small btn-secondary save-btn"
+                onclick="saveJob('101')"
+              >
+                حفظ
+              </button>
+              <button
+                class="btn btn-small btn-secondary"
+                onclick="shareJob('101', 'مطور تطبيقات الويب الأمامية')"
+              >
+                مشاركة
+              </button>
+            </div>
+          </article>
+
+          <!-- Job Card 2 -->
+          <article class="job-card-horizontal" data-job-id="102">
+            <img
+              src="images/company-logo-2.jpg"
+              alt="شعار الشركة"
+              class="company-logo"
+            />
+
+            <div class="job-info">
+              <h3 class="job-title">
+                <a
+                  href="job-details.html?id=102"
+                  style="text-decoration: none; color: inherit"
+                >
+                  مطور تطبيقات الجوال
+                </a>
+              </h3>
+              <p class="company-name">استوديو الابتكار للتطبيقات</p>
+
+              <div class="job-meta">
+                <span>📍 صنعاء</span>
+                <span>💰 1000-1500 ريال/شهر</span>
+                <span>⏰ دوام كامل</span>
+                <span>📅 منذ 3 أيام</span>
+              </div>
+
+              <p
+                style="
+                  color: var(--gray-600);
+                  margin: 0.5rem 0;
+                  line-height: 1.5;
+                "
+              >
+                مطلوب مطور تطبيقات جوال للعمل على مشاريع مثيرة. خبرة في Flutter
+                أو React Native مطلوبة، مع فهم جيد لتصميم واجهات المستخدم.
+              </p>
+
+              <div class="job-tags">
+                <span class="job-tag">Flutter</span>
+                <span class="job-tag">React Native</span>
+                <span class="job-tag">Dart</span>
+                <span class="job-tag">Mobile UI</span>
+              </div>
+            </div>
+
+            <div
+              class="job-actions"
+              style="display: flex; flex-direction: column; gap: 0.5rem"
+            >
+              <button
+                class="btn btn-small btn-primary apply-btn"
+                onclick="applyToJob('102')"
+              >
+                تقديم الآن
+              </button>
+              <button
+                class="btn btn-small btn-secondary save-btn"
+                onclick="saveJob('102')"
+              >
+                حفظ
+              </button>
+              <button
+                class="btn btn-small btn-secondary"
+                onclick="shareJob('102', 'مطور تطبيقات الجوال')"
+              >
+                مشاركة
+              </button>
+            </div>
+          </article>
+
+          <!-- Job Card 3 -->
+          <article class="job-card-horizontal" data-job-id="103">
+            <img
+              src="images/company-logo-3.jpg"
+              alt="شعار الشركة"
+              class="company-logo"
+            />
+
+            <div class="job-info">
+              <h3 class="job-title">
+                <a
+                  href="job-details.html?id=103"
+                  style="text-decoration: none; color: inherit"
+                >
+                  مطور Full Stack
+                </a>
+              </h3>
+              <p class="company-name">شركة الحلول الرقمية</p>
+
+              <div class="job-meta">
+                <span>📍 صنعاء</span>
+                <span>💰 1200-1800 ريال/شهر</span>
+                <span>⏰ دوام كامل</span>
+                <span>📅 منذ أسبوع</span>
+              </div>
+
+              <p
+                style="
+                  color: var(--gray-600);
+                  margin: 0.5rem 0;
+                  line-height: 1.5;
+                "
+              >
+                نبحث عن مطور Full Stack للعمل على مشاريع متنوعة. خبرة في
+                Node.js, Python, وقواعد البيانات مطلوبة. فرصة ممتازة للنمو
+                المهني.
+              </p>
+
+              <div class="job-tags">
+                <span class="job-tag">Node.js</span>
+                <span class="job-tag">Python</span>
+                <span class="job-tag">MongoDB</span>
+                <span class="job-tag">API Development</span>
+              </div>
+            </div>
+
+            <div
+              class="job-actions"
+              style="display: flex; flex-direction: column; gap: 0.5rem"
+            >
+              <button
+                class="btn btn-small btn-primary apply-btn"
+                onclick="applyToJob('103')"
+              >
+                تقديم الآن
+              </button>
+              <button
+                class="btn btn-small btn-secondary save-btn"
+                onclick="saveJob('103')"
+              >
+                حفظ
+              </button>
+              <button
+                class="btn btn-small btn-secondary"
+                onclick="shareJob('103', 'مطور Full Stack')"
+              >
+                مشاركة
+              </button>
+            </div>
+          </article>
+
+          <!-- Job Card 4 -->
+          <article class="job-card-horizontal" data-job-id="104">
+            <img
+              src="images/company-logo-4.jpg"
+              alt="شعار الشركة"
+              class="company-logo"
+            />
+
+            <div class="job-info">
+              <h3 class="job-title">
+                <a
+                  href="job-details.html?id=104"
+                  style="text-decoration: none; color: inherit"
+                >
+                  مطور WordPress
+                </a>
+              </h3>
+              <p class="company-name">وكالة التسويق الرقمي</p>
+
+              <div class="job-meta">
+                <span>📍 صنعاء</span>
+                <span>💰 600-900 ريال/شهر</span>
+                <span>⏰ دوام جزئي</span>
+                <span>📅 منذ أسبوعين</span>
+              </div>
+
+              <p
+                style="
+                  color: var(--gray-600);
+                  margin: 0.5rem 0;
+                  line-height: 1.5;
+                "
+              >
+                مطلوب مطور WordPress للعمل على مواقع العملاء. خبرة في تطوير
+                القوالب والإضافات المخصصة. إمكانية العمل عن بُعد متاحة.
+              </p>
+
+              <div class="job-tags">
+                <span class="job-tag">WordPress</span>
+                <span class="job-tag">PHP</span>
+                <span class="job-tag">MySQL</span>
+                <span class="job-tag">Custom Themes</span>
+              </div>
+            </div>
+
+            <div
+              class="job-actions"
+              style="display: flex; flex-direction: column; gap: 0.5rem"
+            >
+              <button
+                class="btn btn-small btn-primary apply-btn"
+                onclick="applyToJob('104')"
+              >
+                تقديم الآن
+              </button>
+              <button
+                class="btn btn-small btn-secondary save-btn"
+                onclick="saveJob('104')"
+              >
+                حفظ
+              </button>
+              <button
+                class="btn btn-small btn-secondary"
+                onclick="shareJob('104', 'مطور WordPress')"
+              >
+                مشاركة
+              </button>
+            </div>
+          </article>
+
+          <!-- Job Card 5 -->
+          <article class="job-card-horizontal" data-job-id="105">
+            <img
+              src="images/company-logo-5.jpg"
+              alt="شعار الشركة"
+              class="company-logo"
+            />
+
+            <div class="job-info">
+              <h3 class="job-title">
+                <a
+                  href="job-details.html?id=105"
+                  style="text-decoration: none; color: inherit"
+                >
+                  مطور ألعاب Unity
+                </a>
+              </h3>
+              <p class="company-name">استوديو الألعاب الإبداعي</p>
+
+              <div class="job-meta">
+                <span>📍 صنعاء</span>
+                <span>💰 900-1300 ريال/شهر</span>
+                <span>⏰ دوام كامل</span>
+                <span>📅 منذ 3 أسابيع</span>
+              </div>
+
+              <p
+                style="
+                  color: var(--gray-600);
+                  margin: 0.5rem 0;
+                  line-height: 1.5;
+                "
+              >
+                انضم إلى فريقنا لتطوير ألعاب مثيرة باستخدام Unity. خبرة في C#
+                وتطوير الألعاب مطلوبة. بيئة عمل إبداعية ومحفزة.
+              </p>
+
+              <div class="job-tags">
+                <span class="job-tag">Unity</span>
+                <span class="job-tag">C#</span>
+                <span class="job-tag">Game Development</span>
+                <span class="job-tag">3D Graphics</span>
+              </div>
+            </div>
+
+            <div
+              class="job-actions"
+              style="display: flex; flex-direction: column; gap: 0.5rem"
+            >
+              <button
+                class="btn btn-small btn-primary apply-btn"
+                onclick="applyToJob('105')"
+              >
+                تقديم الآن
+              </button>
+              <button
+                class="btn btn-small btn-secondary save-btn"
+                onclick="saveJob('105')"
+              >
+                حفظ
+              </button>
+              <button
+                class="btn btn-small btn-secondary"
+                onclick="shareJob('105', 'مطور ألعاب Unity')"
+              >
+                مشاركة
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <!-- Pagination -->
+        <nav class="pagination">
+          <a href="#" class="pagination-btn" onclick="goToPage(1)">السابق</a>
+          <a
+            href="#"
+            class="pagination-btn current"
+            data-page="1"
+            onclick="goToPage(1)"
+            >1</a
+          >
+          <a href="#" class="pagination-btn" data-page="2" onclick="goToPage(2)"
+            >2</a
+          >
+          <a href="#" class="pagination-btn" data-page="3" onclick="goToPage(3)"
+            >3</a
+          >
+          <a href="#" class="pagination-btn" data-page="4" onclick="goToPage(4)"
+            >4</a
+          >
+          <a href="#" class="pagination-btn" data-page="5" onclick="goToPage(5)"
+            >5</a
+          >
+          <span style="padding: 0.5rem">...</span>
+          <a
+            href="#"
+            class="pagination-btn"
+            data-page="15"
+            onclick="goToPage(15)"
+            >15</a
+          >
+          <a href="#" class="pagination-btn" onclick="goToPage(2)">التالي</a>
+        </nav>
+
+        <!-- Load More Button (Alternative to pagination) -->
+        <div class="text-center" style="margin-top: 2rem; display: none">
+          <button
+            class="btn btn-secondary load-more-btn"
+            onclick="loadMoreJobs()"
+          >
+            تحميل المزيد من الوظائف
+          </button>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="footer-title">حول الموقع</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">من نحن</a></li>
+          <li><a href="contact.html">اتصل بنا</a></li>
+          <li><a href="careers.html">الوظائف لدينا</a></li>
+          <li><a href="press.html">الصحافة</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">للباحثين عن عمل</h4>
+        <ul class="footer-links">
+          <li><a href="search.html">البحث عن وظائف</a></li>
+          <li><a href="companies.html">تصفح الشركات</a></li>
+          <li><a href="salaries.html">دليل الرواتب</a></li>
+          <li><a href="cv-builder.html">إنشاء السيرة الذاتية</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">لأصحاب العمل</h4>
+        <ul class="footer-links">
+          <li><a href="post-job.html">نشر وظيفة</a></li>
+          <li><a href="search-candidates.html">البحث عن مرشحين</a></li>
+          <li><a href="employer-resources.html">موارد أصحاب العمل</a></li>
+          <li><a href="pricing.html">الأسعار</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">الدعم والمساعدة</h4>
+        <ul class="footer-links">
+          <li><a href="help.html">مركز المساعدة</a></li>
+          <li><a href="privacy.html">سياسة الخصوصية</a></li>
+          <li><a href="terms.html">شروط الخدمة</a></li>
+          <li><a href="sitemap.html">خريطة الموقع</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2024 منصة التوظيف. جميع الحقوق محفوظة.</p>
+      <div style="margin-top: 1rem">
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem">فيسبوك</a>
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem">تويتر</a>
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem"
+          >لينكد إن</a
+        >
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem"
+          >إنستغرام</a
+        >
+      </div>
+    </div>
+  </div>
+</footer>

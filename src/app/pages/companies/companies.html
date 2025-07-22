@@ -1,0 +1,256 @@
+<!-- Header -->
+<header class="header">
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-brand">
+        <a href="index.html">
+          <img src="images/logo.jpg" alt="منصة التوظيف" class="logo" />
+        </a>
+      </div>
+
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a href="search.html" class="nav-link">الوظائف</a>
+        </li>
+        <li class="nav-item">
+          <a href="companies.html" class="nav-link active">الشركات</a>
+        </li>
+        <li class="nav-item">
+          <a href="salaries.html" class="nav-link">الرواتب</a>
+        </li>
+        <li class="nav-item">
+          <a href="resources.html" class="nav-link">الموارد</a>
+        </li>
+      </ul>
+
+      <div class="navbar-actions">
+        <a href="login.html" class="btn btn-secondary">تسجيل الدخول</a>
+        <a href="signup.html" class="btn btn-primary">إنشاء حساب</a>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" aria-label="فتح القائمة">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Hero Section -->
+<section class="companies-hero">
+  <div class="container">
+    <h1>اكتشف أفضل الشركات</h1>
+    <p>تصفح الشركات الرائدة في اليمن واكتشف الفرص الوظيفية المتاحة</p>
+
+    <div class="companies-search">
+      <input type="text" placeholder="ابحث عن الشركات..." id="companySearch" />
+      <button type="button" onclick="searchCompanies()">بحث</button>
+    </div>
+  </div>
+</section>
+
+<!-- Filters -->
+<section class="companies-filters">
+  <div class="container">
+    <div class="filters-container">
+      <div class="filter-group">
+        <label>القطاع:</label>
+        <select class="filter-select" id="industryFilter">
+          <option value="">جميع القطاعات</option>
+          <option value="technology">تقنية المعلومات</option>
+          <option value="healthcare">الرعاية الصحية</option>
+          <option value="education">التعليم</option>
+          <option value="finance">المالية والمصرفية</option>
+          <option value="construction">البناء والتشييد</option>
+          <option value="retail">التجارة والبيع بالتجزئة</option>
+          <option value="manufacturing">التصنيع</option>
+          <option value="telecommunications">الاتصالات</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>المدينة:</label>
+        <select class="filter-select" id="locationFilter">
+          <option value="">جميع المدن</option>
+          <option value="sanaa">صنعاء</option>
+          <option value="aden">عدن</option>
+          <option value="taiz">تعز</option>
+          <option value="hodeidah">الحديدة</option>
+          <option value="ibb">إب</option>
+          <option value="dhamar">ذمار</option>
+          <option value="mukalla">المكلا</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>حجم الشركة:</label>
+        <select class="filter-select" id="sizeFilter">
+          <option value="">جميع الأحجام</option>
+          <option value="startup">ناشئة (1-10 موظفين)</option>
+          <option value="small">صغيرة (11-50 موظف)</option>
+          <option value="medium">متوسطة (51-200 موظف)</option>
+          <option value="large">كبيرة (201-1000 موظف)</option>
+          <option value="enterprise">مؤسسة (1000+ موظف)</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" onclick="applyFilters()">
+        تطبيق الفلاتر
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="companies-stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">250+</div>
+        <div class="stat-label">شركة مسجلة</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1,500+</div>
+        <div class="stat-label">وظيفة متاحة</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">15</div>
+        <div class="stat-label">قطاع مختلف</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">8</div>
+        <div class="stat-label">محافظة</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Companies -->
+<section class="featured-companies">
+  <div class="container">
+    <h2 class="featured-title">الشركات المميزة</h2>
+    <div class="featured-grid">
+      <div class="featured-company" onclick="viewCompany('tech-solutions')">
+        <img
+          src="images/company-logo-1.jpg"
+          alt="شركة التقنيات المتقدمة"
+          class="featured-logo"
+        />
+        <div class="featured-name">شركة التقنيات المتقدمة</div>
+        <div class="featured-jobs">5 وظائف متاحة</div>
+      </div>
+
+      <div class="featured-company" onclick="viewCompany('health-care')">
+        <img
+          src="images/company-logo-2.png"
+          alt="مستشفى الأمل"
+          class="featured-logo"
+        />
+        <div class="featured-name">مستشفى الأمل</div>
+        <div class="featured-jobs">8 وظائف متاحة</div>
+      </div>
+
+      <div class="featured-company" onclick="viewCompany('education-center')">
+        <img
+          src="images/company-logo-3.jpg"
+          alt="مركز التعليم الحديث"
+          class="featured-logo"
+        />
+        <div class="featured-name">مركز التعليم الحديث</div>
+        <div class="featured-jobs">3 وظائف متاحة</div>
+      </div>
+
+      <div class="featured-company" onclick="viewCompany('construction-co')">
+        <img
+          src="images/company-logo-4.jpg"
+          alt="شركة البناء والتطوير"
+          class="featured-logo"
+        />
+        <div class="featured-name">شركة البناء والتطوير</div>
+        <div class="featured-jobs">12 وظيفة متاحة</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Companies Grid -->
+<section class="companies-section">
+  <div class="container">
+    <div class="companies-grid" id="companiesGrid">
+      <!-- Company cards will be dynamically loaded here -->
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button onclick="changePage(1)">السابق</button>
+      <button class="active" onclick="changePage(1)">1</button>
+      <button onclick="changePage(2)">2</button>
+      <button onclick="changePage(3)">3</button>
+      <button onclick="changePage(4)">4</button>
+      <button onclick="changePage(2)">التالي</button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="footer-title">حول الموقع</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">من نحن</a></li>
+          <li><a href="contact.html">اتصل بنا</a></li>
+          <li><a href="careers.html">الوظائف لدينا</a></li>
+          <li><a href="press.html">الصحافة</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">للباحثين عن عمل</h4>
+        <ul class="footer-links">
+          <li><a href="search.html">البحث عن وظائف</a></li>
+          <li><a href="companies.html">تصفح الشركات</a></li>
+          <li><a href="salaries.html">دليل الرواتب</a></li>
+          <li><a href="cv-builder.html">إنشاء السيرة الذاتية</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">لأصحاب العمل</h4>
+        <ul class="footer-links">
+          <li><a href="post-job.html">نشر وظيفة</a></li>
+          <li><a href="search-candidates.html">البحث عن مرشحين</a></li>
+          <li><a href="employer-resources.html">موارد أصحاب العمل</a></li>
+          <li><a href="pricing.html">الأسعار</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">الدعم والمساعدة</h4>
+        <ul class="footer-links">
+          <li><a href="help.html">مركز المساعدة</a></li>
+          <li><a href="privacy.html">سياسة الخصوصية</a></li>
+          <li><a href="terms.html">شروط الخدمة</a></li>
+          <li><a href="sitemap.html">خريطة الموقع</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2024 منصة التوظيف. جميع الحقوق محفوظة.</p>
+      <div style="margin-top: 1rem">
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem">فيسبوك</a>
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem">تويتر</a>
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem"
+          >لينكد إن</a
+        >
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem"
+          >إنستغرام</a
+        >
+      </div>
+    </div>
+  </div>
+</footer>
