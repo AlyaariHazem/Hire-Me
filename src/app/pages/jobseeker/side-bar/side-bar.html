@@ -1,0 +1,80 @@
+<!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-profile">
+      <img
+        src="images/user-avatar.jpg"
+        alt="أحمد محمد"
+        class="profile-avatar"
+      />
+      <h3 class="profile-name">أحمد محمد</h3>
+      <p class="profile-title">مطور برمجيات</p>
+
+      <div class="profile-completion">
+        <div class="profile-progress"></div>
+        <p class="profile-progress-text">75% مكتمل</p>
+      </div>
+
+      <a
+        href="profile.html"
+        class="btn btn-small btn-primary"
+        style="width: 100%"
+      >
+        تحديث الملف الشخصي
+      </a>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a
+            href="#overview"
+            class="sidebar-nav-link active"
+            data-tab="overview"
+          >
+            <span class="nav-icon">📊</span>
+            نظرة عامة
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a
+            href="#applications"
+            class="sidebar-nav-link"
+            data-tab="applications"
+          >
+            <span class="nav-icon">📝</span>
+            طلباتي
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a routerLink="/jobseeker/saved-jobs" class="sidebar-nav-link" data-tab="saved-jobs">
+            <span class="nav-icon">💾</span>
+            الوظائف المحفوظة
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a routerLink="/jobseeker/profile" class="sidebar-nav-link" data-tab="profile">
+            <span class="nav-icon">👤</span>
+            الملف الشخصي
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#cv" class="sidebar-nav-link" data-tab="cv">
+            <span class="nav-icon">📄</span>
+            السيرة الذاتية
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#alerts" class="sidebar-nav-link" data-tab="alerts">
+            <span class="nav-icon">🔔</span>
+            تنبيهات الوظائف
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#settings" class="sidebar-nav-link" data-tab="settings">
+            <span class="nav-icon">⚙️</span>
+            الإعدادات
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>

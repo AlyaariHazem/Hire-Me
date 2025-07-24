@@ -1,0 +1,173 @@
+<!-- Header -->
+<header class="header">
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-brand">
+        <a href="index.html">
+          <img src="images/logo.jpg" alt="منصة التوظيف" class="logo" />
+        </a>
+      </div>
+
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a href="search.html" class="nav-link">الوظائف</a>
+        </li>
+        <li class="nav-item">
+          <a href="companies.html" class="nav-link">الشركات</a>
+        </li>
+        <li class="nav-item">
+          <a href="salaries.html" class="nav-link">الرواتب</a>
+        </li>
+        <li class="nav-item">
+          <a href="resources.html" class="nav-link">الموارد</a>
+        </li>
+      </ul>
+
+      <div class="navbar-actions">
+        <div style="position: relative">
+          <button class="btn btn-secondary" onclick="toggleUserMenu()">
+            <img
+              src="images/user-avatar.jpg"
+              alt="أحمد محمد"
+              style="
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                margin-left: 0.5rem;
+              "
+            />
+            أحمد محمد
+          </button>
+          <div
+            id="userMenu"
+            class="user-menu"
+            style="
+              display: none;
+              position: absolute;
+              top: 100%;
+              right: 0;
+              background: white;
+              border: 1px solid var(--gray-200);
+              border-radius: var(--radius-md);
+              box-shadow: var(--shadow-lg);
+              min-width: 200px;
+              z-index: 1000;
+            "
+          >
+            <a
+              href="dashboard-jobseeker.html"
+              style="
+                display: block;
+                padding: 0.75rem 1rem;
+                text-decoration: none;
+                color: inherit;
+                border-bottom: 1px solid var(--gray-100);
+              "
+              >لوحة التحكم</a
+            >
+            <a
+              href="profile.html"
+              style="
+                display: block;
+                padding: 0.75rem 1rem;
+                text-decoration: none;
+                color: inherit;
+                border-bottom: 1px solid var(--gray-100);
+              "
+              >الملف الشخصي</a
+            >
+            <a
+              href="settings.html"
+              style="
+                display: block;
+                padding: 0.75rem 1rem;
+                text-decoration: none;
+                color: inherit;
+                border-bottom: 1px solid var(--gray-100);
+              "
+              >الإعدادات</a
+            >
+            <a
+              href="logout.html"
+              style="
+                display: block;
+                padding: 0.75rem 1rem;
+                text-decoration: none;
+                color: var(--error-color);
+              "
+              >تسجيل الخروج</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" aria-label="فتح القائمة">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+<router-outlet></router-outlet>
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="footer-title">حول الموقع</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">من نحن</a></li>
+          <li><a href="contact.html">اتصل بنا</a></li>
+          <li><a href="careers.html">الوظائف لدينا</a></li>
+          <li><a href="press.html">الصحافة</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">للباحثين عن عمل</h4>
+        <ul class="footer-links">
+          <li><a href="search.html">البحث عن وظائف</a></li>
+          <li><a href="companies.html">تصفح الشركات</a></li>
+          <li><a href="salaries.html">دليل الرواتب</a></li>
+          <li><a href="cv-builder.html">إنشاء السيرة الذاتية</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">لأصحاب العمل</h4>
+        <ul class="footer-links">
+          <li><a href="post-job.html">نشر وظيفة</a></li>
+          <li><a href="search-candidates.html">البحث عن مرشحين</a></li>
+          <li><a href="employer-resources.html">موارد أصحاب العمل</a></li>
+          <li><a href="pricing.html">الأسعار</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-title">الدعم والمساعدة</h4>
+        <ul class="footer-links">
+          <li><a href="help.html">مركز المساعدة</a></li>
+          <li><a href="privacy.html">سياسة الخصوصية</a></li>
+          <li><a href="terms.html">شروط الخدمة</a></li>
+          <li><a href="sitemap.html">خريطة الموقع</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2024 منصة التوظيف. جميع الحقوق محفوظة.</p>
+      <div style="margin-top: 1rem">
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem">فيسبوك</a>
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem">تويتر</a>
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem"
+          >لينكد إن</a
+        >
+        <a href="#" style="color: var(--gray-400); margin: 0 0.5rem"
+          >إنستغرام</a
+        >
+      </div>
+    </div>
+  </div>
+</footer>
