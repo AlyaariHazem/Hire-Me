@@ -3,7 +3,7 @@ import { SharedModule } from '../../../shared/shared-module';
 
 @Component({
   selector: 'app-jobs',
-  imports: [SharedModule],
+  standalone: false,
   templateUrl: './jobs.html',
   styleUrl: './jobs.scss'
 })

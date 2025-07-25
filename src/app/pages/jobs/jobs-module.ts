@@ -2,13 +2,24 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { JobsRoutingModule } from './jobs-routing-module';
+import { Jobs } from './jobs';
+import { SharedModule } from '../../../shared/shared-module';
 
-
+const components = [
+  Jobs
+]
+const modules = [
+  CommonModule,
+  JobsRoutingModule,
+  SharedModule
+]
 @NgModule({
-  declarations: [],
+  declarations: [...components],
   imports: [
-    CommonModule,
-    JobsRoutingModule
+...modules
+  ],
+  exports:[
+    ...modules,...components
   ]
 })
 export class JobsModule { }

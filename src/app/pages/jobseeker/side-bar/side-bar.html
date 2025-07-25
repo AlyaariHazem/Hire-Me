@@ -15,7 +15,8 @@
       </div>
 
       <a
-        href="profile.html"
+        routerLink="/jobseeker/profile"
+        routerLinkActive="active"
         class="btn btn-small btn-primary"
         style="width: 100%"
       >
@@ -27,8 +28,9 @@
       <ul class="sidebar-nav">
         <li class="sidebar-nav-item">
           <a
-            href="#overview"
-            class="sidebar-nav-link active"
+            routerLink="/jobseeker/dashboard"
+            routerLinkActive="active"
+            class="sidebar-nav-link"
             data-tab="overview"
           >
             <span class="nav-icon">📊</span>
@@ -39,6 +41,7 @@
           <a
             href="#applications"
             class="sidebar-nav-link"
+            routerLinkActive="active"
             data-tab="applications"
           >
             <span class="nav-icon">📝</span>
@@ -46,31 +49,31 @@
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a routerLink="/jobseeker/saved-jobs" class="sidebar-nav-link" data-tab="saved-jobs">
+          <a routerLink="/jobseeker/saved-jobs" routerLinkActive="active" class="sidebar-nav-link" data-tab="saved-jobs">
             <span class="nav-icon">💾</span>
             الوظائف المحفوظة
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a routerLink="/jobseeker/profile" class="sidebar-nav-link" data-tab="profile">
+          <a routerLink="/jobseeker/profile" routerLinkActive="active" class="sidebar-nav-link" data-tab="profile">
             <span class="nav-icon">👤</span>
             الملف الشخصي
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#cv" class="sidebar-nav-link" data-tab="cv">
+          <a routerLink="/jobseeker/cv" routerLinkActive="active" class="sidebar-nav-link" routerLinkActive="active" data-tab="cv">
             <span class="nav-icon">📄</span>
             السيرة الذاتية
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#alerts" class="sidebar-nav-link" data-tab="alerts">
+          <a routerLink="/jobseeker/alerts" routerLinkActive="active" class="sidebar-nav-link" routerLinkActive="active" data-tab="alerts">
             <span class="nav-icon">🔔</span>
             تنبيهات الوظائف
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#settings" class="sidebar-nav-link" data-tab="settings">
+          <a routerLink="/jobseeker/settings" routerLinkActive="active" class="sidebar-nav-link" routerLinkActive="active" data-tab="settings">
             <span class="nav-icon">⚙️</span>
             الإعدادات
           </a>

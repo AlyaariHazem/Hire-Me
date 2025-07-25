@@ -1,42 +1,5 @@
 <!-- Header -->
-<header class="header">
-  <nav class="navbar">
-    <div class="container">
-      <div class="navbar-brand">
-        <a href="index.html">
-          <img src="images/logo.jpg" alt="منصة التوظيف" class="logo" />
-        </a>
-      </div>
-
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a routerLink="jobs" class="nav-link">الوظائف</a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/companies" class="nav-link">الشركات</a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/salaries" class="nav-link">الرواتب</a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/resources" class="nav-link">الموارد</a>
-        </li>
-      </ul>
-
-      <div class="navbar-actions">
-        <a routerLink="/login" class="btn btn-secondary">تسجيل الدخول</a>
-        <a routerLink="/signup" class="btn btn-primary">إنشاء حساب</a>
-      </div>
-
-      <!-- Mobile Menu Toggle -->
-      <button class="mobile-menu-toggle" aria-label="فتح القائمة">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </nav>
-</header>
+<app-header></app-header>
 
 <!-- Auth Container -->
 <div class="auth-container">
@@ -49,12 +12,12 @@
 
     <!-- User Type Selector -->
     <div class="user-type-selector">
-      <div class="user-type-option active" data-type="jobseeker">
+      <button id="user" class="user-type-option active" (click)="chooseUser()" data-type="jobseeker">
         <div class="user-type-icon">👤</div>
         <div class="user-type-title">باحث عن عمل</div>
         <div class="user-type-desc">ابحث عن الوظائف وتقدم إليها</div>
-      </div>
-      <div class="user-type-option" data-type="employer">
+      </button>
+      <div id="aoner" class="user-type-option" onclick="chooseAoner()" data-type="employer">
         <div class="user-type-icon">🏢</div>
         <div class="user-type-title">صاحب عمل</div>
         <div class="user-type-desc">انشر الوظائف وابحث عن المواهب</div>

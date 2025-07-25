@@ -4,28 +4,35 @@ import { CommonModule } from '@angular/common';
 import { JobseekerRoutingModule } from './jobseeker-routing-module';
 import { Dashboard } from './dashboard/dashboard';
 import { SavedJobs } from './saved-jobs/saved-jobs';
-import { JobDetails } from '../jobs/job-details/job-details';
 import { JobSeeker } from './job-seeker';
 import { SideBar } from './side-bar/side-bar';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Profile } from './profile/profile';
+import { CV } from './cv/cv';
+import { Alerts } from './alerts/alerts';
+import { Settings } from './settings/settings';
+import { SharedModule } from '../../../shared/shared-module';
 
 const components = [
   Dashboard,
   SavedJobs,
   SideBar,
-  JobDetails,
   JobSeeker,
-  Profile
+  Profile,
+  CV,
+  Alerts,
+  Settings
 ];
 
 const modules = [
 CommonModule,
-RouterLink
+RouterLinkActive,
+RouterLink,
+SharedModule
 ];
 @NgModule({
   declarations: [...components],
   imports: [...modules, JobseekerRoutingModule],
-  exports: [...components, JobseekerRoutingModule]
+  exports: [...components,...modules, JobseekerRoutingModule]
 })
 export class JobseekerModule {}
