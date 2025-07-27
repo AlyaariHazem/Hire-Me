@@ -8,7 +8,7 @@ import { JobDetails } from './job-details/job-details';
 const components = [
 Header,
 Footer,
-JobDetails
+JobDetails,
 ];
 
 const modules = [

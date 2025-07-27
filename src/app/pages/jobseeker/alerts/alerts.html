@@ -1,28 +1,22 @@
 <!-- Alerts Tab -->
-<div class="dashboard-container">
-  <app-side-bar />
-  <main class="dashboard-main">
-    <!-- Alerts Tab -->
-    <div id="alerts">
-      <div class="dashboard-header">
-        <h1 class="dashboard-title">تنبيهات الوظائف</h1>
-        <div class="dashboard-actions">
-          <button class="btn btn-primary" onclick="createJobAlert()">
-            إنشاء تنبيه جديد
-          </button>
-        </div>
-      </div>
-
-      <div class="content-card">
-        <div class="empty-state">
-          <div class="empty-state-icon">🔔</div>
-          <h3>لا توجد تنبيهات وظائف</h3>
-          <p>أنشئ تنبيهات للحصول على إشعارات عند نشر وظائف تناسب اهتماماتك</p>
-          <button class="btn btn-primary" onclick="createJobAlert()">
-            إنشاء تنبيه الآن
-          </button>
-        </div>
-      </div>
+<div id="alerts">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">تنبيهات الوظائف</h1>
+    <div class="dashboard-actions">
+      <button class="btn btn-primary" onclick="createJobAlert()">
+        إنشاء تنبيه جديد
+      </button>
     </div>
-  </main>
+  </div>
+
+  <div class="content-card">
+    <div class="empty-state">
+      <div class="empty-state-icon">🔔</div>
+      <h3>لا توجد تنبيهات وظائف</h3>
+      <p>أنشئ تنبيهات للحصول على إشعارات عند نشر وظائف تناسب اهتماماتك</p>
+      <button class="btn btn-primary" onclick="createJobAlert()">
+        إنشاء تنبيه الآن
+      </button>
+    </div>
+  </div>
 </div>

@@ -4,14 +4,17 @@ import { CommonModule } from '@angular/common';
 import { JobsRoutingModule } from './jobs-routing-module';
 import { Jobs } from './jobs';
 import { SharedModule } from '../../../shared/shared-module';
+import { Salary } from './salary/salary';
 
 const components = [
-  Jobs
+  Jobs,
+  Salary
 ]
 const modules = [
   CommonModule,
   JobsRoutingModule,
-  SharedModule
+  SharedModule,
+
 ]
 @NgModule({
   declarations: [...components],

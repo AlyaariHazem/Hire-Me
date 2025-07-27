@@ -1,0 +1,47 @@
+<!-- Applications Tab -->
+<div id="applications">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">طلباتي</h1>
+    <div class="dashboard-actions">
+      <a routerLink="/jobs" class="btn btn-primary">البحث عن وظائف جديدة</a>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="tab-navigation">
+      <button class="tab active" data-tab="all-applications">
+        جميع الطلبات (12)
+      </button>
+      <button class="tab" data-tab="pending-applications">
+        قيد المراجعة (5)
+      </button>
+      <button class="tab" data-tab="reviewed-applications">
+        تمت المراجعة (4)
+      </button>
+      <button class="tab" data-tab="accepted-applications">مقبولة (2)</button>
+      <button class="tab" data-tab="rejected-applications">مرفوضة (1)</button>
+    </div>
+
+    <div id="all-applications" class="tab-content active">
+      <!-- Application items would be dynamically loaded here -->
+      <div class="application-item">
+        <img
+          src="images/company-logo-1.jpg"
+          alt="شعار الشركة"
+          class="application-logo"
+        />
+        <div class="application-info">
+          <h4 class="application-title">مطور تطبيقات الويب الأمامية</h4>
+          <p class="application-company">شركة التقنيات المتقدمة</p>
+          <div class="application-meta">
+            <span>تقدمت في 15 ديسمبر 2024</span>
+            <span>صنعاء</span>
+            <span>800-1200 ريال</span>
+          </div>
+        </div>
+        <span class="application-status status-pending">قيد المراجعة</span>
+      </div>
+      <!-- More application items... -->
+    </div>
+  </div>
+</div>

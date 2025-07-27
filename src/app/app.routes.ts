@@ -1,11 +1,21 @@
 import { Routes } from '@angular/router';
 import { Login } from './auth/login/login';
+import { Register } from './auth/register/register';
+import { Salary } from './pages/jobs/salary/salary';
 
 export const routes: Routes = [
   {
     path: '',
     component: Login,
     pathMatch: 'full',
+  },
+  {
+    path: 'register',
+    component: Register
+  },
+  {
+    path: 'salary',
+    component: Salary
   },
   {
     path: 'home',

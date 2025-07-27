@@ -12,6 +12,7 @@ import { CV } from './cv/cv';
 import { Alerts } from './alerts/alerts';
 import { Settings } from './settings/settings';
 import { SharedModule } from '../../../shared/shared-module';
+import { CvBuilder } from './cv-builder/cv-builder';
 
 const components = [
   Dashboard,
@@ -21,7 +22,8 @@ const components = [
   Profile,
   CV,
   Alerts,
-  Settings
+  Settings,
+  CvBuilder,
 ];
 
 const modules = [

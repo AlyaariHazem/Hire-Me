@@ -1,0 +1,196 @@
+<!-- Main Content -->
+<main class="main-content">
+  <section class="hero-small">
+    <div class="container">
+      <h1>منشئ السيرة الذاتية</h1>
+      <p>أنشئ سيرة ذاتية احترافية مجاناً في دقائق معدودة</p>
+    </div>
+  </section>
+
+  <section class="section-padding">
+    <div class="container">
+      <div class="cv-builder-container">
+        <!-- Form Section -->
+        <div class="cv-form-section">
+          <form id="cvForm">
+            <!-- Personal Information -->
+            <div class="form-section">
+              <h2 class="section-title">المعلومات الشخصية</h2>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">الاسم الأول</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="firstName"
+                    placeholder="أحمد"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">الاسم الأخير</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="lastName"
+                    placeholder="محمد"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">المسمى الوظيفي</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="jobTitle"
+                  placeholder="مطور برمجيات"
+                />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">البريد الإلكتروني</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="ahmed@example.com"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">رقم الهاتف</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="phone"
+                    placeholder="+967 123 456 789"
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">المدينة</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    placeholder="صنعاء"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">الموقع الإلكتروني</label>
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="website"
+                    placeholder="https://portfolio.com"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">نبذة مختصرة</label>
+                <textarea
+                  class="form-control"
+                  id="summary"
+                  placeholder="مطور برمجيات متخصص في تطوير تطبيقات الويب..."
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Experience -->
+            <div class="form-section">
+              <h2 class="section-title">الخبرة العملية</h2>
+              <div id="experienceContainer">
+                <!-- Experience items will be added here -->
+              </div>
+              <button
+                type="button"
+                class="add-item-btn"
+                onclick="addExperience()"
+              >
+                + إضافة خبرة عملية
+              </button>
+            </div>
+
+            <!-- Education -->
+            <div class="form-section">
+              <h2 class="section-title">التعليم</h2>
+              <div id="educationContainer">
+                <!-- Education items will be added here -->
+              </div>
+              <button
+                type="button"
+                class="add-item-btn"
+                onclick="addEducation()"
+              >
+                + إضافة مؤهل تعليمي
+              </button>
+            </div>
+
+            <!-- Skills -->
+            <div class="form-section">
+              <h2 class="section-title">المهارات</h2>
+              <div class="form-group">
+                <label class="form-label">المهارات (افصل بينها بفاصلة)</label>
+                <textarea
+                  class="form-control"
+                  id="skills"
+                  placeholder="JavaScript, React, Node.js, Python, SQL"
+                ></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="cv-preview-section">
+          <div class="cv-preview" id="cvPreview">
+            <div class="cv-header">
+              <div class="cv-name" id="previewName">الاسم الكامل</div>
+              <div class="cv-title" id="previewTitle">المسمى الوظيفي</div>
+              <div class="cv-contact" id="previewContact">
+                <span id="previewEmail">البريد الإلكتروني</span>
+                <span id="previewPhone">رقم الهاتف</span>
+                <span id="previewCity">المدينة</span>
+              </div>
+            </div>
+
+            <div class="cv-section" id="summarySection" style="display: none">
+              <div class="cv-section-title">نبذة مختصرة</div>
+              <div id="previewSummary"></div>
+            </div>
+
+            <div
+              class="cv-section"
+              id="experienceSection"
+              style="display: none"
+            >
+              <div class="cv-section-title">الخبرة العملية</div>
+              <div id="previewExperience"></div>
+            </div>
+
+            <div class="cv-section" id="educationSection" style="display: none">
+              <div class="cv-section-title">التعليم</div>
+              <div id="previewEducation"></div>
+            </div>
+
+            <div class="cv-section" id="skillsSection" style="display: none">
+              <div class="cv-section-title">المهارات</div>
+              <div class="skills-list" id="previewSkills"></div>
+            </div>
+          </div>
+
+          <div class="cv-actions">
+            <button class="btn btn-primary" onclick="downloadCV()">
+              تحميل PDF
+            </button>
+            <button class="btn btn-secondary" onclick="printCV()">طباعة</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

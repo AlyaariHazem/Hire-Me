@@ -7,6 +7,8 @@ import { Profile } from './profile/profile';
 import { CV } from './cv/cv';
 import { Alerts } from './alerts/alerts';
 import { Settings } from './settings/settings';
+import { CvBuilder } from './cv-builder/cv-builder';
+import { Applications } from './applications/applications';
 
 const routes: Routes = [
   {
@@ -17,7 +19,9 @@ const routes: Routes = [
       { path: 'saved-jobs', component: SavedJobs },
       { path: 'profile', component: Profile},
       { path: 'cv', component: CV},
+      { path: 'cv-builder', component: CvBuilder},
       { path: 'alerts', component: Alerts},
+      { path: 'applications', component: Applications},
       { path: 'settings', component: Settings},
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
