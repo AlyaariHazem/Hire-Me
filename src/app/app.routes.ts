@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Login } from './auth/login/login';
 import { Register } from './auth/register/register';
 import { Salary } from './pages/jobs/salary/salary';
+import { SearchForJob } from '../shared/search-for-job/search-for-job';
 
 export const routes: Routes = [
   {
@@ -33,6 +34,10 @@ export const routes: Routes = [
       import('./pages/companies/companies-module').then(
         (m) => m.CompaniesModule
       ),
+  },
+  {
+    path: 'search-for-company',
+    component: SearchForJob
   },
   {
     path: 'jobseeker',

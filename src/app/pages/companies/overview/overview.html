@@ -1,0 +1,241 @@
+<!-- Overview Tab -->
+<div id="overview" class="tab-content active">
+  <div class="employer-header">
+    <h1 class="employer-title">مرحباً بك في لوحة التحكم</h1>
+    <div class="employer-actions">
+      <a href="post-job.html" class="btn btn-primary">نشر وظيفة جديدة</a>
+      <a href="search-candidates.html" class="btn btn-secondary"
+        >البحث عن مرشحين</a
+      >
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="employer-stats-grid">
+    <div class="employer-stat-card">
+      <div class="employer-stat-header">
+        <span class="employer-stat-title">الوظائف النشطة</span>
+        <span class="employer-stat-icon">💼</span>
+      </div>
+      <div class="employer-stat-value">5</div>
+      <div class="employer-stat-change">+2 هذا الشهر</div>
+    </div>
+
+    <div class="employer-stat-card">
+      <div class="employer-stat-header">
+        <span class="employer-stat-title">إجمالي المتقدمين</span>
+        <span class="employer-stat-icon">👥</span>
+      </div>
+      <div class="employer-stat-value">89</div>
+      <div class="employer-stat-change">+23 هذا الأسبوع</div>
+    </div>
+
+    <div class="employer-stat-card">
+      <div class="employer-stat-header">
+        <span class="employer-stat-title">متقدمون جدد</span>
+        <span class="employer-stat-icon">🆕</span>
+      </div>
+      <div class="employer-stat-value">12</div>
+      <div class="employer-stat-change">اليوم</div>
+    </div>
+
+    <div class="employer-stat-card">
+      <div class="employer-stat-header">
+        <span class="employer-stat-title">مشاهدات الوظائف</span>
+        <span class="employer-stat-icon">👁️</span>
+      </div>
+      <div class="employer-stat-value">1,234</div>
+      <div class="employer-stat-change">+156 هذا الأسبوع</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions-grid">
+    <a href="post-job.html" class="quick-action-employer">
+      <div class="quick-action-employer-icon">➕</div>
+      <h3 class="quick-action-employer-title">نشر وظيفة جديدة</h3>
+      <p class="quick-action-employer-desc">
+        أضف وظيفة جديدة واجذب أفضل المواهب
+      </p>
+    </a>
+
+    <a href="search-candidates.html" class="quick-action-employer">
+      <div class="quick-action-employer-icon">🔍</div>
+      <h3 class="quick-action-employer-title">البحث عن مرشحين</h3>
+      <p class="quick-action-employer-desc">ابحث في قاعدة بيانات المرشحين</p>
+    </a>
+
+    <a href="company-profile.html" class="quick-action-employer">
+      <div class="quick-action-employer-icon">🏢</div>
+      <h3 class="quick-action-employer-title">تحديث ملف الشركة</h3>
+      <p class="quick-action-employer-desc">حدث معلومات وصور الشركة</p>
+    </a>
+
+    <a
+      href="#analytics"
+      class="quick-action-employer"
+      onclick="switchEmployerTab('analytics')"
+    >
+      <div class="quick-action-employer-icon">📊</div>
+      <h3 class="quick-action-employer-title">عرض التحليلات</h3>
+      <p class="quick-action-employer-desc">تابع أداء وظائفك وإعلاناتك</p>
+    </a>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="employer-content-grid">
+    <!-- Recent Job Postings -->
+    <div class="employer-content-card">
+      <div class="card-header">
+        <h2 class="card-title">الوظائف المنشورة مؤخراً</h2>
+        <a href="#jobs" class="card-action" onclick="switchEmployerTab('jobs')"
+          >عرض الكل</a
+        >
+      </div>
+
+      <div class="job-posting-item">
+        <div class="job-posting-info">
+          <h4 class="job-posting-title">مطور تطبيقات الويب الأمامية</h4>
+          <div class="job-posting-meta">
+            <span>نُشرت منذ يومين</span>
+            <span>صنعاء</span>
+            <span>800-1200 ريال</span>
+          </div>
+          <div class="job-posting-stats">
+            <span>15 متقدم</span>
+            <span>234 مشاهدة</span>
+            <span>3 مرشحين مؤهلين</span>
+          </div>
+        </div>
+        <span class="job-status status-active">نشطة</span>
+      </div>
+
+      <div class="job-posting-item">
+        <div class="job-posting-info">
+          <h4 class="job-posting-title">مطور تطبيقات الجوال</h4>
+          <div class="job-posting-meta">
+            <span>نُشرت منذ 3 أيام</span>
+            <span>صنعاء</span>
+            <span>1000-1500 ريال</span>
+          </div>
+          <div class="job-posting-stats">
+            <span>28 متقدم</span>
+            <span>456 مشاهدة</span>
+            <span>7 مرشحين مؤهلين</span>
+          </div>
+        </div>
+        <span class="job-status status-active">نشطة</span>
+      </div>
+
+      <div class="job-posting-item">
+        <div class="job-posting-info">
+          <h4 class="job-posting-title">مطور Full Stack</h4>
+          <div class="job-posting-meta">
+            <span>نُشرت منذ أسبوع</span>
+            <span>صنعاء</span>
+            <span>1200-1800 ريال</span>
+          </div>
+          <div class="job-posting-stats">
+            <span>46 متقدم</span>
+            <span>678 مشاهدة</span>
+            <span>12 مرشحين مؤهلين</span>
+          </div>
+        </div>
+        <span class="job-status status-paused">متوقفة</span>
+      </div>
+    </div>
+
+    <!-- Recent Candidates -->
+    <div class="employer-content-card">
+      <div class="card-header">
+        <h2 class="card-title">المتقدمون الجدد</h2>
+        <a
+          href="#candidates"
+          class="card-action"
+          onclick="switchEmployerTab('candidates')"
+          >عرض الكل</a
+        >
+      </div>
+
+      <div class="candidate-item">
+        <img
+          src="images/candidate-1.jpg"
+          alt="أحمد محمد"
+          class="candidate-avatar"
+        />
+        <div class="candidate-info">
+          <h4 class="candidate-name">أحمد محمد</h4>
+          <p class="candidate-title">مطور برمجيات</p>
+          <div class="candidate-meta">
+            <span>تقدم منذ ساعتين</span>
+            <span>3 سنوات خبرة</span>
+          </div>
+        </div>
+        <div class="candidate-actions">
+          <span class="application-status status-new">جديد</span>
+          <button class="btn btn-small btn-primary">عرض الملف</button>
+        </div>
+      </div>
+
+      <div class="candidate-item">
+        <img
+          src="images/candidate-2.jpg"
+          alt="فاطمة علي"
+          class="candidate-avatar"
+        />
+        <div class="candidate-info">
+          <h4 class="candidate-name">فاطمة علي</h4>
+          <p class="candidate-title">مطورة واجهات أمامية</p>
+          <div class="candidate-meta">
+            <span>تقدمت منذ 4 ساعات</span>
+            <span>2 سنة خبرة</span>
+          </div>
+        </div>
+        <div class="candidate-actions">
+          <span class="application-status status-shortlisted">مرشحة</span>
+          <button class="btn btn-small btn-primary">عرض الملف</button>
+        </div>
+      </div>
+
+      <div class="candidate-item">
+        <img
+          src="images/candidate-3.jpg"
+          alt="محمد حسن"
+          class="candidate-avatar"
+        />
+        <div class="candidate-info">
+          <h4 class="candidate-name">محمد حسن</h4>
+          <p class="candidate-title">مطور تطبيقات جوال</p>
+          <div class="candidate-meta">
+            <span>تقدم أمس</span>
+            <span>4 سنوات خبرة</span>
+          </div>
+        </div>
+        <div class="candidate-actions">
+          <span class="application-status status-interviewed">مقابلة</span>
+          <button class="btn btn-small btn-primary">عرض الملف</button>
+        </div>
+      </div>
+
+      <div class="candidate-item">
+        <img
+          src="images/candidate-4.jpg"
+          alt="سارة أحمد"
+          class="candidate-avatar"
+        />
+        <div class="candidate-info">
+          <h4 class="candidate-name">سارة أحمد</h4>
+          <p class="candidate-title">مطورة Full Stack</p>
+          <div class="candidate-meta">
+            <span>تقدمت منذ يومين</span>
+            <span>5 سنوات خبرة</span>
+          </div>
+        </div>
+        <div class="candidate-actions">
+          <span class="application-status status-new">جديدة</span>
+          <button class="btn btn-small btn-primary">عرض الملف</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

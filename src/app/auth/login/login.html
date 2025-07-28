@@ -12,12 +12,23 @@
 
     <!-- User Type Selector -->
     <div class="user-type-selector">
-      <button id="user" class="user-type-option active" (click)="chooseUser()" data-type="jobseeker">
+      <div
+        id="user"
+        class="user-type-option"
+        [class.active]="user"
+        (click)="selectType('jobseeker')"
+      >
         <div class="user-type-icon">👤</div>
         <div class="user-type-title">باحث عن عمل</div>
         <div class="user-type-desc">ابحث عن الوظائف وتقدم إليها</div>
-      </button>
-      <div id="aoner" class="user-type-option" onclick="chooseAoner()" data-type="employer">
+      </div>
+
+      <div
+        id="aoner"
+        class="user-type-option"
+        [class.active]="admin"
+        (click)="selectType('employer')"
+      >
         <div class="user-type-icon">🏢</div>
         <div class="user-type-title">صاحب عمل</div>
         <div class="user-type-desc">انشر الوظائف وابحث عن المواهب</div>
@@ -61,7 +72,9 @@
         >
       </div>
 
-      <button type="submit" (click)="login()" class="auth-submit">تسجيل الدخول</button>
+      <button type="submit" (click)="login()" class="auth-submit">
+        تسجيل الدخول
+      </button>
     </form>
 
     <div class="auth-divider">
@@ -99,7 +112,7 @@
         تسجيل الدخول بـ LinkedIn
       </a>
     </div>
-    
+
     <div class="auth-footer">
       <p>ليس لديك حساب؟</p>
       <a href="signup.html">إنشاء حساب جديد</a>

@@ -1,0 +1,48 @@
+<div id="candidates" class="tab-content">
+  <div class="employer-header">
+    <h1 class="employer-title">المتقدمون</h1>
+    <div class="employer-actions">
+      <a href="search-candidates.html" class="btn btn-primary"
+        >البحث عن مرشحين</a
+      >
+    </div>
+  </div>
+
+  <div class="employer-content-card">
+    <div class="tab-navigation">
+      <button class="tab active" data-tab="new-candidates">جدد (12)</button>
+      <button class="tab" data-tab="shortlisted-candidates">مرشحون (8)</button>
+      <button class="tab" data-tab="interviewed-candidates">مقابلات (5)</button>
+      <button class="tab" data-tab="hired-candidates">تم التوظيف (3)</button>
+      <button class="tab" data-tab="rejected-candidates">مرفوضون (15)</button>
+    </div>
+
+    <div id="new-candidates" class="tab-content active">
+      <!-- New candidates would be dynamically loaded here -->
+      <div class="candidate-item">
+        <img
+          src="images/candidate-1.jpg"
+          alt="أحمد محمد"
+          class="candidate-avatar"
+        />
+        <div class="candidate-info">
+          <h4 class="candidate-name">أحمد محمد</h4>
+          <p class="candidate-title">
+            مطور برمجيات - تقدم لوظيفة مطور تطبيقات الويب الأمامية
+          </p>
+          <div class="candidate-meta">
+            <span>تقدم منذ ساعتين</span>
+            <span>3 سنوات خبرة</span>
+            <span>صنعاء</span>
+          </div>
+        </div>
+        <div class="candidate-actions">
+          <span class="application-status status-new">جديد</span>
+          <button class="btn btn-small btn-primary">عرض الملف</button>
+          <button class="btn btn-small btn-secondary">ترشيح</button>
+        </div>
+      </div>
+      <!-- More candidate items... -->
+    </div>
+  </div>
+</div>

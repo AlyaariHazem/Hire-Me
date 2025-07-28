@@ -15,12 +15,18 @@ export class Login {
   constructor(private router: Router, private doc: Document) {}
   user: boolean = true;
   admin: boolean = false;
-  
+
   login(): void {
-    this.router.navigateByUrl('/jobseeker');
+    debugger;
+    if(this.user) {
+      this.router.navigateByUrl('/jobseeker');
+    }else if(this.admin) {
+      this.router.navigateByUrl('/companies');
+    }
   }
-  chooseUser(): void {
-    const user = this.doc.getElementById('user');
-    console.log('the user is', user);
-  }
+selectType(type: 'jobseeker' | 'employer') {
+  this.user = type === 'jobseeker';
+  this.admin = type === 'employer';
+}
+
 }
