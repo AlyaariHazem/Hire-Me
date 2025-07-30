@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Companies } from './companies';
 import { Dashboard } from './dashboard/dashboard';
+import { PostJob } from './post-job/post-job';
 
 const routes: Routes = [
   {
@@ -13,6 +14,10 @@ const routes: Routes = [
         path: 'dashboard',
         component: Dashboard,
       },
+      {
+        path: 'post-job',
+        component: PostJob,
+      }
     ],
   },
 ];

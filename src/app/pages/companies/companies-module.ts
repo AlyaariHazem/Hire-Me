@@ -12,6 +12,8 @@ import { Analytics } from './analytics/analytics';
 import { CompanyProfile } from './company-profile/company-profile';
 import { Billing } from './billing/billing';
 import { Overview } from './overview/overview';
+import { PostJob } from './post-job/post-job';
+import { Header } from './header/header';
 
 const components = [
 Companies,
@@ -22,6 +24,8 @@ Overview,
 Analytics,
 CompanyProfile,
 Billing,
+PostJob,
+Header,
 ManageJobs
 ]
 const modules = [
