@@ -18,15 +18,14 @@ export class Login {
 
   login(): void {
     debugger;
-    if(this.user) {
+    if (this.user) {
       this.router.navigateByUrl('/jobseeker');
-    }else if(this.admin) {
+    } else if (this.admin) {
       this.router.navigateByUrl('/companies');
     }
   }
-selectType(type: 'jobseeker' | 'employer') {
-  this.user = type === 'jobseeker';
-  this.admin = type === 'employer';
-}
-
+  selectType(type: 'jobseeker' | 'employer') {
+    this.user = type === 'jobseeker';
+    this.admin = type === 'employer';
+  }
 }

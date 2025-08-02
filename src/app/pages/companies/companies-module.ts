@@ -13,7 +13,7 @@ import { CompanyProfile } from './company-profile/company-profile';
 import { Billing } from './billing/billing';
 import { Overview } from './overview/overview';
 import { PostJob } from './post-job/post-job';
-import { Header } from './header/header';
+import { HeaderCompany } from './header-company/header-company';
 
 const components = [
 Companies,
@@ -25,7 +25,7 @@ Analytics,
 CompanyProfile,
 Billing,
 PostJob,
-Header,
+HeaderCompany,
 ManageJobs
 ]
 const modules = [

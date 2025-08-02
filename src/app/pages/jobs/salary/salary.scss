@@ -16,7 +16,7 @@ h1, h2, h3, h4 {
 }
 
 .hero-small {
-  background-color: #3498db;
+  background: linear-gradient(135deg, #9bbaff 0%, #43aaff 100%);
   color: white;
   padding: 50px 0;
   text-align: center;
@@ -24,6 +24,7 @@ h1, h2, h3, h4 {
 
 .hero-small h1 {
   font-size: 2.5rem;
+  color:white;
 }
 
 .hero-small p {
@@ -78,11 +79,18 @@ h1, h2, h3, h4 {
 }
 
 .category-card:hover {
-  background-color: #3498db;
+  background: linear-gradient(135deg, #9bbaff 0%, #43aaff 100%);
   color: white;
   transform: translateY(-10px);
 }
-
+a{
+  text-decoration: none;
+}
+a:hover{
+  h4{
+    color: white!important;
+  }
+}
 .category-card .icon {
   font-size: 3rem;
 }
@@ -120,7 +128,7 @@ h1, h2, h3, h4 {
 
 /* Footer Styling */
 app-footer {
-  background-color: #3498db;
+  background: linear-gradient(135deg, #9bbaff 0%, #43aaff 100%);
   color: white;
   text-align: center;
   padding: 30px 0;

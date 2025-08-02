@@ -8,7 +8,6 @@ export const routes: Routes = [
   {
     path: '',
     component: Login,
-    pathMatch: 'full',
   },
   {
     path: 'register',
@@ -17,11 +16,6 @@ export const routes: Routes = [
   {
     path: 'salary',
     component: Salary
-  },
-  {
-    path: 'home',
-    loadChildren: () =>
-      import('./pages/home/home-module').then((m) => m.HomeModule),
   },
   {
     path: 'jobs',
@@ -45,6 +39,11 @@ export const routes: Routes = [
       import('./pages/jobseeker/jobseeker-module').then(
         (m) => m.JobseekerModule
       ),
+  },
+  {
+    path: 'logout',
+    redirectTo: '',
+    pathMatch: 'full',
   },
 
   { path: '**', redirectTo: '' },

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="navbar-brand">
         <a href="index.html">
-          <img src="images/logo.jpg" alt="منصة التوظيف" class="logo" />
+          <img src="images/HireMe.png" alt="منصة التوظيف" class="logo" />
         </a>
       </div>
 
@@ -22,9 +22,12 @@
         </li>
       </ul>
 
-      <div class="navbar-actions">
+      <div class="navbar-actions" (click)="$event.stopPropagation()">
         <div style="position: relative">
-          <button class="btn btn-secondary" (click)="toggleEmployerMenu()">
+          <button
+            class="btn btn-secondary"
+            (click)="toggleEmployerMenu($event)"
+          >
             <img
               src="images/company-logo-1.jpg"
               alt="شركة التقنيات المتقدمة"
@@ -38,63 +41,23 @@
             شركة التقنيات المتقدمة
           </button>
           <div
-
             class="user-menu"
-            [ngStyle]="{ display: isEmployerMenuOpen ? 'block' : 'none' }"
-
+            *ngIf="isEmployerMenuOpen"
+            (click)="$event.stopPropagation()"
           >
-            <a
-              href="dashboard-employer.html"
-              style="
-                display: block;
-                padding: 0.75rem 1rem;
-                text-decoration: none;
-                color: inherit;
-                border-bottom: 1px solid var(--gray-100);
-              "
+            <a class="user-menu-item" (click)="navigate('dashboard')"
               >لوحة التحكم</a
             >
-            <a
-              href="company-profile.html"
-              style="
-                display: block;
-                padding: 0.75rem 1rem;
-                text-decoration: none;
-                color: inherit;
-                border-bottom: 1px solid var(--gray-100);
-              "
+            <a class="user-menu-item" (click)="navigate('profile')"
               >ملف الشركة</a
             >
-            <a
-              href="post-job.html"
-              style="
-                display: block;
-                padding: 0.75rem 1rem;
-                text-decoration: none;
-                color: inherit;
-                border-bottom: 1px solid var(--gray-100);
-              "
+            <a class="user-menu-item" (click)="navigate('post-job')"
               >نشر وظيفة</a
             >
-            <a
-              href="employer-settings.html"
-              style="
-                display: block;
-                padding: 0.75rem 1rem;
-                text-decoration: none;
-                color: inherit;
-                border-bottom: 1px solid var(--gray-100);
-              "
+            <a class="user-menu-item" (click)="navigate('employer-settings')"
               >الإعدادات</a
             >
-            <a
-              href="logout.html"
-              style="
-                display: block;
-                padding: 0.75rem 1rem;
-                text-decoration: none;
-                color: var(--error-color);
-              "
+            <a class="user-menu-item-logout" (click)="navigate('logout')"
               >تسجيل الخروج</a
             >
           </div>

@@ -1,15 +1,464 @@
-<!-- Company Profile Tab -->
-<div id="company-profile">
-  <div class="employer-header">
-    <h1 class="employer-title">ملف الشركة</h1>
-    <div class="employer-actions">
-      <a href="company-profile-edit.html" class="btn btn-primary"
-        >تحرير الملف</a
-      >
+<!-- Company Profile Hero -->
+<section class="company-profile-hero">
+  <div class="container">
+    <div class="company-header">
+      <img
+        src="images/company-logo-1.jpg"
+        alt="شركة التقنيات المتقدمة"
+        class="company-logo-large"
+        id="companyLogo"
+      />
+      <div class="company-main-info">
+        <h1 id="companyName">شركة التقنيات المتقدمة</h1>
+        <div class="company-industry" id="companyIndustry">تقنية المعلومات</div>
+        <div class="company-location">
+          <span>📍</span>
+          <span id="companyLocation">صنعاء، اليمن</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="company-quick-stats">
+      <div class="quick-stat">
+        <div class="quick-stat-number" id="employeeCount">150</div>
+        <div class="quick-stat-label">موظف</div>
+      </div>
+      <div class="quick-stat">
+        <div class="quick-stat-number" id="openJobsCount">5</div>
+        <div class="quick-stat-label">وظيفة متاحة</div>
+      </div>
+      <div class="quick-stat">
+        <div class="quick-stat-number" id="followersCount">1,200</div>
+        <div class="quick-stat-label">متابع</div>
+      </div>
+      <div class="quick-stat">
+        <div class="quick-stat-number" id="foundedYear">2015</div>
+        <div class="quick-stat-label">سنة التأسيس</div>
+      </div>
+    </div>
+
+    <div class="company-actions">
+      <button class="btn-follow-large" onclick="followCompany()">
+        متابعة الشركة
+      </button>
+      <button class="btn-view-jobs-large" onclick="viewAllJobs()">
+        عرض جميع الوظائف
+      </button>
     </div>
   </div>
+</section>
 
-  <div class="employer-content-card">
-    <p>معلومات ملف الشركة ستتم هنا...</p>
+<!-- Company Content -->
+<section class="company-content">
+  <div class="container">
+    <div class="content-grid">
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="content-tabs">
+          <button class="tab-button active" onclick="showTab('overview')">
+            نظرة عامة
+          </button>
+          <button class="tab-button" onclick="showTab('jobs')">الوظائف</button>
+          <button class="tab-button" onclick="showTab('culture')">
+            ثقافة العمل
+          </button>
+          <button class="tab-button" onclick="showTab('reviews')">
+            التقييمات
+          </button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="overview">
+          <div class="company-description">
+            <h3>عن الشركة</h3>
+            <p>
+              شركة التقنيات المتقدمة هي شركة رائدة في مجال تطوير البرمجيات وحلول
+              تقنية المعلومات في اليمن. تأسست الشركة في عام 2015 برؤية واضحة
+              لتقديم حلول تقنية مبتكرة تساعد الشركات والمؤسسات على تحقيق أهدافها
+              الرقمية.
+            </p>
+
+            <p>
+              نحن نتخصص في تطوير تطبيقات الويب والجوال، أنظمة إدارة المحتوى،
+              الحلول السحابية، وخدمات الاستشارات التقنية. فريقنا المتخصص يضم
+              أكثر من 150 مطور ومهندس ومصمم يعملون بشغف لتحويل الأفكار إلى حلول
+              رقمية فعالة.
+            </p>
+          </div>
+
+          <div class="company-values">
+            <h3>قيمنا</h3>
+            <div class="values-grid">
+              <div class="value-item">
+                <div class="value-icon">🚀</div>
+                <div class="value-title">الابتكار</div>
+                <div class="value-description">
+                  نسعى دائماً لإيجاد حلول مبتكرة ومتطورة
+                </div>
+              </div>
+              <div class="value-item">
+                <div class="value-icon">🤝</div>
+                <div class="value-title">التعاون</div>
+                <div class="value-description">
+                  نؤمن بقوة العمل الجماعي والتعاون
+                </div>
+              </div>
+              <div class="value-item">
+                <div class="value-icon">⭐</div>
+                <div class="value-title">الجودة</div>
+                <div class="value-description">
+                  نلتزم بأعلى معايير الجودة في جميع أعمالنا
+                </div>
+              </div>
+              <div class="value-item">
+                <div class="value-icon">📈</div>
+                <div class="value-title">النمو</div>
+                <div class="value-description">
+                  نساعد موظفينا على النمو والتطور المهني
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jobs Tab -->
+        <div class="tab-content" id="jobs">
+          <h3>الوظائف المتاحة (5)</h3>
+          <div class="jobs-list">
+            <div class="job-item" onclick="viewJob('frontend-developer')">
+              <div class="job-title">مطور واجهات أمامية</div>
+              <div class="job-details">
+                <span>💼 دوام كامل</span>
+                <span>📍 صنعاء</span>
+                <span>💰 800,000 - 1,200,000 ريال</span>
+              </div>
+              <div class="job-description">
+                نبحث عن مطور واجهات أمامية متمرس للانضمام إلى فريقنا. المرشح
+                المثالي يجب أن يكون لديه خبرة في React, Vue.js, وتقنيات الويب
+                الحديثة.
+              </div>
+            </div>
+
+            <div class="job-item" onclick="viewJob('backend-developer')">
+              <div class="job-title">مطور خلفي</div>
+              <div class="job-details">
+                <span>💼 دوام كامل</span>
+                <span>📍 صنعاء</span>
+                <span>💰 900,000 - 1,400,000 ريال</span>
+              </div>
+              <div class="job-description">
+                مطلوب مطور خلفي خبير في Node.js, Python, أو PHP لتطوير وصيانة
+                أنظمة الخادم والقواعد البيانات.
+              </div>
+            </div>
+
+            <div class="job-item" onclick="viewJob('ui-designer')">
+              <div class="job-title">مصمم واجهات المستخدم</div>
+              <div class="job-details">
+                <span>💼 دوام كامل</span>
+                <span>📍 صنعاء</span>
+                <span>💰 600,000 - 900,000 ريال</span>
+              </div>
+              <div class="job-description">
+                نبحث عن مصمم واجهات مبدع لتصميم تجارب مستخدم استثنائية. خبرة في
+                Figma, Adobe XD, ومبادئ UX/UI مطلوبة.
+              </div>
+            </div>
+
+            <div class="job-item" onclick="viewJob('project-manager')">
+              <div class="job-title">مدير مشاريع تقنية</div>
+              <div class="job-details">
+                <span>💼 دوام كامل</span>
+                <span>📍 صنعاء</span>
+                <span>💰 1,000,000 - 1,500,000 ريال</span>
+              </div>
+              <div class="job-description">
+                مطلوب مدير مشاريع ذو خبرة لقيادة فرق التطوير وإدارة المشاريع
+                التقنية من البداية حتى التسليم.
+              </div>
+            </div>
+
+            <div class="job-item" onclick="viewJob('qa-engineer')">
+              <div class="job-title">مهندس ضمان الجودة</div>
+              <div class="job-details">
+                <span>💼 دوام كامل</span>
+                <span>📍 صنعاء</span>
+                <span>💰 700,000 - 1,000,000 ريال</span>
+              </div>
+              <div class="job-description">
+                نبحث عن مهندس ضمان جودة للتأكد من جودة منتجاتنا البرمجية. خبرة
+                في الاختبار اليدوي والآلي مطلوبة.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Culture Tab -->
+        <div class="tab-content" id="culture">
+          <h3>ثقافة العمل</h3>
+          <div class="company-description">
+            <p>
+              في شركة التقنيات المتقدمة، نؤمن بأن الموظفين هم أهم أصولنا. لذلك
+              نسعى لخلق بيئة عمل إيجابية ومحفزة تساعد الجميع على تحقيق أفضل ما
+              لديهم.
+            </p>
+
+            <h4>بيئة العمل</h4>
+            <p>
+              نوفر مساحات عمل حديثة ومريحة مع أحدث التقنيات والأدوات. مكاتبنا
+              مصممة لتشجيع التعاون والإبداع، مع مناطق للاسترخاء والأنشطة
+              الترفيهية.
+            </p>
+
+            <h4>التطوير المهني</h4>
+            <p>
+              نستثمر في تطوير موظفينا من خلال برامج التدريب المستمر، المؤتمرات
+              التقنية، والدورات المتخصصة. كما نشجع على التعلم الذاتي ونوفر
+              الموارد اللازمة لذلك.
+            </p>
+
+            <h4>التوازن بين العمل والحياة</h4>
+            <p>
+              نؤمن بأهمية التوازن بين العمل والحياة الشخصية. لذلك نوفر مرونة في
+              أوقات العمل، إمكانية العمل عن بُعد، وإجازات سنوية سخية.
+            </p>
+          </div>
+        </div>
+
+        <!-- Reviews Tab -->
+        <div class="tab-content" id="reviews">
+          <h3>تقييمات الموظفين</h3>
+          <div class="company-description">
+            <div style="text-align: center; margin-bottom: 2rem">
+              <div
+                style="
+                  font-size: 3rem;
+                  color: var(--primary-color);
+                  font-weight: bold;
+                "
+              >
+                4.5
+              </div>
+              <div style="color: var(--gray-600)">من 5 نجوم (45 تقييم)</div>
+            </div>
+
+            <div style="margin-bottom: 2rem">
+              <h4>أبرز التعليقات:</h4>
+              <div
+                style="
+                  background: var(--gray-50);
+                  padding: 1.5rem;
+                  border-radius: var(--radius-md);
+                  margin: 1rem 0;
+                "
+              >
+                <p style="font-style: italic">
+                  "بيئة عمل رائعة وفريق متعاون. الإدارة تهتم بالموظفين وتوفر فرص
+                  نمو حقيقية."
+                </p>
+                <div
+                  style="
+                    font-size: var(--font-size-sm);
+                    color: var(--gray-600);
+                    margin-top: 0.5rem;
+                  "
+                >
+                  - مطور برمجيات، 3 سنوات خبرة
+                </div>
+              </div>
+
+              <div
+                style="
+                  background: var(--gray-50);
+                  padding: 1.5rem;
+                  border-radius: var(--radius-md);
+                  margin: 1rem 0;
+                "
+              >
+                <p style="font-style: italic">
+                  "مشاريع متنوعة ومثيرة، تقنيات حديثة، ومرونة في العمل. أنصح
+                  بالعمل هنا."
+                </p>
+                <div
+                  style="
+                    font-size: var(--font-size-sm);
+                    color: var(--gray-600);
+                    margin-top: 0.5rem;
+                  "
+                >
+                  - مصمم UI/UX، سنتان خبرة
+                </div>
+              </div>
+
+              <div
+                style="
+                  background: var(--gray-50);
+                  padding: 1.5rem;
+                  border-radius: var(--radius-md);
+                  margin: 1rem 0;
+                "
+              >
+                <p style="font-style: italic">
+                  "إدارة ممتازة وفرص تعلم مستمرة. الراتب تنافسي والمزايا جيدة."
+                </p>
+                <div
+                  style="
+                    font-size: var(--font-size-sm);
+                    color: var(--gray-600);
+                    margin-top: 0.5rem;
+                  "
+                >
+                  - مدير مشاريع، 5 سنوات خبرة
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Company Info -->
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">معلومات الشركة</h3>
+          <div class="info-list">
+            <div class="info-item">
+              <span class="info-label">النوع</span>
+              <span class="info-value">شركة خاصة</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">الحجم</span>
+              <span class="info-value">101-500 موظف</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">التأسيس</span>
+              <span class="info-value">2015</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">المقر الرئيسي</span>
+              <span class="info-value">صنعاء، اليمن</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">التخصصات</span>
+              <span class="info-value">تطوير البرمجيات</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefits -->
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">المزايا والفوائد</h3>
+          <div class="benefits-list">
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span>تأمين صحي شامل</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span>مرونة في أوقات العمل</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span>إمكانية العمل عن بُعد</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span>برامج تدريب وتطوير</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span>بونص سنوي</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span>إجازة سنوية 30 يوم</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span>وجبات مجانية</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">✓</span>
+              <span>مواصلات الشركة</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">معلومات الاتصال</h3>
+          <div class="contact-info">
+            <div class="contact-item">
+              <span class="contact-icon">🌐</span>
+              <span>www.advancedtech.ye</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-icon">📧</span>
+              <span>info@advancedtech.ye</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-icon">📞</span>
+              <span>+967 1 234567</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-icon">📍</span>
+              <span>شارع الزبيري، صنعاء</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+<!-- Similar Companies -->
+<section class="similar-companies">
+  <div class="container">
+    <h2 class="similar-title">شركات مشابهة</h2>
+    <div class="similar-grid">
+      <div class="similar-company" onclick="viewCompany('health-care')">
+        <img
+          src="images/company-logo-2.png"
+          alt="مستشفى الأمل"
+          class="similar-logo"
+        />
+        <div class="similar-name">مستشفى الأمل</div>
+        <div class="similar-industry">الرعاية الصحية</div>
+        <div class="similar-jobs">8 وظائف متاحة</div>
+      </div>
+
+      <div class="similar-company" onclick="viewCompany('education-center')">
+        <img
+          src="images/company-logo-3.jpg"
+          alt="مركز التعليم الحديث"
+          class="similar-logo"
+        />
+        <div class="similar-name">مركز التعليم الحديث</div>
+        <div class="similar-industry">التعليم</div>
+        <div class="similar-jobs">3 وظائف متاحة</div>
+      </div>
+
+      <div class="similar-company" onclick="viewCompany('construction-co')">
+        <img
+          src="images/company-logo-4.jpg"
+          alt="شركة البناء والتطوير"
+          class="similar-logo"
+        />
+        <div class="similar-name">شركة البناء والتطوير</div>
+        <div class="similar-industry">البناء والتشييد</div>
+        <div class="similar-jobs">12 وظيفة متاحة</div>
+      </div>
+
+      <div class="similar-company" onclick="viewCompany('finance-bank')">
+        <img
+          src="images/company-logo-1.jpg"
+          alt="البنك التجاري اليمني"
+          class="similar-logo"
+        />
+        <div class="similar-name">البنك التجاري اليمني</div>
+        <div class="similar-industry">المالية والمصرفية</div>
+        <div class="similar-jobs">6 وظائف متاحة</div>
+      </div>
+    </div>
+  </div>
+</section>
