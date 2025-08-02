@@ -7,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrl: './company-profile.scss'
 })
 export class CompanyProfile {
+  activeTab: string = 'overview'; // default active tab
 
+  showTab(tab: string): void {
+    this.activeTab = tab;
+  }
 }

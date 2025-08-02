@@ -8,8 +8,8 @@
     <p>تصفح الشركات الرائدة في اليمن واكتشف الفرص الوظيفية المتاحة</p>
 
     <div class="companies-search">
-      <input type="text" placeholder="ابحث عن الشركات..." id="companySearch" />
-      <button type="button" onclick="searchCompanies()">بحث</button>
+      <input type="text" placeholder="ابحث عن الشركات..." [(ngModel)]="searchTerm" (input)="applyFilters()" />
+      <button type="button" (click)="applyFilters()">بحث</button>
     </div>
   </div>
 </section>
@@ -141,18 +141,50 @@
 <!-- Companies Grid -->
 <section class="companies-section">
   <div class="container">
-    <div class="companies-grid" id="companiesGrid">
-      <!-- Company cards will be dynamically loaded here -->
-    </div>
+    <div class="companies-grid">
+      <div class="company-card" *ngFor="let company of companiesData">
+        <div class="company-header">
+          <div class="company-info">
+            <img [src]="company.logo" [alt]="company.name" class="company-logo">
+            <div class="company-details">
+              <h3>{{ company.name }}</h3>
+              <div class="company-industry">{{ company.industry }}</div>
+              <div class="company-location">📍 {{ company.location }}</div>
+            </div>
+          </div>
+        </div>
 
-    <!-- Pagination -->
-    <div class="pagination">
-      <button onclick="changePage(1)">السابق</button>
-      <button class="active" onclick="changePage(1)">1</button>
-      <button onclick="changePage(2)">2</button>
-      <button onclick="changePage(3)">3</button>
-      <button onclick="changePage(4)">4</button>
-      <button onclick="changePage(2)">التالي</button>
+        <div class="company-body">
+          <p class="company-description">{{ company.description }}</p>
+          <div class="company-tags">
+            <span class="company-tag" *ngFor="let tag of company.tags">{{ tag }}</span>
+          </div>
+
+          <div class="company-stats-row">
+            <div class="company-stat">
+              <div class="company-stat-number">{{ company.employees }}</div>
+              <div class="company-stat-label">موظف</div>
+            </div>
+            <div class="company-stat">
+              <div class="company-stat-number">{{ company.openJobs }}</div>
+              <div class="company-stat-label">وظيفة متاحة</div>
+            </div>
+            <div class="company-stat">
+              <div class="company-stat-number">{{ company.followers }}</div>
+              <div class="company-stat-label">متابع</div>
+            </div>
+          </div>
+
+          <div class="company-actions">
+            <button
+              [ngClass]="{ 'btn-follow': true, 'following': company.following }"
+              (click)="toggleFollow(company.id)">
+              {{ company.following ? 'متابع' : 'متابعة' }}
+            </button>
+            <button class="btn-view-jobs" (click)="viewCompany(company.id)">عرض الوظائف</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

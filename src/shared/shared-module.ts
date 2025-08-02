@@ -6,6 +6,7 @@ import { Header } from './header/header';
 import { JobDetails } from './job-details/job-details';
 import { SearchForJob } from './search-for-job/search-for-job';
 import { Messages } from './messages/messages';
+import { FormsModule } from '@angular/forms';
 
 const components = [
 Header,
@@ -18,6 +19,7 @@ Messages
 const modules = [
 CommonModule,
 RouterLink,
+FormsModule,
 RouterLinkActive
 ];
 @NgModule({

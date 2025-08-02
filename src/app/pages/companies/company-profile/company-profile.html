@@ -55,20 +55,39 @@
       <!-- Main Content -->
       <div class="main-content">
         <div class="content-tabs">
-          <button class="tab-button active" onclick="showTab('overview')">
+          <button
+            class="tab-button"
+            [class.active]="activeTab === 'overview'"
+            (click)="showTab('overview')"
+          >
             نظرة عامة
           </button>
-          <button class="tab-button" onclick="showTab('jobs')">الوظائف</button>
-          <button class="tab-button" onclick="showTab('culture')">
+          <button
+            class="tab-button"
+            [class.active]="activeTab === 'jobs'"
+            (click)="showTab('jobs')"
+          >
+            الوظائف
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="activeTab === 'culture'"
+            (click)="showTab('culture')"
+          >
             ثقافة العمل
           </button>
-          <button class="tab-button" onclick="showTab('reviews')">
+          <button
+            class="tab-button"
+            [class.active]="activeTab === 'reviews'"
+            (click)="showTab('reviews')"
+          >
             التقييمات
           </button>
         </div>
 
         <!-- Overview Tab -->
-        <div class="tab-content active" id="overview">
+        @if(activeTab === 'overview'){
+          <div class="tab-content active">
           <div class="company-description">
             <h3>عن الشركة</h3>
             <p>
@@ -120,9 +139,11 @@
             </div>
           </div>
         </div>
+        }
 
         <!-- Jobs Tab -->
-        <div class="tab-content" id="jobs">
+        @if(activeTab === 'jobs'){
+          <div class="tab-content active">
           <h3>الوظائف المتاحة (5)</h3>
           <div class="jobs-list">
             <div class="job-item" onclick="viewJob('frontend-developer')">
@@ -192,9 +213,11 @@
             </div>
           </div>
         </div>
+        }
 
         <!-- Culture Tab -->
-        <div class="tab-content" id="culture">
+        @if(activeTab === 'culture'){
+          <div class="tab-content active">
           <h3>ثقافة العمل</h3>
           <div class="company-description">
             <p>
@@ -224,9 +247,11 @@
             </p>
           </div>
         </div>
+        }
 
         <!-- Reviews Tab -->
-        <div class="tab-content" id="reviews">
+        @if(activeTab === 'reviews'){
+          <div class="tab-content active">
           <h3>تقييمات الموظفين</h3>
           <div class="company-description">
             <div style="text-align: center; margin-bottom: 2rem">
@@ -314,6 +339,7 @@
             </div>
           </div>
         </div>
+        }
       </div>
 
       <!-- Sidebar -->

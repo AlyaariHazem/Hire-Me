@@ -61,28 +61,28 @@
         <div class="filter-section">
           <h3 class="filter-title">نوع الوظيفة</h3>
           <div class="filter-options">
-            <div class="filter-option" onclick="toggleFilter('fulltime')">
+            <div class="filter-option" (click)="toggleFilter('fulltime')">
               <div class="filter-checkbox"></div>
               <span>دوام كامل</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(234)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('parttime')">
+            <div class="filter-option" (click)="toggleFilter('parttime')">
               <div class="filter-checkbox"></div>
               <span>دوام جزئي</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(89)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('contract')">
+            <div class="filter-option" (click)="toggleFilter('contract')">
               <div class="filter-checkbox"></div>
               <span>عقد مؤقت</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(45)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('remote')">
+            <div class="filter-option" (click)="toggleFilter('remote')">
               <div class="filter-checkbox"></div>
               <span>عمل عن بُعد</span>
               <span style="margin-right: auto; color: var(--gray-500)"
@@ -95,21 +95,21 @@
         <div class="filter-section">
           <h3 class="filter-title">مستوى الخبرة</h3>
           <div class="filter-options">
-            <div class="filter-option" onclick="toggleFilter('entry')">
+            <div class="filter-option" (click)="toggleFilter('entry')">
               <div class="filter-checkbox"></div>
               <span>مبتدئ (0-2 سنة)</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(156)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('mid')">
+            <div class="filter-option" (click)="toggleFilter('mid')">
               <div class="filter-checkbox"></div>
               <span>متوسط (3-5 سنوات)</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(198)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('senior')">
+            <div class="filter-option" (click)="toggleFilter('senior')">
               <div class="filter-checkbox"></div>
               <span>خبير (6+ سنوات)</span>
               <span style="margin-right: auto; color: var(--gray-500)"
@@ -122,28 +122,28 @@
         <div class="filter-section">
           <h3 class="filter-title">نطاق الراتب</h3>
           <div class="filter-options">
-            <div class="filter-option" onclick="toggleFilter('salary1')">
+            <div class="filter-option" (click)="toggleFilter('salary1')">
               <div class="filter-checkbox"></div>
               <span>أقل من 500 ريال</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(34)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('salary2')">
+            <div class="filter-option" (click)="toggleFilter('salary2')">
               <div class="filter-checkbox"></div>
               <span>500-1000 ريال</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(167)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('salary3')">
+            <div class="filter-option" (click)="toggleFilter('salary3')">
               <div class="filter-checkbox"></div>
               <span>1000-1500 ريال</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(89)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('salary4')">
+            <div class="filter-option" (click)="toggleFilter('salary4')">
               <div class="filter-checkbox"></div>
               <span>أكثر من 1500 ريال</span>
               <span style="margin-right: auto; color: var(--gray-500)"
@@ -156,21 +156,21 @@
         <div class="filter-section">
           <h3 class="filter-title">تاريخ النشر</h3>
           <div class="filter-options">
-            <div class="filter-option" onclick="toggleFilter('today')">
+            <div class="filter-option" (click)="toggleFilter('today')">
               <div class="filter-checkbox"></div>
               <span>اليوم</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(12)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('week')">
+            <div class="filter-option" (click)="toggleFilter('week')">
               <div class="filter-checkbox"></div>
               <span>آخر أسبوع</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(78)</span
               >
             </div>
-            <div class="filter-option" onclick="toggleFilter('month')">
+            <div class="filter-option" (click)="toggleFilter('month')">
               <div class="filter-checkbox"></div>
               <span>آخر شهر</span>
               <span style="margin-right: auto; color: var(--gray-500)"
@@ -181,12 +181,12 @@
         </div>
 
         <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem">
-          <button class="btn btn-small btn-primary" onclick="applyFilters()">
+          <button class="btn btn-small btn-primary" (click)="applyFilters()">
             تطبيق
           </button>
           <button
             class="btn btn-small btn-secondary"
-            onclick="clearAllFilters()"
+            (click)="clearAllFilters()"
           >
             مسح الكل
           </button>
@@ -263,19 +263,19 @@
             >
               <button
                 class="btn btn-small btn-primary apply-btn"
-                onclick="applyToJob('101')"
+                (click)="applyToJob('101')"
               >
                 تقديم الآن
               </button>
               <button
                 class="btn btn-small btn-secondary save-btn"
-                onclick="saveJob('101')"
+                (click)="saveJob('101')"
               >
                 حفظ
               </button>
               <button
                 class="btn btn-small btn-secondary"
-                onclick="shareJob('101', 'مطور تطبيقات الويب الأمامية')"
+                (click)="shareJob('101', 'مطور تطبيقات الويب الأمامية')"
               >
                 مشاركة
               </button>
@@ -333,19 +333,19 @@
             >
               <button
                 class="btn btn-small btn-primary apply-btn"
-                onclick="applyToJob('102')"
+                (click)="applyToJob('102')"
               >
                 تقديم الآن
               </button>
               <button
                 class="btn btn-small btn-secondary save-btn"
-                onclick="saveJob('102')"
+                (click)="saveJob('102')"
               >
                 حفظ
               </button>
               <button
                 class="btn btn-small btn-secondary"
-                onclick="shareJob('102', 'مطور تطبيقات الجوال')"
+                (click)="shareJob('102', 'مطور تطبيقات الجوال')"
               >
                 مشاركة
               </button>
@@ -404,19 +404,19 @@
             >
               <button
                 class="btn btn-small btn-primary apply-btn"
-                onclick="applyToJob('103')"
+                (click)="applyToJob('103')"
               >
                 تقديم الآن
               </button>
               <button
                 class="btn btn-small btn-secondary save-btn"
-                onclick="saveJob('103')"
+                (click)="saveJob('103')"
               >
                 حفظ
               </button>
               <button
                 class="btn btn-small btn-secondary"
-                onclick="shareJob('103', 'مطور Full Stack')"
+                (click)="shareJob('103', 'مطور Full Stack')"
               >
                 مشاركة
               </button>
@@ -474,19 +474,19 @@
             >
               <button
                 class="btn btn-small btn-primary apply-btn"
-                onclick="applyToJob('104')"
+                (click)="applyToJob('104')"
               >
                 تقديم الآن
               </button>
               <button
                 class="btn btn-small btn-secondary save-btn"
-                onclick="saveJob('104')"
+                (click)="saveJob('104')"
               >
                 حفظ
               </button>
               <button
                 class="btn btn-small btn-secondary"
-                onclick="shareJob('104', 'مطور WordPress')"
+                (click)="shareJob('104', 'مطور WordPress')"
               >
                 مشاركة
               </button>
@@ -544,19 +544,19 @@
             >
               <button
                 class="btn btn-small btn-primary apply-btn"
-                onclick="applyToJob('105')"
+                (click)="applyToJob('105')"
               >
                 تقديم الآن
               </button>
               <button
                 class="btn btn-small btn-secondary save-btn"
-                onclick="saveJob('105')"
+                (click)="saveJob('105')"
               >
                 حفظ
               </button>
               <button
                 class="btn btn-small btn-secondary"
-                onclick="shareJob('105', 'مطور ألعاب Unity')"
+                (click)="shareJob('105', 'مطور ألعاب Unity')"
               >
                 مشاركة
               </button>
@@ -566,24 +566,24 @@
 
         <!-- Pagination -->
         <nav class="pagination">
-          <a href="#" class="pagination-btn" onclick="goToPage(1)">السابق</a>
+          <a href="#" class="pagination-btn" (click)="goToPage(1)">السابق</a>
           <a
             href="#"
             class="pagination-btn current"
             data-page="1"
-            onclick="goToPage(1)"
+            (click)="goToPage(1)"
             >1</a
           >
-          <a href="#" class="pagination-btn" data-page="2" onclick="goToPage(2)"
+          <a href="#" class="pagination-btn" data-page="2" (click)="goToPage(2)"
             >2</a
           >
-          <a href="#" class="pagination-btn" data-page="3" onclick="goToPage(3)"
+          <a href="#" class="pagination-btn" data-page="3" (click)="goToPage(3)"
             >3</a
           >
-          <a href="#" class="pagination-btn" data-page="4" onclick="goToPage(4)"
+          <a href="#" class="pagination-btn" data-page="4" (click)="goToPage(4)"
             >4</a
           >
-          <a href="#" class="pagination-btn" data-page="5" onclick="goToPage(5)"
+          <a href="#" class="pagination-btn" data-page="5" (click)="goToPage(5)"
             >5</a
           >
           <span style="padding: 0.5rem">...</span>
@@ -591,17 +591,17 @@
             href="#"
             class="pagination-btn"
             data-page="15"
-            onclick="goToPage(15)"
+            (click)="goToPage(15)"
             >15</a
           >
-          <a href="#" class="pagination-btn" onclick="goToPage(2)">التالي</a>
+          <a href="#" class="pagination-btn" (click)="goToPage(2)">التالي</a>
         </nav>
 
         <!-- Load More Button (Alternative to pagination) -->
         <div class="text-center" style="margin-top: 2rem; display: none">
           <button
             class="btn btn-secondary load-more-btn"
-            onclick="loadMoreJobs()"
+            (click)="loadMoreJobs()"
           >
             تحميل المزيد من الوظائف
           </button>
