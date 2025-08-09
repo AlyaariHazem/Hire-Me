@@ -16,7 +16,9 @@
   max-width: 450px;
   margin: 0 1rem;
 }
-
+a:hover {
+  cursor: pointer;
+}
 .auth-header {
   text-align: center;
   margin-bottom: 2rem;
