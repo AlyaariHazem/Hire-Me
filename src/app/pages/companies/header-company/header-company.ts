@@ -28,6 +28,7 @@ export class HeaderCompany {
     if (action === 'logout') {
       // this.authService.logout();
       this.router.navigate(['/login']);
+      localStorage.removeItem('access');
     } else if (routes[action]) {
       this.router.navigate([routes[action]]);
     }

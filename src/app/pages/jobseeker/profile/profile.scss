@@ -246,7 +246,7 @@ textarea.form-control {
 .form-actions {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid var(--gray-200);
@@ -270,5 +270,108 @@ textarea.form-control {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+  }
+}
+/* General Form Layout */
+.form-section {
+  background: #fff;
+  padding: 1.5rem;
+  width: 96%;
+  margin-right: 2%;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1d4ed8; /* Primary blue */
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  span {
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+  }
+}
+
+/* Rows */
+.form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  color: #374151;
+}
+
+/* Inputs and Textareas */
+.form-control,
+.form-select {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+  outline: none;
+}
+
+textarea.form-control {
+  resize: vertical;
+}
+
+/* Actions */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: #1d4ed8;
+  color: #fff;
+  border: none;
+
+  &:hover {
+    background-color: #1e40af;
+  }
+}
+
+.btn-secondary {
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+
+  &:hover {
+    background-color: #e5e7eb;
   }
 }

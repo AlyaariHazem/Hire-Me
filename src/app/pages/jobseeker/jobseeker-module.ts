@@ -13,6 +13,9 @@ import { Alerts } from './alerts/alerts';
 import { Settings } from './settings/settings';
 import { SharedModule } from '../../../shared/shared-module';
 import { CvBuilder } from './cv-builder/cv-builder';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ProfileService } from './profile/profile.service';
 
 const components = [
   Dashboard,
@@ -30,11 +33,14 @@ const modules = [
 CommonModule,
 RouterLinkActive,
 RouterLink,
-SharedModule
+SharedModule,
+HttpClientModule,
+ReactiveFormsModule
 ];
 @NgModule({
   declarations: [...components],
   imports: [...modules, JobseekerRoutingModule],
-  exports: [...components,...modules, JobseekerRoutingModule]
+  exports: [...components,...modules, JobseekerRoutingModule],
+  providers: [HttpClient,ProfileService]
 })
 export class JobseekerModule {}

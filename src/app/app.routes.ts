@@ -40,6 +40,12 @@ export const routes: Routes = [
         (m) => m.JobseekerModule
       ),
   },
+   {
+    path: 'account/change-password',
+    loadComponent: () =>
+      import('./auth/change-password/change-password')
+        .then(m => m.ChangePassword)
+  },
   {
     path: 'logout',
     redirectTo: '',

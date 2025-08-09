@@ -1,314 +1,155 @@
-<!-- Profile Tab -->
-<section class="hero-small">
-  <div class="container">
-    <h1>تعديل الملف الشخصي</h1>
-    <p>قم بتحديث معلوماتك الشخصية ومهاراتك وخبراتك العملية</p>
+<form [formGroup]="basicForm" class="form-section">
+  <h3 class="section-title"><span>👤</span>المعلومات الشخصية</h3>
+  <div class="form-group">
+    <label class="form-label">السيرة الذاتية (PDF/DOC)</label>
+    <input
+      type="file"
+      class="form-control"
+      accept=".pdf,.doc,.docx"
+      (change)="onResumeChange($event)"
+    />
   </div>
-</section>
-
-<section class="section-padding">
-  <div class="container">
-    <div class="profile-edit-container">
-      <!-- Profile Header -->
-      <div class="profile-card">
-        <div class="profile-header">
-          <div class="profile-avatar-section">
-            <img
-              src="images/user-avatar.jpg"
-              alt="أحمد محمد"
-              class="profile-avatar"
-              id="profileAvatar"
-            />
-            <div class="avatar-upload">
-              <input type="file" id="avatarInput" accept="image/*" />
-              <button class="upload-btn">تغيير الصورة</button>
-            </div>
-          </div>
-
-          <div class="profile-info">
-            <h2 class="profile-name">أحمد محمد</h2>
-            <p class="profile-title">مطور برمجيات</p>
-
-            <div class="profile-stats">
-              <div class="stat">
-                <div class="stat-value">12</div>
-                <div class="stat-label">طلبات العمل</div>
-              </div>
-              <div class="stat">
-                <div class="stat-value">8</div>
-                <div class="stat-label">وظائف محفوظة</div>
-              </div>
-              <div class="stat">
-                <div class="stat-value">75%</div>
-                <div class="stat-label">اكتمال الملف</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <form id="profileForm">
-          <!-- Personal Information -->
-          <div class="form-section">
-            <h3 class="section-title">
-              <span>👤</span>
-              المعلومات الشخصية
-            </h3>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">الاسم الأول</label>
-                <input type="text" class="form-control" value="أحمد" required />
-              </div>
-              <div class="form-group">
-                <label class="form-label">الاسم الأخير</label>
-                <input type="text" class="form-control" value="محمد" required />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">البريد الإلكتروني</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  value="ahmed@example.com"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">رقم الهاتف</label>
-                <input
-                  type="tel"
-                  class="form-control"
-                  value="+967 123 456 789"
-                />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">تاريخ الميلاد</label>
-                <input type="date" class="form-control" value="1995-05-15" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">الجنس</label>
-                <select class="form-control form-select">
-                  <option value="male" selected>ذكر</option>
-                  <option value="female">أنثى</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">العنوان</label>
-              <input type="text" class="form-control" value="صنعاء، اليمن" />
-            </div>
-          </div>
-
-          <!-- Professional Information -->
-          <div class="form-section">
-            <h3 class="section-title">
-              <span>💼</span>
-              المعلومات المهنية
-            </h3>
-
-            <div class="form-group">
-              <label class="form-label">المسمى الوظيفي</label>
-              <input type="text" class="form-control" value="مطور برمجيات" />
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">سنوات الخبرة</label>
-                <select class="form-control form-select">
-                  <option value="0-1">أقل من سنة</option>
-                  <option value="1-3" selected>1-3 سنوات</option>
-                  <option value="3-5">3-5 سنوات</option>
-                  <option value="5-10">5-10 سنوات</option>
-                  <option value="10+">أكثر من 10 سنوات</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">المستوى التعليمي</label>
-                <select class="form-control form-select">
-                  <option value="high-school">ثانوية عامة</option>
-                  <option value="diploma">دبلوم</option>
-                  <option value="bachelor" selected>بكالوريوس</option>
-                  <option value="master">ماجستير</option>
-                  <option value="phd">دكتوراه</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">الراتب المطلوب (ريال يمني)</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  value="1500"
-                  min="0"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">نوع العمل المفضل</label>
-                <select class="form-control form-select">
-                  <option value="full-time" selected>دوام كامل</option>
-                  <option value="part-time">دوام جزئي</option>
-                  <option value="contract">عقد مؤقت</option>
-                  <option value="freelance">عمل حر</option>
-                  <option value="remote">عمل عن بُعد</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">نبذة مختصرة</label>
-              <textarea
-                class="form-control"
-                rows="4"
-                placeholder="اكتب نبذة مختصرة عن خبراتك ومهاراتك..."
-              >
-مطور برمجيات متخصص في تطوير تطبيقات الويب باستخدام JavaScript وReact. لدي خبرة 3 سنوات في العمل مع فرق التطوير وإنجاز المشاريع في الوقت المحدد.</textarea
-              >
-            </div>
-          </div>
-
-          <!-- Skills -->
-          <div class="form-section">
-            <h3 class="section-title">
-              <span>🛠️</span>
-              المهارات
-            </h3>
-
-            <div class="skill-tags" id="skillTags">
-              <span class="skill-tag"
-                >JavaScript
-                <span class="remove" onclick="removeSkill(this)">×</span></span
-              >
-              <span class="skill-tag"
-                >React
-                <span class="remove" onclick="removeSkill(this)">×</span></span
-              >
-              <span class="skill-tag"
-                >Node.js
-                <span class="remove" onclick="removeSkill(this)">×</span></span
-              >
-              <span class="skill-tag"
-                >Python
-                <span class="remove" onclick="removeSkill(this)">×</span></span
-              >
-              <span class="skill-tag"
-                >SQL
-                <span class="remove" onclick="removeSkill(this)">×</span></span
-              >
-            </div>
-
-            <div class="add-skill">
-              <input
-                type="text"
-                class="form-control"
-                id="newSkill"
-                placeholder="أضف مهارة جديدة..."
-              />
-              <button
-                type="button"
-                class="btn btn-secondary"
-                onclick="addSkill()"
-              >
-                إضافة
-              </button>
-            </div>
-          </div>
-
-          <!-- Social Links -->
-          <div class="form-section">
-            <h3 class="section-title">
-              <span>🔗</span>
-              الروابط الاجتماعية
-            </h3>
-
-            <div class="form-group">
-              <label class="form-label">LinkedIn</label>
-              <input
-                type="url"
-                class="form-control"
-                placeholder="https://linkedin.com/in/username"
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">GitHub</label>
-              <input
-                type="url"
-                class="form-control"
-                placeholder="https://github.com/username"
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">الموقع الشخصي</label>
-              <input
-                type="url"
-                class="form-control"
-                placeholder="https://yourwebsite.com"
-              />
-            </div>
-          </div>
-
-          <!-- Privacy Settings -->
-          <div class="form-section">
-            <h3 class="section-title">
-              <span>🔒</span>
-              إعدادات الخصوصية
-            </h3>
-
-            <div class="privacy-settings">
-              <div class="privacy-item">
-                <div class="privacy-info">
-                  <h4>إظهار الملف الشخصي للشركات</h4>
-                  <p>السماح للشركات بمشاهدة ملفك الشخصي والتواصل معك</p>
-                </div>
-                <div
-                  class="toggle-switch active"
-                  onclick="toggleSwitch(this)"
-                ></div>
-              </div>
-
-              <div class="privacy-item">
-                <div class="privacy-info">
-                  <h4>تلقي إشعارات الوظائف</h4>
-                  <p>الحصول على إشعارات عند نشر وظائف تناسب مهاراتك</p>
-                </div>
-                <div
-                  class="toggle-switch active"
-                  onclick="toggleSwitch(this)"
-                ></div>
-              </div>
-
-              <div class="privacy-item">
-                <div class="privacy-info">
-                  <h4>إظهار معلومات الاتصال</h4>
-                  <p>السماح للشركات برؤية رقم هاتفك وبريدك الإلكتروني</p>
-                </div>
-                <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Form Actions -->
-          <div class="form-actions">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              onclick="cancelEdit()"
-            >
-              إلغاء
-            </button>
-            <button type="submit" class="btn btn-primary" (click)="saveChanges()">حفظ التغييرات</button>
-          </div>
-        </form>
-      </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">الاسم الأول</label>
+      <input class="form-control" formControlName="first_name" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">الاسم الأخير</label>
+      <input class="form-control" formControlName="last_name" />
     </div>
   </div>
-</section>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">البريد الإلكتروني</label>
+      <input type="email" class="form-control" formControlName="email" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">رقم الهاتف</label>
+      <input class="form-control" formControlName="phone" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">تاريخ الميلاد</label>
+      <input type="date" class="form-control" formControlName="date_of_birth" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">العنوان</label>
+      <input class="form-control" formControlName="location" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">نبذة مختصرة</label>
+    <textarea class="form-control" rows="4" formControlName="bio"></textarea>
+  </div>
+</form>
+
+<form [formGroup]="jobForm" class="form-section">
+  <h3 class="section-title"><span>💼</span>المعلومات المهنية</h3>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">سنوات الخبرة</label>
+      <select
+        class="form-control form-select"
+        formControlName="experience_level"
+      >
+        <option value="entry">مبتدئ</option>
+        <option value="mid">متوسط</option>
+        <option value="senior">متقدم</option>
+        <option value="lead">خبير</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">المستوى التعليمي</label>
+      <select
+        class="form-control form-select"
+        formControlName="education_level"
+      >
+        <option value="high_school">ثانوية عامة</option>
+        <option value="diploma">دبلوم</option>
+        <option value="bachelor">بكالوريوس</option>
+        <option value="master">ماجستير</option>
+        <option value="phd">دكتوراه</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">الراتب الأدنى</label>
+      <input
+        type="number"
+        class="form-control"
+        formControlName="expected_salary_min"
+      />
+    </div>
+    <div class="form-group">
+      <label class="form-label">الراتب الأعلى</label>
+      <input
+        type="number"
+        class="form-control"
+        formControlName="expected_salary_max"
+      />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">نوع العمل المفضل</label>
+      <select
+        class="form-control form-select"
+        formControlName="preferred_job_type"
+      >
+        <option value="full_time">دوام كامل</option>
+        <option value="part_time">دوام جزئي</option>
+        <option value="contract">عقد مؤقت</option>
+        <option value="freelance">عمل حر</option>
+        <option value="remote">عن بُعد</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">متاح للعمل</label>
+      <select class="form-control form-select" formControlName="availability">
+        <option [value]="true">نعم</option>
+        <option [value]="false">لا</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">المهارات (افصل بفواصل)</label>
+    <input
+      class="form-control"
+      formControlName="skills"
+      placeholder="JS, React, Node"
+    />
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">اللغات (افصل بفواصل)</label>
+    <input
+      class="form-control"
+      formControlName="languages"
+      placeholder="Arabic, English"
+    />
+  </div>
+</form>
+
+<div class="form-actions">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="basicForm.reset(); jobForm.reset();"
+  >
+    إلغاء
+  </button>
+  <button type="button" class="btn btn-primary" (click)="saveChanges()">
+    حفظ التغييرات
+  </button>
+</div>

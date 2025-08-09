@@ -9,7 +9,6 @@ import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-register',
-  standalone: true,
   imports: [CommonModule, FormsModule, SharedModule, HttpClientModule],
   templateUrl: './register.html',
   styleUrl: './register.scss',

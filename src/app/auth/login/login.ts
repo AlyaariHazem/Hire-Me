@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, SharedModule,HttpClientModule],
+  imports: [CommonModule, SharedModule, HttpClientModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
   providers: [Document],
@@ -29,33 +29,30 @@ export class Login {
   login(): void {
     const payload = {
       username: this.email,
-      password: this.password
+      password: this.password,
     };
 
     this.http.post(environment.getUrl('login'), payload).subscribe({
       next: (res: any) => {
+        if (res?.refresh) localStorage.setItem('refresh', res.refresh);
+        localStorage.setItem('access', res.data.token);
         this.toastr.success('تم تسجيل الدخول بنجاح');
-
-        if (this.user) {
-          this.router.navigateByUrl('/jobseeker');
-        } else if (this.admin) {
-          this.router.navigateByUrl('/companies');
-        }
+        this.router.navigateByUrl(this.user ? '/jobseeker' : '/companies');
       },
       error: (err) => {
         this.toastr.error('فشل تسجيل الدخول، تحقق من البيانات');
         console.error(err);
-      }
+      },
     });
   }
 
-loginWithLinkedIn(){
-  this.toastr.info('تسجيل الدخول عبر LinkedIn قيد التطوير');
-}
+  loginWithLinkedIn() {
+    this.toastr.info('تسجيل الدخول عبر LinkedIn قيد التطوير');
+  }
 
-  loginWithGoogle(){
-  this.toastr.info('تسجيل الدخول عبر Google قيد التطوير');
-}
+  loginWithGoogle() {
+    this.toastr.info('تسجيل الدخول عبر Google قيد التطوير');
+  }
 
   selectType(type: 'jobseeker' | 'employer') {
     this.user = type === 'jobseeker';
