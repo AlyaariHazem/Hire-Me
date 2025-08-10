@@ -1,0 +1,42 @@
+// projects.HireMe.architect.build.options
+{
+  "builder": "@angular/build:application",
+  "options": {
+    "browser": "src/main.ts",
+    "index": "src/index.html",          // ✅ add this
+    "tsConfig": "tsconfig.app.json",
+    "outputPath": "dist/HireMe",        // ✅ no /browser here
+    "inlineStyleLanguage": "scss",
+    "assets": [{ "glob": "**/*", "input": "public" }],
+    "styles": ["src/styles.scss", "node_modules/ngx-toastr/toastr.css"]
+  },
+  "configurations": {
+    "production": {
+      "optimization": {
+        "scripts": true,
+        "styles": { "minify": true, "inlineCritical": true },
+        "fonts": { "inline": false }
+      },
+      "budgets": [
+        { "type": "initial", "maximumWarning": "1mb", "maximumError": "2mb" },
+        { "type": "anyComponentStyle", "maximumWarning": "30kb", "maximumError": "60kb" }
+      ],
+      "outputHashing": "all"
+    }
+  }
+}
+
+if (Test-Path .\dist) { Remove-Item -Recurse -Force .\dist }
+>> ng build --configuration=production --base-href "/Hire-Me/"
+
+
+Confirm index.html exists
+>> Get-ChildItem -Recurse -File dist -Filter index.html | Select-Object FullName
+You should see: dist\HireMe\browser\index.html (or dist\HireMe\index.html depending on builder).
+
+4-Deploy from the folder that contains that index.html
+# If the path shown in step 3 is dist\HireMe\browser
+>>npx ngh --dir="dist\HireMe\browser" --message="Deploy Hire-Me"
+
+# If it’s dist\HireMe
+#>> npx ngh --dir="dist\HireMe" --message="Deploy Hire-Me"
