@@ -7,20 +7,28 @@ import { JobDetails } from './job-details/job-details';
 import { SearchForJob } from './search-for-job/search-for-job';
 import { Messages } from './messages/messages';
 import { FormsModule } from '@angular/forms';
+import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 const components = [
 Header,
 Footer,
 JobDetails,
 SearchForJob,
-Messages
+Messages,
+ProgressSpinnerComponent
 ];
 
 const modules = [
 CommonModule,
 RouterLink,
 FormsModule,
-RouterLinkActive
+RouterLinkActive,
+DialogModule,
+    ProgressSpinnerModule,
+    ConfirmDialog,
 ];
 @NgModule({
   declarations: [...components],

@@ -14,6 +14,9 @@ import { Billing } from './billing/billing';
 import { Overview } from './overview/overview';
 import { PostJob } from './post-job/post-job';
 import { HeaderCompany } from './header-company/header-company';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { CompanyData } from './company-data/company-data';
 
 const components = [
 Companies,
@@ -26,12 +29,15 @@ CompanyProfile,
 Billing,
 PostJob,
 HeaderCompany,
-ManageJobs
+ManageJobs,
+CompanyData
 ]
 const modules = [
   CommonModule,
   CompaniesRoutingModule,
   SharedModule,
+  FormsModule,
+  HttpClientModule
 ]
 @NgModule({
   declarations: [...components],

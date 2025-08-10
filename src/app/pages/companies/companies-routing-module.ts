@@ -4,6 +4,7 @@ import { Companies } from './companies';
 import { Dashboard } from './dashboard/dashboard';
 import { PostJob } from './post-job/post-job';
 import { CompanyProfile } from './company-profile/company-profile';
+import { CompanyData } from './company-data/company-data';
 
 const routes: Routes = [
   {
@@ -18,6 +19,11 @@ const routes: Routes = [
       {
         path: 'company-profile',
         component:CompanyProfile
+      },
+      {
+        path: 'company-data',
+        component: CompanyData
+
       },
       {
         path: 'post-job',
