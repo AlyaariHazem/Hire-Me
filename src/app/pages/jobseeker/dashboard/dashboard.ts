@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { User } from '../services/user';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,5 +8,11 @@ import { Component } from '@angular/core';
   styleUrl: './dashboard.scss'
 })
 export class Dashboard {
+  userData: any;
 
+  constructor(private userService: User) {
+    this.userService.user$.subscribe(data => {
+      this.userData = data;
+    });
+  }
 }

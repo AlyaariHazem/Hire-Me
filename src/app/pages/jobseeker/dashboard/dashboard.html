@@ -1,7 +1,7 @@
 <!-- Dashboard Container -->
 <div id="overview" class="tab-content active">
   <div class="dashboard-header">
-    <h1 class="dashboard-title">مرحباً، أحمد!</h1>
+    <h1 class="dashboard-title">مرحباً، {{ userData.data.user.first_name }}!</h1>
     <div class="dashboard-actions">
       <a routerLink="/jobs" class="btn btn-primary">البحث عن وظائف</a>
       <a routerLink="/jobseeker/cv-builder" class="btn btn-secondary"

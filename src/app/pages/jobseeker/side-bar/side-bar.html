@@ -3,10 +3,10 @@
     <div class="sidebar-profile">
       <img
         src="images/user-avatar.jpg"
-        alt="أحمد محمد"
+        [alt]="userData.data.user.first_name"
         class="profile-avatar"
       />
-      <h3 class="profile-name">أحمد محمد</h3>
+      <h3 class="profile-name">{{ userData.data.user.first_name + ' ' +userData.data.user.last_name }}</h3>
       <p class="profile-title">مطور برمجيات</p>
 
       <div class="profile-completion">
