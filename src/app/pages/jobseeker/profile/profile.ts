@@ -1,25 +1,35 @@
 // profile.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ProfileService } from './profile.service';
-import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile',
   standalone: false,
   templateUrl: './profile.html',
-  styleUrl: './profile.scss',
+  styleUrls: ['./profile.scss'],
 })
-export class Profile implements OnInit {
+export class Profile implements OnInit, OnDestroy {
   basicForm!: FormGroup;
   jobForm!: FormGroup;
-  selectedResume: File | null = null;
+
+  selectedFile: File | null = null; // avatar
+  selectedResume: File | null = null; // resume
+
+  // resume preview state
+  resumeUrl: string | null = null; // object/remote URL
+  resumeSafeUrl: SafeResourceUrl | null = null;
+  isPdf = false;
+  private toRevoke: string | null = null; // for object URLs
+  showPreview = false;
 
   constructor(
     private fb: FormBuilder,
     private profile: ProfileService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -46,21 +56,58 @@ export class Profile implements OnInit {
       languages: [''],
     });
 
-    this.loadProfile(); // 👈 fill inputs
+    this.loadProfile();
+  }
+
+  ngOnDestroy(): void {
+    if (this.toRevoke) URL.revokeObjectURL(this.toRevoke);
+  }
+  get resumeDisplayName(): string {
+    // اسم من الملف المختار أو من رابط السيرفر
+    if (this.selectedResume?.name) return this.selectedResume.name;
+    if (this.resumeUrl) {
+      try {
+        return decodeURIComponent(
+          this.resumeUrl.split('/').pop() || 'السيرة الذاتية'
+        );
+      } catch {
+        return 'السيرة الذاتية';
+      }
+    }
+    return 'السيرة الذاتية';
+  }
+  onFileChange(e: Event) {
+    const input = e.target as HTMLInputElement;
+    this.selectedFile =
+      input.files && input.files.length ? input.files[0] : null;
   }
 
   onResumeChange(e: Event) {
     const input = e.target as HTMLInputElement;
-    this.selectedResume =
-      input.files && input.files.length ? input.files[0] : null;
+    const file = input.files && input.files.length ? input.files[0] : null;
+
+    this.selectedResume = file;
+
+    // clear previous object URL
+    if (this.toRevoke) {
+      URL.revokeObjectURL(this.toRevoke);
+      this.toRevoke = null;
+    }
+
+    if (file) {
+      const url = URL.createObjectURL(file);
+      this.setResumePreview(url, file.name);
+      this.toRevoke = url; // revoke on destroy/change
+    } else {
+      this.clearResumePreview();
+    }
   }
+
   private loadProfile() {
     this.profile.getProfile().subscribe({
       next: (res: any) => {
-        // Swagger sometimes returns { data: {...} } — handle both
         const root = res?.data ?? res;
 
-        // Basic info
         const user = root.user ?? root.profile?.user ?? {};
         this.basicForm.patchValue({
           first_name: user.first_name || '',
@@ -73,7 +120,6 @@ export class Profile implements OnInit {
           location: user.location || '',
         });
 
-        // Job-seeker info (may live at root or under `profile`)
         const js = root.profile ?? root;
         this.jobForm.patchValue({
           resume: js.resume || '',
@@ -87,17 +133,34 @@ export class Profile implements OnInit {
           preferred_job_type: js.preferred_job_type || 'full_time',
           languages: js.languages || '',
         });
+
+        // existing resume from API (absolute or relative URL)
+        if (js?.resume) this.setResumePreview(js.resume);
       },
-      error: (e) => {
-        console.error(e);
-        this.toastr.error('تعذر تحميل البيانات');
-      },
+      error: () => this.toastr.error('تعذر تحميل البيانات'),
     });
+  }
+
+  private setResumePreview(url: string, name?: string) {
+    this.resumeUrl = url;
+    const looksPdf =
+      /\.pdf($|\?)/i.test(url) ||
+      (!!name && name.toLowerCase().endsWith('.pdf'));
+    this.isPdf = looksPdf;
+    this.resumeSafeUrl = looksPdf
+      ? this.sanitizer.bypassSecurityTrustResourceUrl(url)
+      : null;
+  }
+
+  private clearResumePreview() {
+    this.resumeUrl = null;
+    this.resumeSafeUrl = null;
+    this.isPdf = false;
   }
 
   private toDateOnly(value: string | null): string {
     if (!value) return '';
-    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value; // already OK
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
     const d = new Date(value);
     if (Number.isNaN(d.getTime())) return '';
     const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -106,7 +169,6 @@ export class Profile implements OnInit {
   }
 
   onAvatarSelected(fileString: string) {
-    // Call this after converting the selected file to URL/base64 (if needed)
     this.basicForm.patchValue({ profile_picture: fileString });
   }
 
@@ -116,7 +178,7 @@ export class Profile implements OnInit {
       return;
     }
 
-    // ----- BASIC PROFILE (multipart, because of profile_picture) -----
+    // ---------- BASIC PROFILE -> /api/accounts/profile/update/ ----------
     const b = this.basicForm.value;
     const dob = this.formatDateForApi(b.date_of_birth);
     if (b.date_of_birth && !dob) {
@@ -124,8 +186,16 @@ export class Profile implements OnInit {
       return;
     }
 
-    const basicFd = new FormData();
-    const basicEntries: Record<string, any> = {
+    const basicPayload: {
+      first_name: string;
+      last_name: string;
+      email: string;
+      phone?: string;
+      date_of_birth?: string;
+      bio?: string;
+      location?: string;
+      profile_picture?: string;
+    } = {
       first_name: b.first_name,
       last_name: b.last_name,
       email: b.email,
@@ -134,39 +204,43 @@ export class Profile implements OnInit {
       bio: b.bio,
       location: b.location,
     };
-    Object.entries(basicEntries).forEach(([k, v]) => {
-      if (v !== undefined && v !== null && v !== '')
-        basicFd.append(k, String(v));
-    });
-    if (this.selectedFile) basicFd.append('profile_picture', this.selectedFile);
 
-    this.profile.updateJobSeekerFormData(basicFd).subscribe({
+    const saveBasic$ = (() => {
+      if (this.selectedFile) {
+        const fd = new FormData();
+        Object.entries(basicPayload).forEach(([k, v]) => {
+          if (v !== undefined && v !== null && v !== '')
+            fd.append(k, String(v));
+        });
+        fd.append('profile_picture', this.selectedFile);
+        return this.profile.updateBasicFormData(fd);
+      } else {
+        return this.profile.updateBasic(basicPayload);
+      }
+    })();
+
+    saveBasic$.subscribe({
       next: () => {
-        // ----- JOB SEEKER (multipart, because of resume) -----
+        // ---------- JOB SEEKER -> /api/accounts/profile/job-seeker/ ----------
         const j = this.jobForm.value;
         const jobFd = new FormData();
-
-        // append non-empty simple fields
         const jobEntries: Record<string, any> = {
           experience_level: j.experience_level,
           education_level: j.education_level,
           skills: j.skills,
           expected_salary_min: j.expected_salary_min,
           expected_salary_max: j.expected_salary_max,
-          availability: j.availability, // boolean -> string
+          availability: j.availability,
           preferred_job_type: j.preferred_job_type,
           languages: j.languages,
         };
-
         Object.entries(jobEntries).forEach(([k, v]) => {
           if (v === undefined || v === null || v === '') return;
-          // Ensure booleans/numbers go as strings so the backend parser is happy
           jobFd.append(
             k,
             typeof v === 'boolean' ? (v ? 'true' : 'false') : String(v)
           );
         });
-
         if (this.selectedResume) jobFd.append('resume', this.selectedResume);
 
         this.profile.updateJobSeekerFormData(jobFd).subscribe({
@@ -185,32 +259,20 @@ export class Profile implements OnInit {
     this.toastr.error(msg);
     console.error(err);
   }
-  selectedFile: File | null = null;
 
-  onFileChange(e: Event) {
-    const input = e.target as HTMLInputElement;
-    this.selectedFile =
-      input.files && input.files.length ? input.files[0] : null;
-  }
   private formatDateForApi(value: any): string {
     if (!value) return '';
     if (typeof value === 'string') {
-      // already correct: 2025-08-09
       if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
-      // try MM/DD/YYYY -> YYYY-MM-DD
       const m = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-      if (m) {
-        const [, mm, dd, yyyy] = m;
-        return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
-      }
-      // last resort: Date parse
+      if (m) return `${m[3]}-${m[1].padStart(2, '0')}-${m[2].padStart(2, '0')}`;
       const d = new Date(value);
       if (!Number.isNaN(d.getTime())) {
         const mm = String(d.getMonth() + 1).padStart(2, '0');
         const dd = String(d.getDate()).padStart(2, '0');
         return `${d.getFullYear()}-${mm}-${dd}`;
       }
-      return ''; // invalid
+      return '';
     }
     if (value instanceof Date) {
       const mm = String(value.getMonth() + 1).padStart(2, '0');

@@ -1,14 +1,56 @@
 <form [formGroup]="basicForm" class="form-section">
   <h3 class="section-title"><span>👤</span>المعلومات الشخصية</h3>
-  <div class="form-group">
-    <label class="form-label">السيرة الذاتية (PDF/DOC)</label>
-    <input
-      type="file"
-      class="form-control"
-      accept=".pdf,.doc,.docx"
-      (change)="onResumeChange($event)"
-    />
+   <!-- السيرة الذاتية -->
+  <div class="resume-wrap">
+    <div class="resume-bar" *ngIf="resumeUrl as url; else noResume">
+      <div class="resume-meta">
+        <span class="resume-icon">📄</span>
+        <div>
+          <div class="resume-name">{{ resumeDisplayName }}</div>
+          <div class="resume-type">{{ isPdf ? 'PDF' : 'Document' }}</div>
+        </div>
+      </div>
+
+      <div class="resume-actions">
+        <label class="btn btn-light m-0">
+          تغيير الملف
+          <input type="file" class="d-none"
+                 accept=".pdf,.doc,.docx"
+                 (change)="onResumeChange($event)"/>
+        </label>
+
+        <button type="button" class="btn btn-secondary"
+                (click)="showPreview = !showPreview">
+          {{ showPreview ? 'إخفاء المعاينة' : 'معاينة' }}
+        </button>
+
+        <a class="btn btn-primary" [href]="url" target="_blank" rel="noopener" download>
+          تنزيل
+        </a>
+      </div>
+    </div>
+
+    <ng-template #noResume>
+      <div class="resume-empty">
+        لا توجد سيرة ذاتية مرفوعة
+        <label class="btn btn-primary ml-2">
+          رفع ملف
+          <input type="file" class="d-none"
+                 accept=".pdf,.doc,.docx"
+                 (change)="onResumeChange($event)"/>
+        </label>
+      </div>
+    </ng-template>
+
+    <!-- معاينة PDF فقط -->
+    <div class="resume-preview" *ngIf="showPreview && isPdf">
+      <iframe [src]="resumeSafeUrl!" title="معاينة السيرة الذاتية" loading="lazy"></iframe>
+    </div>
+    <div class="resume-note" *ngIf="showPreview && !isPdf">
+      لا يمكن عرض هذا النوع داخل الصفحة. استخدم زر التنزيل.
+    </div>
   </div>
+
   <div class="form-row">
     <div class="form-group">
       <label class="form-label">الاسم الأول</label>

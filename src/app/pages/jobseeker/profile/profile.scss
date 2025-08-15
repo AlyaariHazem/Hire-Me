@@ -375,3 +375,36 @@ textarea.form-control {
     background-color: #e5e7eb;
   }
 }
+/* Resume block */
+.resume-wrap { margin-bottom: 1rem; }
+.resume-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: .75rem 1rem;
+  border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb;
+}
+.resume-meta { display: flex; align-items: center; gap: .75rem; }
+.resume-icon { font-size: 1.5rem; }
+.resume-name { font-weight: 600; color: #111827; }
+.resume-type { font-size: .85rem; color: #6b7280; }
+.resume-actions { display: flex; gap: .5rem; align-items: center; }
+.d-none { display: none; }
+.m-0 { margin: 0; }
+.ml-2 { margin-left: .5rem; }
+
+.resume-empty {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .75rem; padding: .75rem 1rem;
+  border: 1px dashed #cbd5e1; border-radius: 10px; color: #64748b;
+}
+
+.resume-preview {
+  margin-top: .75rem; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden;
+}
+.resume-preview iframe { width: 100%; height: 520px; border: 0; }
+.resume-note { margin-top: .5rem; color: #6b7280; font-size: .9rem; }
+
+/* light button */
+.btn-light {
+  background: #f3f4f6; color: #374151; border: 1px solid #d1d5db;
+}
+.btn-light:hover { background: #e5e7eb; }
