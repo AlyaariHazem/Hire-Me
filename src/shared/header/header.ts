@@ -44,6 +44,7 @@ export class Header implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     window.addEventListener('storage', this.syncToken);
+    localStorage.removeItem('access');
   }
 
   ngOnDestroy(): void {

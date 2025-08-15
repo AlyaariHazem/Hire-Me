@@ -1,170 +1,217 @@
 <form [formGroup]="basicForm" class="form-section">
   <h3 class="section-title"><span>👤</span>المعلومات الشخصية</h3>
-   <!-- السيرة الذاتية -->
+  <!-- السيرة الذاتية -->
   <div class="resume-wrap">
     @if(resumeUrl){
 
-      <div class="resume-bar">
-        <div class="resume-meta">
-          <span class="resume-icon">📄</span>
-          <div>
-            <div class="resume-name">{{ resumeDisplayName }}</div>
-            <div class="resume-type">{{ isPdf ? 'PDF' : 'Document' }}</div>
-          </div>
-        </div>
-
-        <div class="resume-actions">
-          <label class="btn btn-light m-0">
-            تغيير الملف
-            <input type="file" class="d-none"
-                   accept=".pdf,.doc,.docx"
-                   (change)="onResumeChange($event)"/>
-          </label>
-
-          <button type="button" class="btn btn-secondary"
-                  (click)="showPreview = !showPreview">
-            {{ showPreview ? 'إخفاء المعاينة' : 'معاينة' }}
-          </button>
-
-          <a class="btn btn-primary" [href]="resumeUrl" target="_blank" rel="noopener" download>
-            تنزيل
-          </a>
+    <div class="resume-bar">
+      <div class="resume-meta">
+        <span class="resume-icon">📄</span>
+        <div>
+          <div class="resume-name">{{ resumeDisplayName }}</div>
+          <div class="resume-type">{{ isPdf ? 'PDF' : 'Document' }}</div>
         </div>
       </div>
+
+      <div class="resume-actions">
+        <label class="btn btn-light m-0">
+          تغيير الملف
+          <input
+            type="file"
+            class="d-none"
+            accept=".pdf,.doc,.docx"
+            (change)="onResumeChange($event)"
+          />
+        </label>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="showPreview = !showPreview"
+        >
+          {{ showPreview ? 'إخفاء المعاينة' : 'معاينة' }}
+        </button>
+
+        <a
+          class="btn btn-primary"
+          [href]="resumeUrl"
+          target="_blank"
+          rel="noopener"
+          download
+        >
+          تنزيل
+        </a>
+      </div>
+    </div>
     }@else {
-      <ng-container>
-        <div class="resume-empty">
-          لا توجد سيرة ذاتية مرفوعة
-          <label class="btn btn-primary ml-2">
-            رفع ملف
-            <input type="file" class="d-none"
-                   accept=".pdf,.doc,.docx"
-                   (change)="onResumeChange($event)"/>
-          </label>
-        </div>
-      </ng-container>
+    <ng-container>
+      <div class="resume-empty">
+        لا توجد سيرة ذاتية مرفوعة
+        <label class="btn btn-primary ml-2">
+          رفع ملف
+          <input
+            type="file"
+            class="d-none"
+            accept=".pdf,.doc,.docx"
+            (change)="onResumeChange($event)"
+          />
+        </label>
+      </div>
+    </ng-container>
     }
 
-
     <!-- معاينة PDF فقط -->
-    <div class="resume-preview" *ngIf="showPreview && isPdf">
-      <iframe [src]="resumeSafeUrl!" title="معاينة السيرة الذاتية" loading="lazy"></iframe>
+    <div class="resume-preview" *ngIf="isPdf && resumeSafeUrl">
+      <iframe [src]="resumeSafeUrl"></iframe>
     </div>
-    <div class="resume-note" *ngIf="showPreview && !isPdf">
-      لا يمكن عرض هذا النوع داخل الصفحة. استخدم زر التنزيل.
+    <div class="resume-note" *ngIf="!isPdf && resumeUrl">
+      لا يمكن عرض الملف داخل الصفحة بسبب إعدادات الخادم. استخدم زر «تنزيل».
     </div>
   </div>
 
-<!-- المعلومات الشخصية -->
-<section class="form-card" dir="rtl">
-  <h3 class="form-card__title">👤 المعلومات الشخصية</h3>
+  <!-- المعلومات الشخصية -->
+  <section class="form-card" dir="rtl">
+    <h3 class="form-card__title">👤 المعلومات الشخصية</h3>
 
-  <div class="form-grid">
-    <label class="field">
-      <span class="field__label">الاسم الأول</span>
-      <input class="field__control" formControlName="first_name" />
-    </label>
+    <div class="form-grid">
+      <label class="field">
+        <span class="field__label">الاسم الأول</span>
+        <input class="field__control" formControlName="first_name" />
+      </label>
 
-    <label class="field">
-      <span class="field__label">الاسم الأخير</span>
-      <input class="field__control" formControlName="last_name" />
-    </label>
+      <label class="field">
+        <span class="field__label">الاسم الأخير</span>
+        <input class="field__control" formControlName="last_name" />
+      </label>
 
-    <label class="field">
-      <span class="field__label">البريد الإلكتروني</span>
-      <input type="email" class="field__control" formControlName="email" />
-    </label>
+      <label class="field">
+        <span class="field__label">البريد الإلكتروني</span>
+        <input type="email" class="field__control" formControlName="email" />
+      </label>
 
-    <label class="field">
-      <span class="field__label">رقم الهاتف</span>
-      <input class="field__control" formControlName="phone" />
-    </label>
+      <label class="field">
+        <span class="field__label">رقم الهاتف</span>
+        <input class="field__control" formControlName="phone" />
+      </label>
 
-    <label class="field">
-      <span class="field__label">تاريخ الميلاد</span>
-      <input type="date" class="field__control" formControlName="date_of_birth" />
-    </label>
+      <label class="field">
+        <span class="field__label">تاريخ الميلاد</span>
+        <input
+          type="date"
+          class="field__control"
+          formControlName="date_of_birth"
+        />
+      </label>
 
-    <label class="field">
-      <span class="field__label">العنوان</span>
-      <input class="field__control" formControlName="location" />
-    </label>
+      <label class="field">
+        <span class="field__label">العنوان</span>
+        <input class="field__control" formControlName="location" />
+      </label>
 
-    <label class="field field--full">
-      <span class="field__label">نبذة مختصرة</span>
-      <textarea rows="4" class="field__control" formControlName="bio"></textarea>
-    </label>
+      <label class="field field--full">
+        <span class="field__label">نبذة مختصرة</span>
+        <textarea
+          rows="4"
+          class="field__control"
+          formControlName="bio"
+        ></textarea>
+      </label>
+    </div>
+  </section>
+
+  <!-- المعلومات المهنية -->
+  <section class="form-card" dir="rtl" [formGroup]="jobForm">
+    <h3 class="form-card__title">💼 المعلومات المهنية</h3>
+
+    <div class="form-grid">
+      <label class="field">
+        <span class="field__label">سنوات الخبرة</span>
+        <select class="field__control" formControlName="experience_level">
+          <option value="entry">مبتدئ</option>
+          <option value="mid">متوسط</option>
+          <option value="senior">متقدم</option>
+          <option value="lead">خبير</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">المستوى التعليمي</span>
+        <select class="field__control" formControlName="education_level">
+          <option value="high_school">ثانوية عامة</option>
+          <option value="diploma">دبلوم</option>
+          <option value="bachelor">بكالوريوس</option>
+          <option value="master">ماجستير</option>
+          <option value="phd">دكتوراه</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">الراتب الأدنى</span>
+        <input
+          type="number"
+          class="field__control"
+          formControlName="expected_salary_min"
+        />
+      </label>
+
+      <label class="field">
+        <span class="field__label">الراتب الأعلى</span>
+        <input
+          type="number"
+          class="field__control"
+          formControlName="expected_salary_max"
+        />
+      </label>
+
+      <label class="field">
+        <span class="field__label">نوع العمل المفضل</span>
+        <select class="field__control" formControlName="preferred_job_type">
+          <option value="full_time">دوام كامل</option>
+          <option value="part_time">دوام جزئي</option>
+          <option value="contract">عقد مؤقت</option>
+          <option value="freelance">عمل حر</option>
+          <option value="remote">عن بُعد</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">متاح للعمل</span>
+        <select class="field__control" formControlName="availability">
+          <option [value]="true">نعم</option>
+          <option [value]="false">لا</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">المهارات (افصل بفواصل)</span>
+        <input
+          class="field__control"
+          formControlName="skills"
+          placeholder="JS, React, Node"
+        />
+      </label>
+
+      <label class="field">
+        <span class="field__label">اللغات (افصل بفواصل)</span>
+        <input
+          class="field__control"
+          formControlName="languages"
+          placeholder="Arabic, English"
+        />
+      </label>
+    </div>
+  </section>
+
+  <div class="form-actions">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="basicForm.reset(); jobForm.reset();"
+    >
+      إلغاء
+    </button>
+    <button type="button" class="btn btn-primary" (click)="saveChanges()">
+      حفظ التغييرات
+    </button>
   </div>
-</section>
-
-<!-- المعلومات المهنية -->
-<section class="form-card" dir="rtl" [formGroup]="jobForm">
-  <h3 class="form-card__title">💼 المعلومات المهنية</h3>
-
-  <div class="form-grid">
-    <label class="field">
-      <span class="field__label">سنوات الخبرة</span>
-      <select class="field__control" formControlName="experience_level">
-        <option value="entry">مبتدئ</option>
-        <option value="mid">متوسط</option>
-        <option value="senior">متقدم</option>
-        <option value="lead">خبير</option>
-      </select>
-    </label>
-
-    <label class="field">
-      <span class="field__label">المستوى التعليمي</span>
-      <select class="field__control" formControlName="education_level">
-        <option value="high_school">ثانوية عامة</option>
-        <option value="diploma">دبلوم</option>
-        <option value="bachelor">بكالوريوس</option>
-        <option value="master">ماجستير</option>
-        <option value="phd">دكتوراه</option>
-      </select>
-    </label>
-
-    <label class="field">
-      <span class="field__label">الراتب الأدنى</span>
-      <input type="number" class="field__control" formControlName="expected_salary_min" />
-    </label>
-
-    <label class="field">
-      <span class="field__label">الراتب الأعلى</span>
-      <input type="number" class="field__control" formControlName="expected_salary_max" />
-    </label>
-
-    <label class="field">
-      <span class="field__label">نوع العمل المفضل</span>
-      <select class="field__control" formControlName="preferred_job_type">
-        <option value="full_time">دوام كامل</option>
-        <option value="part_time">دوام جزئي</option>
-        <option value="contract">عقد مؤقت</option>
-        <option value="freelance">عمل حر</option>
-        <option value="remote">عن بُعد</option>
-      </select>
-    </label>
-
-    <label class="field">
-      <span class="field__label">متاح للعمل</span>
-      <select class="field__control" formControlName="availability">
-        <option [value]="true">نعم</option>
-        <option [value]="false">لا</option>
-      </select>
-    </label>
-
-    <label class="field">
-      <span class="field__label">المهارات (افصل بفواصل)</span>
-      <input class="field__control" formControlName="skills" placeholder="JS, React, Node" />
-    </label>
-
-    <label class="field">
-      <span class="field__label">اللغات (افصل بفواصل)</span>
-      <input class="field__control" formControlName="languages" placeholder="Arabic, English" />
-    </label>
-  </div>
-</section>
-
-<div class="form-actions">
-  <button type="button" class="btn btn-secondary" (click)="basicForm.reset(); jobForm.reset();">إلغاء</button>
-  <button type="button" class="btn btn-primary" (click)="saveChanges()">حفظ التغييرات</button>
-</div>
+</form>
