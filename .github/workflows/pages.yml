@@ -1,0 +1,59 @@
+name: pages build and deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install
+        run: npm ci
+
+      - name: Build Angular
+        run: npx ng build --configuration=production --base-href "/Hire-Me/"
+
+      - name: Locate build dir
+        id: out
+        run: |
+          if [ -d dist/HireMe/browser ]; then
+            echo "PATH=dist/HireMe/browser" >> $GITHUB_OUTPUT
+          else
+            echo "PATH=dist/HireMe" >> $GITHUB_OUTPUT
+          fi
+
+      - name: SPA 404
+        run: |
+          cp "${{ steps.out.outputs.PATH }}/index.html" "${{ steps.out.outputs.PATH }}/404.html"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.out.outputs.PATH }}
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
