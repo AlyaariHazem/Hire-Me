@@ -28,23 +28,23 @@ jobs:
       - name: Build Angular
         run: npx ng build --configuration=production --base-href "/Hire-Me/"
 
-      - name: Locate build dir
+      - name: Resolve build dir
         id: out
         run: |
           if [ -d dist/HireMe/browser ]; then
-            echo "PATH=dist/HireMe/browser" >> $GITHUB_OUTPUT
+            echo "DIR=dist/HireMe/browser" >> $GITHUB_OUTPUT
           else
-            echo "PATH=dist/HireMe" >> $GITHUB_OUTPUT
+            echo "DIR=dist/HireMe" >> $GITHUB_OUTPUT
           fi
 
       - name: SPA 404
-        run: |
-          cp "${{ steps.out.outputs.PATH }}/index.html" "${{ steps.out.outputs.PATH }}/404.html"
+        run: cp "${{ steps.out.outputs.DIR }}/index.html" "${{ steps.out.outputs.DIR }}/404.html"
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: ${{ steps.out.outputs.PATH }}
+          name: site
+          path: ${{ steps.out.outputs.DIR }}
 
   deploy:
     needs: build
@@ -53,7 +53,7 @@ jobs:
       - name: Download built site
         uses: actions/download-artifact@v4
         with:
-          name: github-pages
+          name: site
           path: out
 
       - name: Publish to gh-pages
