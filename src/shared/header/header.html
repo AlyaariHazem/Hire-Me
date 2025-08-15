@@ -22,9 +22,69 @@
         </li>
       </ul>
 
-      <div class="navbar-actions">
-        <a routerLink="/login" class="btn btn-secondary">تسجيل الدخول</a>
-        <a routerLink="/register" class="btn btn-primary">إنشاء حساب</a>
+      <div class="navbar-actions" dir="rtl">
+        @if (!token) {
+        <a routerLink="/login" class="btn btn-ghost" aria-label="تسجيل الدخول"
+          >تسجيل الدخول</a
+        >
+        <a
+          routerLink="/register"
+          class="btn btn-primary"
+          aria-label="إنشاء حساب"
+          >إنشاء حساب</a
+        >
+        } @else {
+        <div class="user-menu" [class.open]="menuOpen" dir="rtl" #menuRoot>
+          <button
+            type="button"
+            class="user-trigger"
+            (click)="toggleMenu()"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="menuOpen"
+          >
+            <img
+              [src]="absoluteAvatar || 'assets/images/avatar.png'"
+              alt=""
+              class="user-avatar"
+            />
+            <span class="user-name">{{ firstName || 'حسابي' }}</span>
+            <i
+              class="pi"
+              [ngClass]="menuOpen ? 'pi-chevron-up' : 'pi-chevron-down'"
+            ></i>
+          </button>
+
+          @if(menuOpen){
+            <ul
+              class="user-dropdown"
+              role="menu"
+              (click)="closeMenu()"
+            >
+              <li role="none">
+                <a
+                  role="menuitem"
+                  routerLink="/jobseeker/profile"
+                  class="menu-link"
+                >
+                  <i class="pi pi-user menu-ic" aria-hidden="true"></i
+                  ><span>الملف الشخصي</span>
+                </a>
+              </li>
+              <li role="none">
+                <button
+                  role="menuitem"
+                  type="button"
+                  (click)="logout()"
+                  class="menu-link danger"
+                >
+                  <i class="pi pi-sign-out menu-ic" aria-hidden="true"></i
+                  ><span>تسجيل الخروج</span>
+                </button>
+              </li>
+            </ul>
+          }
+        </div>
+        }
       </div>
 
       <!-- Mobile Menu Toggle -->
