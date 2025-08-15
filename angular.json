@@ -6,9 +6,7 @@
     "HireMe": {
       "projectType": "application",
       "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
+        "@schematics/angular:component": { "style": "scss" }
       },
       "root": "",
       "sourceRoot": "src",
@@ -18,36 +16,30 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
-            "index": "src/index.html",          // ✅ add this
+            "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
-            "outputPath": "dist/HireMe",        // ✅ no /browser here
+            "outputPath": "dist/HireMe",
             "inlineStyleLanguage": "scss",
-            "assets": [{ "glob": "**/*", "input": "public" }],
-            "styles": ["src/styles.scss", "node_modules/ngx-toastr/toastr.css"]
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "public"
+            ],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css"
+            ]
           },
           "configurations": {
             "production": {
               "optimization": {
                 "scripts": true,
-                "styles": {
-                  "minify": true,
-                  "inlineCritical": true
-                },
-                "fonts": {
-                  "inline": false
-                }
+                "styles": { "minify": true, "inlineCritical": true },
+                "fonts": { "inline": false }
               },
               "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "1mb",
-                  "maximumError": "2mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "30kb",
-                  "maximumError": "60kb"
-                }
+                { "type": "initial", "maximumWarning": "1mb", "maximumError": "2mb" },
+                { "type": "anyComponentStyle", "maximumWarning": "30kb", "maximumError": "60kb" }
               ],
               "outputHashing": "all"
             },
@@ -68,32 +60,18 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {
-            "production": {
-              "buildTarget": "HireMe:build:production"
-            },
-            "development": {
-              "buildTarget": "HireMe:build:development"
-            }
+            "production": { "buildTarget": "HireMe:build:production" },
+            "development": { "buildTarget": "HireMe:build:development" }
           },
           "defaultConfiguration": "development"
         },
-        "extract-i18n": {
-          "builder": "@angular/build:extract-i18n"
-        },
-        "test": {
-          "builder": "@angular/build:karma",
+        "extract-i18n": { "builder": "@angular/build:extract-i18n" },
+        "test": { "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "src/styles.scss"
-            ]
+            "assets": ["public"],
+            "styles": ["src/styles.scss"]
           }
         }
       }
