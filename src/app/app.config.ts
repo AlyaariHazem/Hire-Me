@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
      provideAnimationsAsync(),
-     provideHttpClient(withInterceptorsFromDi()),
+     provideHttpClient(withInterceptorsFromDi()),//this is provider for HttpClient
         providePrimeNG({
             theme: {
                 preset: Aura,
