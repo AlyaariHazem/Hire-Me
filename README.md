@@ -1,50 +1,46 @@
 # HireMe
 
-Interactive recruitment platform built with **Angular 20**. Employers can post and browse jobs, view details, and manage sessions through a responsive UI.
+> **Interactive recruitment platform** built with **Angular 20**, enabling job seekers and employers to connect through a fast, responsive, and modern UI.
 
-**Live:** https://alyaarihazem.github.io/Hire-Me/  
-**Repo:** https://github.com/AlyaariHazem/Hire-Me  
+**Live Demo:** [https://alyaarihazem.github.io/Hire-Me/](https://alyaarihazem.github.io/Hire-Me/)  
+**Repository:** [https://github.com/AlyaariHazem/Hire-Me](https://github.com/AlyaariHazem/Hire-Me)  
 **License:** MIT
 
 ---
 
-## Table of Contents
-- [Features](#features)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Environment Config](#environment-config)
-- [Getting Started](#getting-started)
-- [HTTP & Interceptors](#http--interceptors)
-- [Theming & UI](#theming--ui)
-- [Build](#build)
-- [Deploy to GitHub Pages](#deploy-to-github-pages)
-- [NPM Scripts](#npm-scripts)
-- [Testing](#testing)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [Roadmap](#roadmap)
-- [License](#license)
+## 📌 Overview
+
+HireMe is a recruitment web app designed to:
+- Allow **employers** to post jobs, review applicants, and manage recruitment.
+- Allow **job seekers** to browse positions, view details, and send applications.
+- Provide an **interactive dashboard** with real-time updates.
+- Deliver a **responsive UI** that works across desktop and mobile devices.
 
 ---
 
-## Features
-- Angular 20 **standalone** app with **zoneless** change detection.
-- Router-based navigation (Home, Jobs, Job Details, Messages, etc.).
-- **PrimeNG** components (Aura preset) + **ngx-toastr** notifications.
-- **Auth token interceptor** and logout flow.
-- Responsive layout, lazy assets, and simple state via RxJS streams.
+## ✨ Features
+
+- **Angular 20** standalone architecture with zoneless change detection.
+- **PrimeNG (Aura Theme)** UI components for a polished look.
+- **ngx-toastr** notifications for user feedback.
+- Token-based authentication with **HTTP interceptors**.
+- Router-based navigation with lazy loading.
+- Shared reusable components: header, footer, dialogs, spinners, etc.
+- Deployed via **GitHub Pages**.
 
 ---
 
-## Architecture
-- **Standalone bootstrap** using `ApplicationConfig` providers.
-- **Routing** via `provideRouter(routes)`.
-- **HTTP** via `provideHttpClient(withInterceptorsFromDi())`.
-- **Auth**: Token read from `localStorage`; interceptor attaches `Authorization` header.
-- **Services** return cold observables and share via `shareReplay(1)` when needed.
-- **Shared module** exposes common UI and utilities for non-standalone components.
+## 🛠 Tech Stack
+
+| Category        | Technology |
+|-----------------|------------|
+| Frontend        | Angular 20, TypeScript, RxJS |
+| UI Components   | PrimeNG + PrimeUIX Aura Theme |
+| Notifications   | ngx-toastr |
+| Build Tools     | Angular CLI |
+| Hosting         | GitHub Pages |
 
 ---
 
-## Project Structure
+## 📂 Project Structure
+
