@@ -1,0 +1,66 @@
+/* الحاوية العامة */
+.navbar-actions { display:flex; align-items:center; gap:.6rem; }
+
+/* زر المشغل */
+.user-menu { position:relative; }
+.user-trigger{
+  display:inline-flex; align-items:center; gap:.45rem;
+  padding:.45rem .75rem; border:1px solid #d1d5db; background:#fff;
+  border-radius:10px; cursor:pointer; font-weight:600; color:#111827;
+  transition:box-shadow .15s, border-color .15s, background .15s;
+}
+.user-menu.open .user-trigger{ border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.12); }
+.user-trigger:hover{ background:#f8fafc; }
+.user-avatar{ width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid #e5e7eb; }
+.user-name{ max-width:10rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.chev{ opacity:.8; }
+
+/* القائمة المنسدلة */
+.user-dropdown{
+  position:absolute; top:100%; inset-inline-end:0; z-index:50;
+  min-width:190px; margin-top:.4rem; padding:.4rem;
+  background:#fff; border:1px solid #e5e7eb; border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.06);
+}
+.user-dropdown li{ list-style:none; }
+.user-dropdown a,
+.user-dropdown button{
+  width:100%; text-align:start; display:block;
+  padding:.6rem .7rem; border-radius:8px; border:0; background:transparent;
+  color:#0f172a; font-weight:500; cursor:pointer;
+}
+.user-dropdown a:hover,
+.user-dropdown button:hover{ background:#f3f4f6; }
+.user-dropdown button{ color:#ef4444; }
+.user-dropdown button:hover{ background:#fee2e2; }
+
+/* أزرار عامة إن أردت إعادة استخدامها */
+.btn{ display:inline-flex; align-items:center; justify-content:center;
+  padding:.5rem 1rem; border-radius:10px; font-weight:600; font-size:.95rem;
+  border:1px solid transparent; cursor:pointer; text-decoration:none; }
+.btn-primary{ background:#1d4ed8; color:#fff; border-color:#1d4ed8; }
+.btn-primary:hover{ background:#1e40af; border-color:#1e40af; }
+.btn-ghost{ background:#f3f4f6; color:#111827; border-color:#d1d5db; }
+.btn-ghost:hover{ background:#e5e7eb; }
+.btn-danger{ background:#ef4444; color:#fff; border-color:#ef4444; }
+.btn-danger:hover{ background:#dc2626; border-color:#dc2626; }
+
+/* استجابة */
+@media (max-width:768px){
+  .user-name{ display:none; }
+  .user-trigger{ padding:.45rem; }
+}
+a{
+  text-decoration: none;
+}
+.user-dropdown{position:absolute;top:100%;inset-inline-end:0;z-index:50;min-width:190px;
+  margin-top:.4rem;padding:.4rem;background:#fff;border:1px solid #e5e7eb;border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.06)}
+.user-dropdown li{list-style:none}
+.menu-link{display:flex;align-items:center;gap:.5rem;width:100%;text-align:start;
+  padding:.6rem .7rem;border-radius:8px;border:0;background:transparent;color:#0f172a;
+  font-weight:500;cursor:pointer}
+.menu-link:hover{background:#f3f4f6}
+.menu-link.danger{color:#ef4444}
+.menu-link.danger:hover{background:#fee2e2}
+.menu-ic{font-size:1rem;opacity:.9}

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, inject
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -38,7 +39,7 @@ export class Header implements OnInit, OnDestroy {
         this.firstName = data?.data?.user?.first_name;
       });
   }
-
+  cdr = inject(ChangeDetectorRef);
   logoutService = inject(Logout);
   toastr = inject(ToastrService);
 
@@ -74,9 +75,11 @@ export class Header implements OnInit, OnDestroy {
   logout(): void {
     this.logoutService.logout().subscribe((res: any) => {
       this.token = false;
+      debugger;
       this.toastr.success(res.data.message);
-      this.router.navigate(['/login']);
       localStorage.removeItem('access');
+      this.router.navigate(['/login']);
+      this.cdr.detectChanges();
     });
   }
 }

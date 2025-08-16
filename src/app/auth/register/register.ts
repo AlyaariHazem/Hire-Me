@@ -6,10 +6,11 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment.development';
+import { HeaderPublic } from '../header/header';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, FormsModule, SharedModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, SharedModule, HttpClientModule,HeaderPublic],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
