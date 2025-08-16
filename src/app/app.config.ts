@@ -6,7 +6,7 @@ import Aura from '@primeuix/themes/aura';
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AuthInterceptor } from './auth/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -17,6 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
      provideAnimationsAsync(),
+     provideHttpClient(withInterceptorsFromDi()),
         providePrimeNG({
             theme: {
                 preset: Aura,
