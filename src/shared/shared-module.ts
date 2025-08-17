@@ -11,6 +11,7 @@ import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.co
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { HeaderPublic } from './header-public/header-public';
 
 const components = [
 Header,
@@ -18,7 +19,8 @@ Footer,
 JobDetails,
 SearchForJob,
 Messages,
-ProgressSpinnerComponent
+ProgressSpinnerComponent,
+HeaderPublic
 ];
 
 const modules = [
@@ -27,8 +29,8 @@ RouterLink,
 FormsModule,
 RouterLinkActive,
 DialogModule,
-    ProgressSpinnerModule,
-    ConfirmDialog,
+ProgressSpinnerModule,
+ConfirmDialog,
 ];
 @NgModule({
   declarations: [...components],

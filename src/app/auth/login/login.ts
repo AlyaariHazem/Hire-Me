@@ -5,11 +5,10 @@ import { SharedModule } from '../../../shared/shared-module';
 import { ToastrService } from 'ngx-toastr';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { HeaderPublic } from '../header/header';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, SharedModule, HttpClientModule,HeaderPublic],
+  imports: [CommonModule, SharedModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
   providers: [Document],
