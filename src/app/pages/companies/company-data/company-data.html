@@ -5,7 +5,7 @@
       <div class="auth-card">
         <div class="auth-header">
           <img
-            [src]="logoPreview?logoPreview:'images/HireMe.png'"
+            [src]="logo$ | async"
             alt="منصة التوظيف"
             class="auth-logo"
           />

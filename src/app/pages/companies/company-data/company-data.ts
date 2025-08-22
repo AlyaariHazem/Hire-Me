@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment.development';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { ProfileService } from '../services/profile.service';
 // (optional) if you use the NO_SPINNER token from your interceptor:
 // import { NO_SPINNER } from '../../core/interceptors/auth.interceptor';
 
@@ -13,14 +14,12 @@ import { Observable } from 'rxjs';
   templateUrl: './company-data.html',
   styleUrls: ['./company-data.scss'],
 })
-export class CompanyData implements OnInit {
-  ngOnInit() {
-    this.getProfileData();
-  }
+export class CompanyData {
+
 
   saving = false;
   logoFile?: File;
-  logoPreview: string | null = null;
+  logo$: any;
 
   form: any = {
     company_name: '',
@@ -32,7 +31,14 @@ export class CompanyData implements OnInit {
     founded_year: null, // number (e.g., 2015)
   };
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(private http: HttpClient, private toastr: ToastrService, private profileService: ProfileService) {
+    this.logo$ = this.profileService.getProfile$().pipe(
+      map(p => environment.apiBaseUrl + p.company_logo),
+    );
+    this.profileService.getProfile$().subscribe(p =>{
+      this.form = p;
+    });
+  }
 
   onLogoSelected(evt: Event) {
     const input = evt.target as HTMLInputElement;
@@ -42,22 +48,10 @@ export class CompanyData implements OnInit {
 
     // preview
     const reader = new FileReader();
-    reader.onload = () => (this.logoPreview = reader.result as string);
+    reader.onload = () => (this.logo$ = reader.result as string);
     reader.readAsDataURL(file);
   }
-  getProfileData() {
-    const url = environment.getUrl('profile', 'accounts');
-    this.http.get(url).subscribe({
-      next: (data:any) => {
-        debugger;
-        this.form = data.data.profile;
-      },
-      error: (err) => {
-        this.toastr.error('فشل في تحميل بيانات الشركة');
-        console.error(err);
-      }
-    });
-  }
+
   save() {
   this.saving = true;
   const url = environment.getUrl('profile/employer', 'accounts');

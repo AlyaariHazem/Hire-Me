@@ -2,7 +2,7 @@
 <aside class="employer-sidebar">
   <div class="company-profile">
     <img
-      [src]="logo?logo:'images/company-logo-1.jpg'"
+      [src]="logo$ | async"
       alt="شركة التقنيات المتقدمة"
       class="company-logo1"
     />
