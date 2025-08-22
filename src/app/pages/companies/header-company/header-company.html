@@ -3,7 +3,7 @@
     <div class="container">
       <div class="navbar-brand">
         <a href="index.html">
-          <img src="images/HireMe.png" alt="منصة التوظيف" class="logo" />
+          <img [src]="logo?logo:'images/HireMe.png'" alt="منصة التوظيف" class="logo" />
         </a>
       </div>
 
@@ -29,7 +29,7 @@
             (click)="toggleEmployerMenu($event)"
           >
             <img
-              src="images/company-logo-1.jpg"
+              [src]="logo?logo:'images/company-logo-1.jpg'"
               alt="شركة التقنيات المتقدمة"
               style="
                 width: 24px;

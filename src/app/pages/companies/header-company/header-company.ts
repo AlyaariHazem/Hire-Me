@@ -1,5 +1,8 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment.development';
+import { HttpClient } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-header-company',
@@ -7,11 +10,11 @@ import { Router } from '@angular/router';
   templateUrl: './header-company.html',
   styleUrls: ['./header-company.scss'],
 })
-export class HeaderCompany {
+export class HeaderCompany implements OnInit {
   isEmployerMenuOpen = false;
 
-  constructor(private el: ElementRef, private router: Router) {}
-
+  constructor(private el: ElementRef, private http: HttpClient, private router: Router, private toastr: ToastrService) {}
+  logo:string = '';
   toggleEmployerMenu(evt: MouseEvent): void {
     evt.stopPropagation();
     this.isEmployerMenuOpen = !this.isEmployerMenuOpen;
@@ -35,6 +38,25 @@ export class HeaderCompany {
 
     this.isEmployerMenuOpen = false;
   }
+
+    ngOnInit() {
+      this.getProfileData();
+    }
+
+    getProfileData() {
+      const url = environment.getUrl('profile', 'accounts');
+      this.http.get(url).subscribe({
+        next: (data:any) => {
+          debugger;
+          const Logo = data.data.profile.company_logo;
+          this.logo = environment.apiBaseUrl + Logo;
+        },
+        error: (err) => {
+          this.toastr.error('فشل في تحميل بيانات الشركة');
+          console.error(err);
+        }
+      });
+    }
 
   @HostListener('document:click', ['$event'])
   closeOnOutsideClick(evt: Event): void {

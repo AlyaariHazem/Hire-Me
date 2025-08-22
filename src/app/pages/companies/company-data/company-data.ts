@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment.development';
 import { Observable } from 'rxjs';
@@ -13,7 +13,11 @@ import { Observable } from 'rxjs';
   templateUrl: './company-data.html',
   styleUrls: ['./company-data.scss'],
 })
-export class CompanyData {
+export class CompanyData implements OnInit {
+  ngOnInit() {
+    this.getProfileData();
+  }
+
   saving = false;
   logoFile?: File;
   logoPreview: string | null = null;
@@ -41,55 +45,55 @@ export class CompanyData {
     reader.onload = () => (this.logoPreview = reader.result as string);
     reader.readAsDataURL(file);
   }
-
+  getProfileData() {
+    const url = environment.getUrl('profile', 'accounts');
+    this.http.get(url).subscribe({
+      next: (data:any) => {
+        debugger;
+        this.form = data.data.profile;
+      },
+      error: (err) => {
+        this.toastr.error('فشل في تحميل بيانات الشركة');
+        console.error(err);
+      }
+    });
+  }
   save() {
-  // ...validation...
-
   this.saving = true;
   const url = environment.getUrl('profile/employer', 'accounts');
 
-  let req$: Observable<any>;
-
-  if (this.logoFile) {
-    const fd = new FormData();
-    fd.append('company_name', this.form.company_name || '');
-    fd.append('company_description', this.form.company_description || '');
-    fd.append('company_website', this.form.company_website || '');
-    fd.append('company_size', this.form.company_size || '');
-    fd.append('industry', this.form.industry || '');
-    if (this.form.founded_year != null) {
-      // ensure it's an integer year
-      fd.append('founded_year', String(+this.form.founded_year));
-    }
-    fd.append('company_logo', this.logoFile);
-
-    req$ = this.http.put(url, fd /*, { context: new HttpContext().set(NO_SPINNER, false) }*/);
-  } else {
-    const body = {
-      company_name: this.form.company_name || '',
-      company_description: this.form.company_description || '',
-      company_logo: this.form.company_logo || '',
-      company_website: this.form.company_website || '',
-      company_size: this.form.company_size || '',
-      industry: this.form.industry || '',
-      founded_year: this.form.founded_year != null ? +this.form.founded_year : null,
-    };
-
-    req$ = this.http.put(url, body /*, { context: new HttpContext().set(NO_SPINNER, false) }*/);
+  const fd = new FormData();
+  // حقول نصية
+  fd.append('company_name', this.form.company_name ?? '');
+  fd.append('company_description', this.form.company_description ?? '');
+  fd.append('company_website', this.form.company_website ?? '');
+  fd.append('company_size', this.form.company_size ?? '');
+  fd.append('industry', this.form.industry ?? '');
+  if (this.form.founded_year != null && this.form.founded_year !== '') {
+    fd.append('founded_year', String(+this.form.founded_year));
   }
 
-  req$.subscribe({
+  // لا تُرسل company_logo إلا إذا كان ملفًا فعلاً
+  if (this.logoFile) {
+    fd.append('company_logo', this.logoFile); // ✅ ملف صحيح
+  }
+  // ملاحظة: إذا أردت إرسال إشارة للاحتفاظ بالشعار القديم:
+  // else { fd.append('keep_logo', 'true'); } // فقط إذا الـ API يدعم ذلك
+
+  this.http.put(url, fd).subscribe({
     next: () => {
       this.toastr.success('تم حفظ بيانات الشركة بنجاح');
       this.saving = false;
     },
     error: (err) => {
-      const msg = err?.error ? Object.values(err.error).flat().join(' | ') : 'فشل تحديث بيانات الشركة';
+      const msg = err?.error ? Object.values(err.error).flat().join(' | ')
+                              : 'فشل تحديث بيانات الشركة';
       this.toastr.error(msg);
       console.error(err);
       this.saving = false;
     }
   });
 }
+
 
 }
