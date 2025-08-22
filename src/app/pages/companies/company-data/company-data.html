@@ -5,7 +5,7 @@
       <div class="auth-card">
         <div class="auth-header">
           <img
-            [src]="logo$ | async"
+            [src]="(logo$ | async) || 'images/company-logo-1.jpg'"
             alt="منصة التوظيف"
             class="auth-logo"
           />

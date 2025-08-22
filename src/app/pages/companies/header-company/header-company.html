@@ -4,7 +4,7 @@
       <div class="navbar-brand">
         <a href="index.html">
           <!-- side-bar.html -->
-  <img [src]="logo$ | async" alt="Logo"class="logo" />
+  <img [src]="(logo$ | async) || 'images/company-logo-1.jpg'" alt="Logo"class="logo" />
         </a>
       </div>
 
@@ -29,7 +29,7 @@
             class="btn btn-secondary"
             (click)="toggleEmployerMenu($event)"
           >
-            <img [src]="logo$ | async" alt="Logo"
+            <img [src]="(logo$ | async) || 'images/company-logo-1.jpg'"
               alt="شركة التقنيات المتقدمة"
               style="
                 width: 24px;
