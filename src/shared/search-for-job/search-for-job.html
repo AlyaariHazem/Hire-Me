@@ -1,6 +1,6 @@
 <!-- Header -->
 <header class="header">
-  <nav class="navbar">
+  <nav class="navbar" [class.mobile-menu-open]="mobileOpen">
     <div class="container">
       <div class="navbar-brand">
         <a href="index.html">
@@ -8,7 +8,7 @@
         </a>
       </div>
 
-      <ul class="navbar-nav">
+      <ul class="navbar-nav" id="primary-nav" (click)="closeMobileMenu()">
         <li class="nav-item">
           <a routerLink="/jobs" class="nav-link">الوظائف</a>
         </li>
@@ -23,30 +23,29 @@
         </li>
       </ul>
 
-      <div class="navbar-actions" dir="rtl">
-
-        <a routerLink="/login" class="btn btn-ghost" aria-label="تسجيل الدخول"
-          >تسجيل الدخول</a
-        >
-        <a
-          routerLink="/register"
-          class="btn btn-primary"
-          aria-label="إنشاء حساب"
-          >إنشاء حساب</a
-        >
-
+      <div class="navbar-actions" dir="rtl" (click)="closeMobileMenu()">
+        <a routerLink="/login" class="btn btn-ghost" aria-label="تسجيل الدخول">تسجيل الدخول</a>
+        <a routerLink="/register" class="btn btn-primary" aria-label="إنشاء حساب">إنشاء حساب</a>
       </div>
 
       <!-- Mobile Menu Toggle -->
-      <button class="mobile-menu-toggle" aria-label="فتح القائمة">
-        <span></span>
-        <span></span>
-        <span></span>
+      <button
+        class="mobile-menu-toggle"
+        type="button"
+        (click)="toggleMobileMenu()"
+        [class.active]="mobileOpen"
+        aria-label="فتح القائمة"
+        [attr.aria-expanded]="mobileOpen"
+        aria-controls="primary-nav"
+      >
+        <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
-</header>
 
+  <!-- Backdrop -->
+  <div class="mobile-backdrop" *ngIf="mobileOpen" (click)="closeMobileMenu()"></div>
+</header>
 
 <!-- Hero Section -->
 <section class="companies-hero">
@@ -67,36 +66,39 @@
     <div class="filters-container">
       <div class="filter-group">
         <label>القطاع:</label>
-        <select class="filter-select" id="industryFilter">
+        <select class="filter-select" id="industryFilter"
+                [(ngModel)]="industryFilter" (change)="applyFilters()">
           <option value="">جميع القطاعات</option>
-          <option value="technology">تقنية المعلومات</option>
-          <option value="healthcare">الرعاية الصحية</option>
-          <option value="education">التعليم</option>
-          <option value="finance">المالية والمصرفية</option>
-          <option value="construction">البناء والتشييد</option>
-          <option value="retail">التجارة والبيع بالتجزئة</option>
-          <option value="manufacturing">التصنيع</option>
-          <option value="telecommunications">الاتصالات</option>
+          <option value="تقنية المعلومات">تقنية المعلومات</option>
+          <option value="الرعاية الصحية">الرعاية الصحية</option>
+          <option value="التعليم">التعليم</option>
+          <option value="المالية والمصرفية">المالية والمصرفية</option>
+          <option value="البناء والتشييد">البناء والتشييد</option>
+          <option value="التجارة والبيع بالتجزئة">التجارة والبيع بالتجزئة</option>
+          <option value="التصنيع">التصنيع</option>
+          <option value="الاتصالات">الاتصالات</option>
         </select>
       </div>
 
       <div class="filter-group">
         <label>المدينة:</label>
-        <select class="filter-select" id="locationFilter">
+        <select class="filter-select" id="locationFilter"
+                [(ngModel)]="locationFilter" (change)="applyFilters()">
           <option value="">جميع المدن</option>
-          <option value="sanaa">صنعاء</option>
-          <option value="aden">عدن</option>
-          <option value="taiz">تعز</option>
-          <option value="hodeidah">الحديدة</option>
-          <option value="ibb">إب</option>
-          <option value="dhamar">ذمار</option>
-          <option value="mukalla">المكلا</option>
+          <option value="صنعاء">صنعاء</option>
+          <option value="عدن">عدن</option>
+          <option value="تعز">تعز</option>
+          <option value="الحديدة">الحديدة</option>
+          <option value="إب">إب</option>
+          <option value="ذمار">ذمار</option>
+          <option value="المكلا">المكلا</option>
         </select>
       </div>
 
       <div class="filter-group">
         <label>حجم الشركة:</label>
-        <select class="filter-select" id="sizeFilter">
+        <select class="filter-select" id="sizeFilter"
+                [(ngModel)]="sizeFilter" (change)="applyFilters()">
           <option value="">جميع الأحجام</option>
           <option value="startup">ناشئة (1-10 موظفين)</option>
           <option value="small">صغيرة (11-50 موظف)</option>
@@ -106,7 +108,7 @@
         </select>
       </div>
 
-      <button class="btn btn-primary" onclick="applyFilters()">
+      <button class="btn btn-primary" type="button" (click)="applyFilters()">
         تطبيق الفلاتر
       </button>
     </div>

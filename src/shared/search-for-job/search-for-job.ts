@@ -109,6 +109,18 @@ export class SearchForJob {
 
   companiesData = [...this.originalCompaniesData];
 
+   mobileOpen = false;
+  toggleMobileMenu() {
+    this.mobileOpen = !this.mobileOpen;
+    document.body.classList.toggle('no-scroll', this.mobileOpen);
+  }
+  closeMobileMenu() {
+    if (this.mobileOpen) {
+      this.mobileOpen = false;
+      document.body.classList.remove('no-scroll');
+    }
+  }
+
   industryFilter = '';
   locationFilter = '';
   sizeFilter = '';
@@ -116,35 +128,25 @@ export class SearchForJob {
 
   constructor(private router: Router) {}
 
-  viewCompany(companyId: string): void {
-    // this.router.navigate(['/companies/company-profile', companyId]);
+  viewCompany(companyId: string) {
+    this.closeMobileMenu();
     this.router.navigate(['/companies/company-profile']);
   }
 
-  applyFilters(): void {
-    this.companiesData = this.originalCompaniesData.filter(
-      (company) =>
-        (this.industryFilter
-          ? company.industry === this.industryFilter
-          : true) &&
-        (this.locationFilter
-          ? company.location === this.locationFilter
-          : true) &&
-        (this.sizeFilter ? company.size === this.sizeFilter : true) &&
-        (this.searchTerm
-          ? company.name
-              .toLowerCase()
-              .includes(this.searchTerm.toLowerCase()) ||
-            company.description
-              .toLowerCase()
-              .includes(this.searchTerm.toLowerCase())
-          : true)
+  applyFilters() {
+    this.companiesData = this.originalCompaniesData.filter(company =>
+      (this.industryFilter ? company.industry === this.industryFilter : true) &&
+      (this.locationFilter ? company.location === this.locationFilter : true) &&
+      (this.sizeFilter ? company.size === this.sizeFilter : true) &&
+      (this.searchTerm
+        ? (company.name + ' ' + company.description).toLowerCase()
+            .includes(this.searchTerm.toLowerCase())
+        : true)
     );
   }
-   toggleFollow(companyId: string): void {
-    const company = this.companiesData.find((c) => c.id === companyId);
-    if (company) {
-      company.following = !company.following;  // Toggle the "following" state
-    }
+
+  toggleFollow(companyId: string) {
+    const c = this.companiesData.find(x => x.id === companyId);
+    if (c) c.following = !c.following;
   }
 }
