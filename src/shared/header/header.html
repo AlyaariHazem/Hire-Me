@@ -21,6 +21,17 @@
         <li class="nav-item">
           <a routerLink="/resources" class="nav-link">الموارد</a>
         </li>
+        <li role="none">
+                <button
+                  role="menuitem"
+                  type="button"
+                  (click)="logout()"
+                  class="menu-link danger"
+                >
+                  <i class="pi pi-sign-out menu-ic" aria-hidden="true"></i
+                  ><span>تسجيل الخروج</span>
+                </button>
+              </li>
       </ul>
 
       <div class="navbar-actions" dir="rtl" (click)="closeMobileMenu()">

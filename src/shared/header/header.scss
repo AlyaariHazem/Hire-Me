@@ -42,3 +42,26 @@
 .mobile-menu-toggle.active span:nth-child(1){ transform: rotate(45deg) translateY(6px); }
 .mobile-menu-toggle.active span:nth-child(2){ opacity: 0; }
 .mobile-menu-toggle.active span:nth-child(3){ transform: rotate(-45deg) translateY(-6px); }
+/* استجابة */
+@media (max-width:768px){
+  .user-name{ display:none; }
+  .user-trigger{ padding:.45rem; }
+
+
+
+
+}
+a{
+  text-decoration: none;
+}
+.user-dropdown{position:absolute;top:100%;inset-inline-end:0;z-index:50;min-width:190px;
+  margin-top:.4rem;padding:.4rem;background:#fff;border:1px solid #e5e7eb;border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.06)}
+.user-dropdown li{list-style:none}
+.menu-link{display:flex;align-items:center;gap:.5rem;width:100%;text-align:start;
+  padding:.6rem .7rem;border-radius:8px;border:0;background:transparent;color:#0f172a;
+  font-weight:500;cursor:pointer}
+.menu-link:hover{background:#f3f4f6}
+.menu-link.danger{color:#ef4444}
+.menu-link.danger:hover{background:#fee2e2}
+.menu-ic{font-size:1rem;opacity:.9}
