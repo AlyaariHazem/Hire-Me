@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared-module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment.development';
+import { Errors } from '../../../shared/services/errors';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { environment } from '../../../environments/environment.development';
 export class Register {
   user = true;      // job seeker default
   admin = false;    // employer
-
+  errors = inject(Errors);
   // Bind to template
   model = {
     first_name: '',
@@ -39,8 +40,24 @@ export class Register {
     this.admin = !this.user;
   }
 
-  register() {
+  register(f: NgForm) {
     // username: usually email (or generate one). Using email keeps it simple.
+    if (f.invalid) {
+      // علّم جميع الحقول كـ touched ليظهر التنبيه فورًا
+      Object.values(f.controls).forEach(ctrl => {
+        ctrl.markAsTouched();
+        ctrl.updateValueAndValidity();
+      });
+      // رسالة عامة
+      this.toastr.error('فضلاً صحّح الأخطاء ثم أعد المحاولة');
+      return;
+    }
+
+    // تحقّق إضافي للهاتف (احتياطًا)
+    if (!/^7[0-9]{8}$/.test(this.model.phone)) {
+      this.toastr.error('رقم الهاتف يجب أن يبدأ بـ 7 ويتكون من 9 أرقام');
+      return;
+    }
     const payload = {
       username: this.model.email,
       email: this.model.email,
@@ -70,13 +87,12 @@ export class Register {
         // localStorage.setItem('access', res.access); ...
       },
       error: (err) => {
-        // Show server-side validation errors nicely
-        const msg = err?.error
-          ? Object.values(err.error).flat().join(' | ')
-          : 'فشل إنشاء الحساب';
-        this.toastr.error(msg);
-        console.error(err);
+        this.errors.error(err, { join: true }) 
       }
     });
   }
+  isInvalidPhone(): boolean {
+  const phoneRegex = /^7[0-9]{8}$/;
+  return !phoneRegex.test(this.model.phone);
+}
 }

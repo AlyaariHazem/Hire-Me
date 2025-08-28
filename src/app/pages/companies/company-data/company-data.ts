@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment.development';
 import { map, Observable } from 'rxjs';
 import { ProfileService } from '../services/profile.service';
+import { Errors } from '../../../../shared/services/errors';
 // (optional) if you use the NO_SPINNER token from your interceptor:
 // import { NO_SPINNER } from '../../core/interceptors/auth.interceptor';
 
@@ -16,7 +17,7 @@ import { ProfileService } from '../services/profile.service';
 })
 export class CompanyData {
 
-
+  errors = inject(Errors);
   saving = false;
   logoFile?: File;
   logo$: any;
@@ -80,10 +81,7 @@ export class CompanyData {
       this.saving = false;
     },
     error: (err) => {
-      const msg = err?.error ? Object.values(err.error).flat().join(' | ')
-                              : 'فشل تحديث بيانات الشركة';
-      this.toastr.error(msg);
-      console.error(err);
+      this.errors.error(err, { join: true });
       this.saving = false;
     }
   });

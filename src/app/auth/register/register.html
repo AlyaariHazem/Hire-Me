@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <form class="auth-form" id="signupForm" (ngSubmit)="register()">
+    <form class="auth-form" id="signupForm" #f="ngForm" (ngSubmit)="register(f)">
       <div class="form-row">
         <div class="form-group">
           <label for="firstName" class="form-label">الاسم الأول</label>
@@ -44,8 +44,13 @@
             class="form-input"
             required
             [(ngModel)]="model.first_name"
+           #firstName="ngModel"
             name="first_name"
           />
+          <!-- show this only when the user click and pure if it empty  -->
+          @if (firstName.touched && firstName.errors?.['required']) {
+            <div class="form-error">الاسم الأول مطلوب</div>
+          }
         </div>
         <div class="form-group">
           <label for="lastName" class="form-label">الاسم الأخير</label>
@@ -54,8 +59,12 @@
             class="form-input"
             required
             [(ngModel)]="model.last_name"
+            #lastName="ngModel"
             name="last_name"
           />
+          @if (lastName.touched && lastName.errors?.['required']) {
+            <div class="form-error">الاسم الأخير مطلوب</div>
+          }
         </div>
       </div>
 
@@ -67,19 +76,34 @@
           class="form-input"
           required
           [(ngModel)]="model.email"
+          #email="ngModel"
           name="email"
         />
+        @if (email.touched && email.errors?.['required']) {
+          <div class="form-error">البريد الإلكتروني مطلوب</div>
+        }
       </div>
 
       <div class="form-group">
         <label for="phone" class="form-label">رقم الهاتف</label>
         <input
+          type="text"
           id="phone"
-          class="form-input"
-          required
-          [(ngModel)]="model.phone"
           name="phone"
+          [(ngModel)]="model.phone"
+          maxlength="9"
+          pattern="7[0-9]{8}"
+          inputmode="numeric"
+          class="form-input"
+          #phone="ngModel"
+          placeholder="أدخل رقم الهاتف (يبدأ بـ 7)"
+          required
         />
+        @if(isInvalidPhone() && phone.touched&& phone.dirty){
+        <div class="form-error">
+          رقم الهاتف يجب أن يبدأ بـ 7 ويتكون من 9 أرقام
+        </div>
+        }
       </div>
 
       <!-- Optional UI-only fields (city/experience/company) can stay; not sent unless your API needs them -->
@@ -92,8 +116,12 @@
           class="form-input"
           required
           [(ngModel)]="model.password"
+          #password="ngModel"
           name="password"
         />
+        @if (password.touched && password.errors?.['required']) {
+          <div class="form-error">كلمة المرور مطلوبة</div>
+        }
       </div>
 
       <div class="form-group">
@@ -107,7 +135,11 @@
           required
           [(ngModel)]="model.password_confirm"
           name="password_confirm"
+          #confirmPassword="ngModel"
         />
+        @if (confirmPassword.touched && confirmPassword.errors?.['required']) {
+          <div class="form-error">تأكيد كلمة المرور مطلوب</div>
+        }
       </div>
 
       <button type="submit" class="auth-submit">إنشاء الحساب</button>
