@@ -10,124 +10,136 @@
   <section class="section-padding">
     <div class="container">
       <div class="cv-builder-container">
-        <!-- Form Section -->
+       <!-- Form Section -->
         <div class="cv-form-section">
-          <form id="cvForm">
-            <!-- Personal Information -->
+          <form>
+
+              <!-- Personal Information -->
             <div class="form-section">
               <h2 class="section-title">المعلومات الشخصية</h2>
 
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">الاسم الأول</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="firstName"
-                    placeholder="أحمد"
-                  />
+                  <input class="form-control" [(ngModel)]="model.firstName" name="firstName" placeholder="أحمد">
                 </div>
                 <div class="form-group">
                   <label class="form-label">الاسم الأخير</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="lastName"
-                    placeholder="محمد"
-                  />
+                  <input class="form-control" [(ngModel)]="model.lastName" name="lastName" placeholder="محمد">
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="form-label">المسمى الوظيفي</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="jobTitle"
-                  placeholder="مطور برمجيات"
-                />
+                <input class="form-control" [(ngModel)]="model.jobTitle" name="jobTitle" placeholder="مطور برمجيات">
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">البريد الإلكتروني</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    placeholder="ahmed@example.com"
-                  />
+                  <input class="form-control" [(ngModel)]="model.email" name="email" type="email" placeholder="ahmed@example.com">
                 </div>
                 <div class="form-group">
                   <label class="form-label">رقم الهاتف</label>
-                  <input
-                    type="tel"
-                    class="form-control"
-                    id="phone"
-                    placeholder="+967 123 456 789"
-                  />
+                  <input class="form-control" [(ngModel)]="model.phone" name="phone" placeholder="+967 123 456 789">
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">المدينة</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="city"
-                    placeholder="صنعاء"
-                  />
+                  <input class="form-control" [(ngModel)]="model.city" name="city" placeholder="صنعاء">
                 </div>
                 <div class="form-group">
                   <label class="form-label">الموقع الإلكتروني</label>
-                  <input
-                    type="url"
-                    class="form-control"
-                    id="website"
-                    placeholder="https://portfolio.com"
-                  />
+                  <input class="form-control" [(ngModel)]="model.website" name="website" placeholder="https://portfolio.com">
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="form-label">نبذة مختصرة</label>
-                <textarea
-                  class="form-control"
-                  id="summary"
-                  placeholder="مطور برمجيات متخصص في تطوير تطبيقات الويب..."
-                ></textarea>
+                <textarea class="form-control" [(ngModel)]="model.summary" name="summary" placeholder="مطور برمجيات متخصص ..."></textarea>
               </div>
             </div>
 
             <!-- Experience -->
             <div class="form-section">
               <h2 class="section-title">الخبرة العملية</h2>
+
               <div id="experienceContainer">
-                <!-- Experience items will be added here -->
+                @for(exp of experiences;track $index; let i= $index) {
+                  <div class="dynamic-item">
+                  <button type="button" class="remove-item" (click)="removeExperience(i)">×</button>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">المسمى الوظيفي</label>
+                      <input class="form-control" [(ngModel)]="exp.title" name="expTitle{{i}}" placeholder="مطور ويب">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">اسم الشركة</label>
+                      <input class="form-control" [(ngModel)]="exp.company" name="expCompany{{i}}" placeholder="شركة التقنيات">
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">تاريخ البداية</label>
+                      <input class="form-control" [(ngModel)]="exp.start" name="expStart{{i}}" placeholder="يناير 2020">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">تاريخ النهاية</label>
+                      <input class="form-control" [(ngModel)]="exp.end" name="expEnd{{i}}" placeholder="الحالي">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">وصف المهام</label>
+                    <textarea class="form-control" [(ngModel)]="exp.description" name="expDesc{{i}}" placeholder="وصف المهام والإنجازات..."></textarea>
+                  </div>
+                </div>
+                }
+
               </div>
-              <button
-                type="button"
-                class="add-item-btn"
-                onclick="addExperience()"
-              >
-                + إضافة خبرة عملية
-              </button>
+
+              <button type="button" class="add-item-btn" (click)="addExperience()">+ إضافة خبرة عملية</button>
             </div>
 
             <!-- Education -->
             <div class="form-section">
               <h2 class="section-title">التعليم</h2>
+
               <div id="educationContainer">
-                <!-- Education items will be added here -->
+                @for(ed of educations;track $index; let i= $index){
+                  <div class="dynamic-item">
+                    <button type="button" class="remove-item" (click)="removeEducation(i)">×</button>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">الدرجة العلمية</label>
+                        <input class="form-control" [(ngModel)]="ed.degree" name="eduDegree{{i}}" placeholder="بكالوريوس علوم الحاسوب">
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">اسم المؤسسة</label>
+                        <input class="form-control" [(ngModel)]="ed.institution" name="eduInst{{i}}" placeholder="جامعة صنعاء">
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">سنة التخرج</label>
+                        <input class="form-control" [(ngModel)]="ed.year" name="eduYear{{i}}" placeholder="2019">
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">التقدير</label>
+                        <input class="form-control" [(ngModel)]="ed.grade" name="eduGrade{{i}}" placeholder="امتياز">
+                      </div>
+                    </div>
+                  </div>
+                }
               </div>
-              <button
-                type="button"
-                class="add-item-btn"
-                onclick="addEducation()"
-              >
-                + إضافة مؤهل تعليمي
-              </button>
+
+              <button type="button" class="add-item-btn" (click)="addEducation()">+ إضافة مؤهل تعليمي</button>
             </div>
 
             <!-- Skills -->
@@ -135,13 +147,10 @@
               <h2 class="section-title">المهارات</h2>
               <div class="form-group">
                 <label class="form-label">المهارات (افصل بينها بفاصلة)</label>
-                <textarea
-                  class="form-control"
-                  id="skills"
-                  placeholder="JavaScript, React, Node.js, Python, SQL"
-                ></textarea>
+                <textarea class="form-control" [(ngModel)]="model.skills" name="skills" placeholder="JavaScript, Angular, Node.js"></textarea>
               </div>
             </div>
+
           </form>
         </div>
 
@@ -149,45 +158,77 @@
         <div class="cv-preview-section">
           <div class="cv-preview" id="cvPreview">
             <div class="cv-header">
-              <div class="cv-name" id="previewName">الاسم الكامل</div>
-              <div class="cv-title" id="previewTitle">المسمى الوظيفي</div>
-              <div class="cv-contact" id="previewContact">
-                <span id="previewEmail">البريد الإلكتروني</span>
-                <span id="previewPhone">رقم الهاتف</span>
-                <span id="previewCity">المدينة</span>
+              <div class="cv-name">
+                {{ (model.firstName || 'الاسم الأول') + ' ' + (model.lastName || 'الاسم الأخير') }}
+              </div>
+              <div class="cv-title">{{ model.jobTitle || 'المسمى الوظيفي' }}</div>
+              <div class="cv-contact">
+                <span>{{ model.email || 'البريد الإلكتروني' }}</span>
+                <span>{{ model.phone || 'رقم الهاتف' }}</span>
+                <span>{{ model.city || 'المدينة' }}</span>
               </div>
             </div>
 
-            <div class="cv-section" id="summarySection" style="display: none">
+            <div class="cv-section" *ngIf="model.summary">
               <div class="cv-section-title">نبذة مختصرة</div>
-              <div id="previewSummary"></div>
+              <div>{{ model.summary }}</div>
             </div>
+            @if(experiences.length){
+              <div class="cv-section">
+                <div class="cv-section-title">الخبرة العملية</div>
+                <div id="previewExperience">
+                  @for(exp of experiences;track $index){
+                    <div class="cv-item">
+                    <div class="cv-item-header">
+                      <div>
+                        <div class="cv-item-title">{{ exp.title }}</div>
+                        <div class="cv-item-company">{{ exp.company }}</div>
+                      </div>
+                      <div class="cv-item-date">{{ exp.start }} - {{ exp.end }}</div>
+                    </div>
+                    @if(exp.description){
+                      <div class="cv-item-description">{{ exp.description }}</div>
+                    }
+                  </div>
+                  }
 
-            <div
-              class="cv-section"
-              id="experienceSection"
-              style="display: none"
-            >
-              <div class="cv-section-title">الخبرة العملية</div>
-              <div id="previewExperience"></div>
-            </div>
+                </div>
+              </div>
+            }
+            @if(educations.length){
 
-            <div class="cv-section" id="educationSection" style="display: none">
-              <div class="cv-section-title">التعليم</div>
-              <div id="previewEducation"></div>
-            </div>
-
-            <div class="cv-section" id="skillsSection" style="display: none">
-              <div class="cv-section-title">المهارات</div>
-              <div class="skills-list" id="previewSkills"></div>
-            </div>
+              <div class="cv-section">
+                <div class="cv-section-title">التعليم</div>
+                <div id="previewEducation">
+                  @for(ed of educations;track $index){
+                  <div class="cv-item">
+                    <div class="cv-item-header">
+                      <div>
+                        <div class="cv-item-title">{{ ed.degree }}</div>
+                        <div class="cv-item-company">{{ ed.institution }}</div>
+                      </div>
+                      <div class="cv-item-date">{{ ed.year }}</div>
+                    </div>
+                    <div class="cv-item-description" *ngIf="ed.grade">التقدير: {{ ed.grade }}</div>
+                  </div>
+                }
+                </div>
+              </div>
+            }
+            @if(skillsList.length){
+              <div class="cv-section">
+                <div class="cv-section-title">المهارات</div>
+                <div class="skills-list">
+                  @for(s of skillsList;track $index){
+                    <span class="skill-tag">{{ s }}</span>
+                  }
+                </div>
+              </div>
+            }
           </div>
 
           <div class="cv-actions">
-            <button class="btn btn-primary" onclick="downloadCV()">
-              تحميل PDF
-            </button>
-            <button class="btn btn-secondary" onclick="printCV()">طباعة</button>
+            <button class="btn btn-primary" (click)="printCV()">طباعة</button>
           </div>
         </div>
       </div>
