@@ -1,31 +1,44 @@
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { finalize, Observable } from 'rxjs';
+import { Observable, catchError, throwError, finalize } from 'rxjs';
 import { LoaderService } from '../../shared/services/loader.service';
 import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-
-  constructor(private loaderService: LoaderService, private router: Router) { }
+  constructor(
+    private loaderService: LoaderService,
+    private router: Router,
+    private auth: AuthService
+  ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('access');
+    const token = this.auth.accessToken;
 
+    // Only attach header if we have a token
     if (token) {
-      req = req.clone({
-        setHeaders: { Authorization: `Token ${token}` }
-      });
-    } else {
-      this.router.navigateByUrl('#');
+      req = req.clone({ setHeaders: { Authorization: `Token ${token}` } });
     }
 
     this.loaderService.start();
 
     return next.handle(req).pipe(
-      finalize(() => {
-        this.loaderService.stop();
-      })
+      catchError((err: HttpErrorResponse) => {
+        // If the token is invalid/expired, clear and go to login
+        if (err.status === 401 || err.status === 403) {
+          this.auth.logout();
+          this.router.navigateByUrl('');
+        }
+        return throwError(() => err);
+      }),
+      finalize(() => this.loaderService.stop())
     );
   }
 }

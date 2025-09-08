@@ -4,10 +4,15 @@ import { Register } from './auth/register/register';
 import { Salary } from './pages/jobs/salary/salary';
 import { SearchForJob } from '../shared/search-for-job/search-for-job';
 
+import { authGuard } from './auth/auth.guard';
+import { loginRedirectGuard } from './auth/login-redirect.guard';
+
 export const routes: Routes = [
+  // Login page at root: if logged-in → guard redirects to the app.
   {
     path: '',
     component: Login,
+    canActivate: [loginRedirectGuard],
   },
   {
     path: 'register',
@@ -15,42 +20,38 @@ export const routes: Routes = [
   },
   {
     path: 'salary',
-    component: Salary
+    component: Salary,
+    canActivate: [/* optionally protect */]
   },
   {
     path: 'jobs',
     loadChildren: () =>
       import('./pages/jobs/jobs-module').then((m) => m.JobsModule),
+    canMatch: [authGuard],
   },
   {
     path: 'companies',
     loadChildren: () =>
-      import('./pages/companies/companies-module').then(
-        (m) => m.CompaniesModule
-      ),
+      import('./pages/companies/companies-module').then((m) => m.CompaniesModule),
+    canMatch: [authGuard],
   },
   {
     path: 'search-for-company',
-    component: SearchForJob
+    component: SearchForJob,
+    // optionally protect this too:
+    // canActivate: [authGuard]
   },
   {
     path: 'jobseeker',
     loadChildren: () =>
-      import('./pages/jobseeker/jobseeker-module').then(
-        (m) => m.JobseekerModule
-      ),
+      import('./pages/jobseeker/jobseeker-module').then((m) => m.JobseekerModule),
+    canMatch: [authGuard],
   },
-   {
-    path: 'account/change-password',
-    loadComponent: () =>
-      import('./auth/change-password/change-password')
-        .then(m => m.ChangePassword)
-  },
+  // simple logout route that clears storage and returns to login
   {
     path: 'logout',
-    redirectTo: '',
-    pathMatch: 'full',
+    loadComponent: () =>
+      import('./auth/logout/logout').then(m => m.Logout)
   },
-
   { path: '**', redirectTo: '' },
 ];
