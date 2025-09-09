@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-search-for-job',
@@ -8,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./search-for-job.scss'],
 })
 export class SearchForJob {
+  toastr = inject(ToastrService);
   originalCompaniesData = [
     {
       id: 'tech-solutions',
@@ -108,7 +110,9 @@ export class SearchForJob {
   ];
 
   companiesData = [...this.originalCompaniesData];
-
+  notImplemented(){
+    this.toastr.info('هذه الميزة غير متوفرة حالياً', 'لم يتم التنفيذ');
+  }
    mobileOpen = false;
   toggleMobileMenu() {
     this.mobileOpen = !this.mobileOpen;

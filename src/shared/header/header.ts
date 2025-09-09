@@ -65,6 +65,10 @@ export class Header implements OnInit, OnDestroy {
     this.destroy$.next(); this.destroy$.complete();
   }
 
+  notImplemented(){
+    this.toastr.info('هذه الميزة غير متوفرة حالياً', 'لم يتم التنفيذ');
+  }
+  
   // ===== Desktop user menu =====
   toggleMenu() { this.menuOpen = !this.menuOpen; }
   closeMenu() { this.menuOpen = false; }

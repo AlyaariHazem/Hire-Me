@@ -1,8 +1,9 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProfileService } from '../services/profile.service';
 import { map } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-header-company',
@@ -13,10 +14,15 @@ import { environment } from '../../../../environments/environment.development';
 export class HeaderCompany {
   isEmployerMenuOpen = false;
   logo$: any;
+  toastr = inject(ToastrService);
   constructor(private el: ElementRef, private router: Router, private profileService: ProfileService) {
     this.logo$ = this.profileService.getProfile$().pipe(
       map(p => environment.apiBaseUrl + p.company_logo)
     );
+  }
+
+  notImplemented(){
+    this.toastr.info('هذه الميزة غير متوفرة حالياً', 'لم يتم التنفيذ');
   }
 
   toggleEmployerMenu(evt: MouseEvent): void {

@@ -18,11 +18,11 @@ export const routes: Routes = [
     path: 'register',
     component: Register
   },
-  {
-    path: 'salary',
-    component: Salary,
-    canActivate: [/* optionally protect */]
-  },
+  // {
+  //   path: 'salary',
+  //   component: Salary,
+  //   canActivate: [/* optionally protect */]
+  // },
   {
     path: 'jobs',
     loadChildren: () =>
@@ -35,12 +35,12 @@ export const routes: Routes = [
       import('./pages/companies/companies-module').then((m) => m.CompaniesModule),
     canMatch: [authGuard],
   },
-  {
-    path: 'search-for-company',
-    component: SearchForJob,
-    // optionally protect this too:
-    // canActivate: [authGuard]
-  },
+  // {
+  //   path: 'search-for-company',
+  //   component: SearchForJob,
+  //   // optionally protect this too:
+  //   // canActivate: [authGuard]
+  // },
   {
     path: 'jobseeker',
     loadChildren: () =>
