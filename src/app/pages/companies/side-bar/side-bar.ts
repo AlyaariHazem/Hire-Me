@@ -1,10 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { environment } from '../../../../environments/environment.development';
+import { Component, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs';
-import { ProfileService } from '../services/profile.service';
-import { ProfileDataService } from './profile.service';
+
+import { environment } from 'environments/environment';
+import { ProfileService } from '../core/services/profile.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -21,7 +21,7 @@ export class SideBar {
     );
   }
   profile:any;
-  profileDataService = inject(ProfileDataService);
+  profileDataService = inject(ProfileService);
 
   ngOnInit(): void {
      this.profileDataService.getProfile().subscribe({

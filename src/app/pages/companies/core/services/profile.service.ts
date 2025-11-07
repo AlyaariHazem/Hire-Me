@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment.development';
+import { ProfileStoreService } from 'shared/services/profile.service';
+import { environment } from 'environments/environment';
+
 
 @Injectable({ providedIn: 'root' })
-export class ProfileDataService {
-  constructor(private http: HttpClient) {}
+export class ProfileService extends ProfileStoreService {
 
-  // /api/accounts/profile/update/
-  updateBasic(body: {
+  constructor( http: HttpClient) {
+    super(http);
+  }
+updateBasic(body: {
     first_name: string; last_name: string; email: string; phone?: string;
     date_of_birth?: string; bio?: string; location?: string; profile_picture?: string;
   }) {

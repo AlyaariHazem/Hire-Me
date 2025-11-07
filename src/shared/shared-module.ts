@@ -12,6 +12,8 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { HeaderPublic } from './header-public/header-public';
+import { JobService } from './services/job.service';
+import { ProfileStoreService } from './services/profile.service';
 
 const components = [
 Header,
@@ -38,5 +40,6 @@ ConfirmDialog,
     ...modules
   ],
   exports: [...components,...modules],
+  providers: [JobService,ProfileStoreService]
 })
 export class SharedModule { }

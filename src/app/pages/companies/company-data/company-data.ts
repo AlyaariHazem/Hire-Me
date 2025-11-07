@@ -4,8 +4,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment.development';
 import { map, Observable } from 'rxjs';
-import { ProfileService } from '../services/profile.service';
 import { Errors } from '../../../../shared/services/errors';
+import { ProfileService } from '../core/services/profile.service';
 // (optional) if you use the NO_SPINNER token from your interceptor:
 // import { NO_SPINNER } from '../../core/interceptors/auth.interceptor';
 

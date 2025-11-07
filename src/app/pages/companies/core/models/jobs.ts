@@ -1,9 +1,3 @@
-// job.service.ts
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from 'environments/environment';
-
 export interface CreateJobDto {
   title: string;
   description: string;
@@ -25,16 +19,4 @@ export interface CreateJobDto {
   contact_phone?: string;
   is_featured?: boolean;
   is_urgent?: boolean;
-}
-
-@Injectable({ providedIn: 'root' })
-export class JobService {
-
-
-  constructor(private http: HttpClient) {}
-
-  createJob(body: CreateJobDto): Observable<any> {
-    const url = environment.getUrl('create', 'jobs');
-    return this.http.post(url, body);
-  }
 }

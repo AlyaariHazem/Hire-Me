@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, shareReplay, catchError, throwError, Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from 'environments/environment';
 
 type ApiRes<T> = { data: { profile: T } };
 export interface Profile {
@@ -10,10 +10,13 @@ export interface Profile {
 }
 
 @Injectable({ providedIn: 'root' })
-export class ProfileService {
+export class ProfileStoreService {
   private cache$?: Observable<Profile>;
+  public http!: HttpClient;
 
-  constructor(private http: HttpClient) {}
+  constructor(http: HttpClient) {
+    this.http = http;
+  }
 
   getProfile$() {
     if (!this.cache$) {

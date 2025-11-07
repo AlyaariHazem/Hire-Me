@@ -18,7 +18,9 @@
     "target": "ES2022",
     "module": "ES2022",
     "paths": {
-     
+      "@app/companies/models":["app/pages/companies/core/models"],
+      "@app/companies/enums":["app/pages/companies/core/enums"],
+      "@app/companies/types":["app/pages/companies/core/types"]
     }
   },
   "angularCompilerOptions": {

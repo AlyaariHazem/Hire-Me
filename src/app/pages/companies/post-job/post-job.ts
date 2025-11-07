@@ -1,9 +1,11 @@
 // post-job.component.ts
 import { Component } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { JobService, CreateJobDto } from './../services/job.service';
 import { SharedModule } from 'shared/shared-module';
 import { Select } from 'primeng/select';
+
+import { JobService } from 'shared/services/job.service';
+import { CreateJobDto } from '@app/companies/models';
 
 @Component({
   selector: 'app-post-job',
@@ -44,15 +46,15 @@ export class PostJob {
   constructor(private fb: FormBuilder, private api: JobService) {
     this.form = this.fb.group({
       // Step 1
-      title: ['', [Validators.required, Validators.minLength(3)]],
-      category: [null, Validators.required], // numeric id
-      job_type: ['', Validators.required], // enum string
-      city: ['', Validators.required],
-      experience_level: ['', Validators.required],
+      title: [''],
+      category: [null], // numeric id
+      job_type: [''], // enum string
+      city: [''],
+      experience_level: [''],
       salary_min: [null],
       salary_max: [null],
       is_salary_negotiable: [false],
-      description: ['', [Validators.required, Validators.minLength(5)]],
+      description: [''],
 
       // Step 2
       requirements: ['', Validators.required],

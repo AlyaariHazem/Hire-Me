@@ -2,9 +2,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { ProfileService } from './profile.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { environment } from '../../../../environments/environment.development';
+import { ProfileService } from '../services/profile.service';
 
 @Component({
   selector: 'app-profile',

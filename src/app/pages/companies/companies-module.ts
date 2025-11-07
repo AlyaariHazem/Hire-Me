@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CompaniesRoutingModule } from './companies-routing-module';
-import { SharedModule } from '../../../shared/shared-module';
+import { SharedModule } from 'shared/shared-module';
 import { Companies } from './companies';
 import { Dashboard } from './dashboard/dashboard';
 import { Candidates } from './candidates/candidates';
@@ -14,7 +14,6 @@ import { Billing } from './billing/billing';
 import { Overview } from './overview/overview';
 import { PostJob } from './post-job/post-job';
 import { HeaderCompany } from './header-company/header-company';
-import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CompanyData } from './company-data/company-data';
 

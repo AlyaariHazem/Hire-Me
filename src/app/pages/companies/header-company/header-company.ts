@@ -1,9 +1,10 @@
 import { Component, ElementRef, HostListener, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProfileService } from '../services/profile.service';
 import { map } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
 import { ToastrService } from 'ngx-toastr';
+
+import { environment } from 'environments/environment';
+import { ProfileService } from '../core/services/profile.service';
 
 @Component({
   selector: 'app-header-company',

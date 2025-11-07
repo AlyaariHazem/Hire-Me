@@ -14,8 +14,8 @@ import { Settings } from './settings/settings';
 import { SharedModule } from '../../../shared/shared-module';
 import { CvBuilder } from './cv-builder/cv-builder';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ProfileService } from './profile/profile.service';
+import { HttpClient } from '@angular/common/http';
+import { ProfileService } from './services/profile.service';
 
 const components = [
   Dashboard,
@@ -34,7 +34,6 @@ CommonModule,
 RouterLinkActive,
 RouterLink,
 SharedModule,
-HttpClientModule,
 ReactiveFormsModule
 ];
 @NgModule({

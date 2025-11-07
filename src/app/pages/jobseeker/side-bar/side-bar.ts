@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../services/user';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { ProfileService } from '../profile/profile.service';
 import { environment } from '../../../../environments/environment';
+import { ProfileService } from '../services/profile.service';
 
 @Component({
   selector: 'app-side-bar',
