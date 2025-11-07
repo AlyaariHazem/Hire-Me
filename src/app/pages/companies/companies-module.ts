@@ -15,7 +15,7 @@ import { Overview } from './overview/overview';
 import { PostJob } from './post-job/post-job';
 import { HeaderCompany } from './header-company/header-company';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CompanyData } from './company-data/company-data';
 
 const components = [
@@ -27,7 +27,6 @@ Overview,
 Analytics,
 CompanyProfile,
 Billing,
-PostJob,
 HeaderCompany,
 ManageJobs,
 CompanyData
@@ -36,8 +35,9 @@ const modules = [
   CommonModule,
   CompaniesRoutingModule,
   SharedModule,
+  PostJob,
   FormsModule,
-  HttpClientModule
+  ReactiveFormsModule
 ]
 @NgModule({
   declarations: [...components],

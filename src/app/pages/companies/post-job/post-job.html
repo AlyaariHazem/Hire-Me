@@ -1,340 +1,409 @@
 <!-- Hero Section -->
-    <section class="post-job-hero">
-        <div class="container">
-            <h1>انشر وظيفة واعثر على أفضل المواهب</h1>
-            <p>وصل إلى آلاف المرشحين المؤهلين في اليمن واعثر على الموظف المثالي لشركتك</p>
+<section class="post-job-hero">
+  <div class="container">
+    <h1>انشر وظيفة واعثر على أفضل المواهب</h1>
+    <p>
+      وصل إلى آلاف المرشحين المؤهلين في اليمن واعثر على الموظف المثالي لشركتك
+    </p>
 
-            <div class="pricing-preview">
-                <div class="price-card">
-                    <div class="price-title">نشر أساسي</div>
-                    <div class="price-amount">50,000 ريال</div>
-                    <div class="price-duration">لمدة 30 يوم</div>
-                </div>
-                <div class="price-card">
-                    <div class="price-title">نشر مميز</div>
-                    <div class="price-amount">100,000 ريال</div>
-                    <div class="price-duration">لمدة 60 يوم</div>
-                </div>
-                <div class="price-card">
-                    <div class="price-title">نشر احترافي</div>
-                    <div class="price-amount">150,000 ريال</div>
-                    <div class="price-duration">لمدة 90 يوم</div>
-                </div>
-            </div>
+    <div class="pricing-preview">
+      <div class="price-card">
+        <div class="price-title">نشر أساسي</div>
+        <div class="price-amount">50,000 ريال</div>
+        <div class="price-duration">لمدة 30 يوم</div>
+      </div>
+      <div class="price-card">
+        <div class="price-title">نشر مميز</div>
+        <div class="price-amount">100,000 ريال</div>
+        <div class="price-duration">لمدة 60 يوم</div>
+      </div>
+      <div class="price-card">
+        <div class="price-title">نشر احترافي</div>
+        <div class="price-amount">150,000 ريال</div>
+        <div class="price-duration">لمدة 90 يوم</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Job Form Section -->
+<section class="job-form-section">
+  <div class="container">
+    <div class="form-container">
+      <div class="form-header">
+        <h2>نشر وظيفة جديدة</h2>
+        <p>املأ النموذج أدناه لنشر وظيفتك والوصول إلى أفضل المرشحين</p>
+      </div>
+
+      <div class="form-content">
+        <!-- Form Steps -->
+        <div class="form-steps">
+          <div class="step active" id="step1">
+            <span class="step-number">1</span>
+            <span>معلومات الوظيفة</span>
+          </div>
+          <div class="step" id="step2">
+            <span class="step-number">2</span>
+            <span>المتطلبات والمهارات</span>
+          </div>
+          <div class="step" id="step3">
+            <span class="step-number">3</span>
+            <span>معلومات الشركة</span>
+          </div>
+          <div class="step" id="step4">
+            <span class="step-number">4</span>
+            <span>المراجعة والنشر</span>
+          </div>
         </div>
-    </section>
 
-    <!-- Job Form Section -->
-    <section class="job-form-section">
-        <div class="container">
-            <div class="form-container">
-                <div class="form-header">
-                    <h2>نشر وظيفة جديدة</h2>
-                    <p>املأ النموذج أدناه لنشر وظيفتك والوصول إلى أفضل المرشحين</p>
-                </div>
+        <form [formGroup]="form" (ngSubmit)="submit()" id="jobForm">
+          <!-- keep your existing layout/labels/inputs but add formControlName -->
+          <!-- Step 1 -->
+          <div class="form-step" [class.active]="step === 1" id="formStep1">
+            <div class="form-grid">
+            <div class="form-group">
+               <label class="form-label required" for="jobCategory">فئة الوظيفة</label>
 
-                <div class="form-content">
-                    <!-- Form Steps -->
-                    <div class="form-steps">
-                        <div class="step active" id="step1">
-                            <span class="step-number">1</span>
-                            <span>معلومات الوظيفة</span>
-                        </div>
-                        <div class="step" id="step2">
-                            <span class="step-number">2</span>
-                            <span>المتطلبات والمهارات</span>
-                        </div>
-                        <div class="step" id="step3">
-                            <span class="step-number">3</span>
-                            <span>معلومات الشركة</span>
-                        </div>
-                        <div class="step" id="step4">
-                            <span class="step-number">4</span>
-                            <span>المراجعة والنشر</span>
-                        </div>
-                    </div>
+                <p-select [options]="categories" formControlName="category" optionValue="id" optionLabel="label" placeholder="اختر فئة الوظيفة" class="w-full md:w-56" [showClear]="true" />
 
-                    <form id="jobForm">
-                        <!-- Step 1: Job Information -->
-                        <div class="form-step active" id="formStep1">
-                            <div class="form-group">
-                                <label class="form-label required" for="jobTitle">عنوان الوظيفة</label>
-                                <input type="text" id="jobTitle" class="form-input" placeholder="مثال: مطور ويب متقدم" required>
-                                <div class="form-help">اكتب عنواناً واضحاً ومحدداً للوظيفة</div>
-                            </div>
+                @if (form.get('category')?.invalid && form.get('category')?.touched) {
+                  <small class="p-error block mt-1 text-red-500">يرجى اختيار فئة الوظيفة</small>
+                }
+              </div>
 
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label required" for="jobCategory">فئة الوظيفة</label>
-                                    <select id="jobCategory" class="form-select" required>
-                                        <option value="">اختر الفئة</option>
-                                        <option value="technology">تقنية المعلومات</option>
-                                        <option value="marketing">التسويق</option>
-                                        <option value="sales">المبيعات</option>
-                                        <option value="finance">المالية والمحاسبة</option>
-                                        <option value="hr">الموارد البشرية</option>
-                                        <option value="engineering">الهندسة</option>
-                                        <option value="healthcare">الرعاية الصحية</option>
-                                        <option value="education">التعليم</option>
-                                        <option value="design">التصميم</option>
-                                        <option value="customer-service">خدمة العملاء</option>
-                                    </select>
-                                </div>
+              <div class="form-group">
+                <label class="form-label required" for="jobType"
+                  >نوع الوظيفة</label
+                >
+                <select
+                  id="jobType"
+                  class="form-select"
+                  formControlName="job_type"
+                >
+                  <option value="">اختر النوع</option>
+                  <option value="full_time">دوام كامل</option>
+                  <option value="part_time">دوام جزئي</option>
+                  <option value="contract">عقد مؤقت</option>
+                  <option value="freelance">عمل حر</option>
+                  <option value="internship">تدريب</option>
+                </select>
+              </div>
+              </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label required" for="jobLocation"
+                  >موقع العمل</label
+                >
+                <select
+                  id="jobLocation"
+                  class="form-select"
+                  formControlName="city"
+                >
+                  <option value="">اختر المدينة</option>
+                  <option value="sanaa">صنعاء</option>
+                  <option value="aden">عدن</option>
+                  <option value="taiz">تعز</option>
+                  <option value="hodeidah">الحديدة</option>
+                  <option value="ibb">إب</option>
+                  <option value="dhamar">ذمار</option>
+                  <option value="mukalla">المكلا</option>
+                  <option value="remote">عمل عن بُعد</option>
+                </select>
+              </div>
 
-                                <div class="form-group">
-                                    <label class="form-label required" for="jobType">نوع الوظيفة</label>
-                                    <select id="jobType" class="form-select" required>
-                                        <option value="">اختر النوع</option>
-                                        <option value="full-time">دوام كامل</option>
-                                        <option value="part-time">دوام جزئي</option>
-                                        <option value="contract">عقد مؤقت</option>
-                                        <option value="freelance">عمل حر</option>
-                                        <option value="internship">تدريب</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label required" for="jobLocation">موقع العمل</label>
-                                    <select id="jobLocation" class="form-select" required>
-                                        <option value="">اختر المدينة</option>
-                                        <option value="sanaa">صنعاء</option>
-                                        <option value="aden">عدن</option>
-                                        <option value="taiz">تعز</option>
-                                        <option value="hodeidah">الحديدة</option>
-                                        <option value="ibb">إب</option>
-                                        <option value="dhamar">ذمار</option>
-                                        <option value="mukalla">المكلا</option>
-                                        <option value="remote">عمل عن بُعد</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label required" for="experienceLevel">مستوى الخبرة</label>
-                                    <select id="experienceLevel" class="form-select" required>
-                                        <option value="">اختر المستوى</option>
-                                        <option value="entry">مبتدئ (0-2 سنة)</option>
-                                        <option value="junior">مبتدئ متقدم (2-4 سنوات)</option>
-                                        <option value="mid">متوسط (4-7 سنوات)</option>
-                                        <option value="senior">خبير (7-10 سنوات)</option>
-                                        <option value="expert">خبير متقدم (10+ سنوات)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="salaryRange">نطاق الراتب (ريال يمني)</label>
-                                <div class="salary-range">
-                                    <input type="number" id="salaryMin" class="form-input" placeholder="الحد الأدنى">
-                                    <span class="range-separator">إلى</span>
-                                    <input type="number" id="salaryMax" class="form-input" placeholder="الحد الأعلى">
-                                </div>
-                                <div class="form-help">اتركه فارغاً إذا كنت تفضل عدم الإفصاح عن الراتب</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label required" for="jobDescription">وصف الوظيفة</label>
-                                <textarea id="jobDescription" class="form-input form-textarea" placeholder="اكتب وصفاً مفصلاً للوظيفة، المهام المطلوبة، وبيئة العمل..." required></textarea>
-                                <div class="form-help">اكتب وصفاً شاملاً وجذاباً للوظيفة (على الأقل 100 كلمة)</div>
-                            </div>
-                        </div>
-
-                        <!-- Step 2: Requirements and Skills -->
-                        <div class="form-step" id="formStep2">
-                            <div class="form-group">
-                                <label class="form-label required" for="jobRequirements">متطلبات الوظيفة</label>
-                                <textarea id="jobRequirements" class="form-input form-textarea" placeholder="اكتب المتطلبات الأساسية للوظيفة، المؤهلات المطلوبة، والخبرات اللازمة..." required></textarea>
-                                <div class="form-help">حدد المتطلبات الأساسية والمؤهلات المطلوبة</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="jobSkills">المهارات المطلوبة</label>
-                                <input type="text" id="jobSkills" class="form-input" placeholder="مثال: JavaScript, React, Node.js, MySQL">
-                                <div class="form-help">اكتب المهارات مفصولة بفواصل</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="education">المؤهل العلمي المطلوب</label>
-                                <select id="education" class="form-select">
-                                    <option value="">اختر المؤهل</option>
-                                    <option value="high-school">ثانوية عامة</option>
-                                    <option value="diploma">دبلوم</option>
-                                    <option value="bachelor">بكالوريوس</option>
-                                    <option value="master">ماجستير</option>
-                                    <option value="phd">دكتوراه</option>
-                                    <option value="any">غير محدد</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">اللغات المطلوبة</label>
-                                <div class="form-checkbox-group">
-                                    <div class="checkbox-item">
-                                        <input type="checkbox" id="lang-arabic" class="form-checkbox" value="arabic" checked>
-                                        <label for="lang-arabic">العربية</label>
-                                    </div>
-                                    <div class="checkbox-item">
-                                        <input type="checkbox" id="lang-english" class="form-checkbox" value="english">
-                                        <label for="lang-english">الإنجليزية</label>
-                                    </div>
-                                    <div class="checkbox-item">
-                                        <input type="checkbox" id="lang-french" class="form-checkbox" value="french">
-                                        <label for="lang-french">الفرنسية</label>
-                                    </div>
-                                    <div class="checkbox-item">
-                                        <input type="checkbox" id="lang-german" class="form-checkbox" value="german">
-                                        <label for="lang-german">الألمانية</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="benefits">المزايا والفوائد</label>
-                                <textarea id="benefits" class="form-input form-textarea" placeholder="اكتب المزايا التي تقدمها الشركة مثل التأمين الصحي، المرونة في العمل، التدريب..."></textarea>
-                                <div class="form-help">اذكر المزايا التي تجعل وظيفتك جذابة للمرشحين</div>
-                            </div>
-                        </div>
-
-                        <!-- Step 3: Company Information -->
-                        <div class="form-step" id="formStep3">
-                            <div class="form-group">
-                                <label class="form-label required" for="companyName">اسم الشركة</label>
-                                <input type="text" id="companyName" class="form-input" placeholder="اسم شركتك" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="companyDescription">نبذة عن الشركة</label>
-                                <textarea id="companyDescription" class="form-input form-textarea" placeholder="اكتب نبذة مختصرة عن شركتك، مجال عملها، وثقافتها..."></textarea>
-                                <div class="form-help">ساعد المرشحين على فهم شركتك وثقافة العمل بها</div>
-                            </div>
-
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label" for="companySize">حجم الشركة</label>
-                                    <select id="companySize" class="form-select">
-                                        <option value="">اختر الحجم</option>
-                                        <option value="startup">ناشئة (1-10 موظفين)</option>
-                                        <option value="small">صغيرة (11-50 موظف)</option>
-                                        <option value="medium">متوسطة (51-200 موظف)</option>
-                                        <option value="large">كبيرة (201-1000 موظف)</option>
-                                        <option value="enterprise">مؤسسة (1000+ موظف)</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label" for="companyIndustry">قطاع الشركة</label>
-                                    <select id="companyIndustry" class="form-select">
-                                        <option value="">اختر القطاع</option>
-                                        <option value="technology">تقنية المعلومات</option>
-                                        <option value="healthcare">الرعاية الصحية</option>
-                                        <option value="education">التعليم</option>
-                                        <option value="finance">المالية والمصرفية</option>
-                                        <option value="construction">البناء والتشييد</option>
-                                        <option value="retail">التجارة والبيع بالتجزئة</option>
-                                        <option value="manufacturing">التصنيع</option>
-                                        <option value="telecommunications">الاتصالات</option>
-                                        <option value="other">أخرى</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label" for="contactEmail">البريد الإلكتروني للتواصل</label>
-                                    <input type="email" id="contactEmail" class="form-input" placeholder="hr@company.com">
-                                    <div class="form-help">البريد الذي سيستخدمه المرشحون للتقديم</div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label" for="contactPhone">رقم الهاتف</label>
-                                    <input type="tel" id="contactPhone" class="form-input" placeholder="+967 1 234567">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="applicationDeadline">آخر موعد للتقديم</label>
-                                <input type="date" id="applicationDeadline" class="form-input">
-                                <div class="form-help">اتركه فارغاً إذا لم يكن هناك موعد محدد</div>
-                            </div>
-                        </div>
-
-                        <!-- Step 4: Review and Publish -->
-                        <div class="form-step" id="formStep4">
-                            <div class="preview-section">
-                                <h3 class="preview-title">معاينة الوظيفة</h3>
-                                <div class="job-preview" id="jobPreview">
-                                    <!-- Job preview will be generated here -->
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">نوع النشر</label>
-                                <div class="form-checkbox-group">
-                                    <div class="checkbox-item">
-                                        <input type="radio" id="basic-plan" name="publishPlan" class="form-checkbox" value="basic" checked>
-                                        <label for="basic-plan">نشر أساسي - 50,000 ريال (30 يوم)</label>
-                                    </div>
-                                    <div class="checkbox-item">
-                                        <input type="radio" id="featured-plan" name="publishPlan" class="form-checkbox" value="featured">
-                                        <label for="featured-plan">نشر مميز - 100,000 ريال (60 يوم)</label>
-                                    </div>
-                                    <div class="checkbox-item">
-                                        <input type="radio" id="premium-plan" name="publishPlan" class="form-checkbox" value="premium">
-                                        <label for="premium-plan">نشر احترافي - 150,000 ريال (90 يوم)</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="checkbox-item">
-                                    <input type="checkbox" id="terms" class="form-checkbox" required>
-                                    <label for="terms">أوافق على <a href="terms.html" target="_blank">شروط الخدمة</a> و <a href="privacy.html" target="_blank">سياسة الخصوصية</a></label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Form Actions -->
-                        <div class="form-actions">
-                            <button type="button" class="btn-back" id="backBtn" onclick="previousStep()" style="display: none;">السابق</button>
-                            <div style="flex: 1;"></div>
-                            <button type="button" class="btn-next" id="nextBtn" onclick="nextStep()">التالي</button>
-                            <button type="submit" class="btn-submit" id="submitBtn" style="display: none;">نشر الوظيفة</button>
-                        </div>
-                    </form>
-                </div>
+              <div class="form-group">
+                <label class="form-label required" for="experienceLevel"
+                  >مستوى الخبرة</label
+                >
+                <select
+                  id="experienceLevel"
+                  class="form-select"
+                  formControlName="experience_level"
+                >
+                  <option value="">اختر المستوى</option>
+                  <option value="entry">مبتدئ (0-2 سنة)</option>
+                  <option value="junior">مبتدئ متقدم (2-4 سنوات)</option>
+                  <option value="mid">متوسط (4-7 سنوات)</option>
+                  <option value="senior">خبير (7-10 سنوات)</option>
+                  <option value="expert">خبير متقدم (10+ سنوات)</option>
+                </select>
+              </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Benefits Section -->
-    <section class="benefits-section">
-        <div class="container">
-            <h2 class="benefits-title">لماذا تختار منصتنا؟</h2>
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <div class="benefit-icon">🎯</div>
-                    <h3 class="benefit-title">وصول مستهدف</h3>
-                    <p class="benefit-description">وصل إلى المرشحين المناسبين في التخصص والموقع الذي تحتاجه</p>
-                </div>
-
-                <div class="benefit-card">
-                    <div class="benefit-icon">⚡</div>
-                    <h3 class="benefit-title">نشر سريع</h3>
-                    <p class="benefit-description">انشر وظيفتك في دقائق واحصل على طلبات التقديم فوراً</p>
-                </div>
-
-                <div class="benefit-card">
-                    <div class="benefit-icon">📊</div>
-                    <h3 class="benefit-title">تقارير مفصلة</h3>
-                    <p class="benefit-description">احصل على إحصائيات مفصلة عن أداء إعلانك وعدد المشاهدات</p>
-                </div>
-
-                <div class="benefit-card">
-                    <div class="benefit-icon">🤝</div>
-                    <h3 class="benefit-title">دعم متخصص</h3>
-                    <p class="benefit-description">فريق دعم متخصص لمساعدتك في كل خطوة من عملية التوظيف</p>
-                </div>
+            <div class="form-group">
+              <label class="form-label" for="salaryRange">نطاق الراتب</label>
+              <div class="salary-range">
+                <input
+                  id="salaryMin"
+                  type="number"
+                  class="form-input"
+                  formControlName="salary_min"
+                  placeholder="الحد الأدنى"
+                />
+                <span class="range-separator">إلى</span>
+                <input
+                  id="salaryMax"
+                  type="number"
+                  class="form-input"
+                  formControlName="salary_max"
+                  placeholder="الحد الأعلى"
+                />
+              </div>
+              <label class="checkbox-inline">
+                <input type="checkbox" formControlName="is_salary_negotiable" />
+                الراتب قابل للتفاوض
+              </label>
             </div>
-        </div>
-    </section>
+
+            <div class="form-group">
+              <label class="form-label required" for="jobDescription"
+                >وصف الوظيفة</label
+              >
+              <textarea
+                id="jobDescription"
+                class="form-input form-textarea"
+                formControlName="description"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="form-step" [class.active]="step === 2" id="formStep2">
+            <div class="form-group">
+              <label class="form-label required" for="jobRequirements"
+                >متطلبات الوظيفة</label
+              >
+              <textarea
+                id="jobRequirements"
+                class="form-input form-textarea"
+                formControlName="requirements"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="jobSkills"
+                >المهارات المطلوبة</label
+              >
+              <input
+                id="jobSkills"
+                class="form-input"
+                formControlName="skills"
+                placeholder="JavaScript, React, ..."
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="education">المؤهل العلمي</label>
+              <select
+                id="education"
+                class="form-select"
+                formControlName="education_level"
+              >
+                <option value="any">غير محدد</option>
+                <option value="high_school">ثانوية عامة</option>
+                <option value="diploma">دبلوم</option>
+                <option value="bachelor">بكالوريوس</option>
+                <option value="master">ماجستير</option>
+                <option value="phd">دكتوراه</option>
+              </select>
+            </div>
+
+            <div class="form-group" formGroupName="languages">
+              <label class="form-label">اللغات المطلوبة</label>
+              <label
+                ><input type="checkbox" formControlName="arabic" />
+                العربية</label
+              >
+              <label
+                ><input type="checkbox" formControlName="english" />
+                الإنجليزية</label
+              >
+              <label
+                ><input type="checkbox" formControlName="french" />
+                الفرنسية</label
+              >
+              <label
+                ><input type="checkbox" formControlName="german" />
+                الألمانية</label
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="benefits">المزايا</label>
+              <textarea
+                id="benefits"
+                class="form-input form-textarea"
+                formControlName="benefits"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="form-step" [class.active]="step === 3" id="formStep3">
+            <div class="form-group">
+              <label class="form-label required" for="companyName"
+                >الشركة</label
+              >
+              <select
+                id="companyName"
+                class="form-select"
+                formControlName="company"
+              >
+                <option value="">اختر الشركة</option>
+                <option *ngFor="let c of companies" [value]="c.id">
+                  {{ c.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="contactEmail">البريد</label>
+                <input
+                  id="contactEmail"
+                  type="email"
+                  class="form-input"
+                  formControlName="contact_email"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contactPhone">الهاتف</label>
+                <input
+                  id="contactPhone"
+                  type="tel"
+                  class="form-input"
+                  formControlName="contact_phone"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="applicationDeadline"
+                >آخر موعد للتقديم</label
+              >
+              <input
+                id="applicationDeadline"
+                type="date"
+                class="form-input"
+                formControlName="application_deadline"
+              />
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="form-step" [class.active]="step === 4" id="formStep4">
+            <div class="form-group">
+              <label class="form-label">نوع النشر</label>
+              <label
+                ><input
+                  type="radio"
+                  value="basic"
+                  formControlName="publishPlan"
+                />
+                أساسي</label
+              >
+              <label
+                ><input
+                  type="radio"
+                  value="featured"
+                  formControlName="publishPlan"
+                />
+                مميز</label
+              >
+              <label
+                ><input
+                  type="radio"
+                  value="premium"
+                  formControlName="publishPlan"
+                />
+                احترافي</label
+              >
+            </div>
+
+            <div class="form-group">
+              <label
+                ><input type="checkbox" formControlName="is_featured" />
+                مميز</label
+              >
+              <label
+                ><input type="checkbox" formControlName="is_urgent" />
+                عاجل</label
+              >
+            </div>
+
+            <div class="form-group">
+              <label
+                ><input type="checkbox" formControlName="terms" /> أوافق على
+                الشروط</label
+              >
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn-back"
+              (click)="previousStep()"
+              [disabled]="step === 1"
+            >
+              السابق
+            </button>
+            <div style="flex: 1"></div>
+            <button
+              type="button"
+              class="btn-next"
+              (click)="nextStep()"
+              *ngIf="step < 4"
+            >
+              التالي
+            </button>
+            <button type="submit" class="btn-submit" *ngIf="step === 4">
+              نشر الوظيفة
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits-section">
+  <div class="container">
+    <h2 class="benefits-title">لماذا تختار منصتنا؟</h2>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">🎯</div>
+        <h3 class="benefit-title">وصول مستهدف</h3>
+        <p class="benefit-description">
+          وصل إلى المرشحين المناسبين في التخصص والموقع الذي تحتاجه
+        </p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">⚡</div>
+        <h3 class="benefit-title">نشر سريع</h3>
+        <p class="benefit-description">
+          انشر وظيفتك في دقائق واحصل على طلبات التقديم فوراً
+        </p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">📊</div>
+        <h3 class="benefit-title">تقارير مفصلة</h3>
+        <p class="benefit-description">
+          احصل على إحصائيات مفصلة عن أداء إعلانك وعدد المشاهدات
+        </p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">🤝</div>
+        <h3 class="benefit-title">دعم متخصص</h3>
+        <p class="benefit-description">
+          فريق دعم متخصص لمساعدتك في كل خطوة من عملية التوظيف
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
