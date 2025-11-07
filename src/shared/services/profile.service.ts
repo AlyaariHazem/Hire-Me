@@ -6,6 +6,7 @@ import { environment } from 'environments/environment';
 type ApiRes<T> = { data: { profile: T } };
 export interface Profile {
   company_logo: string;
+  id: number;
   // ...other fields you need
 }
 

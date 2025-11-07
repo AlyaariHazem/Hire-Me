@@ -6,6 +6,8 @@ import { Select } from 'primeng/select';
 
 import { JobService } from 'shared/services/job.service';
 import { CreateJobDto } from '@app/companies/models';
+import { EDUCATION_LEVELS, EXPERIENCE_LEVELS, JOB_CITIES, JOB_TYPES, JobCity } from '@app/companies/enums';
+import { ProfileService } from '../core/services/profile.service';
 
 @Component({
   selector: 'app-post-job',
@@ -15,7 +17,13 @@ import { CreateJobDto } from '@app/companies/models';
 })
 export class PostJob {
   step = 1;
+  form: FormGroup;
+  companyId: number | null = 0;
 
+  jobCities = JOB_CITIES;
+  jobTypes = JOB_TYPES;
+  experienceLevels = EXPERIENCE_LEVELS;
+  educationLevels = EDUCATION_LEVELS;
   // map your UI select values → API enums/ids
   categories = [
     { id: 1, label: 'تقنية المعلومات' },
@@ -27,8 +35,8 @@ export class PostJob {
     { id: 7, label: 'الصحة' },
     { id: 8, label: 'التعليم' },
     { id: 9, label: 'الهندسة' },
-
   ];
+  
   companies = [
     { id: 10, name: 'شركة افتراضية' },
     { id: 11, name: 'شركة البرمجيات' },
@@ -41,20 +49,20 @@ export class PostJob {
     { id: 18, name: 'شركة الهندسة' }
   ];
 
-  form: FormGroup;
-
-  constructor(private fb: FormBuilder, private api: JobService) {
-    this.form = this.fb.group({
+  constructor(private fb: FormBuilder, private api: JobService,
+    private profileService: ProfileService
+  ) {
+  this.form = this.fb.group({
       // Step 1
-      title: [''],
-      category: [null], // numeric id
-      job_type: [''], // enum string
-      city: [''],
-      experience_level: [''],
+      title: ['', Validators.required],
+      category: [null, Validators.required], // numeric id
+      job_type: [null, Validators.required], // enum string
+      city: [null, Validators.required],
+      experience_level: [null, Validators.required],
       salary_min: [null],
       salary_max: [null],
       is_salary_negotiable: [false],
-      description: [''],
+      description: ['', Validators.required],
 
       // Step 2
       requirements: ['', Validators.required],
@@ -70,7 +78,7 @@ export class PostJob {
       responsibilities: [''],
 
       // Step 3
-      company: [null, Validators.required], // numeric id
+      company: [this.companyId], // numeric id
       companyDescription: [''],
       companySize: [''],
       companyIndustry: [''],
@@ -83,6 +91,13 @@ export class PostJob {
       is_urgent: [false],
       publishPlan: ['basic', Validators.required],
       terms: [false, Validators.requiredTrue],
+    });
+    this.profileService.getProfile$().subscribe(profile => {
+      debugger;
+      if (profile && profile.company_logo) {
+        this.companyId = profile.id;
+        this.form.get('company')?.setValue(this.companyId);
+      }
     });
   }
 
@@ -164,7 +179,7 @@ export class PostJob {
       job_type: v.job_type, // must match enum in backend
       experience_level: v.experience_level, // enum
       education_level: v.education_level || undefined,
-      city: v.city,
+      city: v.city as JobCity,
       salary_min: v.salary_min ? Number(v.salary_min) : undefined,
       salary_max: v.salary_max ? Number(v.salary_max) : undefined,
       is_salary_negotiable: !!v.is_salary_negotiable,

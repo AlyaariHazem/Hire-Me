@@ -60,14 +60,44 @@
           <!-- keep your existing layout/labels/inputs but add formControlName -->
           <!-- Step 1 -->
           <div class="form-step" [class.active]="step === 1" id="formStep1">
-            <div class="form-grid">
             <div class="form-group">
-               <label class="form-label required" for="jobCategory">فئة الوظيفة</label>
+              <label class="form-label required" for="jobTitle"
+                >عنوان الوظيفة</label
+              >
+              <input
+                id="jobTitle"
+                class="form-input"
+                type="text"
+                formControlName="title"
+                placeholder="عنوان الوظيفة"
+              />
+              @if (form.get('title')?.invalid && form.get('title')?.touched) {
+              <small class="p-error block mt-1 text-red-500"
+                >يرجى إدخال عنوان الوظيفة</small
+              >
+              }
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label required" for="jobCategory"
+                  >فئة الوظيفة</label
+                >
 
-                <p-select [options]="categories" formControlName="category" optionValue="id" optionLabel="label" placeholder="اختر فئة الوظيفة" class="w-full md:w-56" [showClear]="true" />
+                <p-select
+                  [options]="categories"
+                  formControlName="category"
+                  optionValue="id"
+                  optionLabel="label"
+                  placeholder="اختر فئة الوظيفة"
+                  class="w-full md:w-56"
+                  [showClear]="true"
+                />
 
-                @if (form.get('category')?.invalid && form.get('category')?.touched) {
-                  <small class="p-error block mt-1 text-red-500">يرجى اختيار فئة الوظيفة</small>
+                @if (form.get('category')?.invalid &&
+                form.get('category')?.touched) {
+                <small class="p-error block mt-1 text-red-500"
+                  >يرجى اختيار فئة الوظيفة</small
+                >
                 }
               </div>
 
@@ -75,58 +105,63 @@
                 <label class="form-label required" for="jobType"
                   >نوع الوظيفة</label
                 >
-                <select
-                  id="jobType"
-                  class="form-select"
+                <p-select
+                  [options]="jobTypes"
                   formControlName="job_type"
+                  optionValue="value"
+                  optionLabel="label"
+                  placeholder="اختر نوع الوظيفة"
+                  class="w-full md:w-56"
+                  [showClear]="true"
+                />
+                @if(form.get('job_type')?.invalid &&
+                form.get('job_type')?.touched) {
+                <small class="p-error block mt-1 text-red-500"
+                  >يرجى اختيار نوع الوظيفة</small
                 >
-                  <option value="">اختر النوع</option>
-                  <option value="full_time">دوام كامل</option>
-                  <option value="part_time">دوام جزئي</option>
-                  <option value="contract">عقد مؤقت</option>
-                  <option value="freelance">عمل حر</option>
-                  <option value="internship">تدريب</option>
-                </select>
+                }
               </div>
-              </div>
+            </div>
             <div class="form-grid">
               <div class="form-group">
                 <label class="form-label required" for="jobLocation"
                   >موقع العمل</label
                 >
-                <select
-                  id="jobLocation"
-                  class="form-select"
+                <p-select
+                  [options]="jobCities"
                   formControlName="city"
+                  optionValue="value"
+                  optionLabel="label"
+                  placeholder="اختر مدينة"
+                  class="w-full md:w-56"
+                  [showClear]="true"
+                />
+                @if(form.get('city')?.invalid && form.get('city')?.touched) {
+                <small class="p-error block mt-1 text-red-500"
+                  >يرجى اختيار موقع العمل</small
                 >
-                  <option value="">اختر المدينة</option>
-                  <option value="sanaa">صنعاء</option>
-                  <option value="aden">عدن</option>
-                  <option value="taiz">تعز</option>
-                  <option value="hodeidah">الحديدة</option>
-                  <option value="ibb">إب</option>
-                  <option value="dhamar">ذمار</option>
-                  <option value="mukalla">المكلا</option>
-                  <option value="remote">عمل عن بُعد</option>
-                </select>
+                }
               </div>
 
               <div class="form-group">
                 <label class="form-label required" for="experienceLevel"
                   >مستوى الخبرة</label
                 >
-                <select
-                  id="experienceLevel"
-                  class="form-select"
+                <p-select
+                  [options]="experienceLevels"
                   formControlName="experience_level"
+                  optionValue="value"
+                  optionLabel="label"
+                  placeholder="اختر مستوى الخبرة"
+                  class="w-full md:w-56"
+                  [showClear]="true"
+                />
+                @if(form.get('experience_level')?.invalid &&
+                form.get('experience_level')?.touched) {
+                <small class="p-error block mt-1 text-red-500"
+                  >يرجى اختيار مستوى الخبرة</small
                 >
-                  <option value="">اختر المستوى</option>
-                  <option value="entry">مبتدئ (0-2 سنة)</option>
-                  <option value="junior">مبتدئ متقدم (2-4 سنوات)</option>
-                  <option value="mid">متوسط (4-7 سنوات)</option>
-                  <option value="senior">خبير (7-10 سنوات)</option>
-                  <option value="expert">خبير متقدم (10+ سنوات)</option>
-                </select>
+                }
               </div>
             </div>
 
@@ -188,24 +223,27 @@
                 id="jobSkills"
                 class="form-input"
                 formControlName="skills"
-                placeholder="JavaScript, React, ..."
+                placeholder="JavaScript, Angular, ..."
               />
             </div>
 
             <div class="form-group">
               <label class="form-label" for="education">المؤهل العلمي</label>
-              <select
-                id="education"
-                class="form-select"
+              <p-select
+                [options]="educationLevels"
                 formControlName="education_level"
+                optionValue="value"
+                optionLabel="label"
+                placeholder="اختر المؤهل العلمي"
+                class="w-full md:w-56"
+                [showClear]="true"
+              />
+              @if(form.get('education_level')?.invalid &&
+              form.get('education_level')?.touched) {
+              <small class="p-error block mt-1 text-red-500"
+                >يرجى اختيار المؤهل العلمي</small
               >
-                <option value="any">غير محدد</option>
-                <option value="high_school">ثانوية عامة</option>
-                <option value="diploma">دبلوم</option>
-                <option value="bachelor">بكالوريوس</option>
-                <option value="master">ماجستير</option>
-                <option value="phd">دكتوراه</option>
-              </select>
+              }
             </div>
 
             <div class="form-group" formGroupName="languages">
@@ -250,9 +288,9 @@
                 formControlName="company"
               >
                 <option value="">اختر الشركة</option>
-                <option *ngFor="let c of companies" [value]="c.id">
-                  {{ c.name }}
-                </option>
+                @for(c of companies;track c;){
+                <option [value]="c.id">{{ c.name }}</option>
+                }
               </select>
             </div>
 
