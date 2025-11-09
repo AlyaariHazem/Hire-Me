@@ -17,4 +17,17 @@ export class JobService {
     const url = environment.getUrl('create', 'jobs');
     return this.http.post(url, body);
   }
+  getCategories() {
+  return this.http.get<{
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: {
+      id: number;
+      name: string;
+      slug: string;
+      is_active: boolean;
+    }[];
+  }>(environment.getUrl('categories', 'jobs'));
+}
 }

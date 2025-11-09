@@ -1,5 +1,5 @@
 // post-job.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'shared/shared-module';
 import { Select } from 'primeng/select';
@@ -15,7 +15,7 @@ import { ProfileService } from '../core/services/profile.service';
   templateUrl: './post-job.html',
   styleUrls: ['./post-job.scss'],
 })
-export class PostJob {
+export class PostJob implements OnInit {
   step = 1;
   form: FormGroup;
   companyId: number | null = 0;
@@ -25,17 +25,7 @@ export class PostJob {
   experienceLevels = EXPERIENCE_LEVELS;
   educationLevels = EDUCATION_LEVELS;
   // map your UI select values → API enums/ids
-  categories = [
-    { id: 1, label: 'تقنية المعلومات' },
-    { id: 2, label: 'التسويق' },
-    { id: 3, label: 'المبيعات' },
-    { id: 4, label: 'الموارد البشرية' },
-    { id: 5, label: 'التصميم' },
-    { id: 6, label: 'المالية' },
-    { id: 7, label: 'الصحة' },
-    { id: 8, label: 'التعليم' },
-    { id: 9, label: 'الهندسة' },
-  ];
+  categories: { id: number; label: string; slug: string }[] = [];
   
   companies = [
     { id: 10, name: 'شركة افتراضية' },
@@ -101,6 +91,26 @@ export class PostJob {
     });
   }
 
+  ngOnInit(): void {
+    this.loadCategories();
+  }
+
+   private loadCategories() {
+    this.api.getCategories().subscribe({
+      next: (res) => {
+        this.categories = (res.results || [])
+          .filter(c => c.is_active)
+          .map(c => ({
+            id: c.id,
+            label: c.name,
+            slug: c.slug,
+          }));
+      },
+      error: (err) => {
+        console.error('Failed to load categories', err);
+      },
+    });
+  }
   // ---- Stepper logic ----
   nextStep() {
     debugger;
@@ -174,7 +184,7 @@ export class PostJob {
       responsibilities: v.responsibilities || undefined,
       benefits: v.benefits || undefined,
       skills: skills || undefined,
-      company: Number(v.company),
+      company: Number(this.companyId),
       category: Number(v.category),
       job_type: v.job_type, // must match enum in backend
       experience_level: v.experience_level, // enum
