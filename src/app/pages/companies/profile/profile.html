@@ -1,0 +1,113 @@
+<div class="employer-dashboard-container">
+  <app-side-bar />
+  <main class="dashboard-main">
+    <div class="auth-container w-full">
+      <div class="auth-card">
+        <div class="auth-header">
+          <img
+            [src]="logo$  || 'images/company-logo-1.jpg'"
+            alt="منصة التوظيف"
+            class="auth-logo"
+          />
+          <h1 class="auth-title">تحديث بيانات الشركة</h1>
+          <p class="auth-subtitle">قم بتحديث الملف التعريفي لصاحب العمل</p>
+        </div>
+
+        <form class="auth-form" (ngSubmit)="save()">
+          <!-- Company name -->
+          <div class="form-group">
+            <label class="form-label">اسم الشركة</label>
+            <input
+              class="form-input"
+              required
+              [(ngModel)]="form.company_name"
+              name="company_name"
+            />
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label class="form-label">وصف الشركة</label>
+            <textarea
+              class="form-input"
+              rows="4"
+              [(ngModel)]="form.company_description"
+              name="company_description"
+              placeholder="نبذة مختصرة عن الشركة"
+            ></textarea>
+          </div>
+
+          <!-- Website -->
+          <div class="form-group">
+            <label class="form-label">موقع الشركة</label>
+            <input
+              class="form-input"
+              type="url"
+              [(ngModel)]="form.company_website"
+              name="company_website"
+              placeholder="https://example.com"
+            />
+          </div>
+
+          <!-- Size + Industry -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">حجم الشركة</label>
+              <select
+                class="form-input"
+                [(ngModel)]="form.company_size"
+                name="company_size"
+              >
+                <option value="" disabled selected>اختر الحجم</option>
+                <option>1-10</option>
+                <option>11-50</option>
+                <option>51-200</option>
+                <option>201-500</option>
+                <option>500+</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">الصناعة</label>
+              <input
+                class="form-input"
+                [(ngModel)]="form.industry"
+                name="industry"
+                placeholder="Software, Retail..."
+              />
+            </div>
+          </div>
+
+          <!-- Founded year -->
+          <div class="form-group">
+            <label class="form-label">سنة التأسيس</label>
+            <input
+              class="form-input"
+              type="number"
+              min="1900"
+              max="2100"
+              [(ngModel)]="form.founded_year"
+              name="founded_year"
+              placeholder="2015"
+            />
+          </div>
+
+          <!-- Logo -->
+          <div class="form-group">
+            <label class="form-label">شعار الشركة</label>
+            <input
+              class="form-input"
+              type="file"
+              accept="image/*"
+              (change)="onLogoSelected($event)"
+            />
+          </div>
+
+          <button type="submit" class="auth-submit" [disabled]="saving">
+            {{ saving ? 'جارٍ الحفظ...' : 'حفظ التغييرات' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

@@ -5,6 +5,7 @@ import { Dashboard } from './dashboard/dashboard';
 import { PostJob } from './post-job/post-job';
 import { CompanyProfile } from './company-profile/company-profile';
 import { CompanyData } from './company-data/company-data';
+import { Profile } from './profile/profile';
 
 const routes: Routes = [
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
       {
         path: 'company-profile',
         component:CompanyProfile
+      },
+      {
+        path: 'profile',
+        component: Profile,
       },
       {
         path: 'company-data',

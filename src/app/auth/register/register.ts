@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment.development';
 import { Errors } from '../../../shared/services/errors';
+import { CompanyService } from 'app/pages/companies/core/services/company.service';
+import { ICompanyData } from '@app/companies/models';
 
 
 @Component({
@@ -19,6 +21,8 @@ export class Register {
   user = true;      // job seeker default
   admin = false;    // employer
   errors = inject(Errors);
+  companyService = inject(CompanyService);
+
   // Bind to template
   model = {
     first_name: '',
@@ -81,6 +85,24 @@ export class Register {
         if(this.user){
           this.router.navigateByUrl('/jobseeker');
         } else {
+          const resCompany: any = {
+            name: res.data.user.username,
+            description: 'Default description',
+            email: res.data.user.email,
+            city: 'Sana\'a',
+            size: 'startup',
+            industry: 'technology',
+            address: 'Default address',
+            country: 'Yemen',
+            founded_year: new Date().getFullYear(),
+            website: '',
+            phone: '',
+            employees_count: 1
+
+          }
+          debugger;
+          localStorage.setItem('access', res.data.token);
+          this.companyService.createCompany(resCompany).subscribe();
           this.router.navigateByUrl('/companies');
         }
         // Option B: if API returns tokens, you can store and redirect directly:

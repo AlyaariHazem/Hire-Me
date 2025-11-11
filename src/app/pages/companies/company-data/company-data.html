@@ -1,113 +1,302 @@
 <div class="employer-dashboard-container">
-  <app-side-bar />
+  <app-side-bar></app-side-bar>
+
   <main class="dashboard-main">
-    <div class="auth-container w-full">
-      <div class="auth-card">
-        <div class="auth-header">
-          <img
-            [src]="logo$  || 'images/company-logo-1.jpg'"
-            alt="منصة التوظيف"
-            class="auth-logo"
-          />
-          <h1 class="auth-title">تحديث بيانات الشركة</h1>
-          <p class="auth-subtitle">قم بتحديث الملف التعريفي لصاحب العمل</p>
+    <div class="company-page">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">إدارة الشركات</h1>
+          <p class="page-subtitle">
+            عرض جميع شركاتك، وتعديل بياناتها أو إضافة شركة جديدة.
+          </p>
         </div>
+        <div class="page-actions">
+          <button type="button" class="btn-primary" (click)="openCreateDialog()">
+            + إضافة شركة
+          </button>
+        </div>
+      </div>
 
-        <form class="auth-form" (ngSubmit)="save()">
-          <!-- Company name -->
-          <div class="form-group">
-            <label class="form-label">اسم الشركة</label>
-            <input
-              class="form-input"
-              required
-              [(ngModel)]="form.company_name"
-              name="company_name"
-            />
-          </div>
+      <!-- Companies table -->
+      <div *ngIf="companies.length; else noCompanies">
+        <table class="company-table">
+          <thead>
+            <tr>
+              <th>الشعار</th>
+              <th>اسم الشركة</th>
+              <th>مجال العمل</th>
+              <th>الحجم</th>
+              <th>سنة التأسيس</th>
+              <th>البريد الإلكتروني</th>
+              <th>الدولة</th>
+              <th class="actions-col">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of companies">
+              <td>
+                <img
+                  class="table-logo"
+                  [src]="c.logo ? (c.logo.startsWith('http') ? c.logo : (baseUrl + c.logo)) : 'assets/images/company-placeholder.png'"
+                  alt="Logo"
+                />
+              </td>
+              <td>{{ c.name || c.slug }}</td>
+              <td>{{ c.industry || '-' }}</td>
+              <td>{{ c.size || '-' }}</td>
+              <td>{{ c.founded_year || '-' }}</td>
+              <td>{{ c.email || '-' }}</td>
+              <td>{{ c.country || '-' }}</td>
+              <td class="actions">
+                <button
+                  type="button"
+                  class="btn-link"
+                  (click)="openEditDialog(c)"
+                >
+                  تعديل
+                </button>
+                <button
+                  type="button"
+                  class="btn-link danger"
+                  (click)="deleteCompany(c)"
+                  [disabled]="deletingId === c.id"
+                >
+                  {{ deletingId === c.id ? 'جارٍ الحذف...' : 'حذف' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-          <!-- Description -->
-          <div class="form-group">
-            <label class="form-label">وصف الشركة</label>
-            <textarea
-              class="form-input"
-              rows="4"
-              [(ngModel)]="form.company_description"
-              name="company_description"
-              placeholder="نبذة مختصرة عن الشركة"
-            ></textarea>
-          </div>
+      <ng-template #noCompanies>
+        <div class="empty-state">
+          لا توجد شركات مضافة حتى الآن.
+          <button class="btn-link" (click)="openCreateDialog()">
+            إضافة شركة جديدة
+          </button>
+        </div>
+      </ng-template>
 
-          <!-- Website -->
-          <div class="form-group">
-            <label class="form-label">موقع الشركة</label>
-            <input
-              class="form-input"
-              type="url"
-              [(ngModel)]="form.company_website"
-              name="company_website"
-              placeholder="https://example.com"
-            />
-          </div>
-
-          <!-- Size + Industry -->
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">حجم الشركة</label>
-              <select
-                class="form-input"
-                [(ngModel)]="form.company_size"
-                name="company_size"
-              >
-                <option value="" disabled selected>اختر الحجم</option>
-                <option>1-10</option>
-                <option>11-50</option>
-                <option>51-200</option>
-                <option>201-500</option>
-                <option>500+</option>
-              </select>
+      <!-- Dialog overlay -->
+      <div class="dialog-backdrop" *ngIf="dialogVisible">
+        <div class="dialog">
+          <div class="dialog-header">
+            <div class="dialog-title">
+              <img
+                class="dialog-logo"
+                [src]="logoPreview || 'assets/images/company-placeholder.png'"
+                alt=""
+              />
+              <h2>{{ dialogTitle }}</h2>
             </div>
+            <button type="button" class="dialog-close" (click)="closeDialog()">
+              ×
+            </button>
+          </div>
 
+          <form
+            #companyForm="ngForm"
+            class="dialog-form"
+            (ngSubmit)="save(companyForm)"
+          >
+            <!-- Name -->
             <div class="form-group">
-              <label class="form-label">الصناعة</label>
+              <label for="name">اسم الشركة<span class="required">*</span></label>
               <input
-                class="form-input"
-                [(ngModel)]="form.industry"
-                name="industry"
-                placeholder="Software, Retail..."
+                id="name"
+                name="name"
+                class="form-control"
+                required
+                [(ngModel)]="form.name"
+                placeholder="مثال: شركة التقنيات المتقدمة"
               />
             </div>
-          </div>
 
-          <!-- Founded year -->
-          <div class="form-group">
-            <label class="form-label">سنة التأسيس</label>
-            <input
-              class="form-input"
-              type="number"
-              min="1900"
-              max="2100"
-              [(ngModel)]="form.founded_year"
-              name="founded_year"
-              placeholder="2015"
-            />
-          </div>
+            <!-- Description -->
+            <div class="form-group">
+              <label for="description">وصف الشركة</label>
+              <textarea
+                id="description"
+                name="description"
+                class="form-control"
+                rows="3"
+                [(ngModel)]="form.description"
+                placeholder="نبذة مختصرة عن نشاط الشركة ورسالتها."
+              ></textarea>
+            </div>
 
-          <!-- Logo -->
-          <div class="form-group">
-            <label class="form-label">شعار الشركة</label>
-            <input
-              class="form-input"
-              type="file"
-              accept="image/*"
-              (change)="onLogoSelected($event)"
-            />
-          </div>
+            <!-- Website / Industry -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="website">موقع الشركة</label>
+                <input
+                  id="website"
+                  name="website"
+                  type="url"
+                  class="form-control"
+                  [(ngModel)]="form.website"
+                  placeholder="https://example.com"
+                />
+              </div>
+              <div class="form-group">
+                <label for="industry">مجال العمل</label>
+                <input
+                  id="industry"
+                  name="industry"
+                  class="form-control"
+                  [(ngModel)]="form.industry"
+                  placeholder="تقنية معلومات، تجارة، خدمات..."
+                />
+              </div>
+            </div>
 
-          <button type="submit" class="auth-submit" [disabled]="saving">
-            {{ saving ? 'جارٍ الحفظ...' : 'حفظ التغييرات' }}
-          </button>
-        </form>
+            <!-- Size / Founded year -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="size">حجم الشركة</label>
+                <select
+                  id="size"
+                  name="size"
+                  class="form-control"
+                  [(ngModel)]="form.size"
+                >
+                  <option [ngValue]="''">غير محدد</option>
+                  <option value="startup">شركة ناشئة</option>
+                  <option value="small">صغيرة (1-10)</option>
+                  <option value="medium">متوسطة (11-50)</option>
+                  <option value="large">كبيرة (51-200)</option>
+                  <option value="enterprise">عملاقة (200+)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="founded_year">سنة التأسيس</label>
+                <input
+                  id="founded_year"
+                  name="founded_year"
+                  type="number"
+                  min="1900"
+                  max="2100"
+                  class="form-control"
+                  [(ngModel)]="form.founded_year"
+                  placeholder="مثال: 2015"
+                />
+              </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  class="form-control"
+                  [(ngModel)]="form.email"
+                  placeholder="info@company.com"
+                />
+              </div>
+              <div class="form-group">
+                <label for="phone">رقم الهاتف</label>
+                <input
+                  id="phone"
+                  name="phone"
+                  class="form-control"
+                  [(ngModel)]="form.phone"
+                  placeholder="7XXXXXXX"
+                />
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="country">الدولة</label>
+                <input
+                  id="country"
+                  name="country"
+                  class="form-control"
+                  [(ngModel)]="form.country"
+                  placeholder="اليمن"
+                />
+              </div>
+              <div class="form-group">
+                <label for="city">المدينة</label>
+                <input
+                  id="city"
+                  name="city"
+                  class="form-control"
+                  [(ngModel)]="form.city"
+                  placeholder="صنعاء"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="address">العنوان</label>
+              <input
+                id="address"
+                name="address"
+                class="form-control"
+                [(ngModel)]="form.address"
+                placeholder="الحي، الشارع، تفاصيل إضافية"
+              />
+            </div>
+
+            <!-- Logo / Cover -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="logo">رابط الشعار (Logo URL)</label>
+                <input
+                  id="logo"
+                  name="logo"
+                  class="form-control"
+                  [(ngModel)]="form.logo"
+                  placeholder="/media/logos/company.png أو رابط كامل"
+                />
+              </div>
+              <div class="form-group">
+                <label for="cover_image">رابط صورة الغلاف</label>
+                <input
+                  id="cover_image"
+                  name="cover_image"
+                  class="form-control"
+                  [(ngModel)]="form.cover_image"
+                  placeholder="/media/covers/cover.jpg"
+                />
+              </div>
+            </div>
+
+            <!-- Logo preview upload -->
+            <div class="form-group upload-group">
+              <label>تحديث الشعار (اختياري للمعاينة)</label>
+              <input type="file" accept="image/*" (change)="onLogoSelected($event)" />
+              <small>
+                هذا الاختيار فقط لمعاينة الشعار. ارفع الصورة فعلياً لمسار ثابت ثم ضع الرابط في الحقل أعلاه.
+              </small>
+            </div>
+
+            <!-- Actions -->
+            <div class="dialog-actions">
+              <button type="button" class="btn-ghost" (click)="closeDialog()">
+                إلغاء
+              </button>
+              <button
+                type="submit"
+                class="btn-primary"
+                [disabled]="saving || companyForm.invalid"
+              >
+                {{ saving ? 'جارٍ الحفظ...' : (dialogMode === 'edit' ? 'حفظ التعديلات' : 'إنشاء الشركة') }}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
+      <!-- /dialog -->
+
     </div>
   </main>
 </div>

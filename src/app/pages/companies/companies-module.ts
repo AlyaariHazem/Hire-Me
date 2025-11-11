@@ -16,6 +16,7 @@ import { PostJob } from './post-job/post-job';
 import { HeaderCompany } from './header-company/header-company';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CompanyData } from './company-data/company-data';
+import { Profile } from './profile/profile';
 
 const components = [
 Companies,
@@ -28,7 +29,8 @@ CompanyProfile,
 Billing,
 HeaderCompany,
 ManageJobs,
-CompanyData
+CompanyData,
+Profile
 ]
 const modules = [
   CommonModule,
