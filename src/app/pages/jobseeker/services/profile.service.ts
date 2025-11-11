@@ -5,9 +5,6 @@ import { ProfileStoreService } from 'shared/services/profile.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService extends ProfileStoreService {
-  constructor(http: HttpClient) {
-    super(http);
-  }
 
   // /api/accounts/profile/update/
   updateBasic(body: {

@@ -1,42 +1,88 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, shareReplay, catchError, throwError, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  tap,
+  catchError,
+  throwError,
+  finalize
+} from 'rxjs';
 import { environment } from 'environments/environment';
 
 type ApiRes<T> = { data: { profile: T } };
+
 export interface Profile {
   company_logo: string;
   id: number;
-  // ...other fields you need
+  // ...other fields
 }
 
 @Injectable({ providedIn: 'root' })
 export class ProfileStoreService {
-  private cache$?: Observable<Profile>;
-  public http!: HttpClient;
+  private readonly profileSubject = new BehaviorSubject<Profile | null>(null);
+  readonly profile$ = this.profileSubject.asObservable();
 
-  constructor(http: HttpClient) {
-    this.http = http;
-  }
+  private loading = false; // prevent duplicate calls
+  private loaded = false;  // track if we already have data
+  http = inject(HttpClient);
 
-  getProfile$() {
-    if (!this.cache$) {
-      const url = environment.getUrl('profile', 'accounts');
-      this.cache$ = this.http.get<ApiRes<Profile>>(url).pipe(
-        map(res => res.data.profile),
-        shareReplay({ bufferSize: 1, refCount: false }), // cache for all subscribers
-        catchError(err => {
-          // if first load fails, clear cache so next call retries
-          this.cache$ = undefined;
-          return throwError(() => err);
-        })
-      );
+  constructor() {}
+
+  /**
+   * Public stream: subscribe anywhere (header, layout, etc).
+   * If not loaded yet, will auto-fetch once.
+   */
+  getProfile$(forceRefresh = false): Observable<Profile | null> {
+    if ((this.loaded && !forceRefresh) || this.loading) {
+      // already loaded or in progress → just return stream
+      return this.profile$;
     }
-    return this.cache$;
+
+    this.fetchProfile();
+    return this.profile$;
   }
 
-  /** Call this after you update the profile so next read refetches */
-  invalidateCache() {
-    this.cache$ = undefined;
+  /**
+   * Manually trigger reload, e.g. after profile update.
+   */
+  refreshProfile(): void {
+    this.fetchProfile(true);
+  }
+
+  /**
+   * Internal fetch handler
+   */
+  private fetchProfile(force = false): void {
+    if (this.loading) return;
+
+    if (!force && this.loaded && this.profileSubject.value) {
+      return;
+    }
+
+    this.loading = true;
+
+    const url = environment.getUrl('profile', 'accounts');
+
+    this.http.get<ApiRes<Profile>>(url).pipe(
+      tap((res) => {
+        const profile = res?.data?.profile;
+        if (profile) {
+          this.profileSubject.next(profile);
+          this.loaded = true;
+        } else {
+          // optional: handle unexpected empty response
+          this.profileSubject.next(null);
+        }
+      }),
+      catchError((err) => {
+        // keep last good value, but don't mark as loaded so it can retry later
+        this.loaded = false;
+        return throwError(() => err);
+      }),
+      finalize(() => {
+        this.loading = false;
+      })
+    ).subscribe();
   }
 }

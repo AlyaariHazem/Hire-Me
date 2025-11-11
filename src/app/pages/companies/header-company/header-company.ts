@@ -1,10 +1,10 @@
 import { Component, ElementRef, HostListener, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, filter } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 import { environment } from 'environments/environment';
-import { ProfileService } from '../core/services/profile.service';
+import { ProfileStoreService } from 'shared/services/profile.service';
 
 @Component({
   selector: 'app-header-company',
@@ -14,15 +14,22 @@ import { ProfileService } from '../core/services/profile.service';
 })
 export class HeaderCompany {
   isEmployerMenuOpen = false;
-  logo$: any;
   toastr = inject(ToastrService);
-  constructor(private el: ElementRef, private router: Router, private profileService: ProfileService) {
-    this.logo$ = this.profileService.getProfile$().pipe(
-      map(p => environment.apiBaseUrl + p.company_logo)
-    );
-  }
+  private el = inject(ElementRef);
+  private router = inject(Router);
+  private profileStore = inject(ProfileStoreService);
 
-  notImplemented(){
+  // ✅ logo$ now comes from the shared store
+  logo$ = this.profileStore.getProfile$().pipe(
+    filter((p): p is any => !!p),
+    map(p =>
+      p.company_logo
+        ? environment.apiBaseUrl + p.company_logo
+        : 'assets/images/default-logo.svg' // fallback if you like
+    )
+  );
+
+  notImplemented() {
     this.toastr.info('هذه الميزة غير متوفرة حالياً', 'لم يتم التنفيذ');
   }
 
@@ -40,9 +47,8 @@ export class HeaderCompany {
     };
 
     if (action === 'logout') {
-      // this.authService.logout();
-      this.router.navigate(['/login']);
       localStorage.removeItem('access');
+      this.router.navigate(['/login']);
     } else if (routes[action]) {
       this.router.navigate([routes[action]]);
     }

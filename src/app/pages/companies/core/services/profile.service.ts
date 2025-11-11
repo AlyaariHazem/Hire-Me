@@ -7,9 +7,6 @@ import { environment } from 'environments/environment';
 @Injectable({ providedIn: 'root' })
 export class ProfileService extends ProfileStoreService {
 
-  constructor( http: HttpClient) {
-    super(http);
-  }
 updateBasic(body: {
     first_name: string; last_name: string; email: string; phone?: string;
     date_of_birth?: string; bio?: string; location?: string; profile_picture?: string;
