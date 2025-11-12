@@ -3,7 +3,6 @@
 
   <main class="dashboard-main">
     <div class="company-page">
-
       <!-- Page header -->
       <div class="page-header">
         <div>
@@ -13,7 +12,11 @@
           </p>
         </div>
         <div class="page-actions">
-          <button type="button" class="btn-primary" (click)="openCreateDialog()">
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="openCreateDialog()"
+          >
             + إضافة شركة
           </button>
         </div>
@@ -104,28 +107,25 @@
           >
             <!-- Name -->
             <div class="form-group">
-              <label for="name">اسم الشركة<span class="required">*</span></label>
+              <label for="name"
+                >اسم الشركة <span class="required">*</span></label
+              >
               <input
+                pInputText
                 id="name"
                 name="name"
-                class="form-control"
-                required
                 [(ngModel)]="form.name"
+                required
+                #nameCtrl="ngModel"
+                [class.p-invalid]="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)"
                 placeholder="مثال: شركة التقنيات المتقدمة"
               />
-            </div>
-
-            <!-- Description -->
-            <div class="form-group">
-              <label for="description">وصف الشركة</label>
-              <textarea
-                id="description"
-                name="description"
-                class="form-control"
-                rows="3"
-                [(ngModel)]="form.description"
-                placeholder="نبذة مختصرة عن نشاط الشركة ورسالتها."
-              ></textarea>
+              <small
+                class="p-error"
+                *ngIf="nameCtrl.errors?.['required'] && (nameCtrl.dirty || nameCtrl.touched)"
+              >
+                الاسم مطلوب
+              </small>
             </div>
 
             <!-- Website / Industry -->
@@ -133,56 +133,98 @@
               <div class="form-group">
                 <label for="website">موقع الشركة</label>
                 <input
+                  pInputText
+                  type="url"
                   id="website"
                   name="website"
-                  type="url"
-                  class="form-control"
                   [(ngModel)]="form.website"
+                  #websiteCtrl="ngModel"
+                  [class.p-invalid]="websiteCtrl.invalid && (websiteCtrl.dirty || websiteCtrl.touched)"
                   placeholder="https://example.com"
                 />
+                <small
+                  class="p-error"
+                  *ngIf="websiteCtrl.errors?.['url'] && (websiteCtrl.dirty || websiteCtrl.touched)"
+                >
+                  رابط غير صالح
+                </small>
               </div>
+
               <div class="form-group">
-                <label for="industry">مجال العمل</label>
-                <input
+                <label for="industry"
+                  >مجال العمل <span class="required">*</span></label
+                >
+                <p-select
                   id="industry"
                   name="industry"
-                  class="form-control"
+                  [options]="INDUSTRY_TYPES"
+                  optionValue="value"
+                  optionLabel="label"
+                  placeholder="اختر مجال العمل"
+                  [showClear]="true"
                   [(ngModel)]="form.industry"
-                  placeholder="تقنية معلومات، تجارة، خدمات..."
-                />
+                  required
+                  #industryCtrl="ngModel"
+                  [class.p-invalid]="industryCtrl.invalid && (industryCtrl.dirty || industryCtrl.touched)"
+                >
+                </p-select>
+                <small
+                  class="p-error"
+                  *ngIf="industryCtrl.errors?.['required'] && (industryCtrl.dirty || industryCtrl.touched)"
+                >
+                  اختر مجال العمل
+                </small>
               </div>
             </div>
 
             <!-- Size / Founded year -->
             <div class="form-row">
               <div class="form-group">
-                <label for="size">حجم الشركة</label>
-                <select
+                <label for="size"
+                  >حجم الشركة <span class="required">*</span></label
+                >
+                <p-select
                   id="size"
                   name="size"
-                  class="form-control"
+                  [options]="COMPANY_SIZES"
+                  optionValue="value"
+                  optionLabel="label"
+                  placeholder="اختر حجم الشركة"
+                  [showClear]="true"
                   [(ngModel)]="form.size"
+                  required
+                  #sizeCtrl="ngModel"
+                  [class.p-invalid]="sizeCtrl.invalid && (sizeCtrl.dirty || sizeCtrl.touched)"
                 >
-                  <option [ngValue]="''">غير محدد</option>
-                  <option value="startup">شركة ناشئة</option>
-                  <option value="small">صغيرة (1-10)</option>
-                  <option value="medium">متوسطة (11-50)</option>
-                  <option value="large">كبيرة (51-200)</option>
-                  <option value="enterprise">عملاقة (200+)</option>
-                </select>
+                </p-select>
+                @if(sizeCtrl.errors?.['required'] && (sizeCtrl.dirty ||
+                sizeCtrl.touched)){
+                <small class="p-error"> اختر حجم الشركة </small>
+                }
               </div>
+
               <div class="form-group">
                 <label for="founded_year">سنة التأسيس</label>
-                <input
-                  id="founded_year"
+                <p-inputNumber
+                  inputId="founded_year"
                   name="founded_year"
-                  type="number"
-                  min="1900"
-                  max="2100"
-                  class="form-control"
                   [(ngModel)]="form.founded_year"
+                  [min]="1900"
+                  [max]="maxYear"
+                  [showButtons]="true"
+                  [useGrouping]="false"
+                  #foundedCtrl="ngModel"
+                  [inputStyleClass]="(foundedCtrl.invalid && (foundedCtrl.dirty || foundedCtrl.touched)) ? 'p-invalid' : ''"
                   placeholder="مثال: 2015"
-                />
+                >
+                </p-inputNumber>
+                @if((foundedCtrl.errors?.['min'] || foundedCtrl.errors?.['max'])
+                && (foundedCtrl.dirty || foundedCtrl.touched)){
+
+                <small class="p-error">
+                  يجب أن تكون بين 1900 و {{ maxYear }}
+                </small>
+                }
               </div>
             </div>
 
@@ -191,59 +233,122 @@
               <div class="form-group">
                 <label for="email">البريد الإلكتروني</label>
                 <input
+                  pInputText
+                  type="email"
                   id="email"
                   name="email"
-                  type="email"
-                  class="form-control"
                   [(ngModel)]="form.email"
+                  #emailCtrl="ngModel"
+                  [class.p-invalid]="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)"
                   placeholder="info@company.com"
                 />
+                @if(emailCtrl.errors?.['email'] && (emailCtrl.dirty ||
+                emailCtrl.touched)){
+                <small class="p-error"> بريد إلكتروني غير صالح </small>
+                }
               </div>
+
               <div class="form-group">
                 <label for="phone">رقم الهاتف</label>
                 <input
+                  pInputText
                   id="phone"
                   name="phone"
-                  class="form-control"
                   [(ngModel)]="form.phone"
+                  pattern="^[0-9+\-\s()]{7,20}$"
+                  maxlength="20"
+                  #phoneCtrl="ngModel"
+                  [class.p-invalid]="phoneCtrl.invalid && (phoneCtrl.dirty || phoneCtrl.touched)"
                   placeholder="7XXXXXXX"
                 />
+                @if(phoneCtrl.errors?.['pattern'] && (phoneCtrl.dirty ||
+                phoneCtrl.touched)){
+                <small class="p-error">
+                  يُسمح بالأرقام والرموز الهاتفية فقط (7–20)
+                </small>
+                }
               </div>
             </div>
 
             <!-- Address -->
             <div class="form-row">
               <div class="form-group">
-                <label for="country">الدولة</label>
+                <label for="country"
+                  >الدولة <span class="required">*</span></label
+                >
                 <input
+                  pInputText
                   id="country"
                   name="country"
-                  class="form-control"
                   [(ngModel)]="form.country"
+                  required
+                  maxlength="100"
+                  #countryCtrl="ngModel"
+                  [class.p-invalid]="countryCtrl.invalid && (countryCtrl.dirty || countryCtrl.touched)"
                   placeholder="اليمن"
                 />
+                <small
+                  class="p-error"
+                  *ngIf="countryCtrl.errors?.['required'] && (countryCtrl.dirty || countryCtrl.touched)"
+                >
+                  الدولة مطلوبة
+                </small>
+                <small
+                  class="p-error"
+                  *ngIf="countryCtrl.errors?.['maxlength'] && (countryCtrl.dirty || countryCtrl.touched)"
+                >
+                  الحد الأقصى 100 حرف
+                </small>
               </div>
+
               <div class="form-group">
-                <label for="city">المدينة</label>
+                <label for="city"
+                  >المدينة <span class="required">*</span></label
+                >
                 <input
+                  pInputText
                   id="city"
                   name="city"
-                  class="form-control"
                   [(ngModel)]="form.city"
+                  required
+                  maxlength="100"
+                  #cityCtrl="ngModel"
+                  [class.p-invalid]="cityCtrl.invalid && (cityCtrl.dirty || cityCtrl.touched)"
                   placeholder="صنعاء"
                 />
+                <small
+                  class="p-error"
+                  *ngIf="cityCtrl.errors?.['required'] && (cityCtrl.dirty || cityCtrl.touched)"
+                >
+                  المدينة مطلوبة
+                </small>
+                <small
+                  class="p-error"
+                  *ngIf="cityCtrl.errors?.['maxlength'] && (cityCtrl.dirty || cityCtrl.touched)"
+                >
+                  الحد الأقصى 100 حرف
+                </small>
               </div>
             </div>
 
             <div class="form-group">
               <label for="address">العنوان</label>
               <input
+                pInputText
                 id="address"
                 name="address"
-                class="form-control"
                 [(ngModel)]="form.address"
+                maxlength="254"
+                #addressCtrl="ngModel"
+                [class.p-invalid]="addressCtrl.invalid && (addressCtrl.dirty || addressCtrl.touched)"
                 placeholder="الحي، الشارع، تفاصيل إضافية"
               />
+              <small
+                class="p-error"
+                *ngIf="addressCtrl.errors?.['maxlength'] && (addressCtrl.dirty || addressCtrl.touched)"
+              >
+                الحد الأقصى 254 حرفًا
+              </small>
             </div>
 
             <!-- Logo / Cover -->
@@ -273,9 +378,14 @@
             <!-- Logo preview upload -->
             <div class="form-group upload-group">
               <label>تحديث الشعار (اختياري للمعاينة)</label>
-              <input type="file" accept="image/*" (change)="onLogoSelected($event)" />
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onLogoSelected($event)"
+              />
               <small>
-                هذا الاختيار فقط لمعاينة الشعار. ارفع الصورة فعلياً لمسار ثابت ثم ضع الرابط في الحقل أعلاه.
+                هذا الاختيار فقط لمعاينة الشعار. ارفع الصورة فعلياً لمسار ثابت
+                ثم ضع الرابط في الحقل أعلاه.
               </small>
             </div>
 
@@ -289,14 +399,14 @@
                 class="btn-primary"
                 [disabled]="saving || companyForm.invalid"
               >
-                {{ saving ? 'جارٍ الحفظ...' : (dialogMode === 'edit' ? 'حفظ التعديلات' : 'إنشاء الشركة') }}
+                {{ saving ? 'جارٍ الحفظ...' : (dialogMode === 'edit' ? 'حفظ
+                التعديلات' : 'إنشاء الشركة') }}
               </button>
             </div>
           </form>
         </div>
       </div>
       <!-- /dialog -->
-
     </div>
   </main>
 </div>

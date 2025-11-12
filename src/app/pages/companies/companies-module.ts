@@ -17,34 +17,40 @@ import { HeaderCompany } from './header-company/header-company';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CompanyData } from './company-data/company-data';
 import { Profile } from './profile/profile';
+import { Select } from 'primeng/select';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ButtonModule } from 'primeng/button';
 
 const components = [
-Companies,
-Dashboard,
-Candidates,
-SideBar,
-Overview,
-Analytics,
-CompanyProfile,
-Billing,
-HeaderCompany,
-ManageJobs,
-CompanyData,
-Profile
-]
+  Companies,
+  Dashboard,
+  Candidates,
+  SideBar,
+  Overview,
+  Analytics,
+  CompanyProfile,
+  Billing,
+  HeaderCompany,
+  ManageJobs,
+  CompanyData,
+  Profile,
+];
 const modules = [
   CommonModule,
   CompaniesRoutingModule,
   SharedModule,
+  InputTextModule,
+  InputNumberModule,
+  ButtonModule,
   PostJob,
+  Select,
   FormsModule,
-  ReactiveFormsModule
-]
+  ReactiveFormsModule,
+];
 @NgModule({
   declarations: [...components],
-  imports: [
-...modules
-  ],
-  exports:[...modules,...components]
+  imports: [...modules],
+  exports: [...modules, ...components],
 })
-export class CompaniesModule { }
+export class CompaniesModule {}

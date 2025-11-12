@@ -7,6 +7,7 @@ import { Errors } from 'shared/services/errors';
 import { CompanyService } from '../core/services/company.service';
 import { ICompanyData } from '@app/companies/models';
 import { environment } from 'environments/environment';
+import { COMPANY_SIZES, INDUSTRY_TYPES } from '@app/companies/enums';
 
 @Component({
   selector: 'app-company-data',
@@ -21,7 +22,12 @@ export class CompanyData implements OnInit, OnDestroy {
   private toastr = inject(ToastrService);
   private companyService = inject(CompanyService);
 
+  INDUSTRY_TYPES = INDUSTRY_TYPES;
+  COMPANY_SIZES = COMPANY_SIZES;
+
   companies: ICompanyData[] = [];
+  maxYear = new Date().getFullYear();
+
 
   // dialog state
   dialogVisible = false;
@@ -127,8 +133,16 @@ export class CompanyData implements OnInit, OnDestroy {
   // ---------- CRUD via dialog ----------
 
   save(f: NgForm): void {
-    if (f.invalid) return;
-    this.saving = true;
+     if (f.invalid) return;
+
+      // guard: enforce enum values
+      const industryOk = this.INDUSTRY_TYPES.some(i => i.value === this.form.industry);
+      const sizeOk     = this.COMPANY_SIZES.some(s => s.value === this.form.size);
+
+      if (!industryOk) { this.toastr.error('اختر مجال عمل صحيح'); return; }
+      if (!sizeOk)     { this.toastr.error('اختر حجم شركة صحيح'); return; }
+
+      this.saving = true;
 
     const payload: Partial<ICompanyData> = { 
   ...(this.form.address && { address: this.form.address }),

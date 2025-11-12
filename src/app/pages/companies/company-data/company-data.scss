@@ -209,3 +209,23 @@
   gap: 8px;
   margin-top: 4px;
 }
+.is-invalid {
+  border-color: #e74c3c;
+}
+.error {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.required { color: #e74c3c; }
+:host ::ng-deep .p-select,
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-inputtextarea,
+:host ::ng-deep .p-inputnumber,
+:host ::ng-deep .p-inputwrapper {
+  width: 100%;
+}
+
+.form-row { gap: 10px; }
+:host ::ng-deep .p-error { font-size: 12px; color: #ef4444; }
+.required { color: #ef4444; }
