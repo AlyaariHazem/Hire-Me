@@ -1,5 +1,5 @@
 // post-job.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'shared/shared-module';
 import { Select } from 'primeng/select';
@@ -7,7 +7,7 @@ import { Select } from 'primeng/select';
 import { JobService } from 'shared/services/job.service';
 import { CreateJobDto } from '@app/companies/models';
 import { EDUCATION_LEVELS, EXPERIENCE_LEVELS, JOB_CITIES, JOB_TYPES, JobCity } from '@app/companies/enums';
-import { ProfileService } from '../core/services/profile.service';
+import { CompanyService } from '../core/services/company.service';
 
 @Component({
   selector: 'app-post-job',
@@ -26,21 +26,36 @@ export class PostJob implements OnInit {
   educationLevels = EDUCATION_LEVELS;
   // map your UI select values → API enums/ids
   categories: { id: number; label: string; slug: string }[] = [];
+  companyService = inject(CompanyService);
   
-  companies = [
-    { id: 10, name: 'شركة افتراضية' },
-    { id: 11, name: 'شركة البرمجيات' },
-    { id: 12, name: 'شركة التسويق الرقمي' },
-    { id: 13, name: 'شركة التصميم الداخلي' },
-    { id: 14, name: 'شركة الموارد البشرية' },
-    { id: 15, name: 'شركة المالية' },
-    { id: 16, name: 'شركة الصحة' },
-    { id: 17, name: 'شركة التعليم' },
-    { id: 18, name: 'شركة الهندسة' }
-  ];
+  companies = [] as { id: number; name: string }[];
 
-  constructor(private fb: FormBuilder, private api: JobService,
-    private profileService: ProfileService
+  private loadCompanies() {
+  this.companyService.getMyCompanies().subscribe({
+    next: (list) => {
+      // map to id + name for the select
+      this.companies = (list ?? []).map(c => ({
+        id: Number(c.id),
+        name: c.name || c.slug || 'بدون اسم',
+      }));
+
+      // if the form has no value yet, select the first one
+      if (!this.form.get('company')?.value && this.companies.length) {
+        this.form.get('company')!.setValue(this.companies[0].id);
+      }
+    },
+    error: (err) => {
+      console.error('Failed to load companies', err);
+    },
+  });
+}
+
+  getMyCompanies() {
+    this.companyService.getMyCompanies().subscribe((data) => {
+      console.log('My Companies:', data);
+    });
+  }
+  constructor(private fb: FormBuilder, private api: JobService
   ) {
   this.form = this.fb.group({
       // Step 1
@@ -68,7 +83,7 @@ export class PostJob implements OnInit {
       responsibilities: [''],
 
       // Step 3
-      company: [this.companyId], // numeric id
+      company: [null, Validators.required], // numeric id
       companyDescription: [''],
       companySize: [''],
       companyIndustry: [''],
@@ -82,17 +97,11 @@ export class PostJob implements OnInit {
       publishPlan: ['basic', Validators.required],
       terms: [false, Validators.requiredTrue],
     });
-    this.profileService.getProfile$().subscribe(profile => {
-      debugger;
-      if (profile && profile.company_logo) {
-        this.companyId = profile.id;
-        this.form.get('company')?.setValue(this.companyId);
-      }
-    });
   }
 
   ngOnInit(): void {
     this.loadCategories();
+    this.loadCompanies();
   }
 
    private loadCategories() {
@@ -184,7 +193,7 @@ export class PostJob implements OnInit {
       responsibilities: v.responsibilities || undefined,
       benefits: v.benefits || undefined,
       skills: skills || undefined,
-      company: Number(this.companyId),
+      company: Number(v.company),
       category: Number(v.category),
       job_type: v.job_type, // must match enum in backend
       experience_level: v.experience_level, // enum

@@ -38,19 +38,19 @@
       <div class="form-content">
         <!-- Form Steps -->
         <div class="form-steps">
-          <div class="step active" id="step1">
+          <div class="step" [class.active]="step === 1" id="step1">
             <span class="step-number">1</span>
             <span>معلومات الوظيفة</span>
           </div>
-          <div class="step" id="step2">
+          <div class="step" [class.active]="step === 2" id="step2">
             <span class="step-number">2</span>
             <span>المتطلبات والمهارات</span>
           </div>
-          <div class="step" id="step3">
+          <div class="step" [class.active]="step === 3" id="step3">
             <span class="step-number">3</span>
             <span>معلومات الشركة</span>
           </div>
-          <div class="step" id="step4">
+          <div class="step" [class.active]="step === 4" id="step4">
             <span class="step-number">4</span>
             <span>المراجعة والنشر</span>
           </div>
