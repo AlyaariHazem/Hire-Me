@@ -130,7 +130,23 @@ export class CompanyData implements OnInit, OnDestroy {
     if (f.invalid) return;
     this.saving = true;
 
-    const payload: ICompanyData = { ...this.form };
+    const payload: Partial<ICompanyData> = { 
+  ...(this.form.address && { address: this.form.address }),
+  ...(this.form.city && { city: this.form.city }),
+  ...(this.form.country && { country: this.form.country }),
+  ...(this.form.description && { description: this.form.description }),
+  ...(this.form.email && { email: this.form.email }),
+  ...(this.form.founded_year && { founded_year: this.form.founded_year }),
+  ...(this.form.industry && { industry: this.form.industry }),
+  ...(this.form.logo && { logo: this.form.logo }),
+  ...(this.form.name && { name: this.form.name }),
+  ...(this.form.phone && { phone: this.form.phone }),
+  ...(this.form.size && { size: this.form.size }),
+  ...(this.form.website && { website: this.form.website }),
+  ...(this.form.employees_count && { employees_count: this.form.employees_count }),
+  ...(this.form.cover_image && { cover_image: this.form.cover_image }),
+};
+
 
     // CREATE
     if (this.dialogMode === 'create') {
