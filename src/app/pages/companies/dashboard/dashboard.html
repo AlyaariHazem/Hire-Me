@@ -1,36 +1,28 @@
-<!-- Dashboard Container -->
-<div class="employer-dashboard-container">
+<!-- Overview Tab -->
+<app-overview />
 
-  <app-side-bar/>
-  <!-- Main Content -->
-  <main class="employer-main">
-    <!-- Overview Tab -->
-   <app-overview/>
+<!-- Jobs Tab -->
+<app-manage-jobs />
 
-    <!-- Jobs Tab -->
-     <app-manage-jobs/>
+<!-- Candidates Tab -->
+<app-candidates />
 
-    <!-- Candidates Tab -->
-    <app-candidates/>
+<!-- Analytics Tab -->
+<app-analytics />
 
-    <!-- Analytics Tab -->
-    <app-analytics/>
+<!-- Messages Tab -->
+<app-messages />
 
-    <!-- Messages Tab -->
-    <app-messages/>
+<!-- Billing Tab -->
+<app-billing />
 
-    <!-- Billing Tab -->
-    <app-billing/>
+<!-- Settings Tab -->
+<div id="settings">
+  <div class="employer-header">
+    <h1 class="employer-title">الإعدادات</h1>
+  </div>
 
-    <!-- Settings Tab -->
-    <div id="settings" >
-      <div class="employer-header">
-        <h1 class="employer-title">الإعدادات</h1>
-      </div>
-
-      <div class="employer-content-card">
-        <p>إعدادات الحساب ستتم هنا...</p>
-      </div>
-    </div>
-  </main>
+  <div class="employer-content-card">
+    <p>إعدادات الحساب ستتم هنا...</p>
+  </div>
 </div>

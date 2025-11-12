@@ -1,8 +1,4 @@
-<div class="employer-dashboard-container">
-  <app-side-bar></app-side-bar>
-
-  <main class="dashboard-main">
-    <div class="company-page">
+<div class="company-page">
       <!-- Page header -->
       <div class="page-header">
         <div>
@@ -399,8 +395,7 @@
                 class="btn-primary"
                 [disabled]="saving || companyForm.invalid"
               >
-                {{ saving ? 'جارٍ الحفظ...' : (dialogMode === 'edit' ? 'حفظ
-                التعديلات' : 'إنشاء الشركة') }}
+                {{ saving ? 'جارٍ الحفظ...' : (dialogMode === 'edit' ? 'حفظ  التعديلات' : 'إنشاء الشركة') }}
               </button>
             </div>
           </form>
@@ -408,5 +403,3 @@
       </div>
       <!-- /dialog -->
     </div>
-  </main>
-</div>

@@ -1,0 +1,16 @@
+.employer-dashboard-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - 80px);
+}
+
+.employer-main {
+  padding: 2rem;
+  background-color: var(--gray-50);
+}
+
+@media (max-width: 768px) {
+  .employer-dashboard-container {
+    grid-template-columns: 1fr;
+  }
+}
