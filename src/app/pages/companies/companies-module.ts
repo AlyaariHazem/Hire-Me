@@ -7,7 +7,7 @@ import { Companies } from './companies';
 import { Dashboard } from './dashboard/dashboard';
 import { Candidates } from './candidates/candidates';
 import { SideBar } from './side-bar/side-bar';
-import { ManageJobs } from './jobs/manage-jobs';
+import { ManageJobs } from './manage-jobs/manage-jobs';
 import { Analytics } from './analytics/analytics';
 import { CompanyProfile } from './company-profile/company-profile';
 import { Billing } from './billing/billing';
@@ -32,7 +32,6 @@ const components = [
   CompanyProfile,
   Billing,
   HeaderCompany,
-  ManageJobs,
   CompanyData,
   Profile,
 ];
@@ -45,6 +44,7 @@ const modules = [
   ButtonModule,
   PostJob,
   Select,
+  ManageJobs,
   FormsModule,
   ReactiveFormsModule,
 ];

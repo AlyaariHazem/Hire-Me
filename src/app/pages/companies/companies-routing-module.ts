@@ -6,8 +6,9 @@ import { PostJob } from './post-job/post-job';
 import { CompanyProfile } from './company-profile/company-profile';
 import { CompanyData } from './company-data/company-data';
 import { Profile } from './profile/profile';
-import { ManageJobs } from './jobs/manage-jobs';
+import { ManageJobs } from './manage-jobs/manage-jobs';
 import { JobDetails } from 'shared/job-details/job-details';
+import { Jobs } from '../jobs/jobs';
 
 const routes: Routes = [
   {
@@ -35,6 +36,10 @@ const routes: Routes = [
       {
         path: 'post-job',
         component: PostJob,
+      },
+      {
+        path: 'jobs',
+        component: Jobs
       },
       {
         path: 'manage-jobs',

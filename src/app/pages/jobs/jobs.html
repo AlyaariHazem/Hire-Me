@@ -1,10 +1,11 @@
-<!-- Header -->
-<app-header-public/>
-
 <!-- Search Header -->
 <section class="search-page-header">
   <div class="container">
-    <form class="search-form" style="max-width: 100%; margin: 0">
+    <form
+      class="search-form"
+      style="max-width: 100%; margin: 0"
+      (ngSubmit)="onSearchSubmit()"
+    >
       <div class="search-fields">
         <div class="field-group">
           <input
@@ -12,14 +13,21 @@
             id="job-title"
             class="form-input"
             placeholder="عنوان الوظيفة أو الكلمات المفتاحية"
-            value="مطور"
+            name="search"
+            [(ngModel)]="filters.search"
           />
         </div>
 
         <div class="field-group">
-          <select id="location" class="form-select">
+          <select
+            id="location"
+            class="form-select"
+            name="city"
+            [(ngModel)]="filters.city"
+            (change)="onCityChange(filters.city || '')"
+          >
             <option value="">جميع المواقع</option>
-            <option value="sanaa" selected>صنعاء</option>
+            <option value="sanaa">صنعاء</option>
             <option value="aden">عدن</option>
             <option value="taiz">تعز</option>
             <option value="hodeidah">الحديدة</option>
@@ -30,16 +38,19 @@
         </div>
 
         <div class="field-group">
-          <select id="category" class="form-select">
-            <option value="">جميع الفئات</option>
-            <option value="tech" selected>تقنية المعلومات</option>
-            <option value="engineering">الهندسة</option>
-            <option value="marketing">التسويق</option>
-            <option value="finance">المالية والمحاسبة</option>
-            <option value="healthcare">الرعاية الصحية</option>
-            <option value="education">التعليم</option>
-            <option value="sales">المبيعات</option>
-            <option value="hr">الموارد البشرية</option>
+          <!-- هنا يفضّل لاحقاً تعبّي الخيارات من getCategories() وتخلي value=id -->
+          <select
+            id="category"
+            class="form-select"
+            name="category"
+            [(ngModel)]="filters.category"
+            (change)="onCategoryChange(filters.category)"
+          >
+            <option [ngValue]="undefined">جميع الفئات</option>
+            <option [ngValue]="1">تقنية المعلومات</option>
+            <option [ngValue]="2">الهندسة</option>
+            <option [ngValue]="3">التسويق</option>
+            <!-- الخ... من الـ backend لاحقاً -->
           </select>
         </div>
       </div>
@@ -61,28 +72,47 @@
         <div class="filter-section">
           <h3 class="filter-title">نوع الوظيفة</h3>
           <div class="filter-options">
-            <div class="filter-option" (click)="toggleFilter('fulltime')">
+            <div
+              class="filter-option"
+              (click)="setJobType('full_time')"
+              [class.active]="filters.job_type === 'full_time'"
+            >
               <div class="filter-checkbox"></div>
               <span>دوام كامل</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(234)</span
               >
             </div>
-            <div class="filter-option" (click)="toggleFilter('parttime')">
+
+            <div
+              class="filter-option"
+              (click)="setJobType('part_time')"
+              [class.active]="filters.job_type === 'part_time'"
+            >
               <div class="filter-checkbox"></div>
               <span>دوام جزئي</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(89)</span
               >
             </div>
-            <div class="filter-option" (click)="toggleFilter('contract')">
+
+            <div
+              class="filter-option"
+              (click)="setJobType('contract')"
+              [class.active]="filters.job_type === 'contract'"
+            >
               <div class="filter-checkbox"></div>
               <span>عقد مؤقت</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(45)</span
               >
             </div>
-            <div class="filter-option" (click)="toggleFilter('remote')">
+
+            <div
+              class="filter-option"
+              (click)="setJobType('freelance')"
+              [class.active]="filters.job_type === 'freelance'"
+            >
               <div class="filter-checkbox"></div>
               <span>عمل عن بُعد</span>
               <span style="margin-right: auto; color: var(--gray-500)"
@@ -92,89 +122,43 @@
           </div>
         </div>
 
+        <!-- مستوى الخبرة -->
         <div class="filter-section">
           <h3 class="filter-title">مستوى الخبرة</h3>
           <div class="filter-options">
-            <div class="filter-option" (click)="toggleFilter('entry')">
+            <div
+              class="filter-option"
+              (click)="setExperienceLevel('entry')"
+              [class.active]="filters.experience_level === 'entry'"
+            >
               <div class="filter-checkbox"></div>
               <span>مبتدئ (0-2 سنة)</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(156)</span
               >
             </div>
-            <div class="filter-option" (click)="toggleFilter('mid')">
+
+            <div
+              class="filter-option"
+              (click)="setExperienceLevel('mid')"
+              [class.active]="filters.experience_level === 'mid'"
+            >
               <div class="filter-checkbox"></div>
               <span>متوسط (3-5 سنوات)</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(198)</span
               >
             </div>
-            <div class="filter-option" (click)="toggleFilter('senior')">
+
+            <div
+              class="filter-option"
+              (click)="setExperienceLevel('senior')"
+              [class.active]="filters.experience_level === 'senior'"
+            >
               <div class="filter-checkbox"></div>
               <span>خبير (6+ سنوات)</span>
               <span style="margin-right: auto; color: var(--gray-500)"
                 >(89)</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="filter-section">
-          <h3 class="filter-title">نطاق الراتب</h3>
-          <div class="filter-options">
-            <div class="filter-option" (click)="toggleFilter('salary1')">
-              <div class="filter-checkbox"></div>
-              <span>أقل من 500 ريال</span>
-              <span style="margin-right: auto; color: var(--gray-500)"
-                >(34)</span
-              >
-            </div>
-            <div class="filter-option" (click)="toggleFilter('salary2')">
-              <div class="filter-checkbox"></div>
-              <span>500-1000 ريال</span>
-              <span style="margin-right: auto; color: var(--gray-500)"
-                >(167)</span
-              >
-            </div>
-            <div class="filter-option" (click)="toggleFilter('salary3')">
-              <div class="filter-checkbox"></div>
-              <span>1000-1500 ريال</span>
-              <span style="margin-right: auto; color: var(--gray-500)"
-                >(89)</span
-              >
-            </div>
-            <div class="filter-option" (click)="toggleFilter('salary4')">
-              <div class="filter-checkbox"></div>
-              <span>أكثر من 1500 ريال</span>
-              <span style="margin-right: auto; color: var(--gray-500)"
-                >(45)</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="filter-section">
-          <h3 class="filter-title">تاريخ النشر</h3>
-          <div class="filter-options">
-            <div class="filter-option" (click)="toggleFilter('today')">
-              <div class="filter-checkbox"></div>
-              <span>اليوم</span>
-              <span style="margin-right: auto; color: var(--gray-500)"
-                >(12)</span
-              >
-            </div>
-            <div class="filter-option" (click)="toggleFilter('week')">
-              <div class="filter-checkbox"></div>
-              <span>آخر أسبوع</span>
-              <span style="margin-right: auto; color: var(--gray-500)"
-                >(78)</span
-              >
-            </div>
-            <div class="filter-option" (click)="toggleFilter('month')">
-              <div class="filter-checkbox"></div>
-              <span>آخر شهر</span>
-              <span style="margin-right: auto; color: var(--gray-500)"
-                >(234)</span
               >
             </div>
           </div>
@@ -197,11 +181,20 @@
       <main class="results-content">
         <div class="results-header">
           <div class="results-count">
-            <strong>289 وظيفة</strong> تطابق بحثك عن "مطور" في صنعاء
+            <strong>{{ totalJobs }} وظيفة</strong>
+            تطابق بحثك
           </div>
+
           <div class="sort-dropdown">
             <label for="sort">ترتيب حسب:</label>
-            <select id="sort" class="form-select" style="width: auto">
+            <select
+              id="sort"
+              class="form-select"
+              style="width: auto"
+              [(ngModel)]="sortValue"
+              (ngModelChange)="onSortChange($event)"
+              name="sort"
+            >
               <option value="relevance">الأكثر صلة</option>
               <option value="date">الأحدث</option>
               <option value="salary">الراتب</option>
@@ -211,10 +204,13 @@
         </div>
 
         <div class="job-results">
-          <!-- Job Card 1 -->
-          <article class="job-card-horizontal" data-job-id="101">
+          <article
+            class="job-card-horizontal"
+            *ngFor="let job of jobs"
+            [attr.data-job-id]="job.id"
+          >
             <img
-              src="images/company-logo-1.jpg"
+              [src]="job.company.logo || 'assets/images/company-placeholder.png'"
               alt="شعار الشركة"
               class="company-logo"
             />
@@ -222,19 +218,26 @@
             <div class="job-info">
               <h3 class="job-title">
                 <a
-                  href="job-details.html?id=101"
+                  [routerLink]="['/jobs', job.slug]"
                   style="text-decoration: none; color: inherit"
                 >
-                  مطور تطبيقات الويب الأمامية
+                  {{ job.title }}
                 </a>
               </h3>
-              <p class="company-name">شركة التقنيات المتقدمة</p>
+
+              <p class="company-name">{{ job.company.name }}</p>
 
               <div class="job-meta">
-                <span>📍 صنعاء</span>
-                <span>💰 800-1200 ريال/شهر</span>
-                <span>⏰ دوام كامل</span>
-                <span>📅 منذ يومين</span>
+                <span>📍 {{ cityLabel(job.city) }}</span>
+                <span>
+                  💰 {{ job.salary_min | number }} - {{ job.salary_max | number
+                  }} ريال
+                  <ng-container *ngIf="job.is_salary_negotiable">
+                    (قابل للتفاوض)
+                  </ng-container>
+                </span>
+                <span>⏰ {{ jobTypeLabel(job.job_type) }}</span>
+                <!-- لو حاب تضيف "منذ كذا يوم" تحتاج pipe للوقت، خليه لاحقاً -->
               </div>
 
               <p
@@ -244,16 +247,13 @@
                   line-height: 1.5;
                 "
               >
-                نبحث عن مطور ويب متمرس للانضمام إلى فريقنا. المرشح المثالي يجب
-                أن يكون لديه خبرة في React, Vue.js, وتطوير واجهات المستخدم
-                التفاعلية.
+                {{ job.category.name }} • {{ job.company.city }}
               </p>
 
               <div class="job-tags">
-                <span class="job-tag">React</span>
-                <span class="job-tag">JavaScript</span>
-                <span class="job-tag">CSS</span>
-                <span class="job-tag">Vue.js</span>
+                <span class="job-tag">{{ job.experience_level }}</span>
+                <span class="job-tag">{{ job.category.name }}</span>
+                <span class="job-tag">{{ cityLabel(job.city) }}</span>
               </div>
             </div>
 
@@ -263,345 +263,70 @@
             >
               <button
                 class="btn btn-small btn-primary apply-btn"
-                (click)="applyToJob('101')"
+                (click)="applyToJob(job.id)"
               >
                 تقديم الآن
               </button>
               <button
                 class="btn btn-small btn-secondary save-btn"
-                (click)="saveJob('101')"
+                (click)="saveJob(job.id)"
               >
                 حفظ
               </button>
               <button
                 class="btn btn-small btn-secondary"
-                (click)="shareJob('101', 'مطور تطبيقات الويب الأمامية')"
+                (click)="shareJob(job.id, job.title)"
               >
                 مشاركة
               </button>
             </div>
           </article>
 
-          <!-- Job Card 2 -->
-          <article class="job-card-horizontal" data-job-id="102">
-            <img
-              src="images/company-logo-2.jpg"
-              alt="شعار الشركة"
-              class="company-logo"
-            />
-
-            <div class="job-info">
-              <h3 class="job-title">
-                <a
-                  href="job-details.html?id=102"
-                  style="text-decoration: none; color: inherit"
-                >
-                  مطور تطبيقات الجوال
-                </a>
-              </h3>
-              <p class="company-name">استوديو الابتكار للتطبيقات</p>
-
-              <div class="job-meta">
-                <span>📍 صنعاء</span>
-                <span>💰 1000-1500 ريال/شهر</span>
-                <span>⏰ دوام كامل</span>
-                <span>📅 منذ 3 أيام</span>
-              </div>
-
-              <p
-                style="
-                  color: var(--gray-600);
-                  margin: 0.5rem 0;
-                  line-height: 1.5;
-                "
-              >
-                مطلوب مطور تطبيقات جوال للعمل على مشاريع مثيرة. خبرة في Flutter
-                أو React Native مطلوبة، مع فهم جيد لتصميم واجهات المستخدم.
-              </p>
-
-              <div class="job-tags">
-                <span class="job-tag">Flutter</span>
-                <span class="job-tag">React Native</span>
-                <span class="job-tag">Dart</span>
-                <span class="job-tag">Mobile UI</span>
-              </div>
-            </div>
-
-            <div
-              class="job-actions"
-              style="display: flex; flex-direction: column; gap: 0.5rem"
-            >
-              <button
-                class="btn btn-small btn-primary apply-btn"
-                (click)="applyToJob('102')"
-              >
-                تقديم الآن
-              </button>
-              <button
-                class="btn btn-small btn-secondary save-btn"
-                (click)="saveJob('102')"
-              >
-                حفظ
-              </button>
-              <button
-                class="btn btn-small btn-secondary"
-                (click)="shareJob('102', 'مطور تطبيقات الجوال')"
-              >
-                مشاركة
-              </button>
-            </div>
-          </article>
-
-          <!-- Job Card 3 -->
-          <article class="job-card-horizontal" data-job-id="103">
-            <img
-              src="images/company-logo-3.jpg"
-              alt="شعار الشركة"
-              class="company-logo"
-            />
-
-            <div class="job-info">
-              <h3 class="job-title">
-                <a
-                  href="job-details.html?id=103"
-                  style="text-decoration: none; color: inherit"
-                >
-                  مطور Full Stack
-                </a>
-              </h3>
-              <p class="company-name">شركة الحلول الرقمية</p>
-
-              <div class="job-meta">
-                <span>📍 صنعاء</span>
-                <span>💰 1200-1800 ريال/شهر</span>
-                <span>⏰ دوام كامل</span>
-                <span>📅 منذ أسبوع</span>
-              </div>
-
-              <p
-                style="
-                  color: var(--gray-600);
-                  margin: 0.5rem 0;
-                  line-height: 1.5;
-                "
-              >
-                نبحث عن مطور Full Stack للعمل على مشاريع متنوعة. خبرة في
-                Node.js, Python, وقواعد البيانات مطلوبة. فرصة ممتازة للنمو
-                المهني.
-              </p>
-
-              <div class="job-tags">
-                <span class="job-tag">Node.js</span>
-                <span class="job-tag">Python</span>
-                <span class="job-tag">MongoDB</span>
-                <span class="job-tag">API Development</span>
-              </div>
-            </div>
-
-            <div
-              class="job-actions"
-              style="display: flex; flex-direction: column; gap: 0.5rem"
-            >
-              <button
-                class="btn btn-small btn-primary apply-btn"
-                (click)="applyToJob('103')"
-              >
-                تقديم الآن
-              </button>
-              <button
-                class="btn btn-small btn-secondary save-btn"
-                (click)="saveJob('103')"
-              >
-                حفظ
-              </button>
-              <button
-                class="btn btn-small btn-secondary"
-                (click)="shareJob('103', 'مطور Full Stack')"
-              >
-                مشاركة
-              </button>
-            </div>
-          </article>
-
-          <!-- Job Card 4 -->
-          <article class="job-card-horizontal" data-job-id="104">
-            <img
-              src="images/company-logo-4.jpg"
-              alt="شعار الشركة"
-              class="company-logo"
-            />
-
-            <div class="job-info">
-              <h3 class="job-title">
-                <a
-                  href="job-details.html?id=104"
-                  style="text-decoration: none; color: inherit"
-                >
-                  مطور WordPress
-                </a>
-              </h3>
-              <p class="company-name">وكالة التسويق الرقمي</p>
-
-              <div class="job-meta">
-                <span>📍 صنعاء</span>
-                <span>💰 600-900 ريال/شهر</span>
-                <span>⏰ دوام جزئي</span>
-                <span>📅 منذ أسبوعين</span>
-              </div>
-
-              <p
-                style="
-                  color: var(--gray-600);
-                  margin: 0.5rem 0;
-                  line-height: 1.5;
-                "
-              >
-                مطلوب مطور WordPress للعمل على مواقع العملاء. خبرة في تطوير
-                القوالب والإضافات المخصصة. إمكانية العمل عن بُعد متاحة.
-              </p>
-
-              <div class="job-tags">
-                <span class="job-tag">WordPress</span>
-                <span class="job-tag">PHP</span>
-                <span class="job-tag">MySQL</span>
-                <span class="job-tag">Custom Themes</span>
-              </div>
-            </div>
-
-            <div
-              class="job-actions"
-              style="display: flex; flex-direction: column; gap: 0.5rem"
-            >
-              <button
-                class="btn btn-small btn-primary apply-btn"
-                (click)="applyToJob('104')"
-              >
-                تقديم الآن
-              </button>
-              <button
-                class="btn btn-small btn-secondary save-btn"
-                (click)="saveJob('104')"
-              >
-                حفظ
-              </button>
-              <button
-                class="btn btn-small btn-secondary"
-                (click)="shareJob('104', 'مطور WordPress')"
-              >
-                مشاركة
-              </button>
-            </div>
-          </article>
-
-          <!-- Job Card 5 -->
-          <article class="job-card-horizontal" data-job-id="105">
-            <img
-              src="images/company-logo-5.jpg"
-              alt="شعار الشركة"
-              class="company-logo"
-            />
-
-            <div class="job-info">
-              <h3 class="job-title">
-                <a
-                  href="job-details.html?id=105"
-                  style="text-decoration: none; color: inherit"
-                >
-                  مطور ألعاب Unity
-                </a>
-              </h3>
-              <p class="company-name">استوديو الألعاب الإبداعي</p>
-
-              <div class="job-meta">
-                <span>📍 صنعاء</span>
-                <span>💰 900-1300 ريال/شهر</span>
-                <span>⏰ دوام كامل</span>
-                <span>📅 منذ 3 أسابيع</span>
-              </div>
-
-              <p
-                style="
-                  color: var(--gray-600);
-                  margin: 0.5rem 0;
-                  line-height: 1.5;
-                "
-              >
-                انضم إلى فريقنا لتطوير ألعاب مثيرة باستخدام Unity. خبرة في C#
-                وتطوير الألعاب مطلوبة. بيئة عمل إبداعية ومحفزة.
-              </p>
-
-              <div class="job-tags">
-                <span class="job-tag">Unity</span>
-                <span class="job-tag">C#</span>
-                <span class="job-tag">Game Development</span>
-                <span class="job-tag">3D Graphics</span>
-              </div>
-            </div>
-
-            <div
-              class="job-actions"
-              style="display: flex; flex-direction: column; gap: 0.5rem"
-            >
-              <button
-                class="btn btn-small btn-primary apply-btn"
-                (click)="applyToJob('105')"
-              >
-                تقديم الآن
-              </button>
-              <button
-                class="btn btn-small btn-secondary save-btn"
-                (click)="saveJob('105')"
-              >
-                حفظ
-              </button>
-              <button
-                class="btn btn-small btn-secondary"
-                (click)="shareJob('105', 'مطور ألعاب Unity')"
-              >
-                مشاركة
-              </button>
-            </div>
-          </article>
+          <!-- في حالة ما في وظائف -->
+          <div
+            *ngIf="jobs.length === 0"
+            style="padding: 1rem; text-align: center"
+          >
+            لا توجد وظائف مطابقة حالياً.
+          </div>
         </div>
 
         <!-- Pagination -->
-        <nav class="pagination">
-          <a href="#" class="pagination-btn" (click)="goToPage(1)">السابق</a>
-          <a
-            href="#"
-            class="pagination-btn current"
-            data-page="1"
-            (click)="goToPage(1)"
-            >1</a
-          >
-          <a href="#" class="pagination-btn" data-page="2" (click)="goToPage(2)"
-            >2</a
-          >
-          <a href="#" class="pagination-btn" data-page="3" (click)="goToPage(3)"
-            >3</a
-          >
-          <a href="#" class="pagination-btn" data-page="4" (click)="goToPage(4)"
-            >4</a
-          >
-          <a href="#" class="pagination-btn" data-page="5" (click)="goToPage(5)"
-            >5</a
-          >
-          <span style="padding: 0.5rem">...</span>
-          <a
-            href="#"
+        <nav class="pagination" *ngIf="totalPages > 1">
+          <button
             class="pagination-btn"
-            data-page="15"
-            (click)="goToPage(15)"
-            >15</a
+            (click)="previousPage()"
+            [disabled]="currentPage === 1"
+            type="button"
           >
-          <a href="#" class="pagination-btn" (click)="goToPage(2)">التالي</a>
+            السابق
+          </button>
+
+          <button
+            *ngFor="let p of pages"
+            class="pagination-btn"
+            [class.current]="p === currentPage"
+            (click)="goToPage(p)"
+            type="button"
+          >
+            {{ p }}
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages"
+            type="button"
+          >
+            التالي
+          </button>
         </nav>
 
         <!-- Load More Button (Alternative to pagination) -->
         <div class="text-center" style="margin-top: 2rem; display: none">
           <button
             class="btn btn-secondary load-more-btn"
-            (click)="loadMoreJobs()"
+            
           >
             تحميل المزيد من الوظائف
           </button>
@@ -610,6 +335,3 @@
     </div>
   </div>
 </section>
-
-<!-- Footer -->
-<app-footer></app-footer>

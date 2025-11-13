@@ -22,12 +22,6 @@ export const routes: Routes = [
   //   canActivate: [/* optionally protect */]
   // },
   {
-    path: 'jobs',
-    loadChildren: () =>
-      import('./pages/jobs/jobs-module').then((m) => m.JobsModule),
-    canMatch: [authGuard],
-  },
-  {
     path: 'companies',
     loadChildren: () =>
       import('./pages/companies/companies-module').then((m) => m.CompaniesModule),
