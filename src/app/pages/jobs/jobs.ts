@@ -46,14 +46,14 @@ export class Jobs {
   const requestFilters: JobFilters = {
     ...this.filters,
     page: this.currentPage,
-    page_size: 10
+    page_size: 5
   };
 
   this.jobService.getJobs(requestFilters).subscribe({
     next: (res: JobListResponse) => {
       this.jobs = res.results;
       this.totalJobs = res.count;
-      this.totalPages = Math.ceil(res.count / 10);
+      this.totalPages = Math.ceil(res.count / 5);
     },
     error: () => {
       this.toastr.error('حدث خطأ أثناء جلب الوظائف');

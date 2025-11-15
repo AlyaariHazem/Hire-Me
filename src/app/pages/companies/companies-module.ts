@@ -21,6 +21,8 @@ import { Select } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
+import { TextareaModule } from 'primeng/textarea';
+
 
 const components = [
   Companies,
@@ -44,6 +46,7 @@ const modules = [
   ButtonModule,
   PostJob,
   Select,
+  TextareaModule,
   ManageJobs,
   FormsModule,
   ReactiveFormsModule,

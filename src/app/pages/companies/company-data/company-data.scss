@@ -15,7 +15,10 @@
   font-size: 22px;
   font-weight: 600;
 }
+textarea{
+  height: 3rem;
 
+}
 .page-subtitle {
   margin: 4px 0 0;
   font-size: 13px;
@@ -124,11 +127,10 @@
 }
 
 .dialog {
-  width: 720px;
-  max-height: calc(100vh - 120px);
+  width: 1028px;
   overflow-y: auto;
   background: #fff;
-  border-radius: 18px;
+  border-radius: 7px;
   padding: 18px 18px 16px;
   box-shadow: 0 12px 40px rgba(15, 23, 42, 0.35);
 }

@@ -4,10 +4,11 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil, filter } from 'rxjs';
 
-import { environment } from '../../../../environments/environment.development';
+import { environment } from 'environments/environment';
 import { ProfileStoreService } from 'shared/services/profile.service';
-import { Errors } from '../../../../shared/services/errors';
+import { Errors } from 'shared/services/errors';
 import { ProfileService } from '../core/services/profile.service';
+import { COMPANY_SIZES } from '@app/companies/enums';
 
 @Component({
   selector: 'app-company-data',
@@ -17,7 +18,7 @@ import { ProfileService } from '../core/services/profile.service';
 })
 export class Profile implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-
+  COMPANY_SIZES = COMPANY_SIZES;
   errors = inject(Errors);
   saving = false;
   logoFile?: File;

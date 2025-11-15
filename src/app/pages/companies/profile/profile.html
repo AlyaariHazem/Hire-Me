@@ -1,108 +1,150 @@
-<div class="auth-container w-full">
-  <div class="auth-card">
-    <div class="auth-header">
-      <img
-        [src]="logo$  || 'images/company-logo-1.jpg'"
-        alt="منصة التوظيف"
-        class="auth-logo"
-      />
-      <h1 class="auth-title">تحديث بيانات الشركة</h1>
-      <p class="auth-subtitle">قم بتحديث الملف التعريفي لصاحب العمل</p>
-    </div>
-
-    <form class="auth-form" (ngSubmit)="save()">
-      <!-- Company name -->
-      <div class="form-group">
-        <label class="form-label">اسم الشركة</label>
-        <input
-          class="form-input"
-          required
-          [(ngModel)]="form.company_name"
-          name="company_name"
-        />
-      </div>
-
-      <!-- Description -->
-      <div class="form-group">
-        <label class="form-label">وصف الشركة</label>
-        <textarea
-          class="form-input"
-          rows="4"
-          [(ngModel)]="form.company_description"
-          name="company_description"
-          placeholder="نبذة مختصرة عن الشركة"
-        ></textarea>
-      </div>
-
-      <!-- Website -->
-      <div class="form-group">
-        <label class="form-label">موقع الشركة</label>
-        <input
-          class="form-input"
-          type="url"
-          [(ngModel)]="form.company_website"
-          name="company_website"
-          placeholder="https://example.com"
-        />
-      </div>
-
-      <!-- Size + Industry -->
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">حجم الشركة</label>
-          <select
-            class="form-input"
-            [(ngModel)]="form.company_size"
-            name="company_size"
-          >
-            <option value="" disabled selected>اختر الحجم</option>
-            <option>1-10</option>
-            <option>11-50</option>
-            <option>51-200</option>
-            <option>201-500</option>
-            <option>500+</option>
-          </select>
+<div class="company-profile-page">
+  <div class="company-card">
+    <!-- Header -->
+    <div class="company-card-header">
+      <div class="company-logo-wrapper">
+        <div class="company-logo-circle">
+          <img
+            [src]="logo$ || 'assets/images/company-placeholder.png'"
+            alt="شعار الشركة"
+          />
         </div>
 
+        <button
+          type="button"
+          class="logo-change-btn"
+          (click)="logoInput.click()"
+        >
+          تغيير الشعار
+        </button>
+
+        <input
+          #logoInput
+          type="file"
+          class="logo-file-input"
+          accept="image/*"
+          (change)="onLogoSelected($event)"
+        />
+      </div>
+
+      <div class="company-header-text">
+        <h1 class="company-title">تحديث بيانات الشركة</h1>
+        <p class="company-subtitle">
+          حدّث الملف التعريفي لصاحب العمل ليظهر بشكل احترافي في منصة التوظيف.
+        </p>
+      </div>
+    </div>
+
+    <div class="company-divider"></div>
+
+    <!-- Form -->
+    <form class="company-form" (ngSubmit)="save()">
+      <div class="form-grid">
+        <!-- Company name -->
+        <div class="form-group form-group-full">
+          <label class="form-label">اسم الشركة</label>
+          <input
+            class="form-input"
+            required
+            [(ngModel)]="form.company_name"
+            name="company_name"
+            placeholder="مثال: Data Trans"
+          />
+        </div>
+
+        <!-- Description -->
+        <div class="form-group form-group-full">
+          <label class="form-label">وصف الشركة</label>
+          <textarea
+            class="form-input form-textarea"
+            rows="4"
+            [(ngModel)]="form.company_description"
+            name="company_description"
+            placeholder="نبذة مختصرة عن نشاط الشركة والخدمات التي تقدمها"
+          ></textarea>
+        </div>
+
+        <!-- Website -->
+        <div class="form-group">
+          <label class="form-label">موقع الشركة</label>
+          <input
+            class="form-input"
+            type="url"
+            [(ngModel)]="form.company_website"
+            name="company_website"
+            placeholder="https://example.com"
+          />
+        </div>
+
+        <!-- Founded year -->
+        <div class="form-group">
+          <label class="form-label">سنة التأسيس</label>
+          <input
+            class="form-input"
+            type="number"
+            min="1900"
+          max="2100"
+            [(ngModel)]="form.founded_year"
+            name="founded_year"
+            placeholder="2015"
+          />
+        </div>
+
+        <!-- Size -->
+        <div class="form-group">
+          <label class="form-label">حجم الشركة</label>
+          <p-select
+            inputId="company_size"
+            appendTo="body"
+            name="company_size"
+            [options]="COMPANY_SIZES"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="اختر الحجم"
+            [showClear]="true"
+            [checkmark]="true"
+            class="select-full"
+            [(ngModel)]="form.company_size"
+            required
+            #companySizeCtrl="ngModel"
+            [class.p-invalid]="companySizeCtrl.invalid && (companySizeCtrl.dirty || companySizeCtrl.touched)"
+          >
+          </p-select>
+          <small
+            class="error-text"
+            *ngIf="companySizeCtrl.invalid && (companySizeCtrl.dirty || companySizeCtrl.touched)"
+          >
+            يرجى اختيار حجم الشركة.
+          </small>
+         
+        </div>
+
+        <!-- Industry -->
         <div class="form-group">
           <label class="form-label">الصناعة</label>
           <input
             class="form-input"
             [(ngModel)]="form.industry"
             name="industry"
-            placeholder="Software, Retail..."
+            placeholder="تقنية المعلومات، تجارة، تعليم..."
           />
+        </div>
+
+        <!-- Logo note -->
+        <div class="form-group form-group-full">
+          <label class="form-label">الشعار</label>
+          <p class="help-text">
+            يمكن تغيير الشعار من زر &quot;تغيير الشعار&quot; في الأعلى. يفضّل
+            رفع صورة مربعة (PNG أو JPG).
+          </p>
         </div>
       </div>
 
-      <!-- Founded year -->
-      <div class="form-group">
-        <label class="form-label">سنة التأسيس</label>
-        <input
-          class="form-input"
-          type="number"
-          min="1900"
-          max="2100"
-          [(ngModel)]="form.founded_year"
-          name="founded_year"
-          placeholder="2015"
-        />
+      <div class="form-actions">
+        <button type="submit" class="primary-btn" [disabled]="saving">
+          {{ saving ? 'جارٍ حفظ التغييرات...' : 'حفظ التغييرات' }}
+        </button>
       </div>
-
-      <!-- Logo -->
-      <div class="form-group">
-        <label class="form-label">شعار الشركة</label>
-        <input
-          class="form-input"
-          type="file"
-          accept="image/*"
-          (change)="onLogoSelected($event)"
-        />
-      </div>
-
-      <button type="submit" class="auth-submit" [disabled]="saving">
-        {{ saving ? 'جارٍ الحفظ...' : 'حفظ التغييرات' }}
-      </button>
     </form>
   </div>
 </div>

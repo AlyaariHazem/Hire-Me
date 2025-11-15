@@ -101,6 +101,7 @@
             class="dialog-form"
             (ngSubmit)="save(companyForm)"
           >
+           <div class="form-row">
             <!-- Name -->
             <div class="form-group">
               <label for="name"
@@ -123,7 +124,29 @@
                 الاسم مطلوب
               </small>
             </div>
-
+            <!-- description -->
+            <div class="form-group">
+              <label for="description">وصف الشركة<span class="required">*</span></label
+              >
+              <textarea
+                pTextarea
+                id="description"
+                name="description"
+                [(ngModel)]="form.description"
+                rows="4"
+                required
+                #descriptionCtrl="ngModel"
+                [class.p-invalid]="descriptionCtrl.invalid && (descriptionCtrl.dirty || descriptionCtrl.touched)"
+                placeholder="قدم نبذة مختصرة عن الشركة ونشاطها."
+              ></textarea>
+              <small
+                class="p-error"
+                *ngIf="descriptionCtrl.errors?.['required'] && (descriptionCtrl.dirty || descriptionCtrl.touched)"
+              >
+               هذا الحقل مطلوب
+              </small>
+            </div>
+            </div>
             <!-- Website / Industry -->
             <div class="form-row">
               <div class="form-group">
