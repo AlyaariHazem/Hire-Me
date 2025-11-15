@@ -1437,9 +1437,10 @@ img.lazy.loaded {
   background-color: var(--white);
   border-left: 1px solid var(--gray-200);
   padding: 2rem 0;
-  position: sticky;
-  top: 80px;
-  height: calc(100vh - 80px);
+  position: fixed;
+  top: 87px;
+  width: 15%;
+  height: calc(101vh - 79px);
   overflow-y: auto;
 }
 
