@@ -7,8 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { Errors } from '../../../shared/services/errors';
 import { AuthService } from '../auth.service';
-
-type Role = 'jobseeker' | 'employer';
+import { UserType } from 'core/types';
 
 @Component({
   selector: 'app-login',
@@ -50,13 +49,13 @@ export class Login implements OnInit {
     return !phoneRegex.test(this.phone);
   }
 
-  private selectedRole(): Role | null {
+  private selectedRole(): UserType | null {
     if (this.user && !this.admin) return 'jobseeker';
     if (this.admin && !this.user) return 'employer';
     return null; // none or both selected
   }
 
-  private mapBackendRole(user_type: string | undefined | null): Role | null {
+  private mapBackendRole(user_type: string | undefined | null): UserType | null {
     // Adjust mapping if your backend uses different strings
     // e.g., 'job_seeker' | 'employer'
     if (!user_type) return null;

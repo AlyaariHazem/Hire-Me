@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-
-type Role = 'jobseeker' | 'employer';
+import { UserType } from 'core/types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -13,7 +12,7 @@ export class AuthService {
     if (refresh) localStorage.setItem(this.REFRESH_KEY, refresh);
   }
 
-  setRole(role: Role) {
+  setRole(role: UserType) {
     localStorage.setItem(this.ROLE_KEY, role);
   }
 
@@ -25,7 +24,7 @@ export class AuthService {
     return localStorage.getItem(this.REFRESH_KEY);
   }
 
-  get role(): Role | null {
+  get role(): UserType | null {
     const r = localStorage.getItem(this.ROLE_KEY);
     return r === 'employer' || r === 'jobseeker' ? r : null;
   }
