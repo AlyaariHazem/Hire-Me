@@ -14,6 +14,7 @@ import { ProfileStoreService } from 'shared/services/profile.service';
 })
 export class HeaderCompany {
   isEmployerMenuOpen = false;
+  companyName:string = 'شركة التقنية المتقدمة';
   toastr = inject(ToastrService);
   private el = inject(ElementRef);
   private router = inject(Router);
@@ -28,6 +29,14 @@ export class HeaderCompany {
         : 'assets/images/default-logo.svg' // fallback if you like
     )
   );
+  ngOnInit() {
+     this.profileStore.getProfile$().subscribe(
+      (p:any) => {
+        this.companyName = p.company_name;
+      }
+    );
+  }
+  
 
   notImplemented() {
     this.toastr.info('هذه الميزة غير متوفرة حالياً', 'لم يتم التنفيذ');

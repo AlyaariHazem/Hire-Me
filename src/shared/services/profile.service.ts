@@ -15,6 +15,7 @@ type ApiRes<T> = { data: { profile: T } };
 export interface Profile {
   company_logo: string;
   id: number;
+  company_name: string;
   // ...other fields
 }
 
