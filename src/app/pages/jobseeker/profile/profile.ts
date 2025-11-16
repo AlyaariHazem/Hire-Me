@@ -1,10 +1,13 @@
 // profile.component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { environment } from '../../../../environments/environment.development';
+import { Subject } from 'rxjs';
+import { environment } from 'environments/environment';
 import { ProfileService } from '../services/profile.service';
+import { filter, takeUntil } from 'rxjs/operators';
+import { ProfileStoreService } from 'shared/services/profile.service';
 
 @Component({
   selector: 'app-profile',
@@ -16,8 +19,8 @@ export class Profile implements OnInit, OnDestroy {
   basicForm!: FormGroup;
   jobForm!: FormGroup;
 
-  selectedFile: File | null = null;      // avatar
-  selectedResume: File | null = null;    // resume
+  selectedFile: File | null = null; // avatar
+  selectedResume: File | null = null; // resume
 
   resumeUrl: string | null = null;
   resumeSafeUrl: SafeResourceUrl | null = null;
@@ -25,12 +28,13 @@ export class Profile implements OnInit, OnDestroy {
   private toRevoke: string | null = null;
   showPreview = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private profile: ProfileService,
-    private toastr: ToastrService,
-    private sanitizer: DomSanitizer
-  ) {}
+  private destroy$ = new Subject<void>();
+
+  private fb = inject(FormBuilder);
+  private profileApi = inject(ProfileService); // used for PUT/PATCH
+  private toastr = inject(ToastrService);
+  private sanitizer = inject(DomSanitizer);
+  private store = inject(ProfileStoreService);
 
   ngOnInit(): void {
     this.basicForm = this.fb.group({
@@ -38,7 +42,6 @@ export class Profile implements OnInit, OnDestroy {
       last_name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
-      // ✅ no PrimeUI date import, and empty default
       date_of_birth: [''],
       profile_picture: [''],
       bio: [''],
@@ -57,14 +60,57 @@ export class Profile implements OnInit, OnDestroy {
       languages: [''],
     });
 
-    this.loadProfile();
+    // English: trigger initial load from the store
+    this.store.ensureLoaded();
+
+    // English: bind once to store and patch forms
+    this.store.profile$
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((p): p is any => !!p)
+      )
+      .subscribe((js) => {
+        const u = js.user ?? {};
+
+        // basic form
+        this.basicForm.patchValue({
+          first_name: u.first_name || '',
+          last_name: u.last_name || '',
+          email: u.email || '',
+          phone: u.phone || '',
+          date_of_birth: this.normalizeDateForInput(u.date_of_birth),
+          profile_picture: u.profile_picture || '',
+          bio: u.bio || '',
+          location: u.location || '',
+        });
+
+        // job form
+        this.jobForm.patchValue({
+          resume: js.resume || '',
+          experience_level: js.experience_level || 'entry',
+          education_level: js.education_level || 'high_school',
+          skills: js.skills || '',
+          expected_salary_min: js.expected_salary_min ?? null,
+          expected_salary_max: js.expected_salary_max ?? null,
+          availability:
+            typeof js.availability === 'boolean' ? js.availability : true,
+          preferred_job_type: js.preferred_job_type || 'full_time',
+          languages: js.languages || '',
+        });
+
+        // resume preview
+        const abs = this.toAbsolute(js.resume);
+        if (abs) this.setResumePreview(abs);
+      });
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     if (this.toRevoke) URL.revokeObjectURL(this.toRevoke);
   }
 
-  // 🔹 Clean display name for resume
+  // ---------------- File handlers ----------------
   get resumeDisplayName(): string {
     if (this.selectedResume?.name) return this.selectedResume.name;
     if (this.resumeUrl) {
@@ -73,18 +119,18 @@ export class Profile implements OnInit, OnDestroy {
     }
     return 'السيرة الذاتية';
   }
-
-  // 🔹 Avatar file select
   onFileChange(e: Event) {
     const input = e.target as HTMLInputElement;
     this.selectedFile = input.files?.[0] ?? null;
   }
 
-  // 🔹 Resume file select + preview
   onResumeChange(e: Event) {
     const file = (e.target as HTMLInputElement).files?.[0] ?? null;
     this.selectedResume = file;
-    if (this.toRevoke) { URL.revokeObjectURL(this.toRevoke); this.toRevoke = null; }
+    if (this.toRevoke) {
+      URL.revokeObjectURL(this.toRevoke);
+      this.toRevoke = null;
+    }
 
     if (file) {
       const url = URL.createObjectURL(file);
@@ -95,117 +141,21 @@ export class Profile implements OnInit, OnDestroy {
     }
   }
 
-  // 🔹 Load profile and normalize date for <input type="date">
-  private loadProfile() {
-    this.profile.getProfile().subscribe({
-      next: (res: any) => {
-        const root = res?.data ?? res;
-
-        const user = root.user ?? root.profile?.user ?? {};
-        this.basicForm.patchValue({
-          first_name: user.first_name || '',
-          last_name: user.last_name || '',
-          email: user.email || '',
-          phone: user.phone || '',
-          date_of_birth: this.normalizeDateForInput(user.date_of_birth),
-          profile_picture: user.profile_picture || '',
-          bio: user.bio || '',
-          location: user.location || '',
-        });
-
-        const js = root.profile ?? root;
-        this.jobForm.patchValue({
-          resume: js.resume || '',
-          experience_level: js.experience_level || 'entry',
-          education_level: js.education_level || 'high_school',
-          skills: js.skills || '',
-          expected_salary_min: js.expected_salary_min ?? null,
-          expected_salary_max: js.expected_salary_max ?? null,
-          availability: typeof js.availability === 'boolean' ? js.availability : true,
-          preferred_job_type: js.preferred_job_type || 'full_time',
-          languages: js.languages || '',
-        });
-        debugger;
-        const resumePath = js?.resume;
-        const abs = this.toAbsolute(resumePath);
-        if (abs) this.setResumePreview(abs);
-      },
-      error: () => this.toastr.error('تعذر تحميل البيانات'),
-    });
-  }
-
-  private canEmbed(url: string) {
-  return url.startsWith(location.origin) || url.startsWith('blob:');
-}
-
-private setResumePreview(url: string, name?: string) {
-  this.resumeUrl = url;
-  const looksPdf = /\.pdf($|\?)/i.test(url) || !!name?.toLowerCase().endsWith('.pdf');
-  this.isPdf = looksPdf && this.canEmbed(url);
-  this.resumeSafeUrl = this.isPdf
-    ? this.sanitizer.bypassSecurityTrustResourceUrl(url)
-    : null;
-}
-
-  private clearResumePreview() {
-    this.resumeUrl = null;
-    this.resumeSafeUrl = null;
-    this.isPdf = false;
-  }
-  private toAbsolute(path?: string | null): string | null {
-  if (!path) return null;
-  if (/^(https?:|blob:|data:)/i.test(path)) return path;
-  const base = environment.apiBaseUrl.replace(/\/+$/, '');
-  return `${base}/${String(path).replace(/^\/+/, '')}`;
-}
-  // ✅ Normalize any backend date -> "YYYY-MM-DD" for the date input
-  private normalizeDateForInput(value: any): string {
-    if (!value) return '';
-    // ISO with time -> take first 10 chars
-    const m = String(value).match(/^(\d{4}-\d{2}-\d{2})/);
-    if (m) return m[1];
-
-    // DD/MM/YYYY -> YYYY-MM-DD
-    const dmy = String(value).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-    if (dmy) {
-      const [, dd, mm, yyyy] = dmy;
-      return `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;
-    }
-
-    // Fallback parse
-    const d = new Date(value);
-    if (Number.isNaN(d.getTime())) return '';
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${d.getFullYear()}-${mm}-${dd}`;
-  }
-
-  // ✅ What we send to API: always "YYYY-MM-DD" or empty ""
-  private normalizeDateForApi(value: any): string {
-    if (!value) return '';
-    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
-    if (value instanceof Date) {
-      const mm = String(value.getMonth() + 1).padStart(2, '0');
-      const dd = String(value.getDate()).padStart(2, '0');
-      return `${value.getFullYear()}-${mm}-${dd}`;
-    }
-    // try parsing any other string
-    return this.normalizeDateForInput(value);
-  }
-
+  // ---------------- Save ----------------
   saveChanges(): void {
     if (this.basicForm.invalid || this.jobForm.invalid) {
       this.toastr.error('تحقق من الحقول المطلوبة');
       return;
     }
 
-    // ---------- BASIC PROFILE ----------
+    // BASIC
     const b = this.basicForm.value;
     const dob = this.normalizeDateForApi(b.date_of_birth);
     if (b.date_of_birth && !dob) {
       this.toastr.error('صيغة التاريخ يجب أن تكون YYYY-MM-DD');
       return;
     }
+
     interface BasicPayload {
       first_name: string;
       last_name: string;
@@ -215,7 +165,7 @@ private setResumePreview(url: string, name?: string) {
       bio?: string;
       location?: string;
     }
-    // Build payload without empty props (so backend won't get empty string)
+
     const basicPayload: BasicPayload = {
       first_name: b.first_name,
       last_name: b.last_name,
@@ -229,17 +179,19 @@ private setResumePreview(url: string, name?: string) {
     const saveBasic$ = (() => {
       if (this.selectedFile) {
         const fd = new FormData();
-        Object.entries(basicPayload).forEach(([k, v]) => fd.append(k, String(v)));
+        Object.entries(basicPayload).forEach(([k, v]) =>
+          fd.append(k, String(v))
+        );
         fd.append('profile_picture', this.selectedFile);
-        return this.profile.updateBasicFormData(fd);
+        return this.profileApi.updateBasicFormData(fd);
       } else {
-        return this.profile.updateBasic(basicPayload);
+        return this.profileApi.updateBasic(basicPayload);
       }
     })();
 
     saveBasic$.subscribe({
       next: () => {
-        // ---------- JOB SEEKER ----------
+        // JOB SEEKER
         const j = this.jobForm.value;
         const jobFd = new FormData();
         const jobEntries: Record<string, any> = {
@@ -254,12 +206,19 @@ private setResumePreview(url: string, name?: string) {
         };
         Object.entries(jobEntries).forEach(([k, v]) => {
           if (v === undefined || v === null || v === '') return;
-          jobFd.append(k, typeof v === 'boolean' ? (v ? 'true' : 'false') : String(v));
+          jobFd.append(
+            k,
+            typeof v === 'boolean' ? (v ? 'true' : 'false') : String(v)
+          );
         });
         if (this.selectedResume) jobFd.append('resume', this.selectedResume);
 
-        this.profile.updateJobSeekerFormData(jobFd).subscribe({
-          next: () => this.toastr.success('تم حفظ التغييرات بنجاح'),
+        this.profileApi.updateJobSeekerFormData(jobFd).subscribe({
+          next: () => {
+            this.toastr.success('تم حفظ التغييرات بنجاح');
+            // English: refresh store so the latest data propagates across the app
+            this.store.refresh();
+          },
           error: (e) => this.handleErr(e, 'فشل حفظ معلومات الوظيفة'),
         });
       },
@@ -267,8 +226,67 @@ private setResumePreview(url: string, name?: string) {
     });
   }
 
+  // ---------------- Preview helpers ----------------
+  private canEmbed(url: string) {
+    return url.startsWith(location.origin) || url.startsWith('blob:');
+  }
+
+  private setResumePreview(url: string, name?: string) {
+    this.resumeUrl = url;
+    const looksPdf =
+      /\.pdf($|\?)/i.test(url) || !!name?.toLowerCase().endsWith('.pdf');
+    this.isPdf = looksPdf && this.canEmbed(url);
+    this.resumeSafeUrl = this.isPdf
+      ? this.sanitizer.bypassSecurityTrustResourceUrl(url)
+      : null;
+  }
+
+  private clearResumePreview() {
+    this.resumeUrl = null;
+    this.resumeSafeUrl = null;
+    this.isPdf = false;
+  }
+
+  private toAbsolute(path?: string | null): string | null {
+    if (!path) return null;
+    if (/^(https?:|blob:|data:)/i.test(path)) return path;
+    const base = environment.apiBaseUrl.replace(/\/+$/, '');
+    return `${base}/${String(path).replace(/^\/+/, '')}`;
+  }
+
+  // ---------------- Date helpers ----------------
+  private normalizeDateForInput(value: any): string {
+    if (!value) return '';
+    const m = String(value).match(/^(\d{4}-\d{2}-\d{2})/);
+    if (m) return m[1];
+    const dmy = String(value).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (dmy) {
+      const [, dd, mm, yyyy] = dmy;
+      return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
+    }
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return '';
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${d.getFullYear()}-${mm}-${dd}`;
+  }
+
+  private normalizeDateForApi(value: any): string {
+    if (!value) return '';
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value))
+      return value;
+    if (value instanceof Date) {
+      const mm = String(value.getMonth() + 1).padStart(2, '0');
+      const dd = String(value.getDate()).padStart(2, '0');
+      return `${value.getFullYear()}-${mm}-${dd}`;
+    }
+    return this.normalizeDateForInput(value);
+  }
+
   private handleErr(err: any, fallback: string) {
-    const msg = err?.error ? Object.values(err.error).flat().join(' | ') : fallback;
+    const msg = err?.error
+      ? Object.values(err.error).flat().join(' | ')
+      : fallback;
     this.toastr.error(msg);
     console.error(err);
   }

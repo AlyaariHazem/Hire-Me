@@ -11,7 +11,6 @@ import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.co
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { HeaderPublic } from './header-public/header-public';
 import { JobService } from './services/job.service';
 import { ProfileStoreService } from './services/profile.service';
 
@@ -21,8 +20,7 @@ Footer,
 JobDetails,
 SearchForJob,
 Messages,
-ProgressSpinnerComponent,
-HeaderPublic
+ProgressSpinnerComponent
 ];
 
 const modules = [

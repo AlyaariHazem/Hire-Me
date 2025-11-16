@@ -4,6 +4,7 @@ import { Register } from './auth/register/register';
 
 import { authGuard } from './auth/auth.guard';
 import { loginRedirectGuard } from './auth/login-redirect.guard';
+import { Jobs } from './pages/jobs/jobs';
 
 export const routes: Routes = [
   // Login page at root: if logged-in → guard redirects to the app.
@@ -14,7 +15,7 @@ export const routes: Routes = [
   },
   {
     path: 'register',
-    component: Register
+    component: Register,
   },
   // {
   //   path: 'salary',
@@ -24,7 +25,9 @@ export const routes: Routes = [
   {
     path: 'companies',
     loadChildren: () =>
-      import('./pages/companies/companies-module').then((m) => m.CompaniesModule),
+      import('./pages/companies/companies-module').then(
+        (m) => m.CompaniesModule
+      ),
     canMatch: [authGuard],
   },
   // {
@@ -36,14 +39,19 @@ export const routes: Routes = [
   {
     path: 'jobseeker',
     loadChildren: () =>
-      import('./pages/jobseeker/jobseeker-module').then((m) => m.JobseekerModule),
+      import('./pages/jobseeker/jobseeker-module').then(
+        (m) => m.JobseekerModule
+      ),
     canMatch: [authGuard],
+  },
+  {
+    path: 'jobs',
+    component: Jobs,
   },
   // simple logout route that clears storage and returns to login
   {
     path: 'logout',
-    loadComponent: () =>
-      import('./auth/logout/logout').then(m => m.Logout)
+    loadComponent: () => import('./auth/logout/logout').then((m) => m.Logout),
   },
   { path: '**', redirectTo: '' },
 ];

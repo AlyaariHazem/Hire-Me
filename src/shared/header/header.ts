@@ -1,13 +1,24 @@
 import {
   ChangeDetectorRef,
-  Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, inject
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { filter, map, Subject, takeUntil } from 'rxjs';
+
 import { Logout } from '../services/logout';
 import { ToastrService } from 'ngx-toastr';
 import { User } from '../../app/pages/jobseeker/services/user';
-import { environment } from '../../environments/environment.development';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { ProfileStoreService } from 'shared/services/profile.service';
+
+import { environment } from 'environments/environment';
+import { UserType } from 'core/types';
+
 
 @Component({
   selector: 'app-header',
@@ -17,39 +28,63 @@ import { filter, Subject, takeUntil } from 'rxjs';
   providers: [Logout, ToastrService, User],
 })
 export class Header implements OnInit, OnDestroy {
+  // ===== Auth / mode =====
+  mode: UserType = 'public';
   token = !!localStorage.getItem('access');
 
-  // user dropdown (desktop)
-  menuOpen = false;
+  // ===== Menus state =====
+  menuOpen = false;          // jobseeker dropdown
+  employerMenuOpen = false;  // employer dropdown
+  mobileOpen = false;        // mobile nav
+  isEmployerMenuOpen = false;
+ private profileStore = inject(ProfileStoreService);
 
-  // mobile menu state
-  mobileOpen = false;
+  // ===== Jobseeker user info =====
+  jobseekerAvatar: string | null = null;
+  jobseekerFirstName: string | null = null;
 
-  absoluteAvatar: string | null = null;
-  firstName: string | null = null;
+  private employerSub?: any;                     // holds employer profile subscription
+  private jobseekerSub?: any;                    // holds jobseeker user subscription
+  private employerDataBound = false; 
+
+  // ===== Employer info =====
+  companyName = 'شركة التقنية المتقدمة';
+  logo$ = this.profileStore.profile$.pipe(
+    filter((p): p is any => !!p),
+    map(p => p.company_logo ? environment.apiBaseUrl + p.company_logo : 'assets/images/default-logo.svg')
+  );
 
   private destroy$ = new Subject<void>();
 
-  // refs
   @ViewChild('menuRoot', { static: false }) menuRoot?: ElementRef<HTMLElement>;
-  @ViewChild('navbarEl', { static: false }) navbarEl?: ElementRef<HTMLElement>;
 
   constructor(
     private router: Router,
-    private userService: User,
+    private userService: User
   ) {
+    // Jobseeker user data
     this.userService.user$
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
         const rel = data?.data?.user?.profile_picture;
-        this.absoluteAvatar = this.toAbsolute(rel);
-        this.firstName = data?.data?.user?.first_name;
+        this.jobseekerAvatar = this.toAbsolute(rel);
+        this.jobseekerFirstName = data?.data?.user?.first_name;
       });
 
-    // close mobile menu whenever we navigate
+      this.profileStore.ensureLoaded();
+
+    // Employer profile data
+    this.profileStore.profile$.subscribe(p => {
+      if (p) this.companyName = p.company_name;
+    });
+
+    // Update mode when navigating
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
-      .subscribe(() => this.closeMobileMenu());
+      .subscribe((e: any) => {
+        this.updateMode(e.urlAfterRedirects || e.url);
+        this.closeMobileMenu();
+      });
   }
 
   cdr = inject(ChangeDetectorRef);
@@ -58,43 +93,70 @@ export class Header implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     window.addEventListener('storage', this.syncToken);
+    this.updateMode(this.router.url);
   }
 
   ngOnDestroy(): void {
     window.removeEventListener('storage', this.syncToken);
-    this.destroy$.next(); this.destroy$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  notImplemented(){
-    this.toastr.info('هذه الميزة غير متوفرة حالياً', 'لم يتم التنفيذ');
-  }
-  
-  // ===== Desktop user menu =====
-  toggleMenu() { this.menuOpen = !this.menuOpen; }
-  closeMenu() { this.menuOpen = false; }
+  // ================== Mode logic ==================
 
-  @HostListener('document:click', ['$event'])
-  onDocClick(e: MouseEvent) {
-    // close desktop user menu when clicking outside it
-    if (this.menuRoot?.nativeElement && !this.menuRoot.nativeElement.contains(e.target as Node)) {
-      this.closeMenu();
-    }
+  private updateMode(url: string): void {
+  this.token = !!localStorage.getItem('access');
 
-    // close mobile menu if click outside navbar & toggle button
-    if (this.mobileOpen) {
-      const target = e.target as HTMLElement;
-      const insideNavbar = target.closest('.navbar');
-      const toggleBtn = target.closest('.mobile-menu-toggle');
-      if (!insideNavbar && !toggleBtn) this.closeMobileMenu();
-    }
+  if (!this.token) {
+    this.mode = 'public';
+    this.teardownDataBindings();               // stop any running bindings
+    return;
   }
 
-  @HostListener('document:keydown.escape')
-  onEsc() { this.closeMobileMenu(); this.closeMenu(); }
+  this.mode = url.startsWith('/companies') ? 'employer' : 'jobseeker';
+
+  // bind data per mode once
+  if (this.mode === 'employer' && !this.employerDataBound) {
+    // Load employer profile once (will no-op if already loaded inside store)
+    this.profileStore.ensureLoaded();          // <-- triggers fetch only once in store
+    this.employerSub = this.profileStore.profile$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(p => { if (p) this.companyName = p.company_name; });
+
+    this.employerDataBound = true;
+  }
+
+  if (this.mode === 'jobseeker' && !this.jobseekerSub) {
+    this.jobseekerSub = this.userService.user$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        const rel = data?.data?.user?.profile_picture;
+        this.jobseekerAvatar = this.toAbsolute(rel);
+        this.jobseekerFirstName = data?.data?.user?.first_name;
+      });
+  }
+}
+
+private teardownDataBindings(): void {
+  // unsubscribe and reset flags when going public
+  this.employerSub?.unsubscribe();
+  this.jobseekerSub?.unsubscribe();
+  this.employerSub = this.jobseekerSub = undefined;
+  this.employerDataBound = false;
+}
 
   private syncToken = (e: StorageEvent) => {
-    if (e.key === 'access') this.token = !!e.newValue;
+    if (e.key === 'access') {
+      this.token = !!e.newValue;
+      this.updateMode(this.router.url);
+    }
   };
+
+  // ================== Common helpers ==================
+
+  notImplemented(): void {
+    this.toastr.info('هذه الميزة غير متوفرة حالياً', 'لم يتم التنفيذ');
+  }
 
   private toAbsolute(path: string | null | undefined): string | null {
     if (!path) return null;
@@ -105,16 +167,79 @@ export class Header implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.logoutService.logout().subscribe((res: any) => {
-      this.token = false;
-      this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
-      localStorage.removeItem('access');
-      this.router.navigate(['/login']);
-      this.cdr.detectChanges();
-    });
+  this.logoutService.logout().subscribe((res: any) => {
+    this.token = false;
+    this.mode = 'public';
+    localStorage.removeItem('access');
+    this.profileStore.reset();
+    this.teardownDataBindings();
+    this.router.navigate(['/login']);
+    this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
+    this.cdr.detectChanges();
+  });
+}
+
+
+  // ================== Desktop menus ==================
+
+  toggleJobseekerMenu(): void {
+    this.menuOpen = !this.menuOpen;
+    this.employerMenuOpen = false;
   }
 
-  // ===== Mobile menu =====
+  toggleEmployerMenu(evt: MouseEvent): void {
+    evt.stopPropagation();
+    this.employerMenuOpen = !this.employerMenuOpen;
+    this.menuOpen = false;
+    this.isEmployerMenuOpen = !this.isEmployerMenuOpen;
+  }
+
+  navigate(action: string): void {
+    const routes: Record<string, string> = {
+      dashboard: '/companies/dashboard',
+      profile: '/companies/company-profile',
+      'post-job': '/companies/post-job',
+      'employer-settings': '/companies/settings',
+    };
+
+    if (action === 'logout') {
+      localStorage.removeItem('access');
+      this.router.navigate(['/login']);
+    } else if (routes[action]) {
+      this.router.navigate([routes[action]]);
+    }
+
+    this.isEmployerMenuOpen = false;
+  }
+
+  closeMenus(): void {
+    this.menuOpen = false;
+    this.employerMenuOpen = false;
+    this.isEmployerMenuOpen = false;
+  }
+
+  navigateEmployer(action: string): void {
+    const routes: Record<string, string> = {
+      dashboard: '/companies/dashboard',
+      profile: '/companies/company-profile',
+      'post-job': '/companies/post-job',
+      'employer-settings': '/companies/settings',
+    };
+
+    if (action === 'logout') {
+      localStorage.removeItem('access');
+      this.token = false;
+      this.mode = 'public';
+      this.router.navigate(['/login']);
+    } else if (routes[action]) {
+      this.router.navigate([routes[action]]);
+    }
+
+    this.employerMenuOpen = false;
+  }
+
+  // ================== Mobile menu ==================
+
   toggleMobileMenu(): void {
     this.mobileOpen = !this.mobileOpen;
     document.body.classList.toggle('no-scroll', this.mobileOpen);
@@ -127,8 +252,35 @@ export class Header implements OnInit, OnDestroy {
     }
   }
 
+  // ================== Global listeners ==================
+
+  @HostListener('document:click', ['$event'])
+  onDocClick(e: MouseEvent): void {
+    const target = e.target as HTMLElement;
+
+    // Close dropdowns (jobseeker/employer) on outside click
+    if (this.menuRoot?.nativeElement &&
+      !this.menuRoot.nativeElement.contains(target)) {
+      this.closeMenus();
+    }
+
+    // Close mobile menu when clicking outside navbar/toggle
+    if (this.mobileOpen) {
+      const insideNavbar = target.closest('.navbar');
+      const toggleBtn = target.closest('.mobile-menu-toggle');
+      if (!insideNavbar && !toggleBtn) this.closeMobileMenu();
+    }
+    this.isEmployerMenuOpen = false;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEsc(): void {
+    this.closeMobileMenu();
+    this.closeMenus();
+  }
+
   @HostListener('window:resize')
-  onResize() {
+  onResize(): void {
     if (window.innerWidth > 768 && this.mobileOpen) {
       this.closeMobileMenu();
     }

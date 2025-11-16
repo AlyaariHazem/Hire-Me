@@ -3,7 +3,8 @@ import { ToastrService } from 'ngx-toastr';
 
 import { JobService, JobFilters, JobListResponse } from 'shared/services/job.service';
 import { JobItem } from '@app/companies/models';
-import { SharedModule } from '../../../shared/shared-module';
+import { SharedModule } from 'shared/shared-module';
+import { UserType } from 'core/types';
 
 @Component({
   selector: 'app-jobs',
@@ -18,6 +19,7 @@ export class Jobs {
 
   jobs: JobItem[] = [];
   totalJobs = 0;
+  mode: UserType = 'public';
 
   // pagination
   currentPage = 1;
@@ -39,6 +41,7 @@ export class Jobs {
 
   ngOnInit() {
     this.getJobs();
+    
   }
 
   getJobs() {

@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil, filter } from 'rxjs';
 
 import { environment } from 'environments/environment';
-import { ProfileStoreService } from 'shared/services/profile.service';
+import { ProfileStoreService, Profile } from 'shared/services/profile.service';
 import { Errors } from 'shared/services/errors';
 import { ProfileService } from '../core/services/profile.service';
 import { COMPANY_SIZES } from '@app/companies/enums';
@@ -16,17 +16,28 @@ import { COMPANY_SIZES } from '@app/companies/enums';
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss'],
 })
-export class Profile implements OnInit, OnDestroy {
+export class ProfileComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   COMPANY_SIZES = COMPANY_SIZES;
   errors = inject(Errors);
   saving = false;
+
+  // English: selected logo file and preview URL
   logoFile?: File;
   logo$?: string | null;
 
   profileStore = inject(ProfileStoreService);
 
-  form: any = {
+  // English: keep a typed, minimal form model
+  form: {
+    company_name: string;
+    company_description: string;
+    company_logo: string;
+    company_website: string;
+    company_size: string;
+    industry: string;
+    founded_year: number | null;
+  } = {
     company_name: '',
     company_description: '',
     company_logo: '',
@@ -39,34 +50,45 @@ export class Profile implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private toastr: ToastrService,
-    private profileService: ProfileService // if you still need it elsewhere
+    private profileService: ProfileService // keep if used elsewhere
   ) {}
 
   ngOnInit(): void {
-    // 🔹 Load profile from the store (store will call backend once)
-    this.profileStore
-      .getProfile$() // no force → only fetch if not loaded
+    // English: trigger initial load once (safe to call multiple times)
+    this.profileStore.ensureLoaded();
+
+    // English: bind to shared profile stream (typed via type guard)
+    this.profileStore.profile$
       .pipe(
         takeUntil(this.destroy$),
-        filter((p): p is any => !!p) // ignore null/undefined
+        filter((p): p is Profile => !!p)
       )
       .subscribe((p) => {
-        // backend returns relative path? adjust if needed
-        this.logo$ = p.company_logo
-          ? environment.apiBaseUrl + p.company_logo
-          : null;
+        // English: build absolute logo preview
+        this.logo$ = p.company_logo ? this.toAbsolute(p.company_logo) : null;
 
-        this.form = {
-          ...this.form,
-          ...p,
-          founded_year: p.founded_year ?? null,
-        };
+        // English: patch values without replacing the reference
+        this.form.company_name = p.company_name ?? '';
+        this.form.company_description = (p as any).company_description ?? '';
+        this.form.company_logo = p.company_logo ?? '';
+        this.form.company_website = (p as any).company_website ?? '';
+        this.form.company_size = (p as any).company_size ?? '';
+        this.form.industry = (p as any).industry ?? '';
+        this.form.founded_year = (p as any).founded_year ?? null;
       });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // English: convert relative path to absolute based on API base URL
+  private toAbsolute(path: string): string {
+    if (/^(https?:|blob:|data:)/i.test(path)) return path;
+    const base = environment.apiBaseUrl.replace(/\/+$/, '');
+    const p = String(path).replace(/^\/+/, '');
+    return `${base}/${p}`;
   }
 
   onLogoSelected(evt: Event) {
@@ -85,6 +107,7 @@ export class Profile implements OnInit, OnDestroy {
     this.saving = true;
     const url = environment.getUrl('profile/employer', 'accounts');
 
+    // English: build multipart form data
     const fd = new FormData();
     fd.append('company_name', this.form.company_name ?? '');
     fd.append('company_description', this.form.company_description ?? '');
@@ -92,7 +115,7 @@ export class Profile implements OnInit, OnDestroy {
     fd.append('company_size', this.form.company_size ?? '');
     fd.append('industry', this.form.industry ?? '');
 
-    if (this.form.founded_year != null && this.form.founded_year !== '') {
+    if (this.form.founded_year != null && this.form.founded_year !== ('' as any)) {
       fd.append('founded_year', String(+this.form.founded_year));
     }
 
@@ -104,9 +127,8 @@ export class Profile implements OnInit, OnDestroy {
       next: () => {
         this.toastr.success('تم حفظ بيانات الشركة بنجاح');
         this.saving = false;
-
-        // 🔹 Very important: refresh the store so all app gets latest profile
-        this.profileStore.refreshProfile();
+        // English: refresh the shared cache so all components see the update
+        this.profileStore.refresh();
       },
       error: (err) => {
         this.errors.error(err, { join: true });

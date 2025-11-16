@@ -9,27 +9,32 @@ import { Alerts } from './alerts/alerts';
 import { Settings } from './settings/settings';
 import { CvBuilder } from './cv-builder/cv-builder';
 import { Applications } from './applications/applications';
+import { Jobs } from '../jobs/jobs';
 
 const routes: Routes = [
   {
     path: '',
     component: JobSeeker,
     children: [
-      { path: 'dashboard',  component: Dashboard },
+      { path: 'dashboard', component: Dashboard },
       { path: 'saved-jobs', component: SavedJobs },
-      { path: 'profile', component: Profile},
-      { path: 'cv', component: CV},
-      { path: 'cv-builder', component: CvBuilder},
-      { path: 'alerts', component: Alerts},
-      { path: 'applications', component: Applications},
-      { path: 'settings', component: Settings},
+      { path: 'profile', component: Profile },
+      { path: 'cv', component: CV },
+      { path: 'cv-builder', component: CvBuilder },
+      { path: 'alerts', component: Alerts },
+      { path: 'applications', component: Applications },
+      { path: 'settings', component: Settings },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    ]
-  }
+      {
+        path: 'jobs',
+        component: Jobs,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class JobseekerRoutingModule { }
+export class JobseekerRoutingModule {}

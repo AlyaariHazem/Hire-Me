@@ -3,7 +3,7 @@
   <div class="sidebar-profile">
     <label class="avatar-uploader">
       <img
-        [src]="previewUrl || toAbsolute(userPicture) || 'images/candidate-3.jpg'"
+        [src]="previewUrl || toAbsolute(profile?.data?.user?.user_picture) || 'images/candidate-3.jpg'"
         class="profile-avatar"
       />
       <input type="file" accept="image/*" (change)="onAvatarChange($event)" />
@@ -11,7 +11,7 @@
     </label>
 
     <h3 class="profile-name">
-      {{ userData?.data?.user?.first_name }} {{ userData?.data?.user?.last_name
+      {{ profile?.data?.user?.first_name }} {{ profile?.data?.user?.last_name
       }}
     </h3>
     <p class="profile-title">مطور برمجيات</p>

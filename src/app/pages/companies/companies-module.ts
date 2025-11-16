@@ -13,10 +13,9 @@ import { CompanyProfile } from './company-profile/company-profile';
 import { Billing } from './billing/billing';
 import { Overview } from './overview/overview';
 import { PostJob } from './post-job/post-job';
-import { HeaderCompany } from './header-company/header-company';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CompanyData } from './company-data/company-data';
-import { Profile } from './profile/profile';
+import { ProfileComponent } from './profile/profile';
 import { Select } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -33,9 +32,8 @@ const components = [
   Analytics,
   CompanyProfile,
   Billing,
-  HeaderCompany,
   CompanyData,
-  Profile,
+  ProfileComponent,
 ];
 const modules = [
   CommonModule,

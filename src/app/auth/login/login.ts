@@ -27,7 +27,7 @@ export class Login implements OnInit {
   ) {}
 
   // Let the user explicitly select one of these:
-  user: boolean = false;   // jobseeker
+  user: boolean = true;   // jobseeker
   admin: boolean = false;  // employer
 
   errors = inject(Errors);

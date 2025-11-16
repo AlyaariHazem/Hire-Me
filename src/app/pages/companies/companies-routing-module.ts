@@ -5,7 +5,7 @@ import { Dashboard } from './dashboard/dashboard';
 import { PostJob } from './post-job/post-job';
 import { CompanyProfile } from './company-profile/company-profile';
 import { CompanyData } from './company-data/company-data';
-import { Profile } from './profile/profile';
+import { ProfileComponent } from './profile/profile';
 import { ManageJobs } from './manage-jobs/manage-jobs';
 import { JobDetails } from 'shared/job-details/job-details';
 import { Jobs } from '../jobs/jobs';
@@ -26,7 +26,7 @@ const routes: Routes = [
       },
       {
         path: 'profile',
-        component: Profile,
+        component: ProfileComponent,
       },
       {
         path: 'company-data',
