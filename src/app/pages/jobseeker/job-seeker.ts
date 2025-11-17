@@ -17,7 +17,7 @@ export class JobSeeker implements OnDestroy {
 
   ngOnInit() {
     // English: make sure profile is loaded once (idempotent)
-    this.profileStore.ensureLoaded();
+    // this.profileStore.ensureLoaded();
 
     // English: bind to shared profile and keep it typed
     this.profileStore.profile$

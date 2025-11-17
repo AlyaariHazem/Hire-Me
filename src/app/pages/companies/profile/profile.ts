@@ -55,7 +55,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // English: trigger initial load once (safe to call multiple times)
-    this.profileStore.ensureLoaded();
+    // this.profileStore.ensureLoaded();
 
     // English: bind to shared profile stream (typed via type guard)
     this.profileStore.profile$
@@ -66,7 +66,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .subscribe((p) => {
         // English: build absolute logo preview
         this.logo$ = p.company_logo ? this.toAbsolute(p.company_logo) : null;
-
+        debugger;
         // English: patch values without replacing the reference
         this.form.company_name = p.company_name ?? '';
         this.form.company_description = (p as any).company_description ?? '';

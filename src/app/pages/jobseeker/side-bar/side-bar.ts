@@ -11,24 +11,26 @@ import { HttpClient } from '@angular/common/http';
   selector: 'app-side-bar',
   standalone: false,
   templateUrl: './side-bar.html',
-  styleUrl: './side-bar.scss'
+  styleUrl: './side-bar.scss',
 })
 export class SideBar implements OnInit, OnDestroy {
   // English: form holder (if you need later inputs)
   basicForm!: FormGroup;
+  baseUrl = environment.apiBaseUrl;
 
   // English: company profile snapshot
-  profile: any | null = null;
+  profile: Profile | null = null;
 
-  // English: logo preview (absolute URL). Using signal so template updates instantly.
+  // English: logo preview (absolute URL or blob url)
   logo$ = signal<string | null>(null);
+  previewUrl: string | null = null;
+  private isBlobPreview = false;
 
   // English: company name display
-  companyName = 'شركة التقنيات المتقدمة';
+  jobSeekerName = 'المستخدم';
 
-  // English: local image selection and preview handling
+  // English: local image selection state
   selectedFile: File | null = null;
-  previewUrl: string | null = null;
   saving = false;
 
   private destroy$ = new Subject<void>();
@@ -45,7 +47,7 @@ export class SideBar implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    // English: init dumb form (kept for future fields)
+    // English: init simple form (kept for future fields)
     this.basicForm = this.fb.group({ company_logo: [''] });
 
     // English: trigger initial load (safe to call multiple times)
@@ -57,17 +59,24 @@ export class SideBar implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         filter((p): p is Profile => !!p)
       )
-      .subscribe(p => {
+      .subscribe((p) => {
         this.profile = p;
-        this.companyName = p.company_name ?? this.companyName;
-        this.logo$.set(this.toAbsolute(p.company_logo));
+        this.jobSeekerName = p.user.first_name + ' ' + p.user.last_name || this.jobSeekerName;
+        debugger;
+        // English: prefer nested profile.company_logo, then root company_logo
+        const logoPath = p.profile?.company_logo || p.user.profile_picture || null;
+        this.previewUrl = this.toAbsolute(logoPath);
+        this.logo$.set(this.previewUrl);
+        this.isBlobPreview = false; // English: backend URL, not blob
       });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    if (this.previewUrl) URL.revokeObjectURL(this.previewUrl);
+    if (this.previewUrl && this.isBlobPreview) {
+      URL.revokeObjectURL(this.previewUrl);
+    }
   }
 
   // ================= Image selection / preview =================
@@ -76,14 +85,37 @@ export class SideBar implements OnInit, OnDestroy {
     const file = (e.target as HTMLInputElement).files?.[0] || null;
     this.selectedFile = file;
 
-    if (this.previewUrl) URL.revokeObjectURL(this.previewUrl);
-    this.previewUrl = file ? URL.createObjectURL(file) : null;
+    if (this.previewUrl && this.isBlobPreview) {
+      URL.revokeObjectURL(this.previewUrl);
+    }
+
+    if (file) {
+      // English: use local blob preview until saved
+      this.previewUrl = URL.createObjectURL(file);
+      this.logo$.set(this.previewUrl);
+      this.isBlobPreview = true;
+    } else {
+      // English: reset to stored logo from profile (if any)
+      const logoPath =
+        this.profile?.profile?.company_logo || this.profile?.user?.profile_picture || null;
+      this.previewUrl = this.toAbsolute(logoPath);
+      this.logo$.set(this.previewUrl);
+      this.isBlobPreview = false;
+    }
   }
 
   cancelAvatar() {
-    if (this.previewUrl) URL.revokeObjectURL(this.previewUrl);
-    this.previewUrl = null;
+    if (this.previewUrl && this.isBlobPreview) {
+      URL.revokeObjectURL(this.previewUrl);
+    }
     this.selectedFile = null;
+
+    // English: restore original logo from profile
+    const logoPath =
+      this.profile?.profile?.company_logo || this.profile?.company_logo || null;
+    this.previewUrl = this.toAbsolute(logoPath);
+    this.logo$.set(this.previewUrl);
+    this.isBlobPreview = false;
   }
 
   // ================= Save company logo via employer profile =================
@@ -96,14 +128,13 @@ export class SideBar implements OnInit, OnDestroy {
     fd.append('company_logo', this.selectedFile);
 
     this.saving = true;
-    const url = environment.getUrl('profile/employer', 'accounts');
+    const url = environment.getUrl('profile/job-seeker', 'accounts');
 
     this.http.put(url, fd).subscribe({
       next: () => {
-        // English: instant UI feedback with local preview
+        // English: keep current preview as the logo
         this.logo$.set(this.previewUrl);
         this.selectedFile = null;
-        this.previewUrl = null;
         this.saving = false;
         this.toast.success('تم تحديث شعار الشركة');
 
@@ -113,14 +144,14 @@ export class SideBar implements OnInit, OnDestroy {
       error: () => {
         this.saving = false;
         this.toast.error('فشل تحديث الشعار');
-      }
+      },
     });
   }
 
   // ================= Utils =================
 
   // English: normalize relative logo path to absolute API URL
-   toAbsolute(path?: string | null): string | null {
+  toAbsolute(path?: string | null): string | null {
     if (!path) return null;
     if (/^(https?:|blob:|data:)/i.test(path)) return path;
     const base = environment.apiBaseUrl.replace(/\/+$/, '');

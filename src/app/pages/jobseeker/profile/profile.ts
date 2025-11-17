@@ -61,7 +61,7 @@ export class Profile implements OnInit, OnDestroy {
     });
 
     // English: trigger initial load from the store
-    this.store.ensureLoaded();
+    // this.store.ensureLoaded();
 
     // English: bind once to store and patch forms
     this.store.profile$

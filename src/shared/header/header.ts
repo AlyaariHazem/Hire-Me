@@ -51,7 +51,7 @@ export class Header implements OnInit, OnDestroy {
   companyName = 'شركة التقنية المتقدمة';
   logo$ = this.profileStore.profile$.pipe(
     filter((p): p is any => !!p),
-    map(p => p.company_logo ? environment.apiBaseUrl + p.company_logo : 'assets/images/default-logo.svg')
+    map(p => p.profile.company_logo ? environment.apiBaseUrl + p.profile.company_logo : 'assets/images/default-logo.svg')
   );
 
   private destroy$ = new Subject<void>();
@@ -71,7 +71,7 @@ export class Header implements OnInit, OnDestroy {
         this.jobseekerFirstName = data?.data?.user?.first_name;
       });
 
-      this.profileStore.ensureLoaded();
+      // this.profileStore.ensureLoaded();
 
     // Employer profile data
     this.profileStore.profile$.subscribe(p => {
@@ -118,7 +118,7 @@ export class Header implements OnInit, OnDestroy {
   // bind data per mode once
   if (this.mode === 'employer' && !this.employerDataBound) {
     // Load employer profile once (will no-op if already loaded inside store)
-    this.profileStore.ensureLoaded();          // <-- triggers fetch only once in store
+    // this.profileStore.ensureLoaded();          // <-- triggers fetch only once in store
     this.employerSub = this.profileStore.profile$
       .pipe(takeUntil(this.destroy$))
       .subscribe(p => { if (p) this.companyName = p.company_name; });

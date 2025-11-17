@@ -2,18 +2,21 @@
 <aside class="dashboard-sidebar">
   <div class="sidebar-profile">
     <label class="avatar-uploader">
-      <img
-        [src]="previewUrl || toAbsolute(profile?.data?.user?.user_picture) || 'images/candidate-3.jpg'"
-        class="profile-avatar"
-      />
-      <input type="file" accept="image/*" (change)="onAvatarChange($event)" />
-      <span class="edit-badge">تغيير الصورة</span>
-    </label>
+  <img
+    [src]="
+      previewUrl ||
+      toAbsolute(profile?.user?.profile_picture || profile?.user?.profile_picture) ||
+      'images/candidate-3.jpg'
+    "
+    class="profile-avatar"
+  />
+  <input type="file" accept="image/*" (change)="onAvatarChange($event)" />
+  <span class="edit-badge">تغيير الصورة</span>
+</label>
 
     <h3 class="profile-name">
-      {{ profile?.data?.user?.first_name }} {{ profile?.data?.user?.last_name
-      }}
-    </h3>
+  {{ jobSeekerName || 'اسم المستخدم' }}
+</h3>
     <p class="profile-title">مطور برمجيات</p>
 
     <div class="avatar-actions" *ngIf="selectedFile">

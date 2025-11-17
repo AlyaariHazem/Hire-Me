@@ -26,8 +26,4 @@ export class ProfileService extends ProfileStoreService {
   updateJobSeekerFormData(fd: FormData) {
     return this.http.put(environment.getUrl('profile/job-seeker', 'accounts'), fd);
   }
-
-  getProfile() {
-    return this.http.get(environment.getUrl('profile', 'accounts'));
-  }
 }
