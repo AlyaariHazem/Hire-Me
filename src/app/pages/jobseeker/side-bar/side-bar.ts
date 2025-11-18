@@ -112,7 +112,7 @@ export class SideBar implements OnInit, OnDestroy {
 
     // English: restore original logo from profile
     const logoPath =
-      this.profile?.profile?.company_logo || this.profile?.company_logo || null;
+      this.profile?.profile?.company_logo || this.profile?.user?.profile_picture || null;
     this.previewUrl = this.toAbsolute(logoPath);
     this.logo$.set(this.previewUrl);
     this.isBlobPreview = false;
@@ -125,10 +125,10 @@ export class SideBar implements OnInit, OnDestroy {
 
     // English: build multipart body for employer profile update
     const fd = new FormData();
-    fd.append('company_logo', this.selectedFile);
+    fd.append('profile_picture', this.selectedFile);
 
     this.saving = true;
-    const url = environment.getUrl('profile/job-seeker', 'accounts');
+    const url = environment.getUrl('profile/update', 'accounts');
 
     this.http.put(url, fd).subscribe({
       next: () => {
@@ -136,14 +136,14 @@ export class SideBar implements OnInit, OnDestroy {
         this.logo$.set(this.previewUrl);
         this.selectedFile = null;
         this.saving = false;
-        this.toast.success('تم تحديث شعار الشركة');
+        this.toast.success('تم تحديث صورة الملف الشخصي');
 
         // English: refresh shared profile so all app updates
         this.profileStore.refresh();
       },
       error: () => {
         this.saving = false;
-        this.toast.error('فشل تحديث الشعار');
+        this.toast.error('فشل تحديث صورة الملف الشخصي');
       },
     });
   }
