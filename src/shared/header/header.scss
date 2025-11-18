@@ -93,5 +93,18 @@ a{
   cursor: pointer;
 }
 a:hover {
-  background-color: #efeded;
+  background-color: white
+}
+.active{
+  background-color: #2563eb;
+  color: white;
+}
+
+.btn-secondary:hover{
+  color:#2563eb;
+}
+.navbar-actions{
+  & .btn-secondary:hover{
+    color: white;
+  }
 }

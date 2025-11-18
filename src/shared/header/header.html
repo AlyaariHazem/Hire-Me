@@ -22,7 +22,7 @@
         <li class="nav-item">
           <a (click)="notImplemented()" class="nav-link">الموارد</a>
         </li>
-        @if(mode === 'jobseeker'){
+        @if(mode === 'jobseeker' && role === 'jobseeker'){
         <li role="none">
           <button
             role="menuitem"
@@ -40,69 +40,73 @@
       <!-- Right side actions (change per mode) -->
       <div class="navbar-actions" dir="rtl" (click)="closeMobileMenu()">
         <!-- ========== Public header (login / register) ========== -->
-        <ng-container *ngIf="mode === 'public'">
-          <a
-            routerLink="/login"
-            class="btn btn-ghost"
-            aria-label="تسجيل الدخول"
-          >
-            تسجيل الدخول
-          </a>
-          <a
-            routerLink="/register"
-            class="btn btn-primary"
-            aria-label="إنشاء حساب"
-          >
-            إنشاء حساب
-          </a>
-        </ng-container>
+         @if(mode === 'public'){
+
+           <a
+             routerLink="/login"
+             class="btn btn-secondary"
+              routerLinkActive="active"
+             aria-label="تسجيل الدخول"
+           >
+             تسجيل الدخول
+           </a>
+           <a
+             routerLink="/register"
+             class="btn btn-secondary"
+             routerLinkActive="active"
+             aria-label="إنشاء حساب"
+           >
+             إنشاء حساب
+           </a>
+         }
 
         <!-- ========== Employer header ========== -->
-        <ng-container *ngIf="mode === 'employer'">
-          <div class="navbar-actions" (click)="$event.stopPropagation()">
-            <div style="position: relative">
-              <button
-                class="btn btn-secondary"
-                (click)="toggleEmployerMenu($event)"
-              >
-                <img
-                  [src]="(logo$ | async) || 'images/company-logo-1.jpg'"
-                  alt="شركة التقنيات المتقدمة"
-                  style="
-                    width: 24px;
-                    height: 24px;
-                    border-radius: 4px;
-                    margin-left: 0.5rem;
-                  "
-                />
-                {{ companyName }}
-              </button>
-              <div
-                class="user-menu"
-                *ngIf="isEmployerMenuOpen"
-                (click)="$event.stopPropagation()"
-              >
-                <a class="user-menu-item" (click)="navigate('dashboard')"
-                  >لوحة التحكم</a
-                >
-                <a class="user-menu-item" (click)="navigate('profile')"
-                  >ملف الشركة</a
-                >
-                <a class="user-menu-item" (click)="navigate('post-job')"
-                  >نشر وظيفة</a
-                >
-                <a
-                  class="user-menu-item"
-                  (click)="navigate('employer-settings')"
-                  >الإعدادات</a
-                >
-                <a class="user-menu-item-logout" (click)="navigate('logout')"
-                  >تسجيل الخروج</a
-                >
-              </div>
-            </div>
-          </div>
-        </ng-container>
+         @if(mode === 'employer' || role === 'employer'){
+
+           <div class="navbar-actions" (click)="$event.stopPropagation()">
+             <div style="position: relative">
+               <button
+                 class="btn btn-secondary"
+                 (click)="toggleEmployerMenu($event)"
+               >
+                 <img
+                   [src]="(logo$ | async) || 'images/company-logo-1.jpg'"
+                   alt="شركة التقنيات المتقدمة"
+                   style="
+                     width: 24px;
+                     height: 24px;
+                     border-radius: 4px;
+                     margin-left: 0.5rem;
+                   "
+                 />
+                 {{ companyName }}
+               </button>
+               <div
+                 class="user-menu"
+                 *ngIf="isEmployerMenuOpen"
+                 (click)="$event.stopPropagation()"
+               >
+                 <a class="user-menu-item" (click)="navigate('dashboard')"
+                   >لوحة التحكم</a
+                 >
+                 <a class="user-menu-item" (click)="navigate('profile')"
+                   >ملف الشركة</a
+                 >
+                 <a class="user-menu-item" (click)="navigate('post-job')"
+                   >نشر وظيفة</a
+                 >
+                 <a
+                   class="user-menu-item"
+                   (click)="navigate('employer-settings')"
+                   >الإعدادات</a
+                 >
+                 <a class="user-menu-item-logout" (click)="navigate('logout')"
+                   >تسجيل الخروج</a
+                 >
+               </div>
+             </div>
+           </div>
+         }
       </div>
 
       <!-- Mobile Menu Toggle -->
@@ -121,9 +125,10 @@
   </nav>
 
   <!-- Backdrop for mobile -->
-  <div
-    class="mobile-backdrop"
-    *ngIf="mobileOpen"
-    (click)="closeMobileMenu()"
-  ></div>
+   @if(mobileOpen){
+     <div
+       class="mobile-backdrop"
+       (click)="closeMobileMenu()"
+     ></div>
+   }
 </header>

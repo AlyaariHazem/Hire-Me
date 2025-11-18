@@ -8,8 +8,9 @@ import { Jobs } from './pages/jobs/jobs';
 
 export const routes: Routes = [
   // Login page at root: if logged-in → guard redirects to the app.
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
-    path: '',
+    path: 'login',
     component: Login,
     canActivate: [loginRedirectGuard],
   },

@@ -5,10 +5,12 @@ import { JobService, JobFilters, JobListResponse } from 'shared/services/job.ser
 import { JobItem } from '@app/companies/models';
 import { SharedModule } from 'shared/shared-module';
 import { UserType } from 'core/types';
+import { SideBar } from '../jobseeker/side-bar/side-bar';
+import { SideBarCompany } from '../companies/side-bar/side-bar';
 
 @Component({
   selector: 'app-jobs',
-  imports: [SharedModule],
+  imports: [SharedModule,SideBar,SideBarCompany],
   templateUrl: './jobs.html',
   styleUrl: './jobs.scss'
 })
@@ -20,6 +22,7 @@ export class Jobs {
   jobs: JobItem[] = [];
   totalJobs = 0;
   mode: UserType = 'public';
+  role:string = '';
 
   // pagination
   currentPage = 1;
@@ -40,6 +43,7 @@ export class Jobs {
   };
 
   ngOnInit() {
+    this.role = localStorage.getItem('role') || '';
     this.getJobs();
     
   }

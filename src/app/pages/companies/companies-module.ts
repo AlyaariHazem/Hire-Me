@@ -6,7 +6,7 @@ import { SharedModule } from 'shared/shared-module';
 import { Companies } from './companies';
 import { Dashboard } from './dashboard/dashboard';
 import { Candidates } from './candidates/candidates';
-import { SideBar } from './side-bar/side-bar';
+import { SideBarCompany } from './side-bar/side-bar';
 import { ManageJobs } from './manage-jobs/manage-jobs';
 import { Analytics } from './analytics/analytics';
 import { CompanyProfile } from './company-profile/company-profile';
@@ -27,7 +27,6 @@ const components = [
   Companies,
   Dashboard,
   Candidates,
-  SideBar,
   Overview,
   Analytics,
   CompanyProfile,
@@ -44,6 +43,7 @@ const modules = [
   ButtonModule,
   PostJob,
   Select,
+  SideBarCompany,
   TextareaModule,
   ManageJobs,
   FormsModule,

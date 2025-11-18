@@ -30,6 +30,7 @@ import { UserType } from 'core/types';
 export class Header implements OnInit, OnDestroy {
   // ===== Auth / mode =====
   mode: UserType = 'public';
+  role: string = localStorage.getItem('role') || '';
   token = !!localStorage.getItem('access');
 
   // ===== Menus state =====
@@ -171,6 +172,7 @@ private teardownDataBindings(): void {
     this.token = false;
     this.mode = 'public';
     localStorage.removeItem('access');
+    localStorage.removeItem('role');
     this.profileStore.reset();
     this.teardownDataBindings();
     this.router.navigate(['/login']);
@@ -195,6 +197,7 @@ private teardownDataBindings(): void {
   }
 
   navigate(action: string): void {
+    
     const routes: Record<string, string> = {
       dashboard: '/companies/dashboard',
       profile: '/companies/company-profile',
@@ -204,11 +207,13 @@ private teardownDataBindings(): void {
 
     if (action === 'logout') {
       localStorage.removeItem('access');
+      localStorage.removeItem('role');
+      this.role = localStorage.getItem('role') || '';
       this.router.navigate(['/login']);
     } else if (routes[action]) {
       this.router.navigate([routes[action]]);
     }
-
+    
     this.isEmployerMenuOpen = false;
   }
 
@@ -228,6 +233,7 @@ private teardownDataBindings(): void {
 
     if (action === 'logout') {
       localStorage.removeItem('access');
+      localStorage.removeItem('role');
       this.token = false;
       this.mode = 'public';
       this.router.navigate(['/login']);

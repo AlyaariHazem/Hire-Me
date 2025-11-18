@@ -4,14 +4,15 @@ import { ToastrService } from 'ngx-toastr';
 import { filter } from 'rxjs';
 import { environment } from 'environments/environment';
 import { ProfileStoreService, Profile } from 'shared/services/profile.service';
+import { SharedModule } from 'shared/shared-module';
 
 @Component({
-  selector: 'app-side-bar',
-  standalone: false,
+  selector: 'app-side-bar-company',
+  imports:[SharedModule],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.scss'
 })
-export class SideBar implements OnInit {
+export class SideBarCompany implements OnInit {
   // English: reactive logo preview (absolute URL)
   logo = signal<string>('');
   // English: default company name until profile loads

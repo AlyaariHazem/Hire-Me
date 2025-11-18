@@ -6,10 +6,11 @@ import { filter, Subject, takeUntil } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ProfileStoreService, Profile } from 'shared/services/profile.service';
 import { HttpClient } from '@angular/common/http';
+import { SharedModule } from 'shared/shared-module';
 
 @Component({
   selector: 'app-side-bar',
-  standalone: false,
+  imports: [SharedModule],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.scss',
 })
