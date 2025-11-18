@@ -100,11 +100,14 @@ a:hover {
   color: white;
 }
 
-.btn-secondary:hover{
-  color:#2563eb;
-}
 .navbar-actions{
   & .btn-secondary:hover{
-    color: white;
+    color:#2563eb;
+    
   }
 }
+.company:hover{
+    & .btn-secondary:hover{
+      color: white;
+    }
+  }
