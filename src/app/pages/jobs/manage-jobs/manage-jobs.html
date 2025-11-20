@@ -1,0 +1,65 @@
+<div id="jobs">
+  <div class="employer-header">
+    <h1 class="employer-title">إدارة الوظائف</h1>
+    <div class="employer-actions">
+      <a [routerLink]="['/companies/post-job']" class="btn btn-primary">نشر وظيفة جديدة</a>
+    </div>
+  </div>
+
+  <div class="employer-content-card">
+    <div class="tab-navigation">
+      <button class="tab" [class.active]="activeTab() === 'active'" (click)="selectTab('active')">
+        الوظائف النشطة ({{ countActive() }})
+      </button>
+      <button class="tab" [class.active]="activeTab() === 'paused'" (click)="selectTab('paused')">
+        متوقفة ({{ countPaused() }})
+      </button>
+      <button class="tab" [class.active]="activeTab() === 'closed'" (click)="selectTab('closed')">
+        مغلقة ({{ countClosed() }})
+      </button>
+      <button class="tab" [class.active]="activeTab() === 'draft'" (click)="selectTab('draft')">
+        مسودات ({{ countDraft() }})
+      </button>
+    </div>
+
+    <div class="tab-content" *ngIf="!loading && visibleJobs().length === 0">
+      <div class="empty">لا توجد وظائف في هذا القسم</div>
+    </div>
+
+    <div class="tab-content" *ngIf="!loading && visibleJobs().length > 0">
+      <div class="job-posting-item" *ngFor="let j of visibleJobs()">
+        <div class="job-posting-info">
+          <h4 class="job-posting-title">{{ j.title }}</h4>
+
+          <div class="job-posting-meta">
+            <span>{{ j.created_at | date:'yyyy/MM/dd' }}</span>
+            <span>{{ j.city || '—' }}</span>
+            <span>{{ salaryText(j) }}</span>
+          </div>
+
+          <div class="job-posting-stats">
+            <span>{{ j.applications_count || 0 }} متقدم</span>
+            <span>{{ j.views_count || 0 }} مشاهدة</span>
+            <span>{{ j.is_featured ? 'مميز' : 'غير مميز' }}</span>
+          </div>
+        </div>
+
+        <div class="job-posting-actions">
+          <span class="job-status" [class.status-active]="j.is_active" [class.status-closed]="!j.is_active">
+            {{ j.is_active ? 'نشطة' : 'مغلقة' }}
+          </span>
+          <a [routerLink]="['/companies/post-job']" [queryParams]="{ edit: j.slug }" class="btn btn-small btn-secondary">
+            تحرير
+          </a>
+          <a [routerLink]="['/companies/applicants']" [queryParams]="{ job: j.slug }" class="btn btn-small btn-primary">
+            عرض المتقدمين
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" *ngIf="loading">
+      <div class="skeleton"></div>
+    </div>
+  </div>
+</div>

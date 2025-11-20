@@ -1,0 +1,66 @@
+<!-- Hero Section -->
+<section class="post-job-hero">
+  <div class="container">
+    <h1>انشر وظيفة واعثر على أفضل المواهب</h1>
+    <p>وصل إلى آلاف المرشحين المؤهلين في اليمن واعثر على الموظف المثالي لشركتك</p>
+    <div class="pricing-preview">
+      <div class="price-card"><div class="price-title">نشر أساسي</div><div class="price-amount">50,000 ريال</div><div class="price-duration">لمدة 30 يوم</div></div>
+      <div class="price-card"><div class="price-title">نشر مميز</div><div class="price-amount">100,000 ريال</div><div class="price-duration">لمدة 60 يوم</div></div>
+      <div class="price-card"><div class="price-title">نشر احترافي</div><div class="price-amount">150,000 ريال</div><div class="price-duration">لمدة 90 يوم</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="job-form-section">
+  <div class="container">
+    <div class="form-container">
+      <div class="form-header">
+        <h2>{{ editSlug() ? 'تعديل وظيفة' : 'نشر وظيفة جديدة' }}</h2>
+        <p>املأ النموذج أدناه لنشر وظيفتك أو تحديثها</p>
+      </div>
+
+      <!-- pass the slug; child handles create vs update -->
+      <app-new-job [editSlug]="editSlug()" (saved)="onSaved()"></app-new-job>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits-section">
+  <div class="container">
+    <h2 class="benefits-title">لماذا تختار منصتنا؟</h2>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">🎯</div>
+        <h3 class="benefit-title">وصول مستهدف</h3>
+        <p class="benefit-description">
+          وصل إلى المرشحين المناسبين في التخصص والموقع الذي تحتاجه
+        </p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">⚡</div>
+        <h3 class="benefit-title">نشر سريع</h3>
+        <p class="benefit-description">
+          انشر وظيفتك في دقائق واحصل على طلبات التقديم فوراً
+        </p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">📊</div>
+        <h3 class="benefit-title">تقارير مفصلة</h3>
+        <p class="benefit-description">
+          احصل على إحصائيات مفصلة عن أداء إعلانك وعدد المشاهدات
+        </p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">🤝</div>
+        <h3 class="benefit-title">دعم متخصص</h3>
+        <p class="benefit-description">
+          فريق دعم متخصص لمساعدتك في كل خطوة من عملية التوظيف
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

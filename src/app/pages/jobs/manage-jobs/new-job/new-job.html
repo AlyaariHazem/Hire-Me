@@ -1,0 +1,374 @@
+<div class="form-content">
+  <!-- Form Steps -->
+  <div class="form-steps">
+    <div class="step" [class.active]="step === 1" id="step1">
+      <span class="step-number">1</span>
+      <span>معلومات الوظيفة</span>
+    </div>
+    <div class="step" [class.active]="step === 2" id="step2">
+      <span class="step-number">2</span>
+      <span>المتطلبات والمهارات</span>
+    </div>
+    <div class="step" [class.active]="step === 3" id="step3">
+      <span class="step-number">3</span>
+      <span>معلومات الشركة</span>
+    </div>
+    <div class="step" [class.active]="step === 4" id="step4">
+      <span class="step-number">4</span>
+      <span>المراجعة والنشر</span>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" id="jobForm">
+    <!-- Step 1 -->
+    <div class="form-step" [class.active]="step === 1" id="formStep1">
+      <div class="form-group">
+        <label class="form-label required" for="jobTitle">عنوان الوظيفة</label>
+        <input
+          id="jobTitle"
+          class="form-input"
+          type="text"
+          formControlName="title"
+          placeholder="عنوان الوظيفة"
+        />
+        @if (form.get('title')?.invalid && form.get('title')?.touched) {
+          <small class="p-error block mt-1 text-red-500">
+            يرجى إدخال عنوان الوظيفة
+          </small>
+        }
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label required" for="jobCategory">فئة الوظيفة</label>
+
+          <p-select
+            [options]="categories"
+            formControlName="category"
+            optionValue="id"
+            optionLabel="label"
+            placeholder="اختر فئة الوظيفة"
+            class="w-full md:w-56"
+            [showClear]="true"
+          ></p-select>
+
+          @if (form.get('category')?.invalid && form.get('category')?.touched) {
+            <small class="p-error block mt-1 text-red-500">
+              يرجى اختيار فئة الوظيفة
+            </small>
+          }
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="jobType">نوع الوظيفة</label>
+          <p-select
+            [options]="jobTypes"
+            formControlName="job_type"
+            optionValue="value"
+            optionLabel="label"
+            placeholder="اختر نوع الوظيفة"
+            class="w-full md:w-56"
+            [showClear]="true"
+          ></p-select>
+          @if (form.get('job_type')?.invalid && form.get('job_type')?.touched) {
+            <small class="p-error block mt-1 text-red-500">
+              يرجى اختيار نوع الوظيفة
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label required" for="jobLocation">موقع العمل</label>
+          <p-select
+            [options]="jobCities"
+            formControlName="city"
+            optionValue="value"
+            optionLabel="label"
+            placeholder="اختر مدينة"
+            class="w-full md:w-56"
+            [showClear]="true"
+          ></p-select>
+          @if (form.get('city')?.invalid && form.get('city')?.touched) {
+            <small class="p-error block mt-1 text-red-500">
+              يرجى اختيار موقع العمل
+            </small>
+          }
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="experienceLevel">
+            مستوى الخبرة
+          </label>
+          <p-select
+            [options]="experienceLevels"
+            formControlName="experience_level"
+            optionValue="value"
+            optionLabel="label"
+            placeholder="اختر مستوى الخبرة"
+            class="w-full md:w-56"
+            [showClear]="true"
+          ></p-select>
+          @if (form.get('experience_level')?.invalid && form.get('experience_level')?.touched) {
+            <small class="p-error block mt-1 text-red-500">
+              يرجى اختيار مستوى الخبرة
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="salaryRange">نطاق الراتب</label>
+        <div class="salary-range">
+          <input
+            id="salaryMin"
+            type="number"
+            class="form-input"
+            formControlName="salary_min"
+            placeholder="الحد الأدنى"
+          />
+          <span class="range-separator">إلى</span>
+          <input
+            id="salaryMax"
+            type="number"
+            class="form-input"
+            formControlName="salary_max"
+            placeholder="الحد الأعلى"
+          />
+        </div>
+        <label class="checkbox-inline">
+          <input type="checkbox" formControlName="is_salary_negotiable" />
+          الراتب قابل للتفاوض
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label required" for="jobDescription">
+          وصف الوظيفة
+        </label>
+        <textarea
+          id="jobDescription"
+          class="form-input form-textarea"
+          formControlName="description"
+        ></textarea>
+
+        @if (form.get('description')?.invalid && form.get('description')?.touched) {
+          <small class="p-error block mt-1 text-red-500">
+            يرجى كتابة وصف الوظيفة
+          </small>
+        }
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="form-step" [class.active]="step === 2" id="formStep2">
+      <div class="form-group">
+        <label class="form-label required" for="jobRequirements">
+          متطلبات الوظيفة
+        </label>
+        <textarea
+          id="jobRequirements"
+          class="form-input form-textarea"
+          formControlName="requirements"
+        ></textarea>
+
+        @if (form.get('requirements')?.invalid && form.get('requirements')?.touched) {
+          <small class="p-error block mt-1 text-red-500">
+            يرجى كتابة متطلبات الوظيفة
+          </small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="jobSkills">المهارات المطلوبة</label>
+        <input
+          id="jobSkills"
+          class="form-input"
+          formControlName="skills"
+          placeholder="JavaScript, Angular, ..."
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="education">المؤهل العلمي</label>
+        <p-select
+          [options]="educationLevels"
+          formControlName="education_level"
+          optionValue="value"
+          optionLabel="label"
+          placeholder="اختر المؤهل العلمي"
+          class="w-full md:w-56"
+          [showClear]="true"
+        ></p-select>
+        @if (form.get('education_level')?.invalid && form.get('education_level')?.touched) {
+          <small class="p-error block mt-1 text-red-500">
+            يرجى اختيار المؤهل العلمي
+          </small>
+        }
+      </div>
+
+      <div class="form-group" formGroupName="languages">
+        <label class="form-label">اللغات المطلوبة</label>
+        <label>
+          <input type="checkbox" formControlName="arabic" />
+          العربية
+        </label>
+        <label>
+          <input type="checkbox" formControlName="english" />
+          الإنجليزية
+        </label>
+        <label>
+          <input type="checkbox" formControlName="french" />
+          الفرنسية
+        </label>
+        <label>
+          <input type="checkbox" formControlName="german" />
+          الألمانية
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="benefits">المزايا</label>
+        <textarea
+          id="benefits"
+          class="form-input form-textarea"
+          formControlName="benefits"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="form-step" [class.active]="step === 3" id="formStep3">
+      <div class="form-group">
+        <label class="form-label required" for="companyName">
+          الشركة
+        </label>
+         <p-select
+          [options]="companies"
+          formControlName="company"
+          optionValue="id"
+          optionLabel="name"
+          placeholder="اختر الشركة"
+          class="w-full md:w-56"
+          [showClear]="true"
+        ></p-select>
+        @if (form.get('company')?.invalid && form.get('company')?.touched) {
+          <small class="p-error block mt-1 text-red-500">
+            يرجى اختيار الشركة
+          </small>
+        }
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="contactEmail">البريد</label>
+          <input
+            id="contactEmail"
+            type="email"
+            class="form-input"
+            formControlName="contact_email"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contactPhone">الهاتف</label>
+          <input
+            id="contactPhone"
+            type="tel"
+            class="form-input"
+            formControlName="contact_phone"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="applicationDeadline">
+          آخر موعد للتقديم
+        </label>
+        <input
+          id="applicationDeadline"
+          type="date"
+          class="form-input"
+          formControlName="application_deadline"
+        />
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="form-step" [class.active]="step === 4" id="formStep4">
+      <div class="form-group">
+        <label class="form-label">نوع النشر</label>
+        <label>
+          <input
+            type="radio"
+            value="basic"
+            formControlName="publishPlan"
+          />
+          أساسي
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="featured"
+            formControlName="publishPlan"
+          />
+          مميز
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="premium"
+            formControlName="publishPlan"
+          />
+          احترافي
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" formControlName="is_featured" />
+          مميز
+        </label>
+        <label>
+          <input type="checkbox" formControlName="is_urgent" />
+          عاجل
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" formControlName="terms" />
+          أوافق على الشروط
+        </label>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn-back"
+        (click)="previousStep()
+        "
+        [disabled]="step === 1"
+      >
+        السابق
+      </button>
+      <div style="flex: 1"></div>
+      <button
+        type="button"
+        class="btn-next"
+        (click)="nextStep()"
+        *ngIf="step < 4"
+      >
+        التالي
+      </button>
+
+      @if(step === 4){
+        <button type="submit" class="btn-submit">
+          @if(isEdit) {تحديث الوظيفة } @else {نشر الوظيفة }
+        </button>
+      }
+    </div>
+  </form>
+</div>

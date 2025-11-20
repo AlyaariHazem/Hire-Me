@@ -1,17 +1,30 @@
 // post-job.component.ts
-import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import {
+  FormBuilder,
+  Validators,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { SharedModule } from 'shared/shared-module';
-import { Select } from 'primeng/select';
 
 import { JobService } from 'shared/services/job.service';
 import { CreateJobDto } from '@app/companies/models';
-import { EDUCATION_LEVELS, EXPERIENCE_LEVELS, JOB_CITIES, JOB_TYPES, JobCity } from '@app/companies/enums';
-import { CompanyService } from '../core/services/company.service';
+import {
+  EDUCATION_LEVELS,
+  EXPERIENCE_LEVELS,
+  JOB_CITIES,
+  JOB_TYPES,
+  JobCity,
+} from '@app/companies/enums';
+import { CompanyService } from '../../../companies/core/services/company.service';
+import { NewJob } from '../new-job/new-job';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-post-job',
-  imports: [SharedModule, Select, FormsModule, ReactiveFormsModule],
+  imports: [SharedModule, FormsModule, ReactiveFormsModule, NewJob],
   templateUrl: './post-job.html',
   styleUrls: ['./post-job.scss'],
 })
@@ -27,37 +40,40 @@ export class PostJob implements OnInit {
   // map your UI select values → API enums/ids
   categories: { id: number; label: string; slug: string }[] = [];
   companyService = inject(CompanyService);
-  
+
+   private route = inject(ActivatedRoute);
+  editSlug = signal<string | null>(null);
+  private sub: any;
+
   companies = [] as { id: number; name: string }[];
 
   private loadCompanies() {
-  this.companyService.getMyCompanies().subscribe({
-    next: (list) => {
-      // map to id + name for the select
-      this.companies = (list ?? []).map(c => ({
-        id: Number(c.id),
-        name: c.name || c.slug || 'بدون اسم',
-      }));
+    this.companyService.getMyCompanies().subscribe({
+      next: (list) => {
+        // map to id + name for the select
+        this.companies = (list ?? []).map((c) => ({
+          id: Number(c.id),
+          name: c.name || c.slug || 'بدون اسم',
+        }));
 
-      // if the form has no value yet, select the first one
-      if (!this.form.get('company')?.value && this.companies.length) {
-        this.form.get('company')!.setValue(this.companies[0].id);
-      }
-    },
-    error: (err) => {
-      console.error('Failed to load companies', err);
-    },
-  });
-}
+        // if the form has no value yet, select the first one
+        if (!this.form.get('company')?.value && this.companies.length) {
+          this.form.get('company')!.setValue(this.companies[0].id);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load companies', err);
+      },
+    });
+  }
 
   getMyCompanies() {
     this.companyService.getMyCompanies().subscribe((data) => {
       console.log('My Companies:', data);
     });
   }
-  constructor(private fb: FormBuilder, private api: JobService
-  ) {
-  this.form = this.fb.group({
+  constructor(private fb: FormBuilder, private api: JobService) {
+    this.form = this.fb.group({
       // Step 1
       title: ['', Validators.required],
       category: [null, Validators.required], // numeric id
@@ -100,16 +116,24 @@ export class PostJob implements OnInit {
   }
 
   ngOnInit(): void {
+    this.sub = this.route.queryParamMap.subscribe((q) => {
+      const slug = q.get('edit');
+      this.editSlug.set(slug);
+    });
     this.loadCategories();
     this.loadCompanies();
   }
 
-   private loadCategories() {
+  ngOnDestroy(): void {
+    if (this.sub) this.sub.unsubscribe();
+  }
+
+  private loadCategories() {
     this.api.getCategories().subscribe({
       next: (res) => {
         this.categories = (res.results || [])
-          .filter(c => c.is_active)
-          .map(c => ({
+          .filter((c) => c.is_active)
+          .map((c) => ({
             id: c.id,
             label: c.name,
             slug: c.slug,
@@ -210,6 +234,7 @@ export class PostJob implements OnInit {
       is_featured: !!v.is_featured,
       is_urgent: !!v.is_urgent,
     };
+    
 
     // Optionally: append languages to description/requirements if backend expects plain fields
     // payload.description += `\n\nLanguages: ${
@@ -230,5 +255,10 @@ export class PostJob implements OnInit {
         alert(err?.error?.message || 'تعذر نشر الوظيفة');
       },
     });
+  }
+  
+  onSaved() {
+    // English: after create/update, you can navigate or just show toast
+    // Example: history.back();
   }
 }

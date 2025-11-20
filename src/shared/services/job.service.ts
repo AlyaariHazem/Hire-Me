@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from 'environments/environment';
-import { CreateJobDto, JobItem } from '@app/companies/models';
+import { CreateJobDto, JobDetails, JobItem } from '@app/companies/models';
 import { ExperienceLevel, JobCity, JobType } from '@app/companies/enums';
 
 export interface CategoriesResponse {
@@ -71,10 +71,10 @@ export class JobService {
     return this.http.get<JobListResponse>(url, { params });
   }
 
-  getJobBySlug(slug: string): Observable<JobItem> {
-    const url = environment.getUrl(slug, 'jobs'); // /api/jobs/{slug}/
-    return this.http.get<JobItem>(url);
-  }
+  getJobBySlug(slug: string): Observable<JobDetails> {
+  const url = environment.getUrl(slug, 'jobs');
+  return this.http.get<JobDetails>(url);
+}
 
   updateJob(slug: string, body: Partial<CreateJobDto>): Observable<JobItem> {
     const url = environment.getUrl(`${slug}/update`, 'jobs'); // /api/jobs/{slug}/update/
