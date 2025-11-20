@@ -5,12 +5,10 @@ import { JobService, JobFilters, JobListResponse } from 'shared/services/job.ser
 import { JobItem } from '@app/companies/models';
 import { SharedModule } from 'shared/shared-module';
 import { UserType } from 'core/types';
-import { SideBar } from '../jobseeker/side-bar/side-bar';
-import { SideBarCompany } from '../companies/side-bar/side-bar';
 
 @Component({
   selector: 'app-jobs',
-  imports: [SharedModule,SideBar,SideBarCompany],
+  imports: [SharedModule],
   templateUrl: './jobs.html',
   styleUrl: './jobs.scss'
 })

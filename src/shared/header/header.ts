@@ -6,14 +6,16 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  computed,
   inject,
+  signal,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, Subject, takeUntil } from 'rxjs';
 
 import { Logout } from '../services/logout';
 import { ToastrService } from 'ngx-toastr';
-import { User } from '../../app/pages/jobseeker/services/user';
+import { User } from 'app/pages/jobseeker/services/user';
 import { ProfileStoreService } from 'shared/services/profile.service';
 
 import { environment } from 'environments/environment';
@@ -30,7 +32,7 @@ import { UserType } from 'core/types';
 export class Header implements OnInit, OnDestroy {
   // ===== Auth / mode =====
   mode: UserType = 'public';
-  role: string = localStorage.getItem('role') || '';
+  role = signal<string>(localStorage.getItem('role') || '');
   token = !!localStorage.getItem('access');
 
   // ===== Menus state =====
@@ -64,6 +66,7 @@ export class Header implements OnInit, OnDestroy {
     private userService: User
   ) {
     // Jobseeker user data
+    this.profileStore.ensureLoaded();
     this.userService.user$
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
@@ -76,6 +79,7 @@ export class Header implements OnInit, OnDestroy {
 
     // Employer profile data
     this.profileStore.profile$.subscribe(p => {
+      debugger;
       if (p) this.companyName = p.company_name;
     });
 
@@ -94,8 +98,23 @@ export class Header implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     window.addEventListener('storage', this.syncToken);
+    debugger;
+    this.role.set(localStorage.getItem('role') || '');
     this.updateMode(this.router.url);
   }
+
+  routeToJobs(): void {
+  this.role.set(localStorage.getItem('role') || '');
+  if(this.role() === 'employer'){
+    this.router.navigate(['/companies/jobs']);
+  }
+  else if(this.role() === 'jobseeker'){
+    this.router.navigate(['/jobseeker/jobs']);
+  }
+  else{
+    this.router.navigate(['/jobs']);
+  }
+}
 
   ngOnDestroy(): void {
     window.removeEventListener('storage', this.syncToken);
@@ -106,6 +125,7 @@ export class Header implements OnInit, OnDestroy {
   // ================== Mode logic ==================
 
   private updateMode(url: string): void {
+    debugger;
   this.token = !!localStorage.getItem('access');
 
   if (!this.token) {
@@ -147,6 +167,7 @@ private teardownDataBindings(): void {
 }
 
   private syncToken = (e: StorageEvent) => {
+    debugger;
     if (e.key === 'access') {
       this.token = !!e.newValue;
       this.updateMode(this.router.url);
@@ -204,11 +225,11 @@ private teardownDataBindings(): void {
       'post-job': '/companies/post-job',
       'employer-settings': '/companies/settings',
     };
-
+    this.role.set(localStorage.getItem('role') || '');
     if (action === 'logout') {
       localStorage.removeItem('access');
       localStorage.removeItem('role');
-      this.role = localStorage.getItem('role') || '';
+      this.role.set(localStorage.getItem('role') || '');
       this.router.navigate(['/login']);
     } else if (routes[action]) {
       this.router.navigate([routes[action]]);

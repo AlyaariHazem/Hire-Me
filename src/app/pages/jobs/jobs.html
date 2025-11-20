@@ -1,12 +1,4 @@
-<div [ngClass]="role!==''?'dashboard-container':''">
-  @if(role==='jobseeker'){
-    <app-side-bar />
-  }
-  @if(role==='employer'){
-    <app-side-bar-company/>
-  }
-  <main class="dashboard-main">
-    <section class="search-page-header">
+<section class="search-page-header">
       <div class="container">
         <form
           class="search-form"
@@ -340,5 +332,3 @@
         </div>
       </div>
     </section>
-  </main>
-</div>
