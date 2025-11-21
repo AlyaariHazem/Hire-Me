@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 export class Errors {
   constructor(private toastr: ToastrService) {}
 
-  // أسماء عرض لطيفة (اختياري)
+  // Arabic field labels for error messages
   private readonly fieldLabel: Record<string, string> = {
     email: 'البريد الإلكتروني',
     password: 'كلمة المرور',
@@ -15,15 +15,14 @@ export class Errors {
     phone: 'رقم الهاتف',
     username: 'البريد الإلكتروني',
   };
-
-  /** اعرض كل رسائل أخطاء الباك في Toastr */
+// this method displays error messages using Toastr
   error(
     err: any,
     opts: { join?: boolean; maxToasts?: number; title?: string } = {}
   ): void {
     const { join = false, maxToasts = 6, title = 'حدثت أخطاء' } = opts;
 
-    // أخطاء الشبكة
+    // Network errors
     if (err?.status === 0) {
       this.toastr.error('تعذّر الاتصال بالخادم. تأكد من اتصال الإنترنت ثم أعد المحاولة.');
       return;
@@ -36,19 +35,19 @@ export class Errors {
       return;
     }
 
-    // اختياري: امسح التوستات السابقة لمنع التكدّس
+    // Optional: clear previous toasts to prevent clutter
     this.toastr.clear();
 
-    // اعرض الرسائل
+    // Display messages
     if (join) {
-      // Toast واحد (مع فواصل أسطر)
+      // Single toast (with line breaks)
       this.toastr.error(
         messages.join('<br/>'),
         title,
         { enableHtml: true, timeOut: 9000, closeButton: true, progressBar: true }
       );
     } else {
-      // عدّة Toasts
+      // Multiple toasts
       messages.slice(0, maxToasts).forEach(m => this.toastr.error(m));
       const remaining = messages.length - maxToasts;
       if (remaining > 0) {
@@ -56,8 +55,7 @@ export class Errors {
       }
     }
   }
-
-  /** يحوّل ردّ الباك إلى قائمة رسائل جاهزة للعرض */
+//  this method extracts error messages from various error response formats
   private extractMessages(err: any): string[] {
     const src = err?.error?.data ?? err?.error?.errors ?? err?.error ?? err;
 
@@ -77,7 +75,7 @@ export class Errors {
         if (['detail', 'message', 'non_field_errors', '_error'].includes(k)) {
           push('_error', v);
         } else if (v && typeof v === 'object' && !Array.isArray(v)) {
-          consume(v); // توغّل للكائنات المتداخلة
+          consume(v); // recursively traverse nested objects
         } else {
           push(k, v);
         }
@@ -89,7 +87,7 @@ export class Errors {
     else if (src && typeof src === 'object') consume(src);
     else push('_error', 'حدث خطأ غير متوقع.');
 
-    // تطبيع أسماء شائعة
+    // Normalize common field names
     const aliases: Record<string, string> = {
       password2: 'password_confirm',
       confirm_password: 'password_confirm',
@@ -102,7 +100,7 @@ export class Errors {
       }
     }
 
-    // صياغة نهائية: "الحقل: الرسالة" أو رسالة عامة
+    // Final formatting: "Field: message" or general message
     const msgs: string[] = [];
     for (const [k, arr] of Object.entries(map)) {
       const unique = Array.from(new Set(arr));
@@ -113,6 +111,6 @@ export class Errors {
         unique.forEach(m => msgs.push(`${label}: ${m}`));
       }
     }
-    return Array.from(new Set(msgs)); // إزالة تكرارات إضافية
+    return Array.from(new Set(msgs)); // Remove additional duplicates
   }
 }

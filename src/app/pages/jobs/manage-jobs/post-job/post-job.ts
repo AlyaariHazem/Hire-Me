@@ -21,6 +21,7 @@ import {
 import { CompanyService } from '../../../companies/core/services/company.service';
 import { NewJob } from '../new-job/new-job';
 import { ActivatedRoute } from '@angular/router';
+import { Base } from 'shared/base/base';
 
 @Component({
   selector: 'app-post-job',
@@ -28,7 +29,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './post-job.html',
   styleUrls: ['./post-job.scss'],
 })
-export class PostJob implements OnInit {
+export class PostJob extends Base implements OnInit {
   step = 1;
   form: FormGroup;
   companyId: number | null = 0;
@@ -73,6 +74,7 @@ export class PostJob implements OnInit {
     });
   }
   constructor(private fb: FormBuilder, private api: JobService) {
+    super();
     this.form = this.fb.group({
       // Step 1
       title: ['', Validators.required],
@@ -243,7 +245,7 @@ export class PostJob implements OnInit {
 
     this.api.createJob(payload).subscribe({
       next: () => {
-        alert('تم نشر الوظيفة بنجاح ✅');
+        this.toastr.success('تم نشر الوظيفة بنجاح');
         this.form.reset({
           education_level: 'any',
           languages: { arabic: true },
@@ -252,7 +254,7 @@ export class PostJob implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        alert(err?.error?.message || 'تعذر نشر الوظيفة');
+        this.toastr.error('حدث خطأ أثناء نشر الوظيفة. حاول مرة أخرى.');
       },
     });
   }

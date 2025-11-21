@@ -6,9 +6,9 @@ import { Subject, takeUntil, filter } from 'rxjs';
 
 import { environment } from 'environments/environment';
 import { ProfileStoreService, Profile } from 'shared/services/profile.service';
-import { Errors } from 'shared/services/errors';
 import { ProfileService } from '../core/services/profile.service';
 import { COMPANY_SIZES } from '@app/companies/enums';
+import { Base } from 'shared/base/base';
 
 @Component({
   selector: 'app-company-data',
@@ -16,10 +16,9 @@ import { COMPANY_SIZES } from '@app/companies/enums';
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss'],
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileComponent extends Base implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   COMPANY_SIZES = COMPANY_SIZES;
-  errors = inject(Errors);
   saving = false;
 
   // English: selected logo file and preview URL
@@ -49,9 +48,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private toastr: ToastrService,
     private profileService: ProfileService // keep if used elsewhere
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     // English: trigger initial load once (safe to call multiple times)

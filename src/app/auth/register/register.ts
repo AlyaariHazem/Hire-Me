@@ -2,13 +2,11 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { SharedModule } from '../../../shared/shared-module';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { environment } from '../../../environments/environment.development';
-import { Errors } from '../../../shared/services/errors';
+import { environment } from 'environments/environment';
 import { CompanyService } from 'app/pages/companies/core/services/company.service';
-import { ICompanyData } from '@app/companies/models';
+import { Base } from 'shared/base/base';
 
 
 @Component({
@@ -17,10 +15,9 @@ import { ICompanyData } from '@app/companies/models';
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
-export class Register {
+export class Register extends Base {
   user = true;      // job seeker default
   admin = false;    // employer
-  errors = inject(Errors);
   companyService = inject(CompanyService);
 
   // Bind to template
@@ -35,9 +32,10 @@ export class Register {
 
   constructor(
     private http: HttpClient,
-    private router: Router,
-    private toastr: ToastrService
-  ) {}
+    private router: Router
+  ) {
+    super();
+  }
 
   selectType(type: 'jobseeker' | 'employer') {
     this.user = type === 'jobseeker';

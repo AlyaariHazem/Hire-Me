@@ -5,9 +5,9 @@ import { SharedModule } from '../../../shared/shared-module';
 import { ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { Errors } from '../../../shared/services/errors';
 import { AuthService } from '../auth.service';
 import { UserType } from 'core/types';
+import { Base } from 'shared/base/base';
 
 @Component({
   selector: 'app-login',
@@ -17,19 +17,19 @@ import { UserType } from 'core/types';
   styleUrls: ['./login.scss'],
   providers: [Document],
 })
-export class Login implements OnInit {
+export class Login extends Base implements OnInit {
   constructor(
     private router: Router,
-    private toastr: ToastrService,
     private http: HttpClient,
     private auth: AuthService
-  ) {}
+  ) {
+    super();
+  }
 
   // Let the user explicitly select one of these:
   user: boolean = true;   // jobseeker
   admin: boolean = false;  // employer
 
-  errors = inject(Errors);
 
   phone: string = '';
   password: string = '';
