@@ -2,103 +2,103 @@
   <div class="dashboard-header">
     <h1 class="dashboard-title">الوظائف المحفوظة</h1>
     <div class="dashboard-actions">
-      <!-- English: change routerLink to your search route -->
-      <a routerLink="/jobseeker/jobs" class="btn btn-primary">
-        البحث عن المزيد
-      </a>
+      <a routerLink="/jobseeker/jobs" class="btn btn-primary"
+        >البحث عن المزيد</a
+      >
     </div>
   </div>
 
   <div class="content-card">
-    <!-- loading state -->
-    <div *ngIf="loading" class="saved-jobs-state">
-      <p>جارٍ تحميل الوظائف المحفوظة...</p>
-    </div>
+    <!-- loading -->
+     @if(loading){
+       <div class="saved-jobs-state">
+         <p>جارٍ تحميل الوظائف المحفوظة...</p>
+       </div>
+     }
 
-    <!-- error state -->
-    <div *ngIf="!loading && errorMessage" class="saved-jobs-state error">
-      <p>{{ errorMessage }}</p>
-    </div>
+    <!-- error -->
+     @if(!loading && errorMessage){
+       <div  class="saved-jobs-state error">
+         <p>{{ errorMessage }}</p>
+       </div>
+     }
 
-    <!-- empty state -->
-    <div
-      *ngIf="!loading && !errorMessage && jobs.length === 0"
-      class="saved-jobs-state empty"
-    >
-      <p>لا توجد وظائف محفوظة حتى الآن.</p>
-      <a routerLink="/jobseeker/jobs" class="btn btn-primary">
-        ابدأ بالبحث عن وظيفة
-      </a>
-    </div>
+    <!-- empty -->
+     @if(!loading && !errorMessage && bookmarks.length === 0){
+       <div class="saved-jobs-state empty">
+         <p>لا توجد وظائف محفوظة حتى الآن.</p>
+         <a routerLink="/jobseeker/jobs" class="btn btn-primary"
+           >ابداء بالبحث عن وظيفة</a
+         >
+       </div>
+     }
 
-    <!-- jobs list -->
-    <ng-container *ngIf="!loading && !errorMessage && jobs.length > 0">
-      <div class="saved-job-item" *ngFor="let job of jobs">
-        <!-- English: company logo; adjust fields to match JobItem -->
-        <img
-          [src]="job.company.logo || 'assets/images/company-logo-placeholder.png'"
-          alt="شعار الشركة"
-          class="saved-job-logo"
-        />
-
-        <div class="saved-job-info">
-          <!-- English: adjust title/company fields to match JobItem model -->
-          <h4 class="saved-job-title">{{ job.title }}</h4>
-          <p class="saved-job-company">{{ job.company.name }}</p>
-          <p class="saved-job-meta">
-            <!-- salary / city / saved date; change according to your API -->
-            {{ job.salary_min }} - {{ job.salary_max }}
-            • {{ job.company.city || job.city }}
-            • {{ job.created_at | date : 'mediumDate' }}
-          </p>
+    <!-- list -->
+    <ng-container *ngIf="!loading && !errorMessage && bookmarks.length > 0">
+      @for(bm of bookmarks;track bm;){
+        <div class="saved-job-item" >
+          <img
+            [src]="bm.job.company.logo || 'assets/images/company-logo-placeholder.png'"
+            alt="شعار الشركة"
+            class="saved-job-logo"
+          />
+  
+          <div class="saved-job-info">
+            <h4 class="saved-job-title">{{ bm.job.title }}</h4>
+            <p class="saved-job-company">{{ bm.job.company.name }}</p>
+            <p class="saved-job-meta">
+              {{ salaryText(bm.job) }} • {{ bm.job.city || bm.job.company.city }}
+              • محفوظة منذ {{ bm.created_at | date: 'mediumDate' }}
+            </p>
+          </div>
+  
+          <div class="saved-job-actions" style="display: flex; gap: 0.5rem">
+            <a
+              [routerLink]="['/jobseeker/jobs', bm.job.slug]"
+              class="btn btn-small btn-primary"
+            >
+              عرض
+            </a>
+  
+            <button
+              type="button"
+              class="btn btn-small btn-secondary"
+              (click)="removeFromSaved(bm.job)"
+            >
+              إزالة
+            </button>
+          </div>
         </div>
+      }
+      @if(totalPages > 1){
 
-        <div class="saved-job-actions" style="display: flex; gap: 0.5rem">
-          <!-- English: change routerLink to your job-details route -->
-          <a
-            [routerLink]="['/jobseeker/jobs', job.slug]"
-            class="btn btn-small btn-primary"
-          >
-            عرض
-          </a>
-
+        <nav class="pagination-wrapper">
           <button
-            type="button"
-            class="btn btn-small btn-secondary"
-            (click)="removeFromSaved(job)"
+            class="page-btn"
+            [disabled]="page === 1"
+            (click)="goToPage(page - 1)"
           >
-            إزالة
+            السابق
           </button>
-        </div>
-      </div>
-
-      <!-- simple pagination -->
-      <nav *ngIf="totalPages > 1" class="pagination-wrapper">
-        <button
-          class="page-btn"
-          [disabled]="page === 1"
-          (click)="goToPage(page - 1)"
-        >
-          السابق
-        </button>
-
-        <button
-          class="page-btn"
-          *ngFor="let p of pages"
-          [class.active]="p === page"
-          (click)="goToPage(p)"
-        >
-          {{ p }}
-        </button>
-
-        <button
-          class="page-btn"
-          [disabled]="page === totalPages"
-          (click)="goToPage(page + 1)"
-        >
-          التالي
-        </button>
-      </nav>
+          @for(p of pages;track p;){
+            <button
+              class="page-btn"
+              [class.active]="p === page"
+              (click)="goToPage(p)"
+            >
+              {{ p }}
+            </button>
+          }
+  
+          <button
+            class="page-btn"
+            [disabled]="page === totalPages"
+            (click)="goToPage(page + 1)"
+          >
+            التالي
+          </button>
+        </nav>
+      }
     </ng-container>
   </div>
 </div>
