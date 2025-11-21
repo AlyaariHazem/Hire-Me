@@ -19,7 +19,6 @@ import { ProfileService } from './services/profile.service';
 
 const components = [
   Dashboard,
-  SavedJobs,
   JobSeeker,
   Profile,
   CV,
@@ -33,6 +32,7 @@ CommonModule,
 RouterLinkActive,
 RouterLink,
 SideBar,
+SavedJobs,
 SharedModule,
 ReactiveFormsModule
 ];

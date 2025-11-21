@@ -1,37 +1,104 @@
- <!-- Saved Jobs Tab -->
-    <div id="saved-jobs">
-      <div class="dashboard-header">
-        <h1 class="dashboard-title">الوظائف المحفوظة</h1>
-        <div class="dashboard-actions">
-          <a href="search.html" class="btn btn-primary">البحث عن المزيد</a>
+<div id="saved-jobs">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">الوظائف المحفوظة</h1>
+    <div class="dashboard-actions">
+      <!-- English: change routerLink to your search route -->
+      <a routerLink="/jobseeker/jobs" class="btn btn-primary">
+        البحث عن المزيد
+      </a>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <!-- loading state -->
+    <div *ngIf="loading" class="saved-jobs-state">
+      <p>جارٍ تحميل الوظائف المحفوظة...</p>
+    </div>
+
+    <!-- error state -->
+    <div *ngIf="!loading && errorMessage" class="saved-jobs-state error">
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- empty state -->
+    <div
+      *ngIf="!loading && !errorMessage && jobs.length === 0"
+      class="saved-jobs-state empty"
+    >
+      <p>لا توجد وظائف محفوظة حتى الآن.</p>
+      <a routerLink="/jobseeker/jobs" class="btn btn-primary">
+        ابدأ بالبحث عن وظيفة
+      </a>
+    </div>
+
+    <!-- jobs list -->
+    <ng-container *ngIf="!loading && !errorMessage && jobs.length > 0">
+      <div class="saved-job-item" *ngFor="let job of jobs">
+        <!-- English: company logo; adjust fields to match JobItem -->
+        <img
+          [src]="job.company.logo || 'assets/images/company-logo-placeholder.png'"
+          alt="شعار الشركة"
+          class="saved-job-logo"
+        />
+
+        <div class="saved-job-info">
+          <!-- English: adjust title/company fields to match JobItem model -->
+          <h4 class="saved-job-title">{{ job.title }}</h4>
+          <p class="saved-job-company">{{ job.company.name }}</p>
+          <p class="saved-job-meta">
+            <!-- salary / city / saved date; change according to your API -->
+            {{ job.salary_min }} - {{ job.salary_max }}
+            • {{ job.company.city || job.city }}
+            • {{ job.created_at | date : 'mediumDate' }}
+          </p>
+        </div>
+
+        <div class="saved-job-actions" style="display: flex; gap: 0.5rem">
+          <!-- English: change routerLink to your job-details route -->
+          <a
+            [routerLink]="['/jobseeker/jobs', job.slug]"
+            class="btn btn-small btn-primary"
+          >
+            عرض
+          </a>
+
+          <button
+            type="button"
+            class="btn btn-small btn-secondary"
+            (click)="removeFromSaved(job)"
+          >
+            إزالة
+          </button>
         </div>
       </div>
 
-      <div class="content-card">
-        <!-- Saved jobs would be dynamically loaded here -->
-        <div class="saved-job-item">
-          <img
-            src="images/company-logo-4.jpg"
-            alt="شعار الشركة"
-            class="saved-job-logo"
-          />
-          <div class="saved-job-info">
-            <h4 class="saved-job-title">مطور WordPress</h4>
-            <p class="saved-job-company">وكالة التسويق الرقمي</p>
-            <p class="saved-job-meta">600-900 ريال • صنعاء • حُفظت منذ يومين</p>
-          </div>
-          <div style="display: flex; gap: 0.5rem">
-            <a href="job-details.html?id=104" class="btn btn-small btn-primary"
-              >عرض</a
-            >
-            <button
-              class="btn btn-small btn-secondary"
-              onclick="removeFromSaved('104')"
-            >
-              إزالة
-            </button>
-          </div>
-        </div>
-        <!-- More saved jobs... -->
-      </div>
-    </div>
+      <!-- simple pagination -->
+      <nav *ngIf="totalPages > 1" class="pagination-wrapper">
+        <button
+          class="page-btn"
+          [disabled]="page === 1"
+          (click)="goToPage(page - 1)"
+        >
+          السابق
+        </button>
+
+        <button
+          class="page-btn"
+          *ngFor="let p of pages"
+          [class.active]="p === page"
+          (click)="goToPage(p)"
+        >
+          {{ p }}
+        </button>
+
+        <button
+          class="page-btn"
+          [disabled]="page === totalPages"
+          (click)="goToPage(page + 1)"
+        >
+          التالي
+        </button>
+      </nav>
+    </ng-container>
+  </div>
+</div>

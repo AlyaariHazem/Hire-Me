@@ -204,91 +204,102 @@
             </div>
 
             <div class="job-results">
-              <article
-                class="job-card-horizontal"
-                *ngFor="let job of jobs"
-                [attr.data-job-id]="job.id"
-              >
-                <img
-                  [src]="job.company.logo || 'assets/images/company-placeholder.png'"
-                  alt="شعار الشركة"
-                  class="company-logo"
-                />
-
-                <div class="job-info">
-                  <h3 class="job-title">
-                    <a
-                      [routerLink]="['/jobs', job.slug]"
-                      style="text-decoration: none; color: inherit"
-                    >
-                      {{ job.title }}
-                    </a>
-                  </h3>
-
-                  <p class="company-name">{{ job.company.name }}</p>
-
-                  <div class="job-meta">
-                    <span>📍 {{ cityLabel(job.city) }}</span>
-                    <span>
-                      💰 {{ job.salary_min | number }} - {{ job.salary_max |
-                      number }} ريال
-                      <ng-container *ngIf="job.is_salary_negotiable">
-                        (قابل للتفاوض)
-                      </ng-container>
-                    </span>
-                    <span>⏰ {{ jobTypeLabel(job.job_type) }}</span>
-                    <!-- لو حاب تضيف "منذ كذا يوم" تحتاج pipe للوقت، خليه لاحقاً -->
-                  </div>
-
-                  <p
-                    style="
-                      color: var(--gray-600);
-                      margin: 0.5rem 0;
-                      line-height: 1.5;
-                    "
-                  >
-                    {{ job.category.name }} • {{ job.company.city }}
-                  </p>
-
-                  <div class="job-tags">
-                    <span class="job-tag">{{ job.experience_level }}</span>
-                    <span class="job-tag">{{ job.category.name }}</span>
-                    <span class="job-tag">{{ cityLabel(job.city) }}</span>
-                  </div>
-                </div>
-
-                <div
-                  class="job-actions"
-                  style="display: flex; flex-direction: column; gap: 0.5rem"
+              @for(job of jobs; track job){
+                <article
+                  class="job-card-horizontal"
+                  [attr.data-job-id]="job.id"
                 >
-                  <button
-                    class="btn btn-small btn-primary apply-btn"
-                    (click)="applyToJob(job.id)"
+                  <img
+                    [src]="job.company.logo || 'assets/images/company-placeholder.png'"
+                    alt="شعار الشركة"
+                    class="company-logo"
+                  />
+  
+                  <div class="job-info">
+                    <h3 class="job-title">
+                      <a
+                        [routerLink]="['/jobs', job.slug]"
+                        style="text-decoration: none; color: inherit"
+                      >
+                        {{ job.title }}
+                      </a>
+                    </h3>
+  
+                    <p class="company-name">{{ job.company.name }}</p>
+  
+                    <!-- meta row like your screenshot -->
+                    <div class="job-meta">
+                      <span>📍 {{ cityLabel(job.city) }}</span>
+                      <span>🔥 {{ formatSalary(job) }}</span>
+                      <span>⏰ {{ jobTypeLabel(job.job_type) }}</span>
+                      <span>📅 {{ timeAgo(job.created_at) }}</span>
+                    </div>
+  
+                    <!-- description (if API sends it) -->
+                     @if(job.description){
+                       <p
+                         class="job-description"
+                       >
+                         {{ job.description }}
+                       </p>
+                     }
+  
+                    <!-- fallback short line if no description -->
+                     @if(!job.description){
+                       <p
+                         class="job-description"
+                       >
+                         {{ job.category.name }} • {{ job.company.city }}
+                       </p>
+                     }
+  
+                    <!-- tags row -->
+                    <div class="job-tags">
+                      <span class="job-tag">{{ jobTypeLabel(job.job_type) }}</span>
+                      <span class="job-tag">{{ job.experience_level }}</span>
+                      <span class="job-tag">{{ job.category.name }}</span>
+                      <span class="job-tag">{{ cityLabel(job.city) }}</span>
+                    </div>
+                  </div>
+  
+                  <div
+                    class="job-actions"
+                    style="display: flex; flex-direction: column; gap: 0.5rem"
                   >
-                    تقديم الآن
-                  </button>
-                  <button
-                    class="btn btn-small btn-secondary save-btn"
-                    (click)="saveJob(job.id)"
-                  >
-                    حفظ
-                  </button>
-                  <button
-                    class="btn btn-small btn-secondary"
-                    (click)="shareJob(job.id, job.title)"
-                  >
-                    مشاركة
-                  </button>
-                </div>
-              </article>
+                    <button
+                      class="btn btn-small btn-primary apply-btn"
+                      (click)="applyToJob(job.id)"
+                    >
+                      تقديم الآن
+                    </button>
+  
+                    <button
+                      class="btn btn-small btn-secondary save-btn"
+                      [ngClass]="job.is_bookmarked ? 'active' : ''"
+                      (click)="saveJob(job)"
+                    >
+                      {{ job.is_bookmarked ? 'محفوظ' : 'حفظ' }}
+                    </button>
+  
+                    <button
+                      class="btn btn-small btn-secondary"
+                      (click)="shareJob(job.id, job.title)"
+                    >
+                      مشاركة
+                    </button>
+                  </div>
+                </article>
+              }
+
 
               <!-- في حالة ما في وظائف -->
-              <div
-                *ngIf="jobs.length === 0"
-                style="padding: 1rem; text-align: center"
-              >
-                لا توجد وظائف مطابقة حالياً.
-              </div>
+               @if(jobs.length === 0){
+                 <div
+                   style="padding: 1rem; text-align: center"
+                 >
+                   لا توجد وظائف مطابقة حالياً.
+                 </div>
+               }
             </div>
 
             <!-- Pagination -->
@@ -301,16 +312,16 @@
               >
                 السابق
               </button>
-
-              <button
-                *ngFor="let p of pages"
-                class="pagination-btn"
-                [class.current]="p === currentPage"
-                (click)="goToPage(p)"
-                type="button"
-              >
-                {{ p }}
-              </button>
+              @for(p of pages; track p){
+                <button
+                  class="pagination-btn"
+                  [class.current]="p === currentPage"
+                  (click)="goToPage(p)"
+                  type="button"
+                >
+                  {{ p }}
+                </button>
+              }
 
               <button
                 class="pagination-btn"

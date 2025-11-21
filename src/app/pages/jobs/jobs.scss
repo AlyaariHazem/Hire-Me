@@ -199,3 +199,25 @@
     align-items: stretch;
   }
 }
+.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+.job-description {
+  color: var(--gray-700);
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.job-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.job-tag {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--gray-300);
+  font-size: 0.75rem;
+}

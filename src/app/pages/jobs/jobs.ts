@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
 import { JobService, JobFilters, JobListResponse } from 'shared/services/job.service';
@@ -21,6 +21,7 @@ export class Jobs {
   totalJobs = 0;
   mode: UserType = 'public';
   role:string = '';
+  isSavedView = signal(false);
 
   // pagination
   currentPage = 1;
@@ -57,6 +58,7 @@ export class Jobs {
   this.jobService.getJobs(requestFilters).subscribe({
     next: (res: JobListResponse) => {
       this.jobs = res.results;
+      console.log('hazem', this.jobs);
       this.totalJobs = res.count;
       this.totalPages = Math.ceil(res.count / 5);
     },
@@ -89,17 +91,34 @@ export class Jobs {
   }
 
   setJobType(type: string) {
-    // type must be API values: full_time, part_time, ...
+  // English: toggle job_type filter
+  if (this.filters.job_type === type) {
+    // English: same type clicked again, clear filter
+    this.filters.job_type = undefined;
+  } else {
+    // English: apply new type
     this.filters.job_type = type as any;
-    this.currentPage = 1;
-    this.getJobs();
   }
 
+  this.currentPage = 1;
+  this.getJobs();
+}
+
+
   setExperienceLevel(level: string) {
+  // English: toggle experience_level filter
+  if (this.filters.experience_level === level) {
+    // English: same level clicked again, clear filter
+    this.filters.experience_level = undefined;
+  } else {
+    // English: apply new level
     this.filters.experience_level = level as any;
-    this.currentPage = 1;
-    this.getJobs();
   }
+
+  this.currentPage = 1;
+  this.getJobs();
+}
+
 
   onSortChange(value: string) {
     // comments are in English only
@@ -199,13 +218,23 @@ export class Jobs {
     this.toastr.success(`تم التقديم على الوظيفة ${jobId} بنجاح`);
   }
 
-  saveJob(jobId: number): void {
-  // comments are in English only
-  this.jobService.bookmarkJob(jobId).subscribe({
+  saveJob(job: JobItem): void {
+  // optimistic toggle value
+  const newValue = !job.is_bookmarked;
+
+  this.jobService.bookmarkJob(job.id).subscribe({
     next: () => {
-      this.toastr.success(`تم حفظ الوظيفة ${jobId} بنجاح`);
+      // update UI state so button text / class change immediately
+      job.is_bookmarked = newValue;
+
+      this.toastr.success(
+        newValue
+          ? `تم حفظ الوظيفة ${job.id} بنجاح`
+          : `تم إزالة الوظيفة ${job.id} من المحفوظات`
+      );
     },
     error: () => {
+      // keep old value because API failed
       this.toastr.error('تعذر حفظ الوظيفة');
     }
   });
@@ -216,5 +245,47 @@ export class Jobs {
     this.toastr.success(`تم مشاركة الوظيفة ${title || jobId} بنجاح`);
   }
 
-  // you can later wire salary/date filters if backend supports them
+formatSalary(job: JobItem): string {
+  const min = job.salary_min;
+  const max = job.salary_max;
+
+  if (min != null && max != null) {
+    return `${min.toLocaleString()} - ${max.toLocaleString()} ريال/شهر`;
+  }
+
+  if (min != null && max == null) {
+    return `من ${min.toLocaleString()} ريال/شهر`;
+  }
+
+  if (min == null && max != null) {
+    return `حتى ${max.toLocaleString()} ريال/شهر`;
+  }
+
+  return 'الراتب غير محدد';
+}
+
+// English: very simple "time ago" for created_at
+timeAgo(dateStr: string): string {
+  const created = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - created.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 0) {
+    return 'اليوم';
+  }
+  if (diffDays === 1) {
+    return 'منذ يوم';
+  }
+  if (diffDays < 7) {
+    return `منذ ${diffDays} أيام`;
+  }
+
+  const weeks = Math.floor(diffDays / 7);
+  if (weeks === 1) {
+    return 'منذ أسبوع';
+  }
+
+  return `منذ ${weeks} أسابيع`;
+}
 }
