@@ -27,15 +27,13 @@ export class SideBarCompany implements OnInit {
 
   ngOnInit(): void {
     // English: trigger initial load once (safe to call many times)
-    this.profileStore.ensureLoaded();
-
-    // English: subscribe to the shared profile stream, typed via guard
-    this.profileStore.profile$
-      .pipe(filter((p): p is Profile => !!p))
-      .subscribe(p => {
-        this.companyName = p.company_name ?? this.companyName;
-        this.logo.set(this.toAbsolute(p.company_logo));
-      });
+     this.profileStore.ensureLoaded(); // English: harmless repeated call
+  this.profileStore.profile$
+    .pipe(filter((p): p is Profile => !!p))
+    .subscribe(p => {
+      this.companyName = p.company_name ?? this.companyName;
+      this.logo.set(this.toAbsolute(p.company_logo));
+    });
   }
 
   // English: normalize relative path to absolute API URL

@@ -50,17 +50,15 @@ export class Header implements OnInit, OnDestroy {
   isEmployerMenuOpen = false;
  private profileStore = inject(ProfileStoreService);
 
-  // ===== Jobseeker user info =====
-  jobseekerAvatar: string | null = null;
-  jobseekerFirstName: string | null = null;
+
 
   private employerSub?: any;                     // holds employer profile subscription
   private jobseekerSub?: any;                    // holds jobseeker user subscription
   private employerDataBound = false; 
 
   // ===== Employer info =====
-  companyName = 'شركة التقنية المتقدمة';
-  logoCompany:string = '';
+  companyName = () => this.profileStore.profile()?.company_name ?? '';
+  logoUrl = () => this.profileStore.profile()?.profile?.company_logo ?? '';
 
   private destroy$ = new Subject<void>();
 
@@ -70,18 +68,6 @@ export class Header implements OnInit, OnDestroy {
     private router: Router,
     private userService: User
   ) {
-    // Jobseeker user data
-    this.profileStore.ensureLoaded();
-      this.userService.user$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data: any) => {
-        const rel = data?.data?.user?.profile_picture;
-        this.jobseekerAvatar = this.toAbsolute(rel);
-        this.jobseekerFirstName = data?.data?.user?.first_name;
-        this.logoCompany = data?.data?.profile?.company_logo
-          ? environment.apiBaseUrl + data.data.profile.company_logo
-          : '';
-      });
 
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
@@ -96,15 +82,8 @@ export class Header implements OnInit, OnDestroy {
   toastr = inject(ToastrService);
 
   ngOnInit(): void {
-    window.addEventListener('storage', this.syncToken);
-    debugger;
+   if (this.isLoggedIn()) this.profileStore.ensureLoaded();
      this.updateMode(this.router.url);
-
-    this.profileStore.profile$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(p => {
-        if (p) this.companyName = p.company_name;
-      });
   }
 
   routeToJobs(): void {
@@ -139,23 +118,8 @@ export class Header implements OnInit, OnDestroy {
   if (r === 'employer') this.mode = 'employer';
   else this.mode = 'jobseeker';
 
-  // Optional: keep your bindings as you had
-  if (this.mode === 'employer' && !this.employerDataBound) {
-    this.employerSub = this.profileStore.profile$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(p => { if (p) this.companyName = p.company_name; });
-    this.employerDataBound = true;
-  }
 
-  if (this.mode === 'jobseeker' && !this.jobseekerSub) {
-    this.jobseekerSub = this.userService.user$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data: any) => {
-        const rel = data?.data?.user?.profile_picture;
-        this.jobseekerAvatar = this.toAbsolute(rel);
-        this.jobseekerFirstName = data?.data?.user?.first_name;
-      });
-  }
+ 
   this.cdr.detectChanges();
 }
 
