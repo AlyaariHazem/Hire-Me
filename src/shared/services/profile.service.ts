@@ -32,6 +32,7 @@ export class ProfileStoreService {
 
   // English: flags to control one-time load
   private loaded = false;
+  
   private loading = false;
 
   constructor() {

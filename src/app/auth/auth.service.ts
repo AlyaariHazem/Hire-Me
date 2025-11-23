@@ -1,42 +1,23 @@
 import { Injectable } from '@angular/core';
-import { UserType } from 'core/types';
+import { AuthStateService } from './auth-state.service';
+import { UserRole } from 'core/types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private ACCESS_KEY = 'access';
-  private REFRESH_KEY = 'refresh';
-  private ROLE_KEY = 'role';
+  constructor(private state: AuthStateService) {}
 
-  setTokens(access: string, refresh?: string) {
-    localStorage.setItem(this.ACCESS_KEY, access);
-    if (refresh) localStorage.setItem(this.REFRESH_KEY, refresh);
+  // English: convenience wrappers
+  isLoggedIn() { return this.state.isLoggedIn(); }   // returns boolean at call time
+  get role()   { return this.state.role(); }         // current role value
+
+  setTokens(access?: string | null, _refresh?: string | null) {
+    // English: only access matters for UI state
+    this.state.setAuth(access ?? null, this.state.role());
   }
 
-  setRole(role: UserType) {
-    localStorage.setItem(this.ROLE_KEY, role);
+  setRole(role: UserRole) {
+    this.state.setAuth(this.state.token() ?? null, role);
   }
 
-  get accessToken(): string | null {
-    return localStorage.getItem(this.ACCESS_KEY);
-  }
-
-  get refreshToken(): string | null {
-    return localStorage.getItem(this.REFRESH_KEY);
-  }
-
-  get role(): UserType | null {
-    const r = localStorage.getItem(this.ROLE_KEY);
-    return r === 'employer' || r === 'jobseeker' ? r : null;
-  }
-
-  isLoggedIn(): boolean {
-    // If you have JWTs and want expiry checks, decode & validate here.
-    return !!this.accessToken;
-  }
-
-  logout() {
-    localStorage.removeItem(this.ACCESS_KEY);
-    localStorage.removeItem(this.REFRESH_KEY);
-    localStorage.removeItem(this.ROLE_KEY);
-  }
+  logout() { this.state.clear(); }
 }

@@ -20,6 +20,7 @@ import { ProfileStoreService } from 'shared/services/profile.service';
 
 import { environment } from 'environments/environment';
 import { UserType } from 'core/types';
+import { AuthStateService } from 'app/auth/auth-state.service';
 
 
 @Component({
@@ -27,13 +28,20 @@ import { UserType } from 'core/types';
   standalone: false,
   templateUrl: './header.html',
   styleUrl: './header.scss',
-  providers: [Logout, ToastrService, User],
+  providers: [Logout, ToastrService],
 })
 export class Header implements OnInit, OnDestroy {
   // ===== Auth / mode =====
   mode: UserType = 'public';
-  role = signal<string>(localStorage.getItem('role') || '');
-  token = !!localStorage.getItem('access');
+  private authState = inject(AuthStateService);
+
+  role = computed(() => this.authState.role());
+  get token(): boolean {
+    return this.authState.isLoggedIn();
+  }
+
+  isLoggedIn = computed(() => this.authState.isLoggedIn());
+
 
   // ===== Menus state =====
   menuOpen = false;          // jobseeker dropdown
@@ -52,10 +60,7 @@ export class Header implements OnInit, OnDestroy {
 
   // ===== Employer info =====
   companyName = 'شركة التقنية المتقدمة';
-  logo$ = this.profileStore.profile$.pipe(
-    filter((p): p is any => !!p),
-    map(p => p.profile.company_logo ? environment.apiBaseUrl + p.profile.company_logo : 'assets/images/default-logo.svg')
-  );
+  logoCompany:string = '';
 
   private destroy$ = new Subject<void>();
 
@@ -67,23 +72,17 @@ export class Header implements OnInit, OnDestroy {
   ) {
     // Jobseeker user data
     this.profileStore.ensureLoaded();
-    this.userService.user$
+      this.userService.user$
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
         const rel = data?.data?.user?.profile_picture;
         this.jobseekerAvatar = this.toAbsolute(rel);
         this.jobseekerFirstName = data?.data?.user?.first_name;
+        this.logoCompany = data?.data?.profile?.company_logo
+          ? environment.apiBaseUrl + data.data.profile.company_logo
+          : '';
       });
 
-      // this.profileStore.ensureLoaded();
-
-    // Employer profile data
-    this.profileStore.profile$.subscribe(p => {
-      debugger;
-      if (p) this.companyName = p.company_name;
-    });
-
-    // Update mode when navigating
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: any) => {
@@ -99,12 +98,16 @@ export class Header implements OnInit, OnDestroy {
   ngOnInit(): void {
     window.addEventListener('storage', this.syncToken);
     debugger;
-    this.role.set(localStorage.getItem('role') || '');
-    this.updateMode(this.router.url);
+     this.updateMode(this.router.url);
+
+    this.profileStore.profile$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(p => {
+        if (p) this.companyName = p.company_name;
+      });
   }
 
   routeToJobs(): void {
-  this.role.set(localStorage.getItem('role') || '');
   if(this.role() === 'employer'){
     this.router.navigate(['/companies/jobs']);
   }
@@ -125,25 +128,22 @@ export class Header implements OnInit, OnDestroy {
   // ================== Mode logic ==================
 
   private updateMode(url: string): void {
-    debugger;
-  this.token = !!localStorage.getItem('access');
-
-  if (!this.token) {
+  if (!this.authState.isLoggedIn()) {
     this.mode = 'public';
-    this.teardownDataBindings();               // stop any running bindings
+    this.teardownDataBindings();
     return;
   }
 
-  this.mode = url.startsWith('/companies') ? 'employer' : 'jobseeker';
+  // Prefer role over URL guessing
+  const r = this.role();
+  if (r === 'employer') this.mode = 'employer';
+  else this.mode = 'jobseeker';
 
-  // bind data per mode once
+  // Optional: keep your bindings as you had
   if (this.mode === 'employer' && !this.employerDataBound) {
-    // Load employer profile once (will no-op if already loaded inside store)
-    // this.profileStore.ensureLoaded();          // <-- triggers fetch only once in store
     this.employerSub = this.profileStore.profile$
       .pipe(takeUntil(this.destroy$))
       .subscribe(p => { if (p) this.companyName = p.company_name; });
-
     this.employerDataBound = true;
   }
 
@@ -156,7 +156,10 @@ export class Header implements OnInit, OnDestroy {
         this.jobseekerFirstName = data?.data?.user?.first_name;
       });
   }
+  this.cdr.detectChanges();
 }
+
+
 
 private teardownDataBindings(): void {
   // unsubscribe and reset flags when going public
@@ -169,7 +172,6 @@ private teardownDataBindings(): void {
   private syncToken = (e: StorageEvent) => {
     debugger;
     if (e.key === 'access') {
-      this.token = !!e.newValue;
       this.updateMode(this.router.url);
     }
   };
@@ -188,17 +190,13 @@ private teardownDataBindings(): void {
     return `${base}/${p}`;
   }
 
-  logout(): void {
+ logout(): void {
   this.logoutService.logout().subscribe((res: any) => {
-    this.token = false;
-    this.mode = 'public';
-    localStorage.removeItem('access');
-    localStorage.removeItem('role');
+    this.authState.clear();
     this.profileStore.reset();
     this.teardownDataBindings();
     this.router.navigate(['/login']);
     this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
-    this.cdr.detectChanges();
   });
 }
 
@@ -225,11 +223,9 @@ private teardownDataBindings(): void {
       'post-job': '/companies/post-job',
       'employer-settings': '/companies/settings',
     };
-    this.role.set(localStorage.getItem('role') || '');
     if (action === 'logout') {
       localStorage.removeItem('access');
       localStorage.removeItem('role');
-      this.role.set(localStorage.getItem('role') || '');
       this.router.navigate(['/login']);
     } else if (routes[action]) {
       this.router.navigate([routes[action]]);
@@ -253,9 +249,7 @@ private teardownDataBindings(): void {
     };
 
     if (action === 'logout') {
-      localStorage.removeItem('access');
-      localStorage.removeItem('role');
-      this.token = false;
+      this.authState.clear();
       this.mode = 'public';
       this.router.navigate(['/login']);
     } else if (routes[action]) {

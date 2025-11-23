@@ -38,7 +38,7 @@
       @for(bm of bookmarks;track bm;){
         <div class="saved-job-item" >
           <img
-            [src]="bm.job.company.logo || 'assets/images/company-logo-placeholder.png'"
+            [src]="bm.job.company.logo ? baseUrl + bm.job.company.logo : 'images/company-logo-3.jpg'"
             alt="شعار الشركة"
             class="saved-job-logo"
           />

@@ -24,7 +24,7 @@
         <li class="nav-item">
           <a (click)="notImplemented()" class="nav-link">الموارد</a>
         </li>
-        @if(mode === 'jobseeker' && role() === 'jobseeker'){
+        @if (isLoggedIn() && role() === 'jobseeker') {
         <li role="none">
           <button
             role="menuitem"
@@ -42,28 +42,13 @@
       <!-- Right side actions (change per mode) -->
       <div class="navbar-actions" dir="rtl" (click)="closeMobileMenu()">
         <!-- ========== Public header (login / register) ========== -->
-         @if(mode === 'public'){
-
-           <a
-             routerLink="/login"
-             class="btn btn-secondary"
-              routerLinkActive="active"
-             aria-label="تسجيل الدخول"
-           >
-             تسجيل الدخول
-           </a>
-           <a
-             routerLink="/register"
-             class="btn btn-secondary"
-             routerLinkActive="active"
-             aria-label="إنشاء حساب"
-           >
-             إنشاء حساب
-           </a>
-         }
+         @if (!isLoggedIn()) {
+            <a routerLink="/login" class="btn btn-secondary" routerLinkActive="active">تسجيل الدخول</a>
+            <a routerLink="/register" class="btn btn-secondary" routerLinkActive="active">إنشاء حساب</a>
+          }
 
         <!-- ========== Employer header ========== -->
-         @if(mode === 'employer' || role() === 'employer'){
+         @if (isLoggedIn() && role() === 'employer') {
 
            <div class="navbar-actions company" (click)="$event.stopPropagation()">
              <div style="position: relative">
@@ -72,7 +57,7 @@
                  (click)="toggleEmployerMenu($event)"
                >
                  <img
-                   [src]="(logo$ | async) || 'images/company-logo-1.jpg'"
+                   [src]="logoCompany || 'images/company-logo-1.jpg'"
                    alt="شركة التقنيات المتقدمة"
                    style="
                      width: 24px;
@@ -102,7 +87,7 @@
                    (click)="navigate('employer-settings')"
                    >الإعدادات</a
                  >
-                 <a class="user-menu-item-logout" (click)="navigate('logout')"
+                 <a class="user-menu-item-logout" (click)="logout()"
                    >تسجيل الخروج</a
                  >
                </div>

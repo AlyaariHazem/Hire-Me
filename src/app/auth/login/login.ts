@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UserRole, UserType } from 'core/types';
 import { Router } from '@angular/router';
-import { SharedModule } from '../../../shared/shared-module';
-import { ToastrService } from 'ngx-toastr';
+
+import { SharedModule } from 'shared/shared-module';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment.development';
+import { environment } from 'environments/environment';
 import { AuthService } from '../auth.service';
-import { UserType } from 'core/types';
 import { Base } from 'shared/base/base';
 
 @Component({
@@ -67,11 +67,11 @@ export class Login extends Base implements OnInit {
 
   login(): void {
     // 1) Must choose a role
-    const chosen = this.selectedRole();
-    if (!chosen) {
-      this.toastr.error('الرجاء اختيار نوع الحساب (باحث عن عمل أو صاحب عمل) قبل تسجيل الدخول.');
-      return;
-    }
+    // const chosen = this.selectedRole();
+    // if (!chosen) {
+    //   this.toastr.error('الرجاء اختيار نوع الحساب (باحث عن عمل أو صاحب عمل) قبل تسجيل الدخول.');
+    //   return;
+    // }
 
     // 2) Validate inputs
     if (this.isInvalidPhone()) {
@@ -113,18 +113,18 @@ export class Login extends Base implements OnInit {
             }
 
             // 5) Compare selected role with backend role
-            if (backendRole !== chosen) {
-              const chosenAr = chosen === 'jobseeker' ? 'باحث عن عمل' : 'صاحب عمل';
-              const backendAr = backendRole === 'jobseeker' ? 'باحث عن عمل' : 'صاحب عمل';
-              this.toastr.error(
-                `نوع الحساب الذي اخترته (${chosenAr}) لا يطابق نوع حسابك الفعلي (${backendAr}).`
-              );
-              this.auth.logout(); // prevent entering with wrong role
-              return;
-            }
+            // if (backendRole !== chosen) {
+            //   const chosenAr = chosen === 'jobseeker' ? 'باحث عن عمل' : 'صاحب عمل';
+            //   const backendAr = backendRole === 'jobseeker' ? 'باحث عن عمل' : 'صاحب عمل';
+            //   this.toastr.error(
+            //     `نوع الحساب الذي اخترته (${chosenAr}) لا يطابق نوع حسابك الفعلي (${backendAr}).`
+            //   );
+            //   this.auth.logout(); // prevent entering with wrong role
+            //   return;
+            // }
 
             // 6) Role matches → persist role & go in
-            this.auth.setRole(backendRole);
+            this.auth.setRole(backendRole as UserRole);
             this.toastr.success('تم تسجيل الدخول بنجاح');
             this.router.navigateByUrl(backendRole === 'employer' ? '/companies' : '/jobseeker');
           },
@@ -154,8 +154,8 @@ export class Login extends Base implements OnInit {
     this.toastr.info('تسجيل الدخول عبر Google قيد التطوير');
   }
 
-  selectType(type: 'jobseeker' | 'employer') {
-    this.user = type === 'jobseeker';
-    this.admin = type === 'employer';
+  selectType(role: UserRole) {
+    this.user = role === 'jobseeker';
+    this.admin = role === 'employer';
   }
 }

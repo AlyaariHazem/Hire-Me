@@ -3,6 +3,7 @@ import { Base } from 'shared/base/base';
 import { JobService } from 'shared/services/job.service';
 import { SharedModule } from 'shared/shared-module';
 import { JobItem } from '@app/companies/models';
+import { environment } from 'environments/environment';
 
 // English: bookmark wrapper returned by API
 interface BookmarkedJobItem {
@@ -41,6 +42,7 @@ export class SavedJobs extends Base implements OnInit {
   // English: ui state
   loading = false;
   errorMessage: string | null = null;
+  baseUrl = environment.apiBaseUrl;
 
   constructor() {
     super();
@@ -64,6 +66,7 @@ export class SavedJobs extends Base implements OnInit {
       .subscribe({
         next: (res: any) => {
           const data = res as BookmarkedJobsResponse;
+          debugger;
           this.bookmarks = data.results ?? [];
           this.totalCount = data.count ?? 0;
           this.loading = false;
