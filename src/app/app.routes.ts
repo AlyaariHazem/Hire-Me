@@ -51,6 +51,13 @@ export const routes: Routes = [
   },
   // simple logout route that clears storage and returns to login
   {
+    path: 'company/:slug',
+    loadComponent: () =>
+      import('./pages/companies/company-profile/company-profile').then(
+        (m) => m.CompanyProfile
+      ),
+  },
+  {
     path: 'logout',
     loadComponent: () => import('./auth/logout/logout').then((m) => m.Logout),
   },

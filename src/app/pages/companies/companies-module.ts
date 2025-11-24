@@ -29,7 +29,6 @@ const components = [
   Candidates,
   Overview,
   Analytics,
-  CompanyProfile,
   Billing,
   CompanyData,
   ProfileComponent,
@@ -48,6 +47,7 @@ const modules = [
   ManageJobs,
   FormsModule,
   ReactiveFormsModule,
+  CompanyProfile,
 ];
 @NgModule({
   declarations: [...components],
