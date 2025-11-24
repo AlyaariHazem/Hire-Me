@@ -1,7 +1,7 @@
 <!-- Dashboard Container -->
 <div id="overview" class="tab-content active">
   <div class="dashboard-header">
-    <h1 class="dashboard-title">مرحباً، {{ userData.data.user.first_name }}!</h1>
+    <h1 class="dashboard-title">مرحباً، {{ userData?.user?.first_name || 'المستخدم' }}!</h1>
     <div class="dashboard-actions">
       <a routerLink="/jobs" class="btn btn-primary">البحث عن وظائف</a>
       <a routerLink="/jobseeker/cv-builder" class="btn btn-secondary"
@@ -14,29 +14,29 @@
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-header">
-        <span class="stat-title">إجمالي الطلبات</span>
+        <span class="stat-title">إجمالي الوظائف</span>
         <span class="stat-icon">📝</span>
       </div>
-      <div class="stat-value">12</div>
-      <div class="stat-change">+3 هذا الأسبوع</div>
+      <div class="stat-value">{{ stats?.total_jobs || 0 }}</div>
+      <div class="stat-change">متاحة الآن</div>
     </div>
 
     <div class="stat-card">
       <div class="stat-header">
-        <span class="stat-title">قيد المراجعة</span>
-        <span class="stat-icon">⏳</span>
+        <span class="stat-title">وظائف مميزة</span>
+        <span class="stat-icon">⭐</span>
       </div>
-      <div class="stat-value">5</div>
-      <div class="stat-change">+2 جديدة</div>
+      <div class="stat-value">{{ stats?.featured_jobs || 0 }}</div>
+      <div class="stat-change">مميزة</div>
     </div>
 
     <div class="stat-card">
       <div class="stat-header">
-        <span class="stat-title">مقابلات مجدولة</span>
+        <span class="stat-title">وظائف عاجلة</span>
         <span class="stat-icon">🗓️</span>
       </div>
-      <div class="stat-value">2</div>
-      <div class="stat-change">هذا الأسبوع</div>
+      <div class="stat-value">{{ stats?.urgent_jobs || 0 }}</div>
+      <div class="stat-change">عاجلة</div>
     </div>
 
     <div class="stat-card">
@@ -44,8 +44,8 @@
         <span class="stat-title">الوظائف المحفوظة</span>
         <span class="stat-icon">💾</span>
       </div>
-      <div class="stat-value">8</div>
-      <div class="stat-change">+1 اليوم</div>
+      <div class="stat-value">{{ stats?.saved_jobs_count || savedJobs.length }}</div>
+      <div class="stat-change">+{{ stats?.daily_saved || 0 }} اليوم</div>
     </div>
   </div>
 
@@ -90,56 +90,34 @@
         >
       </div>
 
-      <div class="application-item">
+      <div class="application-item" *ngFor="let app of recentApplications">
         <img
-          src="images/company-logo-1.jpg"
-          alt="شعار الشركة"
+          [src]="app.job.company.logo || 'images/company-logo-1.jpg'"
+          [alt]="app.job.company.name"
           class="application-logo"
         />
         <div class="application-info">
-          <h4 class="application-title">مطور تطبيقات الويب الأمامية</h4>
-          <p class="application-company">شركة التقنيات المتقدمة</p>
+          <h4 class="application-title">{{ app.job.title }}</h4>
+          <p class="application-company">{{ app.job.company.name }}</p>
           <div class="application-meta">
-            <span>تقدمت منذ يومين</span>
-            <span>صنعاء</span>
+            <span>تقدمت {{ app.created_at | date:'short' }}</span>
+            <span *ngIf="app.job.city">{{ app.job.city }}</span>
           </div>
         </div>
-        <span class="application-status status-pending">قيد المراجعة</span>
+        <span class="application-status" 
+              [ngClass]="{
+                'status-pending': app.status === 'pending',
+                'status-reviewed': app.status === 'reviewed',
+                'status-accepted': app.status === 'accepted',
+                'status-rejected': app.status === 'rejected'
+              }">
+          {{ app.status === 'pending' ? 'قيد المراجعة' : 
+             app.status === 'reviewed' ? 'تمت المراجعة' :
+             app.status === 'accepted' ? 'مقبول' : 'مرفوض' }}
+        </span>
       </div>
 
-      <div class="application-item">
-        <img
-          src="images/company-logo-2.jpg"
-          alt="شعار الشركة"
-          class="application-logo"
-        />
-        <div class="application-info">
-          <h4 class="application-title">مطور تطبيقات الجوال</h4>
-          <p class="application-company">استوديو الابتكار للتطبيقات</p>
-          <div class="application-meta">
-            <span>تقدمت منذ 3 أيام</span>
-            <span>صنعاء</span>
-          </div>
-        </div>
-        <span class="application-status status-reviewed">تمت المراجعة</span>
-      </div>
-
-      <div class="application-item">
-        <img
-          src="images/company-logo-3.jpg"
-          alt="شعار الشركة"
-          class="application-logo"
-        />
-        <div class="application-info">
-          <h4 class="application-title">مطور Full Stack</h4>
-          <p class="application-company">شركة الحلول الرقمية</p>
-          <div class="application-meta">
-            <span>تقدمت منذ أسبوع</span>
-            <span>صنعاء</span>
-          </div>
-        </div>
-        <span class="application-status status-accepted">مقبول</span>
-      </div>
+      <p *ngIf="recentApplications.length === 0">لا توجد طلبات حالياً</p>
     </div>
 
     <!-- Saved Jobs -->
@@ -154,70 +132,26 @@
         >
       </div>
 
-      <div class="saved-job-item">
+      <div class="saved-job-item" *ngFor="let job of savedJobs">
         <img
-          src="images/company-logo-4.jpg"
-          alt="شعار الشركة"
+          [src]="job.company.logo || 'images/company-logo-1.jpg'"
+          [alt]="job.company.name"
           class="saved-job-logo"
         />
         <div class="saved-job-info">
-          <h4 class="saved-job-title">مطور WordPress</h4>
-          <p class="saved-job-company">وكالة التسويق الرقمي</p>
-          <p class="saved-job-meta">600-900 ريال • صنعاء</p>
+          <h4 class="saved-job-title">{{ job.title }}</h4>
+          <p class="saved-job-company">{{ job.company.name }}</p>
+          <p class="saved-job-meta">
+            <span *ngIf="job.salary_min && job.salary_max">
+              {{ job.salary_min }}-{{ job.salary_max }} ريال
+            </span>
+            <span *ngIf="!job.salary_min && !job.salary_max">الراتب غير محدد</span>
+            <span *ngIf="job.city"> • {{ job.city }}</span>
+          </p>
         </div>
       </div>
 
-      <div class="saved-job-item">
-        <img
-          src="images/company-logo-1.jpg"
-          alt="شعار الشركة"
-          class="saved-job-logo"
-        />
-        <div class="saved-job-info">
-          <h4 class="saved-job-title">مطور ألعاب Unity</h4>
-          <p class="saved-job-company">استوديو الألعاب الإبداعي</p>
-          <p class="saved-job-meta">900-1300 ريال • صنعاء</p>
-        </div>
-      </div>
-
-      <div class="saved-job-item">
-        <img
-          src="images/company-logo-2.png"
-          alt="شعار الشركة"
-          class="saved-job-logo"
-        />
-        <div class="saved-job-info">
-          <h4 class="saved-job-title">مطور React Native</h4>
-          <p class="saved-job-company">شركة التطبيقات الذكية</p>
-          <p class="saved-job-meta">1100-1600 ريال • عدن</p>
-        </div>
-      </div>
-
-      <div class="saved-job-item">
-        <img
-          src="images/company-logo-3.jpg"
-          alt="شعار الشركة"
-          class="saved-job-logo"
-        />
-        <div class="saved-job-info">
-          <h4 class="saved-job-title">مطور Python</h4>
-          <p class="saved-job-company">مؤسسة البيانات الذكية</p>
-          <p class="saved-job-meta">1000-1400 ريال • عمل عن بُعد</p>
-        </div>
-      </div>
-
-      <div class="saved-job-item">
-        <img
-          src="images/company-logo-4.jpg"
-          alt="شعار الشركة"
-          class="saved-job-logo"
-        />
-        <div class="saved-job-info">
-          <h4 class="saved-job-title">مطور Laravel</h4>
-          <p class="saved-job-company">شركة الويب المتقدمة</p>
-          <p class="saved-job-meta">800-1200 ريال • تعز</p>
-        </div>
-      </div>
+      <p *ngIf="savedJobs.length === 0">لا توجد وظائف محفوظة</p>
     </div>
   </div>
 </div>

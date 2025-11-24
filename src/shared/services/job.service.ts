@@ -43,8 +43,19 @@ export interface JobAlert {
 }
 
 export interface JobStatistics {
-  // add fields based on your API response
-  [key: string]: any;
+  total_jobs?: number;
+  featured_jobs?: number;
+  urgent_jobs?: number;
+  jobs_by_city?: Array<{ city: string; count: number }>;
+  jobs_by_type?: Array<{ job_type: string; count: number }>;
+  // Keep these for backward compatibility, in case they're added later
+  total_applications?: number;
+  weekly_applications?: number;
+  pending_applications?: number;
+  new_pending?: number;
+  interviews_count?: number;
+  saved_jobs_count?: number;
+  daily_saved?: number;
 }
 
 @Injectable({ providedIn: 'root' })
