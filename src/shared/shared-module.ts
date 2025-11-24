@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Footer } from './footer/footer';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Header } from './header/header';
-import { JobDetails } from './job-details/job-details';
+import { JobDetails } from '../app/pages/jobs/job-details/job-details';
 import { SearchForJob } from './search-for-job/search-for-job';
 import { Messages } from './messages/messages';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,6 @@ import { ProfileStoreService } from './services/profile.service';
 const components = [
 Header,
 Footer,
-JobDetails,
 SearchForJob,
 Messages,
 ProgressSpinnerComponent

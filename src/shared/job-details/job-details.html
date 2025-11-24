@@ -1,437 +1,0 @@
-
-<!-- Breadcrumb -->
-<section class="breadcrumb">
-  <div class="container">
-    <ul class="breadcrumb-list">
-      <li><a href="index.html">الرئيسية</a></li>
-      <li class="breadcrumb-separator">›</li>
-      <li><a href="search.html">الوظائف</a></li>
-      <li class="breadcrumb-separator">›</li>
-      <li><a href="search.html?category=tech">تقنية المعلومات</a></li>
-      <li class="breadcrumb-separator">›</li>
-      <li>مطور تطبيقات الويب الأمامية</li>
-    </ul>
-  </div>
-</section>
-
-<!-- Job Details -->
-<section class="job-details-section">
-  <div class="container">
-    <div class="job-details-container">
-      <!-- Main Content -->
-      <main class="job-main-content">
-        <!-- Job Header -->
-        <div class="job-header">
-          <div class="job-header-top">
-            <img
-              src="images/company-logo-1.jpg"
-              alt="شعار شركة التقنيات المتقدمة"
-              class="company-logo-large"
-            />
-            <div style="flex-grow: 1">
-              <h1 class="job-title-large">مطور تطبيقات الويب الأمامية</h1>
-              <p class="company-name-large">شركة التقنيات المتقدمة</p>
-
-              <div class="job-meta-large">
-                <div class="meta-item">
-                  <span class="meta-icon">📍</span>
-                  <span>صنعاء، اليمن</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-icon">💰</span>
-                  <span>800-1200 ريال/شهر</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-icon">⏰</span>
-                  <span>دوام كامل</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-icon">📅</span>
-                  <span>نُشرت منذ يومين</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-icon">👥</span>
-                  <span>15 متقدم</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-icon">👁️</span>
-                  <span>234 مشاهدة</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="job-actions-large">
-            <button
-              class="btn btn-large btn-primary"
-              onclick="toggleApplicationForm()"
-            >
-              تقديم الآن
-            </button>
-            <button
-              class="btn btn-large btn-secondary save-btn"
-              onclick="saveJob('101')"
-            >
-              حفظ الوظيفة
-            </button>
-            <button
-              class="btn btn-large btn-secondary"
-              onclick="shareJob('101', 'مطور تطبيقات الويب الأمامية')"
-            >
-              مشاركة
-            </button>
-          </div>
-        </div>
-
-        <!-- Application Form -->
-        <div class="application-form" id="applicationForm">
-          <h3 style="margin-bottom: 1rem">تقديم طلب للوظيفة</h3>
-          <form>
-            <div class="form-row">
-              <div class="field-group">
-                <label class="field-label">الاسم الكامل</label>
-                <input type="text" class="form-input" required />
-              </div>
-              <div class="field-group">
-                <label class="field-label">البريد الإلكتروني</label>
-                <input type="email" class="form-input" required />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="field-group">
-                <label class="field-label">رقم الهاتف</label>
-                <input type="tel" class="form-input" required />
-              </div>
-              <div class="field-group">
-                <label class="field-label">سنوات الخبرة</label>
-                <select class="form-select" required>
-                  <option value="">اختر سنوات الخبرة</option>
-                  <option value="0-1">أقل من سنة</option>
-                  <option value="1-3">1-3 سنوات</option>
-                  <option value="3-5">3-5 سنوات</option>
-                  <option value="5+">أكثر من 5 سنوات</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="field-group">
-              <label class="field-label">رفع السيرة الذاتية</label>
-              <div
-                class="file-upload"
-                onclick="document.getElementById('cv-upload').click()"
-              >
-                <input type="file" id="cv-upload" accept=".pdf,.doc,.docx" />
-                <p>انقر هنا لرفع السيرة الذاتية</p>
-                <p
-                  style="font-size: var(--font-size-sm); color: var(--gray-500)"
-                >
-                  PDF, DOC, DOCX (حد أقصى 5MB)
-                </p>
-              </div>
-            </div>
-
-            <div class="field-group">
-              <label class="field-label">خطاب التغطية (اختياري)</label>
-              <textarea
-                class="form-input"
-                rows="4"
-                placeholder="اكتب خطاب تغطية مختصر يوضح سبب اهتمامك بهذه الوظيفة..."
-              ></textarea>
-            </div>
-
-            <div style="display: flex; gap: 1rem; justify-content: flex-end">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                onclick="toggleApplicationForm()"
-              >
-                إلغاء
-              </button>
-              <button type="submit" class="btn btn-primary">إرسال الطلب</button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Job Description -->
-        <div class="content-section">
-          <h2 class="section-title">وصف الوظيفة</h2>
-          <div class="content-text">
-            <p>
-              نحن في شركة التقنيات المتقدمة نبحث عن مطور تطبيقات ويب أمامية
-              موهوب ومتحمس للانضمام إلى فريقنا المتنامي. ستكون مسؤولاً عن تطوير
-              واجهات مستخدم تفاعلية وجذابة باستخدام أحدث التقنيات والأدوات.
-            </p>
-
-            <p>
-              ستعمل بشكل وثيق مع فريق التصميم والمطورين الخلفيين لتحويل التصاميم
-              إلى تطبيقات ويب عالية الجودة. نحن نقدر الإبداع والابتكار ونشجع على
-              التعلم المستمر واستخدام أفضل الممارسات في التطوير.
-            </p>
-
-            <p>
-              هذه فرصة ممتازة للنمو المهني في بيئة عمل محفزة ومتطورة، حيث ستتاح
-              لك الفرصة للعمل على مشاريع متنوعة ومثيرة مع عملاء من مختلف
-              القطاعات.
-            </p>
-          </div>
-        </div>
-
-        <!-- Requirements -->
-        <div class="content-section">
-          <h2 class="section-title">المتطلبات والمؤهلات</h2>
-          <div class="content-text">
-            <h4>المتطلبات الأساسية:</h4>
-            <ul class="requirements-list">
-              <li>درجة البكالوريوس في علوم الحاسوب أو مجال ذي صلة</li>
-              <li>خبرة لا تقل عن سنتين في تطوير تطبيقات الويب الأمامية</li>
-              <li>إتقان HTML5, CSS3, وJavaScript الحديث (ES6+)</li>
-              <li>خبرة قوية في React.js أو Vue.js</li>
-              <li>فهم جيد لمبادئ التصميم المتجاوب (Responsive Design)</li>
-              <li>خبرة في استخدام أدوات البناء مثل Webpack أو Vite</li>
-              <li>معرفة بأنظمة إدارة الإصدارات (Git)</li>
-              <li>مهارات تواصل ممتازة باللغة العربية</li>
-            </ul>
-
-            <h4>المتطلبات المفضلة:</h4>
-            <ul class="requirements-list">
-              <li>خبرة في TypeScript</li>
-              <li>معرفة بمكتبات إدارة الحالة مثل Redux أو Vuex</li>
-              <li>خبرة في تطوير التطبيقات التقدمية (PWA)</li>
-              <li>فهم أساسيات UX/UI Design</li>
-              <li>خبرة في اختبار الوحدة والتكامل</li>
-              <li>معرفة بأدوات CI/CD</li>
-              <li>خبرة في العمل مع APIs وRESTful services</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Responsibilities -->
-        <div class="content-section">
-          <h2 class="section-title">المسؤوليات الوظيفية</h2>
-          <div class="content-text">
-            <ul class="requirements-list">
-              <li>تطوير واجهات مستخدم تفاعلية وسريعة الاستجابة</li>
-              <li>تحويل التصاميم من Figma/Adobe XD إلى كود قابل للتنفيذ</li>
-              <li>التعاون مع فريق التصميم لضمان تطبيق أفضل تجربة مستخدم</li>
-              <li>كتابة كود نظيف وقابل للصيانة وفقاً لأفضل الممارسات</li>
-              <li>إجراء اختبارات شاملة للتأكد من جودة التطبيقات</li>
-              <li>تحسين أداء التطبيقات وسرعة التحميل</li>
-              <li>المشاركة في مراجعات الكود وتقديم التغذية الراجعة</li>
-              <li>البقاء على اطلاع بأحدث التقنيات والاتجاهات في تطوير الويب</li>
-              <li>توثيق الكود والعمليات التطويرية</li>
-              <li>دعم وصيانة التطبيقات الموجودة</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Benefits -->
-        <div class="content-section">
-          <h2 class="section-title">المزايا والحوافز</h2>
-          <div class="content-text">
-            <ul class="benefits-list">
-              <li>راتب تنافسي يتراوح بين 800-1200 ريال شهرياً</li>
-              <li>بدل مواصلات شهري</li>
-              <li>تأمين صحي شامل للموظف وعائلته</li>
-              <li>إجازة سنوية مدفوعة الأجر (21 يوم)</li>
-              <li>بيئة عمل مرنة مع إمكانية العمل عن بُعد جزئياً</li>
-              <li>فرص تدريب وتطوير مهني مستمرة</li>
-              <li>مكافآت أداء ربع سنوية</li>
-              <li>وجبات غداء مجانية</li>
-              <li>مساحة عمل حديثة ومريحة</li>
-              <li>فريق عمل متعاون ومحفز</li>
-              <li>فرص ترقية وتطوير مسار مهني واضح</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Company Info -->
-        <div class="content-section">
-          <h2 class="section-title">عن الشركة</h2>
-          <div class="content-text">
-            <p>
-              شركة التقنيات المتقدمة هي شركة رائدة في مجال تطوير الحلول التقنية
-              والبرمجية في اليمن. تأسست الشركة في عام 2018 وتخدم عملاء من مختلف
-              القطاعات بما في ذلك الحكومة والقطاع الخاص والمنظمات غير الربحية.
-            </p>
-
-            <p>
-              نحن نؤمن بقوة التكنولوجيا في تحسين حياة الناس وتطوير المجتمع.
-              فريقنا يضم أكثر من 50 متخصص في مختلف المجالات التقنية، ونحن
-              ملتزمون بتقديم حلول مبتكرة وعالية الجودة.
-            </p>
-
-            <p>
-              رؤيتنا هي أن نكون الشركة الرائدة في تقديم الحلول التقنية المتطورة
-              في المنطقة، ونسعى لخلق بيئة عمل محفزة تشجع على الإبداع والابتكار.
-            </p>
-          </div>
-        </div>
-      </main>
-
-      <!-- Sidebar -->
-      <aside class="job-sidebar">
-        <!-- Job Details Card -->
-        <div class="sidebar-card">
-          <h3 class="sidebar-title">تفاصيل الوظيفة</h3>
-          <ul class="job-details-list">
-            <li>
-              <span class="detail-label">نوع الوظيفة</span>
-              <span class="detail-value">دوام كامل</span>
-            </li>
-            <li>
-              <span class="detail-label">مستوى الخبرة</span>
-              <span class="detail-value">متوسط</span>
-            </li>
-            <li>
-              <span class="detail-label">الراتب</span>
-              <span class="detail-value">800-1200 ريال</span>
-            </li>
-            <li>
-              <span class="detail-label">الموقع</span>
-              <span class="detail-value">صنعاء</span>
-            </li>
-            <li>
-              <span class="detail-label">تاريخ النشر</span>
-              <span class="detail-value">15 ديسمبر 2024</span>
-            </li>
-            <li>
-              <span class="detail-label">آخر موعد للتقديم</span>
-              <span class="detail-value">15 يناير 2025</span>
-            </li>
-            <li>
-              <span class="detail-label">عدد المناصب</span>
-              <span class="detail-value">2</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Required Skills -->
-        <div class="sidebar-card">
-          <h3 class="sidebar-title">المهارات المطلوبة</h3>
-          <div class="skills-list">
-            <span class="skill-tag">React.js</span>
-            <span class="skill-tag">JavaScript</span>
-            <span class="skill-tag">HTML5</span>
-            <span class="skill-tag">CSS3</span>
-            <span class="skill-tag">Vue.js</span>
-            <span class="skill-tag">TypeScript</span>
-            <span class="skill-tag">Responsive Design</span>
-            <span class="skill-tag">Git</span>
-            <span class="skill-tag">Webpack</span>
-          </div>
-        </div>
-
-        <!-- Company Info Card -->
-        <div class="sidebar-card">
-          <h3 class="sidebar-title">معلومات الشركة</h3>
-          <div style="text-align: center; margin-bottom: 1rem">
-            <img
-              src="images/company-logo-1.jpg"
-              alt="شعار الشركة"
-              style="
-                width: 80px;
-                height: 80px;
-                border-radius: var(--radius-lg);
-                object-fit: cover;
-              "
-            />
-          </div>
-          <ul class="job-details-list">
-            <li>
-              <span class="detail-label">اسم الشركة</span>
-              <span class="detail-value">شركة التقنيات المتقدمة</span>
-            </li>
-            <li>
-              <span class="detail-label">حجم الشركة</span>
-              <span class="detail-value">50-100 موظف</span>
-            </li>
-            <li>
-              <span class="detail-label">القطاع</span>
-              <span class="detail-value">تقنية المعلومات</span>
-            </li>
-            <li>
-              <span class="detail-label">سنة التأسيس</span>
-              <span class="detail-value">2018</span>
-            </li>
-          </ul>
-          <div style="margin-top: 1rem">
-            <a
-              href="company-profile.html?id=1"
-              class="btn btn-secondary"
-              style="width: 100%"
-            >
-              عرض ملف الشركة
-            </a>
-          </div>
-        </div>
-
-        <!-- Similar Jobs -->
-        <div class="sidebar-card">
-          <h3 class="sidebar-title">وظائف مشابهة</h3>
-          <div class="similar-jobs">
-            <a
-              href="job-details.html?id=102"
-              class="similar-job-card"
-              style="text-decoration: none; color: inherit"
-            >
-              <img
-                src="images/company-logo-2.jpg"
-                alt="شعار الشركة"
-                class="similar-job-logo"
-              />
-              <div class="similar-job-info">
-                <h4>مطور تطبيقات الجوال</h4>
-                <p>استوديو الابتكار للتطبيقات</p>
-                <p style="color: var(--primary-color); font-weight: 600">
-                  1000-1500 ريال
-                </p>
-              </div>
-            </a>
-
-            <a
-              href="job-details.html?id=103"
-              class="similar-job-card"
-              style="text-decoration: none; color: inherit"
-            >
-              <img
-                src="images/company-logo-3.jpg"
-                alt="شعار الشركة"
-                class="similar-job-logo"
-              />
-              <div class="similar-job-info">
-                <h4>مطور Full Stack</h4>
-                <p>شركة الحلول الرقمية</p>
-                <p style="color: var(--primary-color); font-weight: 600">
-                  1200-1800 ريال
-                </p>
-              </div>
-            </a>
-
-            <a
-              href="job-details.html?id=104"
-              class="similar-job-card"
-              style="text-decoration: none; color: inherit"
-            >
-              <img
-                src="images/company-logo-4.jpg"
-                alt="شعار الشركة"
-                class="similar-job-logo"
-              />
-              <div class="similar-job-info">
-                <h4>مطور WordPress</h4>
-                <p>وكالة التسويق الرقمي</p>
-                <p style="color: var(--primary-color); font-weight: 600">
-                  600-900 ريال
-                </p>
-              </div>
-            </a>
-          </div>
-        </div>
-      </aside>
-    </div>
-  </div>
-</section>
-
-<!-- Footer -->
-<app-footer></app-footer>

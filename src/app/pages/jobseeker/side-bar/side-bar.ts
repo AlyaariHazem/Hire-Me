@@ -63,7 +63,7 @@ export class SideBar implements OnInit, OnDestroy {
       .subscribe((p) => {
         this.profile = p;
         this.jobSeekerName = p.user.first_name + ' ' + p.user.last_name || this.jobSeekerName;
-        debugger;
+        
         // English: prefer nested profile.company_logo, then root company_logo
         const logoPath = p.profile?.company_logo || p.user.profile_picture || null;
         this.previewUrl = this.toAbsolute(logoPath);

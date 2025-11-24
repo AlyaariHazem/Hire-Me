@@ -71,7 +71,7 @@ export class JobService {
     return this.http.get<JobListResponse>(url, { params });
   }
 
-  getJobBySlug(slug: string): Observable<JobDetails> {
+  getJobBySlug(slug: string): Observable<any> {
   const url = environment.getUrl(slug, 'jobs');
   return this.http.get<JobDetails>(url);
 }

@@ -66,7 +66,6 @@ export class SavedJobs extends Base implements OnInit {
       .subscribe({
         next: (res: any) => {
           const data = res as BookmarkedJobsResponse;
-          debugger;
           this.bookmarks = data.results ?? [];
           this.totalCount = data.count ?? 0;
           this.loading = false;

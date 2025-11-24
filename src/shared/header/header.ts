@@ -1,10 +1,13 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
+  OnChanges,
   OnDestroy,
   OnInit,
+  SimpleChanges,
   ViewChild,
   computed,
   inject,
@@ -30,7 +33,7 @@ import { AuthStateService } from 'app/auth/auth-state.service';
   styleUrl: './header.scss',
   providers: [Logout, ToastrService],
 })
-export class Header implements OnInit, OnDestroy {
+export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   // ===== Auth / mode =====
   mode: UserType = 'public';
   private authState = inject(AuthStateService);
@@ -75,6 +78,12 @@ export class Header implements OnInit, OnDestroy {
         this.updateMode(e.urlAfterRedirects || e.url);
         this.closeMobileMenu();
       });
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.companyName = () => this.profileStore.profile()?.company_name ?? '';
+  }
+  ngAfterViewInit(): void {
+    // this.cdr.detectChanges();
   }
 
   cdr = inject(ChangeDetectorRef);

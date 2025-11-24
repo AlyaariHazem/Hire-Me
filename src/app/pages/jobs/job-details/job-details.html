@@ -1,0 +1,333 @@
+<!-- English: Render only when jobDetail is loaded -->
+<section class="job-details-section" *ngIf="jobDetail as job">
+  <div class="container">
+    <div class="job-details-container">
+      <!-- Main Content -->
+      <main class="job-main-content">
+        <!-- Job Header -->
+        <div class="job-header">
+          <div class="job-header-top">
+            <img
+              class="company-logo-large"
+              [src]="job.company.logo || 'images/company-logo-1.jpg'"
+              [alt]="job.company.name || 'شعار الشركة'"
+            />
+
+            <div style="flex-grow: 1">
+              <h1 class="job-title-large">{{ job.title }}</h1>
+              <p class="company-name-large">{{ job.company.name }}</p>
+
+              <div class="job-meta-large">
+                <div class="meta-item">
+                  <span class="meta-icon">📍</span>
+                  <span>
+                    {{ job.city || job.company.city || 'غير محدد' }}،
+                    {{ job.company.country || 'غير محدد' }}
+                  </span>
+                </div>
+
+                <div class="meta-item">
+                  <span class="meta-icon">💰</span>
+                  <span>
+                    {{ formatSalary(job.salary_min, job.salary_max) }}
+                  </span>
+                </div>
+
+                <div class="meta-item">
+                  <span class="meta-icon">⏰</span>
+                  <span>{{ getJobTypeLabel(job.job_type) }}</span>
+                </div>
+
+                <div class="meta-item">
+                  <span class="meta-icon">📅</span>
+                  <span>
+                    نُشرت في {{ job.created_at | date: 'mediumDate' }}
+                  </span>
+                </div>
+
+                <div class="meta-item">
+                  <span class="meta-icon">👥</span>
+                  <span>{{ job.applications_count || 0 }} متقدم</span>
+                </div>
+
+                <div class="meta-item">
+                  <span class="meta-icon">👁️</span>
+                  <span>{{ job.views_count || 0 }} مشاهدة</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-actions-large">
+            <button
+              type="button"
+              class="btn btn-large btn-primary"
+              (click)="toggleApplicationForm()"
+            >
+              تقديم الآن
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-large btn-secondary save-btn"
+              (click)="onSaveJob()"
+            >
+              {{ job.is_bookmarked ? 'إزالة من المحفوظات' : 'حفظ الوظيفة' }}
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-large btn-secondary"
+              (click)="onShareJob()"
+            >
+              مشاركة
+            </button>
+          </div>
+        </div>
+
+        <!-- Application Form -->
+        <div class="application-form" *ngIf="showApplicationForm">
+          <h3 style="margin-bottom: 1rem">تقديم طلب للوظيفة</h3>
+          <form>
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label">الاسم الكامل</label>
+                <input type="text" class="form-input" required />
+              </div>
+              <div class="field-group">
+                <label class="field-label">البريد الإلكتروني</label>
+                <input type="email" class="form-input" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label">رقم الهاتف</label>
+                <input type="tel" class="form-input" required />
+              </div>
+              <div class="field-group">
+                <label class="field-label">سنوات الخبرة</label>
+                <select class="form-select" required>
+                  <option value="">اختر سنوات الخبرة</option>
+                  <option value="0-1">أقل من سنة</option>
+                  <option value="1-3">1-3 سنوات</option>
+                  <option value="3-5">3-5 سنوات</option>
+                  <option value="5+">أكثر من 5 سنوات</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">رفع السيرة الذاتية</label>
+
+              <!-- English: hidden file input with template ref -->
+              <input
+                #cvUpload
+                type="file"
+                id="cv-upload"
+                accept=".pdf,.doc,.docx"
+                style="display: none"
+              />
+
+              <!-- English: clicking this div triggers input.click() via the template ref -->
+              <div class="file-upload" (click)="cvUpload.click()">
+                <p>انقر هنا لرفع السيرة الذاتية</p>
+                <p style="font-size: var(--font-size-sm); color: var(--gray-500)">
+                  PDF, DOC, DOCX (حد أقصى 5MB)
+                </p>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">خطاب التغطية (اختياري)</label>
+              <textarea
+                class="form-input"
+                rows="4"
+                placeholder="اكتب خطاب تغطية مختصر يوضح سبب اهتمامك بهذه الوظيفة..."
+              ></textarea>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end">
+              <button type="button" class="btn btn-secondary" (click)="toggleApplicationForm()">
+                إلغاء
+              </button>
+              <button type="submit" class="btn btn-primary" (click)="onApply()">
+                إرسال الطلب
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Job Description -->
+        <div class="content-section" *ngIf="job.description">
+          <h2 class="section-title">وصف الوظيفة</h2>
+          <div class="content-text">
+            <p>{{ job.description }}</p>
+          </div>
+        </div>
+
+        <!-- Requirements -->
+        <div class="content-section" *ngIf="job.requirements">
+          <h2 class="section-title">المتطلبات والمؤهلات</h2>
+          <div class="content-text">
+            <!-- English: Split by newline if backend stores multi-line text -->
+            <ul class="requirements-list">
+              <li *ngFor="let item of job.requirements.split('\n')">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Responsibilities -->
+        <div class="content-section" *ngIf="job.responsibilities">
+          <h2 class="section-title">المسؤوليات الوظيفية</h2>
+          <div class="content-text">
+            <ul class="requirements-list">
+              <li *ngFor="let item of job.responsibilities.split('\n')">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Benefits -->
+        <div class="content-section" *ngIf="job.benefits">
+          <h2 class="section-title">المزايا والحوافز</h2>
+          <div class="content-text">
+            <ul class="benefits-list">
+              <li *ngFor="let item of job.benefits.split('\n')">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Company About (fallback to company description) -->
+        <div class="content-section" *ngIf="job.company.description">
+          <h2 class="section-title">عن الشركة</h2>
+          <div class="content-text">
+            <p>{{ job.company.description }}</p>
+          </div>
+        </div>
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="job-sidebar">
+        <!-- Job Details Card -->
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">تفاصيل الوظيفة</h3>
+          <ul class="job-details-list">
+            <li>
+              <span class="detail-label">نوع الوظيفة</span>
+              <span class="detail-value">{{ getJobTypeLabel(job.job_type) }}</span>
+            </li>
+
+            <li>
+              <span class="detail-label">مستوى الخبرة</span>
+              <span class="detail-value">{{ getExperienceLevelLabel(job.experience_level) }}</span>
+            </li>
+
+            <li>
+              <span class="detail-label">الراتب</span>
+              <span class="detail-value">{{ formatSalary(job.salary_min, job.salary_max) }}</span>
+            </li>
+
+            <li>
+              <span class="detail-label">الموقع</span>
+              <span class="detail-value">
+                {{ job.city || job.company.city || 'غير محدد' }}،
+                {{ job.company.country || 'غير محدد' }}
+              </span>
+            </li>
+
+            <li>
+              <span class="detail-label">تاريخ النشر</span>
+              <span class="detail-value">{{ job.created_at | date: 'mediumDate' }}</span>
+            </li>
+
+            <li *ngIf="job.application_deadline">
+              <span class="detail-label">آخر موعد للتقديم</span>
+              <span class="detail-value">{{ job.application_deadline | date: 'mediumDate' }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Required Skills -->
+        <div class="sidebar-card" *ngIf="job.skills as skills">
+          <h3 class="sidebar-title">المهارات المطلوبة</h3>
+          <div class="skills-list">
+            <!-- English: Attempt to split by comma first, fallback to whitespace -->
+            <ng-container *ngIf="skills.includes(','); else spaceSplit">
+              <span class="skill-tag" *ngFor="let s of skills.split(',')">
+                {{ s.trim() }}
+              </span>
+            </ng-container>
+            <ng-template #spaceSplit>
+              <span class="skill-tag" *ngFor="let s of skills.split(' ')">
+                {{ s.trim() }}
+              </span>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Company Info Card -->
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">معلومات الشركة</h3>
+          <div style="text-align: center; margin-bottom: 1rem">
+            <img
+              [src]="job.company.logo || 'images/company-logo-1.jpg'"
+              [alt]="job.company.name || 'شعار الشركة'"
+              style="width: 80px; height: 80px; border-radius: var(--radius-lg); object-fit: cover;"
+            />
+          </div>
+
+          <ul class="job-details-list">
+            <li>
+              <span class="detail-label">اسم الشركة</span>
+              <span class="detail-value">{{ job.company.name }}</span>
+            </li>
+            <li *ngIf="job.company.size">
+              <span class="detail-label">حجم الشركة</span>
+              <span class="detail-value">{{ job.company.size }}</span>
+            </li>
+            <li *ngIf="job.company.industry">
+              <span class="detail-label">القطاع</span>
+              <span class="detail-value">{{ job.company.industry }}</span>
+            </li>
+            <li *ngIf="job.company.founded_year">
+              <span class="detail-label">سنة التأسيس</span>
+              <span class="detail-value">{{ job.company.founded_year }}</span>
+            </li>
+          </ul>
+
+          <div style="margin-top: 1rem">
+            <a
+              [routerLink]="['/company', job.company.slug]"
+              class="btn btn-secondary"
+              style="width: 100%"
+            >
+              عرض ملف الشركة
+            </a>
+          </div>
+        </div>
+
+        <!-- Similar Jobs (placeholder) -->
+        <!-- English: Keep as placeholder until backend endpoint for similar jobs is integrated -->
+        <div class="sidebar-card" *ngIf="false">
+          <h3 class="sidebar-title">وظائف مشابهة</h3>
+          <div class="similar-jobs">
+            <!-- English: Dynamic similar jobs list should be rendered here -->
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- English: Optional loading fallback if you want it visible before jobDetail exists -->
+<section class="job-details-section" *ngIf="!jobDetail && isLoading">
+  <div class="container">
+    جاري تحميل تفاصيل الوظيفة...
+  </div>
+</section>
