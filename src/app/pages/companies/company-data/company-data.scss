@@ -187,13 +187,15 @@ textarea {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.5);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 60px;
+  padding: 20px;
   z-index: 1000;
   animation: fadeIn 0.2s ease;
+  overflow-y: auto;
 }
 
 @keyframes fadeIn {
@@ -217,14 +219,16 @@ textarea {
 }
 
 .dialog {
-  width: 1028px;
-  max-height: 85vh;
-  overflow-y: auto;
+  width: 100%;
+  max-width: 1028px;
   background: #fff;
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3);
   animation: slideUp 0.3s ease;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
 
   /* Custom Scrollbar */
   &::-webkit-scrollbar {
@@ -255,6 +259,7 @@ textarea {
   margin-bottom: 20px;
   padding-bottom: 16px;
   border-bottom: 2px solid #f1f5f9;
+  flex-shrink: 0;
 }
 
 .dialog-title {
@@ -300,12 +305,22 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  flex: 1;
+  min-height: 0;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+}
+
+.form-row-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .form-group {
@@ -449,6 +464,11 @@ textarea {
   margin-top: 8px;
   padding-top: 20px;
   border-top: 2px solid #f1f5f9;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 10;
 }
 
 .is-invalid {

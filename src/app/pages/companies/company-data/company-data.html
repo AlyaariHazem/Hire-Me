@@ -101,71 +101,27 @@
             class="dialog-form"
             (ngSubmit)="save(companyForm)"
           >
-           <div class="form-row">
-            <!-- Name -->
-            <div class="form-group">
-              <label for="name"
-                >اسم الشركة <span class="required">*</span></label
-              >
-              <input
-                pInputText
-                id="name"
-                name="name"
-                [(ngModel)]="form.name"
-                required
-                #nameCtrl="ngModel"
-                [class.p-invalid]="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)"
-                placeholder="مثال: شركة التقنيات المتقدمة"
-              />
-              <small
-                class="p-error"
-                *ngIf="nameCtrl.errors?.['required'] && (nameCtrl.dirty || nameCtrl.touched)"
-              >
-                الاسم مطلوب
-              </small>
-            </div>
-            <!-- description -->
-            <div class="form-group">
-              <label for="description">وصف الشركة<span class="required">*</span></label
-              >
-              <textarea
-                pTextarea
-                id="description"
-                name="description"
-                [(ngModel)]="form.description"
-                rows="4"
-                required
-                #descriptionCtrl="ngModel"
-                [class.p-invalid]="descriptionCtrl.invalid && (descriptionCtrl.dirty || descriptionCtrl.touched)"
-                placeholder="قدم نبذة مختصرة عن الشركة ونشاطها."
-              ></textarea>
-              <small
-                class="p-error"
-                *ngIf="descriptionCtrl.errors?.['required'] && (descriptionCtrl.dirty || descriptionCtrl.touched)"
-              >
-               هذا الحقل مطلوب
-              </small>
-            </div>
-            </div>
-            <!-- Website / Industry -->
-            <div class="form-row">
+            <!-- Name, Industry, Size -->
+            <div class="form-row form-row-3">
               <div class="form-group">
-                <label for="website">موقع الشركة</label>
+                <label for="name"
+                  >اسم الشركة <span class="required">*</span></label
+                >
                 <input
                   pInputText
-                  type="url"
-                  id="website"
-                  name="website"
-                  [(ngModel)]="form.website"
-                  #websiteCtrl="ngModel"
-                  [class.p-invalid]="websiteCtrl.invalid && (websiteCtrl.dirty || websiteCtrl.touched)"
-                  placeholder="https://example.com"
+                  id="name"
+                  name="name"
+                  [(ngModel)]="form.name"
+                  required
+                  #nameCtrl="ngModel"
+                  [class.p-invalid]="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)"
+                  placeholder="مثال: شركة التقنيات المتقدمة"
                 />
                 <small
                   class="p-error"
-                  *ngIf="websiteCtrl.errors?.['url'] && (websiteCtrl.dirty || websiteCtrl.touched)"
+                  *ngIf="nameCtrl.errors?.['required'] && (nameCtrl.dirty || nameCtrl.touched)"
                 >
-                  رابط غير صالح
+                  الاسم مطلوب
                 </small>
               </div>
 
@@ -194,10 +150,7 @@
                   اختر مجال العمل
                 </small>
               </div>
-            </div>
 
-            <!-- Size / Founded year -->
-            <div class="form-row">
               <div class="form-group">
                 <label for="size"
                   >حجم الشركة <span class="required">*</span></label
@@ -221,7 +174,10 @@
                 <small class="p-error"> اختر حجم الشركة </small>
                 }
               </div>
+            </div>
 
+            <!-- Founded Year, Phone, Email -->
+            <div class="form-row form-row-3">
               <div class="form-group">
                 <label for="founded_year">سنة التأسيس</label>
                 <p-inputNumber
@@ -245,27 +201,6 @@
                 </small>
                 }
               </div>
-            </div>
-
-            <!-- Contact -->
-            <div class="form-row">
-              <div class="form-group">
-                <label for="email">البريد الإلكتروني</label>
-                <input
-                  pInputText
-                  type="email"
-                  id="email"
-                  name="email"
-                  [(ngModel)]="form.email"
-                  #emailCtrl="ngModel"
-                  [class.p-invalid]="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)"
-                  placeholder="info@company.com"
-                />
-                @if(emailCtrl.errors?.['email'] && (emailCtrl.dirty ||
-                emailCtrl.touched)){
-                <small class="p-error"> بريد إلكتروني غير صالح </small>
-                }
-              </div>
 
               <div class="form-group">
                 <label for="phone">رقم الهاتف</label>
@@ -286,6 +221,69 @@
                   يُسمح بالأرقام والرموز الهاتفية فقط (7–20)
                 </small>
                 }
+              </div>
+
+              <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input
+                  pInputText
+                  type="email"
+                  id="email"
+                  name="email"
+                  [(ngModel)]="form.email"
+                  #emailCtrl="ngModel"
+                  [class.p-invalid]="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)"
+                  placeholder="info@company.com"
+                />
+                @if(emailCtrl.errors?.['email'] && (emailCtrl.dirty ||
+                emailCtrl.touched)){
+                <small class="p-error"> بريد إلكتروني غير صالح </small>
+                }
+              </div>
+            </div>
+
+            <!-- Description / Website -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="description">وصف الشركة<span class="required">*</span></label
+                >
+                <textarea
+                  pTextarea
+                  id="description"
+                  name="description"
+                  [(ngModel)]="form.description"
+                  rows="4"
+                  required
+                  #descriptionCtrl="ngModel"
+                  [class.p-invalid]="descriptionCtrl.invalid && (descriptionCtrl.dirty || descriptionCtrl.touched)"
+                  placeholder="قدم نبذة مختصرة عن الشركة ونشاطها."
+                ></textarea>
+                <small
+                  class="p-error"
+                  *ngIf="descriptionCtrl.errors?.['required'] && (descriptionCtrl.dirty || descriptionCtrl.touched)"
+                >
+                 هذا الحقل مطلوب
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="website">موقع الشركة</label>
+                <input
+                  pInputText
+                  type="url"
+                  id="website"
+                  name="website"
+                  [(ngModel)]="form.website"
+                  #websiteCtrl="ngModel"
+                  [class.p-invalid]="websiteCtrl.invalid && (websiteCtrl.dirty || websiteCtrl.touched)"
+                  placeholder="https://example.com"
+                />
+                <small
+                  class="p-error"
+                  *ngIf="websiteCtrl.errors?.['url'] && (websiteCtrl.dirty || websiteCtrl.touched)"
+                >
+                  رابط غير صالح
+                </small>
               </div>
             </div>
 
@@ -396,8 +394,9 @@
 
             <!-- Logo preview upload -->
             <div class="form-group upload-group">
-              <label>تحديث الشعار (اختياري للمعاينة)</label>
+              <label for="logo-file">تحديث الشعار (اختياري للمعاينة)</label>
               <input
+                id="logo-file"
                 type="file"
                 accept="image/*"
                 (change)="onLogoSelected($event)"

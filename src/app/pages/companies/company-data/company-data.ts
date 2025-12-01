@@ -48,6 +48,7 @@ export class CompanyData implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    document.body.style.overflow = '';
   }
 
   // ---------- Helpers ----------
@@ -97,6 +98,7 @@ export class CompanyData implements OnInit, OnDestroy {
     this.form = this.emptyForm();
     this.logoPreview = null;
     this.dialogVisible = true;
+    document.body.style.overflow = 'hidden';
   }
 
   openEditDialog(company: ICompanyData): void {
@@ -106,6 +108,7 @@ export class CompanyData implements OnInit, OnDestroy {
     this.form = { ...this.emptyForm(), ...company };
     this.logoPreview = this.buildUrl(company.logo);
     this.dialogVisible = true;
+    document.body.style.overflow = 'hidden';
   }
 
   closeDialog(): void {
@@ -116,6 +119,7 @@ export class CompanyData implements OnInit, OnDestroy {
     this.logoPreview = null;
     this.selectedLogoFile = null;
     this.selectedCoverFile = null;
+    document.body.style.overflow = '';
   }
 
   // ---------- Logo preview ----------
@@ -196,6 +200,7 @@ export class CompanyData implements OnInit, OnDestroy {
           this.toastr.success('تم إنشاء الشركة بنجاح');
           this.saving = false;
           this.dialogVisible = false;
+          document.body.style.overflow = '';
 
           if (created) {
             this.companies = [created, ...this.companies];
@@ -228,6 +233,7 @@ export class CompanyData implements OnInit, OnDestroy {
         this.toastr.success('تم تحديث بيانات الشركة بنجاح');
         this.saving = false;
         this.dialogVisible = false;
+        document.body.style.overflow = '';
 
         if (updated) {
           this.companies = this.companies.map((c) =>
