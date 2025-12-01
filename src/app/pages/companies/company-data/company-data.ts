@@ -114,20 +114,33 @@ export class CompanyData implements OnInit, OnDestroy {
     this.editingCompany = null;
     this.form = this.emptyForm();
     this.logoPreview = null;
+    this.selectedLogoFile = null;
+    this.selectedCoverFile = null;
   }
 
   // ---------- Logo preview ----------
+
+  selectedLogoFile: File | null = null;
+  selectedCoverFile: File | null = null;
 
   onLogoSelected(evt: Event): void {
     const input = evt.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
 
+    this.selectedLogoFile = file;
+
     const reader = new FileReader();
     reader.onload = () => (this.logoPreview = reader.result as string);
     reader.readAsDataURL(file);
+  }
 
-    // NOTE: You still need a real upload → set form.logo to final URL after upload.
+  onCoverSelected(evt: Event): void {
+      const input = evt.target as HTMLInputElement;
+      const file = input.files?.[0];
+      if (!file) return;
+  
+      this.selectedCoverFile = file;
   }
 
   // ---------- CRUD via dialog ----------
@@ -144,27 +157,41 @@ export class CompanyData implements OnInit, OnDestroy {
 
       this.saving = true;
 
-    const payload: Partial<ICompanyData> = { 
-  ...(this.form.address && { address: this.form.address }),
-  ...(this.form.city && { city: this.form.city }),
-  ...(this.form.country && { country: this.form.country }),
-  ...(this.form.description && { description: this.form.description }),
-  ...(this.form.email && { email: this.form.email }),
-  ...(this.form.founded_year && { founded_year: this.form.founded_year }),
-  ...(this.form.industry && { industry: this.form.industry }),
-  ...(this.form.logo && { logo: this.form.logo }),
-  ...(this.form.name && { name: this.form.name }),
-  ...(this.form.phone && { phone: this.form.phone }),
-  ...(this.form.size && { size: this.form.size }),
-  ...(this.form.website && { website: this.form.website }),
-  ...(this.form.employees_count && { employees_count: this.form.employees_count }),
-  ...(this.form.cover_image && { cover_image: this.form.cover_image }),
-};
+    const formData = new FormData();
+    
+    // Helper to append if value exists
+    const appendIf = (key: string, val: any) => {
+        if (val !== null && val !== undefined && val !== '') {
+            formData.append(key, val);
+        }
+    };
+
+    appendIf('name', this.form.name);
+    appendIf('description', this.form.description);
+    appendIf('website', this.form.website);
+    appendIf('industry', this.form.industry);
+    appendIf('size', this.form.size);
+    appendIf('founded_year', this.form.founded_year);
+    appendIf('email', this.form.email);
+    appendIf('phone', this.form.phone);
+    appendIf('country', this.form.country);
+    appendIf('city', this.form.city);
+    appendIf('address', this.form.address);
+    appendIf('employees_count', this.form.employees_count);
+
+    // Append files if selected
+    if (this.selectedLogoFile) {
+        formData.append('logo', this.selectedLogoFile);
+    }
+    
+    if (this.selectedCoverFile) {
+        formData.append('cover_image', this.selectedCoverFile);
+    }
 
 
     // CREATE
     if (this.dialogMode === 'create') {
-      this.companyService.createCompany(payload).subscribe({
+      this.companyService.createCompany(formData).subscribe({
         next: (created) => {
           this.toastr.success('تم إنشاء الشركة بنجاح');
           this.saving = false;
@@ -177,6 +204,8 @@ export class CompanyData implements OnInit, OnDestroy {
           }
 
           this.form = this.emptyForm();
+          this.selectedLogoFile = null;
+          this.selectedCoverFile = null;
         },
         error: (err) => {
           this.errors.error(err, { join: true });
@@ -194,7 +223,7 @@ export class CompanyData implements OnInit, OnDestroy {
     }
 
     const slug = this.editingCompany.slug;
-    this.companyService.updateCompany(slug, payload).subscribe({
+    this.companyService.updateCompany(slug, formData).subscribe({
       next: (updated) => {
         this.toastr.success('تم تحديث بيانات الشركة بنجاح');
         this.saving = false;
@@ -210,6 +239,8 @@ export class CompanyData implements OnInit, OnDestroy {
 
         this.editingCompany = null;
         this.form = this.emptyForm();
+        this.selectedLogoFile = null;
+        this.selectedCoverFile = null;
       },
       error: (err) => {
         this.errors.error(err, { join: true });

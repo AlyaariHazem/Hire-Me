@@ -18,7 +18,7 @@ interface CompaniesListResponse {
 export class CompanyService {
   constructor(private http: HttpClient) {}
 
-  createCompany(payload: Partial<ICompanyData>) {
+  createCompany(payload: Partial<ICompanyData> | FormData) {
     return this.http.post<ICompanyData>(
       environment.getUrl('create', 'companies'),
       payload
@@ -40,7 +40,7 @@ export class CompanyService {
     );
   }
 
-  updateCompany(slug: string, payload: Partial<ICompanyData>) {
+  updateCompany(slug: string, payload: Partial<ICompanyData> | FormData) {
     return this.http.put<ICompanyData>(
       environment.getUrl(`${slug}/update`, 'companies'),
       payload
