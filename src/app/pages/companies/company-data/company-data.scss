@@ -113,6 +113,11 @@ textarea {
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s ease;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    width: 100%;
+  }
 }
 
 .btn-primary {
@@ -137,6 +142,14 @@ textarea {
     cursor: not-allowed;
     transform: none;
   }
+
+  @media (max-width: 768px) {
+    padding: 12px 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 20px;
+  }
 }
 
 .btn-ghost {
@@ -149,6 +162,14 @@ textarea {
     border-color: #cbd5e1;
     background: #f8fafc;
     transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 20px;
   }
 }
 
@@ -196,6 +217,15 @@ textarea {
   z-index: 1000;
   animation: fadeIn 0.2s ease;
   overflow-y: auto;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0;
+    align-items: stretch;
+  }
 }
 
 @keyframes fadeIn {
@@ -249,6 +279,22 @@ textarea {
       background: #94a3b8;
     }
   }
+
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    max-width: 100%;
+    margin: 10px;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  @media (max-width: 480px) {
+    margin: 0;
+    padding: 12px;
+    border-radius: 0;
+    min-height: 100vh;
+    max-height: 100vh;
+  }
 }
 
 .dialog-header {
@@ -260,6 +306,18 @@ textarea {
   padding-bottom: 16px;
   border-bottom: 2px solid #f1f5f9;
   flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    gap: 8px;
+  }
 }
 
 .dialog-title {
@@ -272,6 +330,18 @@ textarea {
     font-size: 20px;
     font-weight: 600;
     color: #1e293b;
+
+    @media (max-width: 768px) {
+      font-size: 18px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    gap: 8px;
   }
 }
 
@@ -281,6 +351,12 @@ textarea {
   border-radius: 12px;
   object-fit: cover;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
 }
 
 .dialog-close {
@@ -299,6 +375,12 @@ textarea {
     color: #334155;
     transform: rotate(90deg);
   }
+
+  @media (max-width: 480px) {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
 }
 
 .dialog-form {
@@ -313,13 +395,33 @@ textarea {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 .form-row-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
   
+  @media (max-width: 1024px) {
+    gap: 12px;
+  }
+
   @media (max-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 640px) {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 
@@ -367,6 +469,24 @@ textarea {
   border: 2px dashed #cbd5e1;
   border-radius: 12px;
   transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+    border-radius: 8px;
+  }
 
   &:hover {
     border-color: #2563eb;
@@ -469,6 +589,17 @@ textarea {
   bottom: 0;
   background: #fff;
   z-index: 10;
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+    gap: 8px;
+    padding-top: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding-top: 12px;
+    margin-top: 4px;
+  }
 }
 
 .is-invalid {

@@ -620,13 +620,112 @@ img.lazy.loaded {
     color: var(--gray-500);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .footer-content {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-6);
+    }
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: var(--spacing-8) 0;
+    }
+
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-6);
+        margin-bottom: var(--spacing-6);
+    }
+
+    .footer-section {
         text-align: center;
     }
+
+    .footer-title {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-3);
+    }
+
     .footer-links {
         padding-right: 0;
+    }
+
+    .footer-links li {
+        margin-bottom: var(--spacing-1);
+    }
+
+    .footer-bottom {
+        padding-top: var(--spacing-4);
+        font-size: var(--font-size-xs);
+    }
+
+    .footer-bottom p {
+        margin-bottom: 0.5rem;
+    }
+
+    .footer-bottom a {
+        display: inline-block;
+        margin: 0.25rem 0.5rem;
+        font-size: var(--font-size-xs);
+    }
+}
+
+@media (max-width: 480px) {
+    .footer {
+        padding: var(--spacing-6) 0;
+        font-size: var(--font-size-xs);
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-4);
+        margin-bottom: var(--spacing-4);
+    }
+
+    .footer-section {
+        padding-bottom: var(--spacing-4);
+        border-bottom: 1px solid var(--gray-700);
+    }
+
+    .footer-section:last-of-type {
+        border-bottom: none;
+    }
+
+    .footer-title {
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--spacing-2);
+    }
+
+    .footer-links li {
+        margin-bottom: 0.5rem;
+    }
+
+    .footer-links a {
+        font-size: var(--font-size-xs);
+    }
+
+    .footer-bottom {
+        padding-top: var(--spacing-3);
+        font-size: 11px;
+    }
+
+    .footer-bottom p {
+        margin-bottom: 0.75rem;
+        line-height: 1.5;
+    }
+
+    .footer-bottom > div {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .footer-bottom a {
+        margin: 0;
+        padding: 0.25rem 0.5rem;
+        font-size: 11px;
     }
 }
 

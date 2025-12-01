@@ -1,7 +1,200 @@
+/* Component-specific enhanced styles */
+
+/* Company Logo */
 .company-logo1 {
   width: 100%;
   height: 80px;
   border-radius: var(--radius-lg);
   margin-bottom: 1rem;
   border: 3px solid var(--primary-color);
+  object-fit: cover;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    border-color: var(--primary-dark, #1d4ed8);
+  }
+}
+
+/* Company Profile Button */
+.company-profile-btn {
+  width: 100%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced styles that work with dashboard.scss */
+:host {
+  .company-profile {
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gray-200), transparent);
+    }
+  }
+  
+  .company-name {
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
+  
+  .company-stats {
+    .company-stat {
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+      cursor: default;
+      
+      &:hover {
+        background-color: var(--primary-light, #eff6ff);
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+      }
+    }
+    
+    .stat-number {
+      transition: all 0.3s ease;
+    }
+    
+    .company-stat:hover .stat-number {
+      transform: scale(1.1);
+      color: var(--primary-dark, #1d4ed8);
+    }
+  }
+  
+  .employer-nav-link {
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--primary-color);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+    
+    &:hover::before,
+    &.active::before {
+      transform: scaleY(1);
+    }
+    
+    &:hover {
+      background: linear-gradient(90deg, var(--primary-light, #eff6ff) 0%, transparent 100%);
+      padding-right: 1.25rem;
+    }
+    
+    &.active {
+      background: linear-gradient(90deg, var(--primary-color) 0%, rgba(37, 99, 235, 0.1) 100%);
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+    }
+  }
+  
+  .employer-nav-icon {
+    transition: transform 0.3s ease;
+  }
+  
+  .employer-nav-link:hover .employer-nav-icon {
+    transform: scale(1.15);
+  }
+  
+  .badge {
+    animation: pulse 2s infinite;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4);
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Responsive styles for component-specific elements only */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .company-logo1 {
+    height: 70px;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12);
+  }
+  
+  .company-profile-btn {
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.15);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .company-logo1 {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 0.75rem;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+    border-width: 2px;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+  
+  :host .company-stats .company-stat:hover {
+    transform: none;
+  }
+  
+  :host .employer-nav-link::before {
+    display: none;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .company-logo1 {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0.5rem;
+    border-width: 2px;
+  }
+  
+  .company-profile-btn {
+    font-size: var(--font-size-sm);
+    padding: 0.5rem;
+  }
 }
