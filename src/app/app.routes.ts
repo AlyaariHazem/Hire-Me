@@ -4,6 +4,8 @@ import { Register } from './auth/register/register';
 
 import { authGuard } from './auth/auth.guard';
 import { loginRedirectGuard } from './auth/login-redirect.guard';
+import { employerGuard } from './auth/employer.guard';
+import { jobseekerGuard } from './auth/jobseeker.guard';
 import { Jobs } from './pages/jobs/jobs';
 
 export const routes: Routes = [
@@ -29,7 +31,7 @@ export const routes: Routes = [
       import('./pages/companies/companies-module').then(
         (m) => m.CompaniesModule
       ),
-    canMatch: [authGuard],
+    canMatch: [employerGuard], // Only employers can access company routes
   },
   // {
   //   path: 'search-for-company',
@@ -43,7 +45,7 @@ export const routes: Routes = [
       import('./pages/jobseeker/jobseeker-module').then(
         (m) => m.JobseekerModule
       ),
-    canMatch: [authGuard],
+    canMatch: [jobseekerGuard], // Only job seekers can access jobseeker routes
   },
   {
     path: 'jobs',
@@ -61,5 +63,5 @@ export const routes: Routes = [
     path: 'logout',
     loadComponent: () => import('./auth/logout/logout').then((m) => m.Logout),
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: 'login' },
 ];
