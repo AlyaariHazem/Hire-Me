@@ -267,10 +267,19 @@
                     style="display: flex; flex-direction: column; gap: 0.5rem"
                   >
                     <button
-                      class="btn btn-small btn-primary apply-btn"
-                      (click)="applyToJob(job.id)"
+                      class="btn btn-small btn-secondary save-btn"
+                      [class.active]="job.is_applied"
+                      [class.loading]="applyingJobs.has(job.id)"
+                      [disabled]="job.is_applied || applyingJobs.has(job.id)"
+                      (click)="applyToJob(job)"
                     >
-                      تقديم الآن
+                      @if (applyingJobs.has(job.id)) {
+                        جاري التقديم...
+                      } @else if (job.is_applied) {
+                        تم التقديم
+                      } @else {
+                        تقديم الآن
+                      }
                     </button>
   
                     <button

@@ -7,6 +7,7 @@ import { JobItem } from '@app/companies/models';
 import { SharedModule } from 'shared/shared-module';
 import { UserType } from 'core/types';
 import { LoaderService } from 'shared/services/loader.service';
+import { ApplicationService } from 'shared/services/application.service';
 
 @Component({
   selector: 'app-jobs',
@@ -21,12 +22,16 @@ export class Jobs {
   ) {}
 
   jobService = inject(JobService);
+  applicationService = inject(ApplicationService);
 
   jobs: JobItem[] = [];
   totalJobs = 0;
   mode: UserType = 'public';
   role:string = '';
   isSavedView = signal(false);
+  
+  // Track which jobs are being processed (to disable buttons during API calls)
+  applyingJobs = new Set<number>();
 
   // pagination
   currentPage = 1;
@@ -68,10 +73,12 @@ export class Jobs {
   ).subscribe({
     next: (res: JobListResponse) => {
       // Normalize jobs to ensure company and category are never null
+      // Also ensure is_applied defaults to false if not provided by backend
       this.jobs = (res.results || []).map(job => ({
         ...job,
         company: job.company || { id: 0, name: '-', logo: null, city: '-' },
-        category: job.category || { id: 0, name: '-' }
+        category: job.category || { id: 0, name: '-' },
+        is_applied: job.is_applied ?? false // Default to false if not provided
       }));
       console.log('hazem', this.jobs);
       this.totalJobs = res.count;
@@ -230,8 +237,49 @@ export class Jobs {
     }
   }
 
-  applyToJob(jobId: any): void {
-    this.toastr.success(`تم التقديم على الوظيفة ${jobId} بنجاح`);
+  applyToJob(job: JobItem): void {
+    // Check if already applied
+    if (job.is_applied) {
+      this.toastr.info('لقد تقدمت بالفعل على هذه الوظيفة');
+      return;
+    }
+
+    // Check if user is logged in (should check role or token)
+    const token = localStorage.getItem('access');
+    if (!token) {
+      this.toastr.warning('يجب تسجيل الدخول أولاً');
+      return;
+    }
+
+    // Prevent duplicate clicks
+    if (this.applyingJobs.has(job.id)) {
+      return;
+    }
+
+    this.applyingJobs.add(job.id);
+
+    this.applicationService.applyToJob(job.id).subscribe({
+      next: () => {
+        // Update job state to show as applied
+        job.is_applied = true;
+        this.applyingJobs.delete(job.id);
+        this.toastr.success(`تم التقديم على الوظيفة "${job.title}" بنجاح`);
+      },
+      error: (err) => {
+        this.applyingJobs.delete(job.id);
+        console.error('Failed to apply to job', err);
+        
+        // Handle specific error cases
+        if (err?.status === 400) {
+          const errorMsg = err?.error?.message || err?.error?.job?.[0] || 'لا يمكن التقديم على هذه الوظيفة';
+          this.toastr.error(errorMsg);
+        } else if (err?.status === 401 || err?.status === 403) {
+          this.toastr.error('يجب تسجيل الدخول أولاً');
+        } else {
+          this.toastr.error('حدث خطأ أثناء التقديم على الوظيفة. حاول مرة أخرى.');
+        }
+      }
+    });
   }
 
   saveJob(job: JobItem): void {

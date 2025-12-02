@@ -13,6 +13,7 @@ export interface JobItem {
   is_bookmarked?: boolean;
   is_featured?: boolean;
   is_urgent?: boolean;
+  is_applied?: boolean;
   is_active?: boolean;
   views_count?: number;
   applications_count?: number;
