@@ -62,13 +62,13 @@ export class ApplicationService {
 
   // Get applications for a specific job (for employers)
   // Based on Swagger: GET /api/applications/job-applications/ with query params
-  getJobApplications(jobSlugOrId: string | number, params?: any): Observable<ApplicationListResponse> {
+  // API expects job ID (integer) as query parameter
+  getJobApplications(jobId: number, params?: any): Observable<ApplicationListResponse> {
     const url = environment.getUrl('job-applications', 'applications'); // /api/applications/job-applications/
     
     let httpParams = new HttpParams();
-    // Add job filter - API might accept 'job' or 'job_id' or 'job_slug'
-    // Try 'job' first as it's most common
-    httpParams = httpParams.set('job', String(jobSlugOrId));
+    // API expects job ID - try 'job' first, if that doesn't work, try 'job_id'
+    httpParams = httpParams.set('job', String(jobId));
     
     if (params) {
       Object.entries(params).forEach(([key, value]) => {

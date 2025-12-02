@@ -65,10 +65,15 @@ export class Applicants implements OnInit {
   }
 
   private loadApplications(): void {
-    if (!this.jobSlug) return;
+    if (!this.jobId) {
+      console.error('Job ID is not available');
+      this.loading = false;
+      return;
+    }
 
     this.loading = true;
-    this.applicationService.getJobApplications(this.jobSlug).subscribe({
+    // API expects job ID (integer), not slug
+    this.applicationService.getJobApplications(this.jobId).subscribe({
       next: (res) => {
         this.applications = res.results || [];
         this.loading = false;
