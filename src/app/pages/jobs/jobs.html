@@ -225,7 +225,7 @@
                       </a>
                     </h3>
   
-                    <p class="company-name">{{ job.company.name }}</p>
+                    <p class="company-name">{{ job.company.name || '-' }}</p>
   
                     <!-- meta row like your screenshot -->
                     <div class="job-meta">
@@ -249,7 +249,7 @@
                        <p
                          class="job-description"
                        >
-                         {{ job.category.name }} • {{ job.company.city }}
+                         {{ job.category.name || '-' }} • {{ job.company.city || '-' }}
                        </p>
                      }
   
@@ -257,7 +257,7 @@
                     <div class="job-tags">
                       <span class="job-tag">{{ jobTypeLabel(job.job_type) }}</span>
                       <span class="job-tag">{{ job.experience_level }}</span>
-                      <span class="job-tag">{{ job.category.name }}</span>
+                      <span class="job-tag">{{ job.category.name || '-' }}</span>
                       <span class="job-tag">{{ cityLabel(job.city) }}</span>
                     </div>
                   </div>

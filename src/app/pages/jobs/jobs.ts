@@ -1,10 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { finalize } from 'rxjs/operators';
 
 import { JobService, JobFilters, JobListResponse } from 'shared/services/job.service';
 import { JobItem } from '@app/companies/models';
 import { SharedModule } from 'shared/shared-module';
 import { UserType } from 'core/types';
+import { LoaderService } from 'shared/services/loader.service';
 
 @Component({
   selector: 'app-jobs',
@@ -13,7 +15,10 @@ import { UserType } from 'core/types';
   styleUrl: './jobs.scss'
 })
 export class Jobs {
-  constructor(private toastr: ToastrService) {}
+  constructor(
+    private toastr: ToastrService,
+    private loaderService: LoaderService
+  ) {}
 
   jobService = inject(JobService);
 
@@ -55,15 +60,26 @@ export class Jobs {
     page_size: 5
   };
 
-  this.jobService.getJobs(requestFilters).subscribe({
+  this.jobService.getJobs(requestFilters).pipe(
+    finalize(() => {
+      // Ensure loader is stopped when request completes (success or error)
+      this.loaderService.stop();
+    })
+  ).subscribe({
     next: (res: JobListResponse) => {
-      this.jobs = res.results;
+      // Normalize jobs to ensure company and category are never null
+      this.jobs = (res.results || []).map(job => ({
+        ...job,
+        company: job.company || { id: 0, name: '-', logo: null, city: '-' },
+        category: job.category || { id: 0, name: '-' }
+      }));
       console.log('hazem', this.jobs);
       this.totalJobs = res.count;
       this.totalPages = Math.ceil(res.count / 5);
     },
     error: () => {
       this.toastr.error('حدث خطأ أثناء جلب الوظائف');
+      this.jobs = []; // Clear jobs on error
     }
   });
 }
