@@ -1,0 +1,156 @@
+<div id="applicants" class="applicants-container">
+  <div class="employer-header">
+    <div>
+      <h1 class="employer-title">المتقدمون للوظيفة</h1>
+      @if (jobTitle) {
+        <p class="job-title">{{ jobTitle }}</p>
+      }
+    </div>
+    <div class="employer-actions">
+      <a [routerLink]="['/companies/manage-jobs']" class="btn btn-secondary">
+        العودة إلى إدارة الوظائف
+      </a>
+    </div>
+  </div>
+
+  <div class="employer-content-card">
+    <!-- Status Filter Tabs -->
+    <div class="tab-navigation">
+      <button 
+        class="tab" 
+        [class.active]="statusFilter === 'all'"
+        (click)="setStatusFilter('all')">
+        الكل ({{ statusCounts.all }})
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="statusFilter === 'pending'"
+        (click)="setStatusFilter('pending')">
+        قيد الانتظار ({{ statusCounts.pending }})
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="statusFilter === 'reviewed'"
+        (click)="setStatusFilter('reviewed')">
+        تم المراجعة ({{ statusCounts.reviewed }})
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="statusFilter === 'accepted'"
+        (click)="setStatusFilter('accepted')">
+        مقبول ({{ statusCounts.accepted }})
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="statusFilter === 'rejected'"
+        (click)="setStatusFilter('rejected')">
+        مرفوض ({{ statusCounts.rejected }})
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading) {
+      <div class="tab-content">
+        <div class="skeleton"></div>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!loading && filteredApplications.length === 0) {
+      <div class="tab-content">
+        <div class="empty">
+          <p>لا توجد طلبات متقدمة في هذا القسم</p>
+        </div>
+      </div>
+    }
+
+    <!-- Applications List -->
+    @if (!loading && filteredApplications.length > 0) {
+      <div class="tab-content">
+        @for (app of filteredApplications; track app.id) {
+          <div class="application-item">
+            <div class="application-info">
+              <div class="candidate-header">
+                <div class="candidate-avatar">
+                  @if (app.applicant?.user?.profile_picture) {
+                    <img 
+                      [src]="app.applicant!.user!.profile_picture!" 
+                      [alt]="getApplicantName(app)"
+                      [title]="getApplicantName(app)"
+                      (error)="handleImageError($event)">
+                  }
+                  <span [style.display]="app.applicant?.user?.profile_picture ? 'none' : 'flex'">
+                    {{ getApplicantInitials(app) }}
+                  </span>
+                </div>
+                <div class="candidate-details">
+                  <h4 class="candidate-name">
+                    {{ getApplicantName(app) }}
+                  </h4>
+                  @if (app.applicant?.experience_level) {
+                    <p class="candidate-title">
+                      مستوى الخبرة: {{ app.applicant!.experience_level }}
+                    </p>
+                  }
+                  @if (app.applicant?.education_level) {
+                    <p class="candidate-title">
+                      المستوى التعليمي: {{ app.applicant!.education_level }}
+                    </p>
+                  }
+                  <div class="candidate-meta">
+                    <span>📧 {{ app.applicant?.user?.email || 'غير متوفر' }}</span>
+                    <span>📅 {{ formatDate(app.created_at) }}</span>
+                  </div>
+                  @if (app.applicant?.skills) {
+                    <div class="candidate-skills">
+                      @for (skill of getSkillsList(app.applicant!.skills); track skill) {
+                        <span class="skill-tag">{{ skill }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="application-actions">
+              <span 
+                class="application-status" 
+                [ngClass]="getStatusClass(app.status)">
+                {{ getStatusLabel(app.status) }}
+              </span>
+              <div class="action-buttons">
+                <button 
+                  class="btn btn-small btn-primary"
+                  (click)="viewApplication(app)">
+                  عرض التفاصيل
+                </button>
+                @if (app.applicant?.resume) {
+                  <button 
+                    class="btn btn-small btn-secondary"
+                    (click)="downloadResume(app)">
+                    تحميل السيرة الذاتية
+                  </button>
+                }
+              </div>
+              @if (app.status === 'pending') {
+                <div class="status-actions">
+                  <button 
+                    class="btn btn-small btn-success"
+                    (click)="updateApplicationStatus(app.id, 'accepted')">
+                    قبول
+                  </button>
+                  <button 
+                    class="btn btn-small btn-danger"
+                    (click)="updateApplicationStatus(app.id, 'rejected')">
+                    رفض
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+

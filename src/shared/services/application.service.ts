@@ -14,8 +14,24 @@ export interface Application {
     };
     city: string | null;
   };
+  applicant?: {
+    id: number;
+    user: {
+      id: number;
+      first_name: string;
+      last_name: string;
+      email: string;
+      profile_picture?: string | null;
+    };
+    experience_level?: string;
+    education_level?: string;
+    skills?: string;
+    resume?: string | null;
+  };
   status: 'pending' | 'reviewed' | 'accepted' | 'rejected';
   created_at: string;
+  message?: string;
+  cover_letter?: string;
 }
 
 export interface ApplicationListResponse {
@@ -45,10 +61,15 @@ export class ApplicationService {
   }
 
   // Get applications for a specific job (for employers)
-  getJobApplications(jobId: number, params?: any): Observable<ApplicationListResponse> {
-    const url = environment.getUrl(`job-applications/${jobId}`, 'applications');
+  // Based on Swagger: GET /api/applications/job-applications/ with query params
+  getJobApplications(jobSlugOrId: string | number, params?: any): Observable<ApplicationListResponse> {
+    const url = environment.getUrl('job-applications', 'applications'); // /api/applications/job-applications/
     
     let httpParams = new HttpParams();
+    // Add job filter - API might accept 'job' or 'job_id' or 'job_slug'
+    // Try 'job' first as it's most common
+    httpParams = httpParams.set('job', String(jobSlugOrId));
+    
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {

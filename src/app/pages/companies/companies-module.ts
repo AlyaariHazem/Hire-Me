@@ -8,6 +8,7 @@ import { Dashboard } from './dashboard/dashboard';
 import { Candidates } from './candidates/candidates';
 import { SideBarCompany } from './side-bar/side-bar';
 import { ManageJobs } from './manage-jobs/manage-jobs';
+import { Applicants } from './applicants/applicants';
 import { Analytics } from './analytics/analytics';
 import { CompanyProfile } from './company-profile/company-profile';
 import { Billing } from './billing/billing';
@@ -32,6 +33,7 @@ const components = [
   Billing,
   CompanyData,
   ProfileComponent,
+  
 ];
 const modules = [
   CommonModule,
@@ -42,6 +44,7 @@ const modules = [
   ButtonModule,
   PostJob,
   Select,
+  Applicants,
   SideBarCompany,
   TextareaModule,
   ManageJobs,

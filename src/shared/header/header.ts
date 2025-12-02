@@ -192,7 +192,7 @@ private teardownDataBindings(): void {
     
     const routes: Record<string, string> = {
       dashboard: '/companies/dashboard',
-      profile: '/companies/company-profile',
+      profile: '/companies/profile',
       'post-job': '/companies/post-job',
       'employer-settings': '/companies/settings',
     };

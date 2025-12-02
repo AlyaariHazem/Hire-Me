@@ -9,6 +9,7 @@ import { ProfileComponent } from './profile/profile';
 import { JobDetails } from 'app/pages/jobs/job-details/job-details';
 import { Jobs } from '../jobs/jobs';
 import { ManageJobs } from '../jobs/manage-jobs/manage-jobs';
+import { Applicants } from './applicants/applicants';
 
 const routes: Routes = [
   {
@@ -48,6 +49,10 @@ const routes: Routes = [
       {
         path: 'job-details',
         component: JobDetails
+      },
+      {
+        path: 'applicants',
+        component: Applicants
       },
     ],
   },
