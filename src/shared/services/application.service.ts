@@ -8,30 +8,51 @@ export interface Application {
   job: {
     id: number;
     title: string;
+    slug: string;
+    description?: string;
+    requirements?: string;
     company: {
+      id: number;
       name: string;
+      slug: string;
       logo: string | null;
+      city?: string;
     };
+    category?: {
+      id: number;
+      name: string;
+    } | null;
     city: string | null;
   };
   applicant?: {
     id: number;
-    user: {
-      id: number;
-      first_name: string;
-      last_name: string;
-      email: string;
-      profile_picture?: string | null;
-    };
-    experience_level?: string;
-    education_level?: string;
-    skills?: string;
-    resume?: string | null;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    user_type: string;
+    phone: string | null;
+    date_of_birth: string | null;
+    profile_picture: string | null;
+    bio: string | null;
+    location: string | null;
+    is_verified: boolean;
+    created_at: string;
   };
+  cover_letter: string | null;
+  resume: string | null;
+  portfolio_url: string | null;
+  expected_salary: number | null;
+  availability_date: string | null;
   status: 'pending' | 'reviewed' | 'accepted' | 'rejected';
-  created_at: string;
-  message?: string;
-  cover_letter?: string;
+  status_display: string; // Arabic display text
+  notes: string | null;
+  employer_notes: string | null;
+  rating: number | null;
+  is_viewed: boolean;
+  viewed_at: string | null;
+  applied_at: string;
+  updated_at: string;
 }
 
 export interface ApplicationListResponse {

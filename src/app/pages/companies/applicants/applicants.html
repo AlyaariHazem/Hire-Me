@@ -64,90 +64,87 @@
       </div>
     }
 
+
     <!-- Applications List -->
     @if (!loading && filteredApplications.length > 0) {
       <div class="tab-content">
         @for (app of filteredApplications; track app.id) {
           <div class="application-item">
-            <div class="application-info">
-              <div class="candidate-header">
-                <div class="candidate-avatar">
-                  @if (app.applicant?.user?.profile_picture) {
-                    <img 
-                      [src]="app.applicant!.user!.profile_picture!" 
-                      [alt]="getApplicantName(app)"
-                      [title]="getApplicantName(app)"
-                      (error)="handleImageError($event)">
-                  }
-                  <span [style.display]="app.applicant?.user?.profile_picture ? 'none' : 'flex'">
-                    {{ getApplicantInitials(app) }}
-                  </span>
-                </div>
-                <div class="candidate-details">
-                  <h4 class="candidate-name">
-                    {{ getApplicantName(app) }}
-                  </h4>
-                  @if (app.applicant?.experience_level) {
-                    <p class="candidate-title">
-                      مستوى الخبرة: {{ app.applicant!.experience_level }}
-                    </p>
-                  }
-                  @if (app.applicant?.education_level) {
-                    <p class="candidate-title">
-                      المستوى التعليمي: {{ app.applicant!.education_level }}
-                    </p>
-                  }
-                  <div class="candidate-meta">
-                    <span>📧 {{ app.applicant?.user?.email || 'غير متوفر' }}</span>
-                    <span>📅 {{ formatDate(app.created_at) }}</span>
+              <div class="application-info">
+                <div class="candidate-header">
+                  <div class="candidate-avatar">
+                    @if (app.applicant?.profile_picture) {
+                      <img 
+                        [src]="app.applicant?.profile_picture || ''" 
+                        [alt]="getApplicantName(app)"
+                        [title]="getApplicantName(app)"
+                        (error)="handleImageError($event)">
+                    }
+                    <span [style.display]="app.applicant?.profile_picture ? 'none' : 'flex'">
+                      {{ getApplicantInitials(app) }}
+                    </span>
                   </div>
-                  @if (app.applicant?.skills) {
-                    <div class="candidate-skills">
-                      @for (skill of getSkillsList(app.applicant!.skills); track skill) {
-                        <span class="skill-tag">{{ skill }}</span>
+                  <div class="candidate-details">
+                    <h4 class="candidate-name">
+                      {{ getApplicantName(app) }}
+                    </h4>
+                    @if (app.applicant?.bio) {
+                      <p class="candidate-title">
+                        {{ app.applicant?.bio }}
+                      </p>
+                    }
+                    <div class="candidate-meta">
+                      <span>📧 {{ app.applicant?.email || 'غير متوفر' }}</span>
+                      @if (app.applicant?.phone) {
+                        <span>📞 {{ getApplicantPhone(app) }}</span>
                       }
+                      <span>📅 {{ formatDate(app.applied_at) }}</span>
                     </div>
-                  }
+                    @if (app.cover_letter) {
+                      <div class="cover-letter-preview">
+                        <p class="cover-letter-text">{{ app.cover_letter }}</p>
+                      </div>
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="application-actions">
-              <span 
-                class="application-status" 
-                [ngClass]="getStatusClass(app.status)">
-                {{ getStatusLabel(app.status) }}
-              </span>
-              <div class="action-buttons">
-                <button 
-                  class="btn btn-small btn-primary"
-                  (click)="viewApplication(app)">
-                  عرض التفاصيل
-                </button>
-                @if (app.applicant?.resume) {
+              <div class="application-actions">
+                <span 
+                  class="application-status" 
+                  [ngClass]="getStatusClass(app.status)">
+                  {{ getStatusLabel(app) }}
+                </span>
+                <div class="action-buttons">
                   <button 
-                    class="btn btn-small btn-secondary"
-                    (click)="downloadResume(app)">
-                    تحميل السيرة الذاتية
+                    class="btn btn-small btn-primary"
+                    (click)="viewApplication(app)">
+                    عرض التفاصيل
                   </button>
+                  @if (app.resume) {
+                    <button 
+                      class="btn btn-small btn-secondary"
+                      (click)="downloadResume(app)">
+                      تحميل السيرة الذاتية
+                    </button>
+                  }
+                </div>
+                @if (app.status === 'pending') {
+                  <div class="status-actions">
+                    <button 
+                      class="btn btn-small btn-success"
+                      (click)="updateApplicationStatus(app.id, 'accepted')">
+                      قبول
+                    </button>
+                    <button 
+                      class="btn btn-small btn-danger"
+                      (click)="updateApplicationStatus(app.id, 'rejected')">
+                      رفض
+                    </button>
+                  </div>
                 }
               </div>
-              @if (app.status === 'pending') {
-                <div class="status-actions">
-                  <button 
-                    class="btn btn-small btn-success"
-                    (click)="updateApplicationStatus(app.id, 'accepted')">
-                    قبول
-                  </button>
-                  <button 
-                    class="btn btn-small btn-danger"
-                    (click)="updateApplicationStatus(app.id, 'rejected')">
-                    رفض
-                  </button>
-                </div>
-              }
             </div>
-          </div>
         }
       </div>
     }

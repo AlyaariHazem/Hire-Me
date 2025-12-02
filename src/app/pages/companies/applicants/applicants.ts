@@ -75,8 +75,20 @@ export class Applicants implements OnInit {
     // API expects job ID (integer), not slug
     this.applicationService.getJobApplications(this.jobId).subscribe({
       next: (res) => {
+        console.log('Applications response:', res);
         this.applications = res.results || [];
+        console.log('Applications array:', this.applications);
+        console.log('Applications array length:', this.applications.length);
+        if (this.applications.length > 0) {
+          console.log('First application:', this.applications[0]);
+          console.log('First application has applicant?', !!this.applications[0].applicant);
+        }
         this.loading = false;
+        // Log after loading is set to false
+        setTimeout(() => {
+          console.log('Filtered applications count:', this.filteredApplications.length);
+          console.log('Filtered applications:', this.filteredApplications);
+        }, 100);
       },
       error: (err) => {
         console.error('Failed to load applications', err);
@@ -87,9 +99,17 @@ export class Applicants implements OnInit {
   }
 
   get filteredApplications(): Application[] {
-    if (this.statusFilter === 'all') {
-      return this.applications;
+    // Return empty array if no applications
+    if (!this.applications || this.applications.length === 0) {
+      return [];
     }
+    
+    // If filter is 'all', return all applications
+    if (this.statusFilter === 'all') {
+      return [...this.applications]; // Return a copy to ensure change detection
+    }
+    
+    // Otherwise, filter by status
     return this.applications.filter(app => app.status === this.statusFilter);
   }
 
@@ -107,14 +127,18 @@ export class Applicants implements OnInit {
     this.statusFilter = status;
   }
 
-  getStatusLabel(status: string): string {
+  getStatusLabel(app: Application): string {
+    // Use status_display from API if available, otherwise fallback to mapping
+    if (app.status_display) {
+      return app.status_display;
+    }
     const labels: Record<string, string> = {
       'pending': 'قيد الانتظار',
       'reviewed': 'تم المراجعة',
       'accepted': 'مقبول',
       'rejected': 'مرفوض'
     };
-    return labels[status] || status;
+    return labels[app.status] || app.status;
   }
 
   getStatusClass(status: string): string {
@@ -122,6 +146,7 @@ export class Applicants implements OnInit {
   }
 
   formatDate(dateStr: string): string {
+    if (!dateStr) return 'غير محدد';
     const date = new Date(dateStr);
     return date.toLocaleDateString('ar-YE', {
       year: 'numeric',
@@ -131,27 +156,38 @@ export class Applicants implements OnInit {
   }
 
   getApplicantName(app: Application): string {
-    if (app.applicant?.user) {
-      const firstName = app.applicant.user.first_name || '';
-      const lastName = app.applicant.user.last_name || '';
-      return `${firstName} ${lastName}`.trim() || 'مقدم طلب غير معروف';
+    if (app.applicant) {
+      const firstName = app.applicant.first_name || '';
+      const lastName = app.applicant.last_name || '';
+      const fullName = `${firstName} ${lastName}`.trim();
+      return fullName || app.applicant.email || app.applicant.username || 'مقدم طلب غير معروف';
     }
     return 'مقدم طلب غير معروف';
   }
 
   getApplicantInitials(app: Application): string {
-    const name = this.getApplicantName(app);
-    const parts = name.split(' ');
-    if (parts.length >= 2) {
-      return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+    if (app.applicant) {
+      const firstName = app.applicant.first_name || '';
+      const lastName = app.applicant.last_name || '';
+      if (firstName && lastName) {
+        return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+      }
+      if (firstName) {
+        return firstName.charAt(0).toUpperCase();
+      }
+      if (app.applicant.email) {
+        return app.applicant.email.charAt(0).toUpperCase();
+      }
     }
-    return name.charAt(0).toUpperCase() || '?';
+    return '?';
   }
 
-  getSkillsList(skills: string | undefined): string[] {
-    if (!skills) return [];
-    // Split by comma, semicolon, or newline
-    return skills.split(/[,;\n]/).map(s => s.trim()).filter(s => s.length > 0);
+  getApplicantPhone(app: Application): string {
+    return app.applicant?.phone || 'غير متوفر';
+  }
+
+  getApplicantLocation(app: Application): string {
+    return app.applicant?.location || 'غير محدد';
   }
 
   handleImageError(event: Event): void {
@@ -173,8 +209,8 @@ export class Applicants implements OnInit {
   }
 
   downloadResume(application: Application): void {
-    if (application.applicant?.resume) {
-      window.open(application.applicant.resume, '_blank');
+    if (application.resume) {
+      window.open(application.resume, '_blank');
     } else {
       this.toastr.warning('لا يوجد سيرة ذاتية متاحة');
     }

@@ -100,7 +100,7 @@
           <h4 class="application-title">{{ app.job.title }}</h4>
           <p class="application-company">{{ app.job.company.name }}</p>
           <div class="application-meta">
-            <span>تقدمت {{ app.created_at | date:'short' }}</span>
+            <span>تقدمت {{ app.applied_at | date:'short' }}</span>
             <span *ngIf="app.job.city">{{ app.job.city }}</span>
           </div>
         </div>
