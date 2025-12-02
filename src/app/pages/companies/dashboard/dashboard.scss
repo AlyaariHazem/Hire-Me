@@ -94,6 +94,9 @@
 
 .employer-nav-link:hover,
 .employer-nav-link.active {
+  background: linear-gradient(90deg, var(--primary-color) 49%, rgba(37, 110, 235, 0.1) 150%)!important;
+  font-weight: 600;
+  box-shadow: 0 2px 4px #d1e6c0;
   background-color: var(--primary-color);
   color: var(--white);
 }
