@@ -9,6 +9,7 @@ import { Candidates } from './candidates/candidates';
 import { SideBarCompany } from './side-bar/side-bar';
 import { ManageJobs } from './manage-jobs/manage-jobs';
 import { ApplicantsForJob } from './applicants-for-job/applicants-for-job';
+import { Applicants } from './applicants/applicants';
 import { Analytics } from './analytics/analytics';
 import { CompanyProfile } from './company-profile/company-profile';
 import { Billing } from './billing/billing';
@@ -45,6 +46,7 @@ const modules = [
   PostJob,
   Select,
   ApplicantsForJob,
+  Applicants,
   SideBarCompany,
   TextareaModule,
   ManageJobs,

@@ -1,0 +1,480 @@
+<div id="applicants" class="applicants-container">
+  <div class="employer-header">
+    <div>
+      <h1 class="employer-title">جميع المتقدمين</h1>
+      <p class="subtitle">عرض وإدارة جميع طلبات التقديم</p>
+    </div>
+    <div class="employer-actions">
+      <a [routerLink]="['/companies/manage-jobs']" class="btn btn-secondary">
+        العودة إلى إدارة الوظائف
+      </a>
+    </div>
+  </div>
+
+  <div class="employer-content-card">
+    <!-- Filters -->
+    <div class="filters-section">
+      <div class="tab-navigation">
+        <button 
+          class="tab" 
+          [class.active]="statusFilter === 'all'"
+          (click)="setStatusFilter('all')">
+          الكل ({{ statusCounts.all }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="statusFilter === 'pending'"
+          (click)="setStatusFilter('pending')">
+          قيد الانتظار ({{ statusCounts.pending }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="statusFilter === 'reviewed'"
+          (click)="setStatusFilter('reviewed')">
+          تم المراجعة ({{ statusCounts.reviewed }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="statusFilter === 'accepted'"
+          (click)="setStatusFilter('accepted')">
+          مقبول ({{ statusCounts.accepted }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="statusFilter === 'rejected'"
+          (click)="setStatusFilter('rejected')">
+          مرفوض ({{ statusCounts.rejected }})
+        </button>
+      </div>
+
+      <!-- Job Filter -->
+      @if (uniqueJobs.length > 0) {
+        <div class="job-filter">
+          <label>تصفية حسب الوظيفة:</label>
+          <select 
+            class="form-select"
+            [value]="jobFilter || ''"
+            title="تصفية حسب الوظيفة"
+            aria-label="تصفية حسب الوظيفة"
+            (change)="setJobFilter($any($event.target).value ? +$any($event.target).value : null)">
+            <option value="">جميع الوظائف</option>
+            @for (job of uniqueJobs; track job.id) {
+              <option [value]="job.id">{{ job.title }}</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+
+    <!-- Loading State -->
+    @if (loading) {
+      <div class="tab-content">
+        <div class="skeleton"></div>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!loading && filteredApplications.length === 0) {
+      <div class="tab-content">
+        <div class="empty">
+          <p>لا توجد طلبات متقدمة</p>
+        </div>
+      </div>
+    }
+
+    <!-- Applications List -->
+    @if (!loading && filteredApplications.length > 0) {
+      <div class="tab-content">
+        @for (app of filteredApplications; track app.id) {
+          <div class="application-item">
+            <div class="application-info">
+              <div class="candidate-header">
+                <div class="candidate-avatar">
+                  @if (app.applicant?.profile_picture) {
+                    <img 
+                      [src]="app.applicant?.profile_picture || ''" 
+                      [alt]="getApplicantName(app)"
+                      [title]="getApplicantName(app)"
+                      title="Applicant profile picture"
+                      (error)="handleImageError($event)">
+                  }
+                  <span [style.display]="app.applicant?.profile_picture ? 'none' : 'flex'">
+                    {{ getApplicantInitials(app) }}
+                  </span>
+                </div>
+                <div class="candidate-details">
+                  <h4 class="candidate-name">
+                    {{ getApplicantName(app) }}
+                  </h4>
+                  @if (app.job) {
+                    <p class="job-applied-for">
+                      <strong>الوظيفة:</strong> 
+                      <a 
+                        (click)="viewJobApplicants(app.job.id, app.job.slug)"
+                        class="job-link">
+                        {{ app.job.title }}
+                      </a>
+                    </p>
+                  }
+                  @if (app.applicant?.bio) {
+                    <p class="candidate-title">
+                      {{ app.applicant?.bio }}
+                    </p>
+                  }
+                  <div class="candidate-meta">
+                    <span>📧 {{ app.applicant?.email || 'غير متوفر' }}</span>
+                    @if (app.applicant?.phone) {
+                      <span>📞 {{ getApplicantPhone(app) }}</span>
+                    }
+                    <span>📅 {{ formatDate(app.applied_at) }}</span>
+                  </div>
+                  @if (app.cover_letter) {
+                    <div class="cover-letter-preview">
+                      <p class="cover-letter-text">{{ app.cover_letter }}</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="application-actions">
+              <span 
+                class="application-status" 
+                [ngClass]="getStatusClass(app.status)">
+                {{ getStatusLabel(app) }}
+              </span>
+              <div class="action-buttons">
+                <button 
+                  class="btn btn-small btn-primary"
+                  (click)="viewApplication(app)">
+                  عرض التفاصيل
+                </button>
+                @if (app.resume) {
+                  <button 
+                    class="btn btn-small btn-secondary"
+                    (click)="downloadResume(app)">
+                    تحميل السيرة الذاتية
+                  </button>
+                }
+              </div>
+              @if (app.status === 'pending') {
+                <div class="status-actions">
+                  <button 
+                    class="btn btn-small btn-success"
+                    (click)="updateApplicationStatus(app.id, 'accepted')">
+                    قبول
+                  </button>
+                  <button 
+                    class="btn btn-small btn-danger"
+                    (click)="updateApplicationStatus(app.id, 'rejected')">
+                    رفض
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Pagination -->
+    @if (!loading && totalPages > 1) {
+      <div class="pagination">
+        <button 
+          class="pagination-btn"
+          [class.disabled]="!hasPrevious"
+          [disabled]="!hasPrevious"
+          (click)="previousPage()">
+          السابق
+        </button>
+        
+        <div class="pagination-pages">
+          @for (page of getPageNumbers(); track page) {
+            <button 
+              class="pagination-page"
+              [class.active]="page === currentPage"
+              (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          }
+        </div>
+
+        <button 
+          class="pagination-btn"
+          [class.disabled]="!hasNext"
+          [disabled]="!hasNext"
+          (click)="nextPage()">
+          التالي
+        </button>
+      </div>
+
+      <div class="pagination-info">
+        <p>عرض {{ ((currentPage - 1) * pageSize) + 1 }} - {{ Math.min(currentPage * pageSize, totalCount) }} من {{ totalCount }} متقدم</p>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Application Details Modal (same as applicants-for-job) -->
+@if (showDetailsModal) {
+  <div class="modal-backdrop" (click)="closeDetailsModal()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>تفاصيل الطلب</h2>
+        <button class="modal-close" (click)="closeDetailsModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+        @if (loadingDetails) {
+          <div class="loading-state">
+            <p>جاري تحميل التفاصيل...</p>
+          </div>
+        } @else if (selectedApplication) {
+          <!-- Job Information -->
+          <div class="detail-section">
+            <h3>معلومات الوظيفة</h3>
+            <div class="detail-content">
+              <div class="detail-item">
+                <span class="detail-label">عنوان الوظيفة:</span>
+                <span class="detail-value">{{ selectedApplication.job.title }}</span>
+              </div>
+              @if (selectedApplication.job.category) {
+                <div class="detail-item">
+                  <span class="detail-label">الفئة:</span>
+                  <span class="detail-value">{{ selectedApplication.job.category.name || 'غير محدد' }}</span>
+                </div>
+              }
+              <div class="detail-item">
+                <span class="detail-label">نوع الوظيفة:</span>
+                <span class="detail-value">{{ getJobTypeLabel(selectedApplication.job.job_type || '') }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">مستوى الخبرة:</span>
+                <span class="detail-value">{{ getExperienceLevelLabel(selectedApplication.job.experience_level || '') }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">المدينة:</span>
+                <span class="detail-value">{{ selectedApplication.job.city || 'غير محدد' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">الراتب:</span>
+                <span class="detail-value">
+                  {{ formatSalaryRange(
+                    selectedApplication.job.salary_min || null,
+                    selectedApplication.job.salary_max || null,
+                    selectedApplication.job.is_salary_negotiable || false
+                  ) }}
+                </span>
+              </div>
+              @if (selectedApplication.job.application_deadline) {
+                <div class="detail-item">
+                  <span class="detail-label">آخر موعد للتقديم:</span>
+                  <span class="detail-value">{{ formatDate(selectedApplication.job.application_deadline) }}</span>
+                </div>
+              }
+              @if (selectedApplication.job.company) {
+                <div class="detail-item">
+                  <span class="detail-label">الشركة:</span>
+                  <span class="detail-value">{{ selectedApplication.job.company.name }}</span>
+                </div>
+              }
+            </div>
+            @if (selectedApplication.job.description) {
+              <div class="job-description">
+                <h4>وصف الوظيفة</h4>
+                <p>{{ selectedApplication.job.description }}</p>
+              </div>
+            }
+            @if (selectedApplication.job.requirements) {
+              <div class="job-requirements">
+                <h4>المتطلبات</h4>
+                <div class="requirements-content">{{ selectedApplication.job.requirements }}</div>
+              </div>
+            }
+          </div>
+
+          <!-- Applicant Information -->
+          <div class="detail-section">
+            <h3>معلومات المتقدم</h3>
+            <div class="detail-content">
+              <div class="detail-item">
+                <span class="detail-label">الاسم الكامل:</span>
+                <span class="detail-value">{{ getApplicantName(selectedApplication) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">البريد الإلكتروني:</span>
+                <span class="detail-value">{{ selectedApplication.applicant?.email || 'غير متوفر' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">اسم المستخدم:</span>
+                <span class="detail-value">{{ selectedApplication.applicant?.username || 'غير متوفر' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">رقم الهاتف:</span>
+                <span class="detail-value">{{ getApplicantPhone(selectedApplication) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">الموقع:</span>
+                <span class="detail-value">{{ getApplicantLocation(selectedApplication) }}</span>
+              </div>
+              @if (selectedApplication.applicant?.date_of_birth) {
+                <div class="detail-item">
+                  <span class="detail-label">تاريخ الميلاد:</span>
+                  <span class="detail-value">{{ formatDate(selectedApplication.applicant?.date_of_birth || null) }}</span>
+                </div>
+              }
+              @if (selectedApplication.applicant?.created_at) {
+                <div class="detail-item">
+                  <span class="detail-label">تاريخ إنشاء الحساب:</span>
+                  <span class="detail-value">{{ formatDate(selectedApplication.applicant?.created_at || null) }}</span>
+                </div>
+              }
+              <div class="detail-item">
+                <span class="detail-label">حالة التحقق:</span>
+                <span class="detail-value">
+                  @if (selectedApplication.applicant?.is_verified) {
+                    <span class="verified-badge">✓ موثق</span>
+                  } @else {
+                    <span class="unverified-badge">غير موثق</span>
+                  }
+                </span>
+              </div>
+              @if (selectedApplication.applicant?.bio) {
+                <div class="detail-item full-width">
+                  <span class="detail-label">نبذة شخصية:</span>
+                  <span class="detail-value">{{ selectedApplication.applicant?.bio || '' }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Application Details -->
+          <div class="detail-section">
+            <h3>معلومات الطلب</h3>
+            <div class="detail-content">
+              <div class="detail-item">
+                <span class="detail-label">تاريخ التقديم:</span>
+                <span class="detail-value">{{ formatDateTime(selectedApplication.applied_at) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">آخر تحديث:</span>
+                <span class="detail-value">{{ formatDateTime(selectedApplication.updated_at) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">الحالة:</span>
+                <span class="detail-value status-badge" [ngClass]="getStatusClass(selectedApplication.status)">
+                  {{ getStatusLabel(selectedApplication) }}
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">تم المشاهدة:</span>
+                <span class="detail-value">
+                  @if (selectedApplication.is_viewed) {
+                    <span class="viewed-badge">✓ تم المشاهدة</span>
+                    @if (selectedApplication.viewed_at) {
+                      <span class="viewed-date">({{ formatDateTime(selectedApplication.viewed_at) }})</span>
+                    }
+                  } @else {
+                    <span class="not-viewed-badge">لم يتم المشاهدة</span>
+                  }
+                </span>
+              </div>
+              @if (selectedApplication.expected_salary) {
+                <div class="detail-item">
+                  <span class="detail-label">الراتب المتوقع:</span>
+                  <span class="detail-value">{{ selectedApplication.expected_salary | number }} ريال</span>
+                </div>
+              }
+              @if (selectedApplication.availability_date) {
+                <div class="detail-item">
+                  <span class="detail-label">تاريخ التوفر:</span>
+                  <span class="detail-value">{{ formatDate(selectedApplication.availability_date) }}</span>
+                </div>
+              }
+              @if (selectedApplication.portfolio_url) {
+                <div class="detail-item">
+                  <span class="detail-label">رابط المحفظة:</span>
+                  <a [href]="selectedApplication.portfolio_url" target="_blank" class="detail-link" rel="noopener noreferrer">
+                    {{ selectedApplication.portfolio_url }}
+                  </a>
+                </div>
+              }
+              @if (selectedApplication.rating !== null && selectedApplication.rating !== undefined) {
+                <div class="detail-item">
+                  <span class="detail-label">التقييم:</span>
+                  <span class="detail-value">
+                    <span class="rating-stars">
+                      @for (star of [1,2,3,4,5]; track star) {
+                        <span [class.filled]="star <= (selectedApplication.rating || 0)">★</span>
+                      }
+                    </span>
+                    ({{ selectedApplication.rating }}/5)
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Cover Letter -->
+          @if (selectedApplication.cover_letter) {
+            <div class="detail-section">
+              <h3>رسالة التقديم</h3>
+              <div class="cover-letter-content">
+                <p>{{ selectedApplication.cover_letter }}</p>
+              </div>
+            </div>
+          }
+
+          <!-- Resume -->
+          @if (selectedApplication.resume) {
+            <div class="detail-section">
+              <h3>السيرة الذاتية</h3>
+              <button 
+                class="btn btn-primary"
+                (click)="downloadResume(selectedApplication)">
+                تحميل السيرة الذاتية
+              </button>
+            </div>
+          }
+
+          <!-- Notes -->
+          @if (selectedApplication.notes) {
+            <div class="detail-section">
+              <h3>ملاحظات</h3>
+              <div class="notes-content">
+                <p>{{ selectedApplication.notes }}</p>
+              </div>
+            </div>
+          }
+
+          <!-- Employer Notes -->
+          @if (selectedApplication.employer_notes) {
+            <div class="detail-section">
+              <h3>ملاحظات صاحب العمل</h3>
+              <div class="notes-content">
+                <p>{{ selectedApplication.employer_notes }}</p>
+              </div>
+            </div>
+          }
+
+          <!-- Action Buttons -->
+          @if (selectedApplication.status === 'pending') {
+            <div class="modal-actions">
+              <button 
+                class="btn btn-success"
+                (click)="updateApplicationStatus(selectedApplication.id, 'accepted'); closeDetailsModal();">
+                قبول الطلب
+              </button>
+              <button 
+                class="btn btn-danger"
+                (click)="updateApplicationStatus(selectedApplication.id, 'rejected'); closeDetailsModal();">
+                رفض الطلب
+              </button>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+}
+
