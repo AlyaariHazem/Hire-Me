@@ -150,92 +150,62 @@
       <div class="card-header">
         <h2 class="card-title">المتقدمون الجدد</h2>
         <a
-          href="#candidates"
-          class="card-action"
-          onclick="switchEmployerTab('candidates')"
+          (click)="viewAllApplicants()"
+          class="card-action clickable"
           >عرض الكل</a
         >
       </div>
 
-      <div class="candidate-item">
-        <img
-          src="images/candidate-1.jpg"
-          alt="أحمد محمد"
-          class="candidate-avatar"
-        />
-        <div class="candidate-info">
-          <h4 class="candidate-name">أحمد محمد</h4>
-          <p class="candidate-title">مطور برمجيات</p>
-          <div class="candidate-meta">
-            <span>تقدم منذ ساعتين</span>
-            <span>3 سنوات خبرة</span>
+      @if (loading) {
+        <div class="loading-state">
+          <p>جاري التحميل...</p>
+        </div>
+      } @else if (recentApplications.length === 0) {
+        <div class="empty-state">
+          <p>لا توجد طلبات متقدمة جديدة</p>
+        </div>
+      } @else {
+        @for (app of recentApplications; track app.id) {
+          <div class="candidate-item">
+            <div class="candidate-avatar">
+              @if (app.applicant?.profile_picture) {
+                <img
+                  [src]="app.applicant?.profile_picture || ''"
+                  [alt]="getApplicantName(app)"
+                  [title]="getApplicantName(app)"
+                  title="Applicant profile picture"
+                  (error)="handleImageError($event)"
+                />
+              }
+              <span [style.display]="app.applicant?.profile_picture ? 'none' : 'flex'">
+                {{ getApplicantInitials(app) }}
+              </span>
+            </div>
+            <div class="candidate-info">
+              <h4 class="candidate-name">{{ getApplicantName(app) }}</h4>
+              <p class="candidate-title">{{ getApplicantTitle(app) }}</p>
+              <div class="candidate-meta">
+                <span>تقدم {{ getTimeAgo(app.applied_at) }}</span>
+                @if (app.job.title) {
+                  <span>{{ app.job.title }}</span>
+                }
+              </div>
+            </div>
+            <div class="candidate-actions">
+              <span 
+                class="application-status" 
+                [ngClass]="getStatusClass(app.status)">
+                {{ getStatusLabel(app.status) }}
+              </span>
+              <button 
+                class="btn btn-small btn-primary"
+                (click)="viewApplicantProfile(app)">
+                عرض الملف
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="candidate-actions">
-          <span class="application-status status-new">جديد</span>
-          <button class="btn btn-small btn-primary">عرض الملف</button>
-        </div>
-      </div>
-
-      <div class="candidate-item">
-        <img
-          src="images/candidate-2.jpg"
-          alt="فاطمة علي"
-          class="candidate-avatar"
-        />
-        <div class="candidate-info">
-          <h4 class="candidate-name">فاطمة علي</h4>
-          <p class="candidate-title">مطورة واجهات أمامية</p>
-          <div class="candidate-meta">
-            <span>تقدمت منذ 4 ساعات</span>
-            <span>2 سنة خبرة</span>
-          </div>
-        </div>
-        <div class="candidate-actions">
-          <span class="application-status status-shortlisted">مرشحة</span>
-          <button class="btn btn-small btn-primary">عرض الملف</button>
-        </div>
-      </div>
-
-      <div class="candidate-item">
-        <img
-          src="images/candidate-3.jpg"
-          alt="محمد حسن"
-          class="candidate-avatar"
-        />
-        <div class="candidate-info">
-          <h4 class="candidate-name">محمد حسن</h4>
-          <p class="candidate-title">مطور تطبيقات جوال</p>
-          <div class="candidate-meta">
-            <span>تقدم أمس</span>
-            <span>4 سنوات خبرة</span>
-          </div>
-        </div>
-        <div class="candidate-actions">
-          <span class="application-status status-interviewed">مقابلة</span>
-          <button class="btn btn-small btn-primary">عرض الملف</button>
-        </div>
-      </div>
-
-      <div class="candidate-item">
-        <img
-          src="images/candidate-4.jpg"
-          alt="سارة أحمد"
-          class="candidate-avatar"
-        />
-        <div class="candidate-info">
-          <h4 class="candidate-name">سارة أحمد</h4>
-          <p class="candidate-title">مطورة Full Stack</p>
-          <div class="candidate-meta">
-            <span>تقدمت منذ يومين</span>
-            <span>5 سنوات خبرة</span>
-          </div>
-        </div>
-        <div class="candidate-actions">
-          <span class="application-status status-new">جديدة</span>
-          <button class="btn btn-small btn-primary">عرض الملف</button>
-        </div>
-      </div>
+        }
+      }
     </div>
   </div>
 </div>

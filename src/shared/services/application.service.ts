@@ -108,6 +108,23 @@ export class ApplicationService {
     return this.http.get<ApplicationListResponse>(url, { params: httpParams });
   }
 
+  // Get all applications for employer (all jobs)
+  // Based on Swagger: GET /api/applications/job-applications/ without job filter
+  getAllJobApplications(params?: any): Observable<ApplicationListResponse> {
+    const url = environment.getUrl('job-applications', 'applications'); // /api/applications/job-applications/
+    
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          httpParams = httpParams.set(key, String(value));
+        }
+      });
+    }
+
+    return this.http.get<ApplicationListResponse>(url, { params: httpParams });
+  }
+
   // Get my applications (for job seekers)
   getMyApplications(params?: any): Observable<ApplicationListResponse> {
     const url = environment.getUrl('my-applications', 'applications');
