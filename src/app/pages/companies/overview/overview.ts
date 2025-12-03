@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationService, Application } from 'shared/services/application.service';
+import { JobService } from 'shared/services/job.service';
+import { JobItem } from '../core/models/job-item.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -11,14 +13,18 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class Overview implements OnInit {
   private applicationService = inject(ApplicationService);
+  private jobService = inject(JobService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
 
   recentApplications: Application[] = [];
+  recentJobs: JobItem[] = [];
   loading = false;
+  loadingJobs = false;
 
   ngOnInit(): void {
     this.loadRecentApplications();
+    this.loadRecentJobs();
   }
 
   loadRecentApplications(): void {
@@ -142,5 +148,104 @@ export class Overview implements OnInit {
         span.style.display = 'flex';
       }
     }
+  }
+
+  loadRecentJobs(): void {
+    this.loadingJobs = true;
+    this.jobService.getMyJobs({
+      ordering: '-created_at',
+      page: 1,
+      page_size: 3
+    }).subscribe({
+      next: (response) => {
+        // Normalize jobs to ensure company and category are never null
+        this.recentJobs = (response.results || []).map(job => ({
+          ...job,
+          company: job.company ?? { id: 0, name: '-', logo: null, city: '-' },
+          category: job.category ?? { id: 0, name: '-' },
+        }));
+        this.loadingJobs = false;
+      },
+      error: (err) => {
+        console.error('Failed to load recent jobs', err);
+        this.toastr.error('فشل في تحميل الوظائف المنشورة');
+        this.recentJobs = [];
+        this.loadingJobs = false;
+      }
+    });
+  }
+
+  getTimeAgoForJob(dateStr: string): string {
+    if (!dateStr) return 'غير محدد';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 60) {
+      return 'الآن';
+    }
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) {
+      return `منذ ${diffInMinutes} ${diffInMinutes === 1 ? 'دقيقة' : 'دقائق'}`;
+    }
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) {
+      return `منذ ${diffInHours} ${diffInHours === 1 ? 'ساعة' : 'ساعات'}`;
+    }
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays === 1) {
+      return 'أمس';
+    }
+    if (diffInDays < 7) {
+      return `منذ ${diffInDays} ${diffInDays === 2 ? 'يومين' : 'أيام'}`;
+    }
+    const diffInWeeks = Math.floor(diffInDays / 7);
+    if (diffInWeeks < 4) {
+      return `منذ ${diffInWeeks} ${diffInWeeks === 1 ? 'أسبوع' : 'أسابيع'}`;
+    }
+    const diffInMonths = Math.floor(diffInDays / 30);
+    return `منذ ${diffInMonths} ${diffInMonths === 1 ? 'شهر' : 'أشهر'}`;
+  }
+
+  formatSalaryRange(job: JobItem): string {
+    if (job.is_salary_negotiable) {
+      return 'قابل للتفاوض';
+    }
+    if (job.salary_min && job.salary_max) {
+      return `${job.salary_min.toLocaleString()} - ${job.salary_max.toLocaleString()} ريال`;
+    }
+    if (job.salary_min) {
+      return `من ${job.salary_min.toLocaleString()} ريال`;
+    }
+    if (job.salary_max) {
+      return `حتى ${job.salary_max.toLocaleString()} ريال`;
+    }
+    return 'غير محدد';
+  }
+
+  getJobStatusLabel(job: JobItem): string {
+    if (!job.is_active) {
+      return 'متوقفة';
+    }
+    return 'نشطة';
+  }
+
+  getJobStatusClass(job: JobItem): string {
+    if (!job.is_active) {
+      return 'status-paused';
+    }
+    return 'status-active';
+  }
+
+  viewJobDetails(job: JobItem): void {
+    if (job.slug) {
+      this.router.navigate(['/companies/job-details'], {
+        queryParams: { slug: job.slug }
+      });
+    }
+  }
+
+  viewAllJobs(): void {
+    this.router.navigate(['/companies/manage-jobs']);
   }
 }

@@ -88,61 +88,47 @@
     <div class="employer-content-card">
       <div class="card-header">
         <h2 class="card-title">الوظائف المنشورة مؤخراً</h2>
-        <a href="#jobs" class="card-action" onclick="switchEmployerTab('jobs')"
+        <a 
+          (click)="viewAllJobs()"
+          class="card-action clickable"
           >عرض الكل</a
         >
       </div>
 
-      <div class="job-posting-item">
-        <div class="job-posting-info">
-          <h4 class="job-posting-title">مطور تطبيقات الويب الأمامية</h4>
-          <div class="job-posting-meta">
-            <span>نُشرت منذ يومين</span>
-            <span>صنعاء</span>
-            <span>800-1200 ريال</span>
-          </div>
-          <div class="job-posting-stats">
-            <span>15 متقدم</span>
-            <span>234 مشاهدة</span>
-            <span>3 مرشحين مؤهلين</span>
-          </div>
+      @if (loadingJobs) {
+        <div class="loading-state">
+          <p>جاري التحميل...</p>
         </div>
-        <span class="job-status status-active">نشطة</span>
-      </div>
-
-      <div class="job-posting-item">
-        <div class="job-posting-info">
-          <h4 class="job-posting-title">مطور تطبيقات الجوال</h4>
-          <div class="job-posting-meta">
-            <span>نُشرت منذ 3 أيام</span>
-            <span>صنعاء</span>
-            <span>1000-1500 ريال</span>
-          </div>
-          <div class="job-posting-stats">
-            <span>28 متقدم</span>
-            <span>456 مشاهدة</span>
-            <span>7 مرشحين مؤهلين</span>
-          </div>
+      } @else if (recentJobs.length === 0) {
+        <div class="empty-state">
+          <p>لا توجد وظائف منشورة</p>
         </div>
-        <span class="job-status status-active">نشطة</span>
-      </div>
-
-      <div class="job-posting-item">
-        <div class="job-posting-info">
-          <h4 class="job-posting-title">مطور Full Stack</h4>
-          <div class="job-posting-meta">
-            <span>نُشرت منذ أسبوع</span>
-            <span>صنعاء</span>
-            <span>1200-1800 ريال</span>
+      } @else {
+        @for (job of recentJobs; track job.id) {
+          <div class="job-posting-item">
+            <div class="job-posting-info">
+              <h4 class="job-posting-title">{{ job.title }}</h4>
+              <div class="job-posting-meta">
+                <span>نُشرت {{ getTimeAgoForJob(job.created_at) }}</span>
+                <span>{{ job.city || 'غير محدد' }}</span>
+                <span>{{ formatSalaryRange(job) }}</span>
+              </div>
+              <div class="job-posting-stats">
+                <span>{{ job.applications_count || 0 }} متقدم</span>
+                <span>{{ job.views_count || 0 }} مشاهدة</span>
+                @if (job.category) {
+                  <span>{{ job.category.name }}</span>
+                }
+              </div>
+            </div>
+            <span 
+              class="job-status" 
+              [ngClass]="getJobStatusClass(job)">
+              {{ getJobStatusLabel(job) }}
+            </span>
           </div>
-          <div class="job-posting-stats">
-            <span>46 متقدم</span>
-            <span>678 مشاهدة</span>
-            <span>12 مرشحين مؤهلين</span>
-          </div>
-        </div>
-        <span class="job-status status-paused">متوقفة</span>
-      </div>
+        }
+      }
     </div>
 
     <!-- Recent Candidates -->
