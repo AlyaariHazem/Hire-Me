@@ -129,4 +129,13 @@ export class ApplicationService {
     const url = environment.getUrl('statistics', 'applications');
     return this.http.get(url);
   }
+
+  // Update application status (for employers)
+  updateApplicationStatus(
+    applicationId: number,
+    status: 'pending' | 'reviewed' | 'accepted' | 'rejected'
+  ): Observable<Application> {
+    const url = environment.getUrl(`${applicationId}`, 'applications')+'update/'; // /api/applications/{id}/update/
+    return this.http.patch<Application>(url, { status });
+  }
 }

@@ -225,7 +225,63 @@ export class Applicants implements OnInit {
     applicationId: number,
     newStatus: 'pending' | 'reviewed' | 'accepted' | 'rejected'
   ): void {
-    console.log('Update application status', applicationId, newStatus);
-    this.toastr.info('تحديث حالة الطلب - سيتم تنفيذ هذه الميزة قريباً');
+    // Find the application in the local array
+    const application = this.applications.find(app => app.id === applicationId);
+    if (!application) {
+      this.toastr.error('لم يتم العثور على الطلب');
+      return;
+    }
+
+    // Optimistic update: update UI immediately
+    const oldStatus = application.status;
+    application.status = newStatus;
+
+    // Update status_display based on new status
+    const statusLabels: Record<string, string> = {
+      pending: 'قيد المراجعة',
+      reviewed: 'تم المراجعة',
+      accepted: 'مقبول',
+      rejected: 'مرفوض'
+    };
+    application.status_display = statusLabels[newStatus] || newStatus;
+
+    // Update counts and filtered list
+    this.updateStatusCounts();
+    this.applyStatusFilter();
+
+    // Call API to update status
+    this.applicationService.updateApplicationStatus(applicationId, newStatus).subscribe({
+      next: (updatedApp) => {
+        // Update the application with the response from server
+        const index = this.applications.findIndex(app => app.id === applicationId);
+        if (index !== -1) {
+          this.applications[index] = updatedApp;
+        }
+
+        // Refresh counts and filter
+        this.updateStatusCounts();
+        this.applyStatusFilter();
+
+        // Show success message
+        const statusMessages: Record<string, string> = {
+          pending: 'تم تحديث حالة الطلب إلى قيد المراجعة',
+          reviewed: 'تم تحديث حالة الطلب إلى تم المراجعة',
+          accepted: 'تم قبول الطلب بنجاح',
+          rejected: 'تم رفض الطلب'
+        };
+        this.toastr.success(statusMessages[newStatus] || 'تم تحديث حالة الطلب بنجاح');
+      },
+      error: (err) => {
+        console.error('Failed to update application status', err);
+
+        // Revert optimistic update
+        application.status = oldStatus;
+        this.updateStatusCounts();
+        this.applyStatusFilter();
+
+        // Show error message
+        this.toastr.error('فشل في تحديث حالة الطلب. يرجى المحاولة مرة أخرى');
+      }
+    });
   }
 }
