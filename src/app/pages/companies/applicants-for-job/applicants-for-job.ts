@@ -12,10 +12,10 @@ type StatusFilter = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected';
   selector: 'app-applicants',
   standalone: true,
   imports: [CommonModule, SharedModule],
-  templateUrl: './applicants.html',
-  styleUrls: ['./applicants.scss']
+  templateUrl: './applicants-for-job.html',
+  styleUrls: ['./applicants-for-job.scss']
 })
-export class Applicants implements OnInit {
+export class ApplicantsForJob implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private applicationService = inject(ApplicationService);
@@ -361,3 +361,4 @@ export class Applicants implements OnInit {
     });
   }
 }
+

@@ -9,7 +9,7 @@ import { ProfileComponent } from './profile/profile';
 import { JobDetails } from 'app/pages/jobs/job-details/job-details';
 import { Jobs } from '../jobs/jobs';
 import { ManageJobs } from '../jobs/manage-jobs/manage-jobs';
-import { Applicants } from './applicants/applicants';
+import { ApplicantsForJob } from './applicants-for-job/applicants-for-job';
 
 const routes: Routes = [
   {
@@ -52,7 +52,7 @@ const routes: Routes = [
       },
       {
         path: 'applicants',
-        component: Applicants
+        component: ApplicantsForJob
       },
     ],
   },
