@@ -23,6 +23,12 @@ export interface Application {
       name: string;
     } | null;
     city: string | null;
+    job_type?: string;
+    experience_level?: string;
+    salary_min?: number | null;
+    salary_max?: number | null;
+    is_salary_negotiable?: boolean;
+    application_deadline?: string | null;
   };
   applicant?: {
     id: number;
@@ -128,6 +134,12 @@ export class ApplicationService {
   getApplicationStatistics(): Observable<any> {
     const url = environment.getUrl('statistics', 'applications');
     return this.http.get(url);
+  }
+
+  // Get single application by ID
+  getApplicationById(applicationId: number): Observable<Application> {
+    const url = environment.getUrl(`${applicationId}`, 'applications'); // /api/applications/{id}/
+    return this.http.get<Application>(url);
   }
 
   // Update application status (for employers)

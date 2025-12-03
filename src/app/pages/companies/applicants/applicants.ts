@@ -40,6 +40,11 @@ export class Applicants implements OnInit {
     rejected: 0
   };
 
+  // Modal state
+  showDetailsModal = false;
+  selectedApplication: Application | null = null;
+  loadingDetails = false;
+
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(params => {
       const slug = params.get('job');
@@ -152,7 +157,7 @@ export class Applicants implements OnInit {
     return `status-${status}`;
   }
 
-  formatDate(dateStr: string): string {
+  formatDate(dateStr: string | null | undefined): string {
     if (!dateStr) return 'غير محدد';
     const date = new Date(dateStr);
     return date.toLocaleDateString('ar-YE', {
@@ -197,6 +202,56 @@ export class Applicants implements OnInit {
     return app.applicant?.location || 'غير محدد';
   }
 
+  getJobTypeLabel(jobType: string): string {
+    const labels: Record<string, string> = {
+      full_time: 'دوام كامل',
+      part_time: 'دوام جزئي',
+      contract: 'عقد',
+      freelance: 'عمل حر',
+      internship: 'تدريب'
+    };
+    return labels[jobType] || jobType;
+  }
+
+  getExperienceLevelLabel(level: string): string {
+    const labels: Record<string, string> = {
+      entry: 'مبتدئ',
+      junior: 'مبتدئ',
+      mid: 'متوسط',
+      senior: 'خبير',
+      executive: 'تنفيذي'
+    };
+    return labels[level] || level;
+  }
+
+  formatSalaryRange(min: number | null, max: number | null, negotiable: boolean): string {
+    if (negotiable) {
+      return 'قابل للتفاوض';
+    }
+    if (min && max) {
+      return `${min.toLocaleString()} - ${max.toLocaleString()} ريال`;
+    }
+    if (min) {
+      return `من ${min.toLocaleString()} ريال`;
+    }
+    if (max) {
+      return `حتى ${max.toLocaleString()} ريال`;
+    }
+    return 'غير محدد';
+  }
+
+  formatDateTime(dateStr: string): string {
+    if (!dateStr) return 'غير محدد';
+    const date = new Date(dateStr);
+    return date.toLocaleString('ar-YE', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
   handleImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     if (img) {
@@ -209,8 +264,29 @@ export class Applicants implements OnInit {
   }
 
   viewApplication(application: Application): void {
-    console.log('View application', application);
-    this.toastr.info('عرض تفاصيل الطلب - سيتم تنفيذ هذه الميزة قريباً');
+    this.selectedApplication = application;
+    this.showDetailsModal = true;
+    this.loadingDetails = true;
+
+    // Fetch full application details from API
+    this.applicationService.getApplicationById(application.id).subscribe({
+      next: (fullApplication) => {
+        this.selectedApplication = fullApplication;
+        this.loadingDetails = false;
+      },
+      error: (err) => {
+        console.error('Failed to load application details', err);
+        this.toastr.error('فشل في تحميل تفاصيل الطلب');
+        this.loadingDetails = false;
+        // Keep the existing application data if API call fails
+      }
+    });
+  }
+
+  closeDetailsModal(): void {
+    this.showDetailsModal = false;
+    this.selectedApplication = null;
+    this.loadingDetails = false;
   }
 
   downloadResume(application: Application): void {
