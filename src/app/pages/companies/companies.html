@@ -6,4 +6,6 @@
   </main>
 </div>
 <!-- Footer -->
-<app-footer></app-footer>
+ @if(lastSegment && lastSegment !== 'dashboard') {
+  <app-footer></app-footer>
+}

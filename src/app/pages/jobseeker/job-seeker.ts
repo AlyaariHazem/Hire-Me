@@ -1,6 +1,6 @@
 import { Component, OnDestroy, inject } from '@angular/core';
-import { Profile, ProfileStoreService } from 'shared/services/profile.service';
-import { Subject, filter, takeUntil } from 'rxjs';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { filter, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-job-seeker',
@@ -9,25 +9,30 @@ import { Subject, filter, takeUntil } from 'rxjs';
   styleUrl: './job-seeker.scss'
 })
 export class JobSeeker implements OnDestroy {
-  // English: yes, this will actually hold employer profile, not jobseeker
-  userData: Profile | null = null;
-
+  private router = inject(Router);
   private destroy$ = new Subject<void>();
-  private profileStore = inject(ProfileStoreService);
+
+  lastSegment: string | null = null;
 
   ngOnInit() {
-    // English: make sure profile is loaded once (idempotent)
-    // this.profileStore.ensureLoaded();
+    // Initial value
+    this.updateLastSegment(this.router.url);
 
-    // English: bind to shared profile and keep it typed
-    this.profileStore.profile$
+    // If you want it to react when child route changes without destroying this component
+    this.router.events
       .pipe(
-        filter((p): p is Profile => !!p),
+        filter(e => e instanceof NavigationEnd),
         takeUntil(this.destroy$)
       )
-      .subscribe(p => {
-        this.userData = p;
+      .subscribe((e: any) => {
+        this.updateLastSegment(e.urlAfterRedirects ?? e.url);
       });
+  }
+
+  private updateLastSegment(url: string) {
+    const segments = url.split('/').filter(Boolean);
+    this.lastSegment = segments.length ? segments[segments.length - 1] : null;
+    console.log('last segment:', this.lastSegment);
   }
 
   ngOnDestroy(): void {
