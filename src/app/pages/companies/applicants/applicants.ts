@@ -6,6 +6,8 @@ import { JobService } from 'shared/services/job.service';
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
 
+type StatusFilter = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected';
+
 @Component({
   selector: 'app-applicants',
   standalone: true,
@@ -20,17 +22,25 @@ export class Applicants implements OnInit {
   private jobService = inject(JobService);
   private toastr = inject(ToastrService);
 
-  applications: Application[] = [];
+  applications: Application[] = [];          // all applications from API
+  filteredApplications: Application[] = [];  // applications after status filter
+
   loading = false;
   jobSlug: string | null = null;
-  jobTitle: string = '';
+  jobTitle = '';
   jobId: number | null = null;
 
-  // Filter states
-  statusFilter: 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected' = 'all';
+  statusFilter: StatusFilter = 'all';
+
+  statusCounts = {
+    all: 0,
+    pending: 0,
+    reviewed: 0,
+    accepted: 0,
+    rejected: 0
+  };
 
   ngOnInit(): void {
-    // Get job slug from query params
     this.route.queryParamMap.subscribe(params => {
       const slug = params.get('job');
       if (slug) {
@@ -45,14 +55,11 @@ export class Applicants implements OnInit {
 
   private loadJobAndApplications(slug: string): void {
     this.loading = true;
-    
-    // First, get the job details to get the job ID and title
+
     this.jobService.getJobBySlug(slug).subscribe({
       next: (job: any) => {
         this.jobId = job.id;
         this.jobTitle = job.title || 'غير محدد';
-        
-        // Then load applications for this job
         this.loadApplications();
       },
       error: (err) => {
@@ -72,23 +79,22 @@ export class Applicants implements OnInit {
     }
 
     this.loading = true;
-    // API expects job ID (integer), not slug
+
     this.applicationService.getJobApplications(this.jobId).subscribe({
       next: (res) => {
         console.log('Applications response:', res);
+
+        // Store all applications
         this.applications = res.results || [];
-        console.log('Applications array:', this.applications);
-        console.log('Applications array length:', this.applications.length);
-        if (this.applications.length > 0) {
-          console.log('First application:', this.applications[0]);
-          console.log('First application has applicant?', !!this.applications[0].applicant);
-        }
+
+        // Update counts + filtered list
+        this.updateStatusCounts();
+        this.applyStatusFilter();
+
+        console.log('Applications length:', this.applications.length);
+        console.log('Filtered applications length:', this.filteredApplications.length);
+
         this.loading = false;
-        // Log after loading is set to false
-        setTimeout(() => {
-          console.log('Filtered applications count:', this.filteredApplications.length);
-          console.log('Filtered applications:', this.filteredApplications);
-        }, 100);
       },
       error: (err) => {
         console.error('Failed to load applications', err);
@@ -98,45 +104,46 @@ export class Applicants implements OnInit {
     });
   }
 
-  get filteredApplications(): Application[] {
-    // Return empty array if no applications
-    if (!this.applications || this.applications.length === 0) {
-      return [];
-    }
-    
-    // If filter is 'all', return all applications
-    if (this.statusFilter === 'all') {
-      return [...this.applications]; // Return a copy to ensure change detection
-    }
-    
-    // Otherwise, filter by status
-    return this.applications.filter(app => app.status === this.statusFilter);
-  }
+  private updateStatusCounts(): void {
+    const apps = this.applications;
 
-  get statusCounts() {
-    return {
-      all: this.applications.length,
-      pending: this.applications.filter(a => a.status === 'pending').length,
-      reviewed: this.applications.filter(a => a.status === 'reviewed').length,
-      accepted: this.applications.filter(a => a.status === 'accepted').length,
-      rejected: this.applications.filter(a => a.status === 'rejected').length,
+    this.statusCounts = {
+      all: apps.length,
+      pending: apps.filter(a => a.status === 'pending').length,
+      reviewed: apps.filter(a => a.status === 'reviewed').length,
+      accepted: apps.filter(a => a.status === 'accepted').length,
+      rejected: apps.filter(a => a.status === 'rejected').length,
     };
   }
 
-  setStatusFilter(status: 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected'): void {
+  private applyStatusFilter(): void {
+    // Return all applications if filter is 'all'
+    if (this.statusFilter === 'all') {
+      this.filteredApplications = [...this.applications];
+      return;
+    }
+
+    // Filter by status
+    this.filteredApplications = this.applications.filter(
+      app => app.status === this.statusFilter
+    );
+  }
+
+  setStatusFilter(status: StatusFilter): void {
     this.statusFilter = status;
+    this.applyStatusFilter();
   }
 
   getStatusLabel(app: Application): string {
-    // Use status_display from API if available, otherwise fallback to mapping
+    // Prefer the display text from API
     if (app.status_display) {
       return app.status_display;
     }
     const labels: Record<string, string> = {
-      'pending': 'قيد الانتظار',
-      'reviewed': 'تم المراجعة',
-      'accepted': 'مقبول',
-      'rejected': 'مرفوض'
+      pending: 'قيد الانتظار',
+      reviewed: 'تم المراجعة',
+      accepted: 'مقبول',
+      rejected: 'مرفوض'
     };
     return labels[app.status] || app.status;
   }
@@ -202,9 +209,7 @@ export class Applicants implements OnInit {
   }
 
   viewApplication(application: Application): void {
-    // Navigate to application details or open modal
     console.log('View application', application);
-    // TODO: Implement view application details - could navigate to a detail page or open a modal
     this.toastr.info('عرض تفاصيل الطلب - سيتم تنفيذ هذه الميزة قريباً');
   }
 
@@ -216,11 +221,11 @@ export class Applicants implements OnInit {
     }
   }
 
-  updateApplicationStatus(applicationId: number, newStatus: 'pending' | 'reviewed' | 'accepted' | 'rejected'): void {
-    // TODO: Implement API call to update application status
-    // This would use PUT /api/applications/{id}/update/ with { status: newStatus }
+  updateApplicationStatus(
+    applicationId: number,
+    newStatus: 'pending' | 'reviewed' | 'accepted' | 'rejected'
+  ): void {
     console.log('Update application status', applicationId, newStatus);
     this.toastr.info('تحديث حالة الطلب - سيتم تنفيذ هذه الميزة قريباً');
   }
 }
-
