@@ -141,10 +141,16 @@ export class ApplicationService {
     return this.http.get<ApplicationListResponse>(url, { params: httpParams });
   }
 
-  // Apply to a job
+  // Apply to a job (simple version - just job ID)
   applyToJob(jobId: number): Observable<any> {
     const url = environment.getUrl('apply', 'applications');
     return this.http.post(url, { job: jobId });
+  }
+
+  // Apply to a job with full application data (including CV and cover letter)
+  applyToJobWithData(formData: FormData): Observable<any> {
+    const url = environment.getUrl('apply', 'applications');
+    return this.http.post(url, formData);
   }
 
   // Get application statistics

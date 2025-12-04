@@ -258,11 +258,25 @@
   padding: 1.5rem;
   border-radius: var(--radius-lg);
   margin-top: 1rem;
-  display: none;
 }
 
-.application-form.active {
-  display: block;
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.field-label {
+  font-weight: 600;
+  color: var(--gray-800);
+  font-size: var(--font-size-sm);
+}
+
+.error-text {
+  color: var(--red-500);
+  font-size: var(--font-size-xs);
+  margin-top: 0.25rem;
 }
 
 .form-row {

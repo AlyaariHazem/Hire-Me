@@ -1,7 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { JobService } from 'shared/services/job.service';
+import { ApplicationService } from 'shared/services/application.service';
+import { JobItem } from '@app/companies/models';
 import { SharedModule } from 'shared/shared-module';
+import { ToastrService } from 'ngx-toastr';
+import { Base } from 'shared/base/base';
 
 interface Company {
   id: number;
@@ -40,7 +44,7 @@ interface Category {
   jobs_count: number;
 }
 
-interface JobDetail {
+interface JobDetail extends Base {
   id: number;
   company: Company;
   category: Category;
@@ -76,17 +80,34 @@ interface JobDetail {
 @Component({
   selector: 'app-job-details',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, RouterLink],
   templateUrl: './job-details.html',
   styleUrl: './job-details.scss',
 })
-export class JobDetails implements OnInit {
+export class JobDetails extends Base implements OnInit {
   private jobService = inject(JobService);
+  private applicationService = inject(ApplicationService);
   private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
 
   jobDetail: JobDetail | null = null;
+  similarJobs: JobItem[] = [];
   isLoading = false;
+  isLoadingSimilar = false;
   showApplicationForm = false;
+  isSubmittingApplication = false;
+
+  // Application form model
+  applicationForm = {
+    full_name: '',
+    email: '',
+    phone: '',
+    years_of_experience: '',
+    cover_letter: '',
+  };
+
+  cvFile: File | null = null;
+  cvFileName: string = '';
 
   ngOnInit(): void {
     const jobSlug = this.activatedRoute.snapshot.paramMap.get('slug'); // route param name = 'slug' in your example
@@ -99,9 +120,13 @@ export class JobDetails implements OnInit {
       next: (data: JobDetail) => {
         this.jobDetail = data;
         this.isLoading = false;
+        // Load similar jobs after job detail is loaded
+        if (data.id) {
+          this.loadSimilarJobs(data.id);
+        }
       },
       error: (err) => {
-        console.error('Failed to load job details', err);
+        this.errors.error(err, { join: true });
         this.isLoading = false;
       },
     });
@@ -109,11 +134,110 @@ export class JobDetails implements OnInit {
 
   toggleApplicationForm(): void {
     this.showApplicationForm = !this.showApplicationForm;
+    if (!this.showApplicationForm) {
+      // Reset form when closing
+      this.resetApplicationForm();
+    }
   }
 
-  onApply(): void {
-    // English: here you trigger your apply flow or navigate to apply page
-    console.log('Apply clicked for job', this.jobDetail?.id);
+  onCvFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      this.toastr.error('حجم الملف يجب أن يكون أقل من 5MB');
+      input.value = '';
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+      this.toastr.error('نوع الملف غير مدعوم. يرجى رفع ملف PDF أو DOC أو DOCX');
+      input.value = '';
+      return;
+    }
+
+    this.cvFile = file;
+    this.cvFileName = file.name;
+  }
+
+  resetApplicationForm(): void {
+    this.applicationForm = {
+      full_name: '',
+      email: '',
+      phone: '',
+      years_of_experience: '',
+      cover_letter: '',
+    };
+    this.cvFile = null;
+    this.cvFileName = '';
+  }
+
+  onSubmitApplication(): void {
+    if (!this.jobDetail) return;
+
+    // Basic validation
+    if (!this.applicationForm.full_name || !this.applicationForm.email || !this.applicationForm.phone) {
+      this.toastr.error('يرجى ملء جميع الحقول المطلوبة');
+      return;
+    }
+
+    if (!this.cvFile) {
+      this.toastr.error('يرجى رفع السيرة الذاتية');
+      return;
+    }
+
+    this.isSubmittingApplication = true;
+
+    // Build FormData
+    const formData = new FormData();
+    formData.append('job', String(this.jobDetail.id));
+    formData.append('full_name', this.applicationForm.full_name);
+    formData.append('email', this.applicationForm.email);
+    formData.append('phone', this.applicationForm.phone);
+    
+    if (this.applicationForm.years_of_experience) {
+      formData.append('years_of_experience', this.applicationForm.years_of_experience);
+    }
+    
+    if (this.applicationForm.cover_letter) {
+      formData.append('cover_letter', this.applicationForm.cover_letter);
+    }
+
+    if (this.cvFile) {
+      formData.append('resume', this.cvFile);
+    }
+
+    this.applicationService.applyToJobWithData(formData).subscribe({
+      next: () => {
+        this.toastr.success('تم إرسال طلبك بنجاح!');
+        this.isSubmittingApplication = false;
+        this.showApplicationForm = false;
+        this.resetApplicationForm();
+        
+        // Refresh job details to update application status
+        if (this.jobDetail?.slug) {
+          this.jobService.getJobBySlug(this.jobDetail.slug).subscribe({
+            next: (data: JobDetail) => {
+              this.jobDetail = data;
+            },
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Failed to submit application', err);
+        this.isSubmittingApplication = false;
+        
+        // Handle specific error messages
+        
+          this.errors.error(err, { join: true });
+        
+      },
+    });
   }
 
   onSaveJob(): void {
@@ -169,5 +293,29 @@ export class JobDetails implements OnInit {
       return `حتى ${max.toLocaleString()} ريال`;
     }
     return 'غير محدد';
+  }
+
+  loadSimilarJobs(jobId: number): void {
+    this.isLoadingSimilar = true;
+    this.jobService.getSimilarJobs(jobId).subscribe({
+      next: (jobs: JobItem[]) => {
+        this.similarJobs = jobs;
+        this.isLoadingSimilar = false;
+      },
+      error: (err) => {
+        console.error('Failed to load similar jobs', err);
+        this.isLoadingSimilar = false;
+      },
+    });
+  }
+
+  navigateToJob(slug: string): void {
+    this.router.navigate(['/jobseeker/jobs', slug]).then(() => {
+      window.location.reload();
+    });
+  }
+
+  formatSimilarJobSalary(job: JobItem): string {
+    return this.formatSalary(job.salary_min, job.salary_max);
   }
 }
