@@ -18,6 +18,7 @@ import { PostJob } from '../jobs/manage-jobs/post-job/post-job';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CompanyData } from './company-data/company-data';
 import { ProfileComponent } from './profile/profile';
+import { UserEditComponent } from './user-edit/user-edit';
 import { Select } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -34,6 +35,7 @@ const components = [
   Billing,
   CompanyData,
   ProfileComponent,
+  UserEditComponent,
   
 ];
 const modules = [

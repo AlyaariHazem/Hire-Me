@@ -1,0 +1,144 @@
+<div class="user-edit-page">
+  <div class="user-card">
+    <!-- Header -->
+    <div class="user-card-header">
+      <div class="user-picture-wrapper">
+        <div class="user-picture-circle">
+          <img
+            [src]="profilePicture$ || 'https://via.placeholder.com/88'"
+            alt="صورة المستخدم"
+          />
+        </div>
+
+        <button
+          type="button"
+          class="picture-change-btn"
+          (click)="pictureInput.click()"
+        >
+          تغيير الصورة
+        </button>
+
+        <input
+          #pictureInput
+          type="file"
+          class="picture-file-input"
+          accept="image/*"
+          (change)="onProfilePictureSelected($event)"
+        />
+      </div>
+
+      <div class="user-header-text">
+        <h1 class="user-title">تحديث بيانات المستخدم</h1>
+        <p class="user-subtitle">
+          حدّث معلوماتك الشخصية ليظهر ملفك التعريفي بشكل احترافي.
+        </p>
+      </div>
+    </div>
+
+    <div class="user-divider"></div>
+
+    <!-- Form -->
+    <form class="user-form" (ngSubmit)="save()">
+      <div class="form-grid">
+        <!-- First Name -->
+        <div class="form-group">
+          <label class="form-label">الاسم الأول</label>
+          <input
+            class="form-input"
+            required
+            [(ngModel)]="form.first_name"
+            name="first_name"
+            placeholder="مثال: Hazem"
+          />
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+          <label class="form-label">الاسم الأخير</label>
+          <input
+            class="form-input"
+            required
+            [(ngModel)]="form.last_name"
+            name="last_name"
+            placeholder="مثال: AL-yaari"
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input
+            class="form-input"
+            type="email"
+            required
+            [(ngModel)]="form.email"
+            name="email"
+            placeholder="مثال: user@example.com"
+          />
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+          <label class="form-label">رقم الهاتف</label>
+          <input
+            class="form-input"
+            type="tel"
+            [(ngModel)]="form.phone"
+            name="phone"
+            placeholder="مثال: 777777711"
+          />
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="form-group">
+          <label class="form-label">تاريخ الميلاد</label>
+          <input
+            class="form-input"
+            type="date"
+            [(ngModel)]="form.date_of_birth"
+            name="date_of_birth"
+          />
+        </div>
+
+        <!-- Location -->
+        <div class="form-group">
+          <label class="form-label">الموقع</label>
+          <input
+            class="form-input"
+            [(ngModel)]="form.location"
+            name="location"
+            placeholder="مثال:  صنعاء, عدن"
+          />
+        </div>
+
+        <!-- Bio -->
+        <div class="form-group form-group-full">
+          <label class="form-label">نبذة مختصرة</label>
+          <textarea
+            class="form-input form-textarea"
+            rows="4"
+            [(ngModel)]="form.bio"
+            name="bio"
+            placeholder="اكتب نبذة مختصرة عنك..."
+          ></textarea>
+        </div>
+
+        <!-- Profile Picture note -->
+        <div class="form-group form-group-full">
+          <label class="form-label">صورة الملف الشخصي</label>
+          <p class="help-text">
+            يمكن تغيير الصورة من زر &quot;تغيير الصورة&quot; في الأعلى. يفضّل
+            رفع صورة مربعة (PNG أو JPG).
+          </p>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="primary-btn" [disabled]="saving">
+          {{ saving ? 'جارٍ حفظ التغييرات...' : 'حفظ التغييرات' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
