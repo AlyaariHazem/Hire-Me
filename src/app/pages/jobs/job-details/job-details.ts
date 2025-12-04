@@ -6,6 +6,10 @@ import { JobItem } from '@app/companies/models';
 import { SharedModule } from 'shared/shared-module';
 import { ToastrService } from 'ngx-toastr';
 import { Base } from 'shared/base/base';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { Select } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
 
 interface Company {
   id: number;
@@ -80,7 +84,14 @@ interface JobDetail extends Base {
 @Component({
   selector: 'app-job-details',
   standalone: true,
-  imports: [SharedModule, RouterLink],
+  imports: [
+    SharedModule,
+    RouterLink,
+    InputTextModule,
+    TextareaModule,
+    Select,
+    ButtonModule,
+  ],
   templateUrl: './job-details.html',
   styleUrl: './job-details.scss',
 })
@@ -108,6 +119,14 @@ export class JobDetails extends Base implements OnInit {
 
   cvFile: File | null = null;
   cvFileName: string = '';
+
+  // Experience options for dropdown
+  experienceOptions = [
+    { label: 'أقل من سنة', value: '0-1' },
+    { label: '1-3 سنوات', value: '1-3' },
+    { label: '3-5 سنوات', value: '3-5' },
+    { label: 'أكثر من 5 سنوات', value: '5+' },
+  ];
 
   ngOnInit(): void {
     const jobSlug = this.activatedRoute.snapshot.paramMap.get('slug'); // route param name = 'slug' in your example

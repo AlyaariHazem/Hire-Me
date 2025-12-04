@@ -273,10 +273,43 @@
   font-size: var(--font-size-sm);
 }
 
-.error-text {
+.p-error {
   color: var(--red-500);
   font-size: var(--font-size-xs);
   margin-top: 0.25rem;
+}
+
+// Override PrimeNG button to use blue theme
+::ng-deep .application-form {
+  .p-button-primary {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border-color: #2563eb;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+    
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      border-color: #1d4ed8;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+      transform: translateY(-1px);
+    }
+    
+    &:disabled {
+      opacity: 0.7;
+      cursor: default;
+      box-shadow: none;
+    }
+  }
+
+  .p-button-secondary {
+    border-color: #2563eb;
+    color: #2563eb;
+    
+    &:hover:not(:disabled) {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+  }
 }
 
 .form-row {
