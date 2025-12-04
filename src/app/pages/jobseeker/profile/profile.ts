@@ -28,6 +28,38 @@ export class Profile implements OnInit, OnDestroy {
   private toRevoke: string | null = null;
   showPreview = false;
 
+  // Date of birth as Date object for PrimeNG Calendar
+  dateOfBirthDate: Date | null = null;
+
+  // Options for select dropdowns
+  experienceLevelOptions = [
+    { label: 'مبتدئ', value: 'entry' },
+    { label: 'متوسط', value: 'mid' },
+    { label: 'متقدم', value: 'senior' },
+    { label: 'خبير', value: 'lead' },
+  ];
+
+  educationLevelOptions = [
+    { label: 'ثانوية عامة', value: 'high_school' },
+    { label: 'دبلوم', value: 'diploma' },
+    { label: 'بكالوريوس', value: 'bachelor' },
+    { label: 'ماجستير', value: 'master' },
+    { label: 'دكتوراه', value: 'phd' },
+  ];
+
+  jobTypeOptions = [
+    { label: 'دوام كامل', value: 'full_time' },
+    { label: 'دوام جزئي', value: 'part_time' },
+    { label: 'عقد مؤقت', value: 'contract' },
+    { label: 'عمل حر', value: 'freelance' },
+    { label: 'عن بُعد', value: 'remote' },
+  ];
+
+  availabilityOptions = [
+    { label: 'نعم', value: true },
+    { label: 'لا', value: false },
+  ];
+
   private destroy$ = new Subject<void>();
 
   private fb = inject(FormBuilder);
@@ -73,12 +105,15 @@ export class Profile implements OnInit, OnDestroy {
         const u = js.user ?? {};
 
         // basic form
+        const dateStr = this.normalizeDateForInput(u.date_of_birth);
+        this.dateOfBirthDate = dateStr ? new Date(dateStr) : null;
+        
         this.basicForm.patchValue({
           first_name: u.first_name || '',
           last_name: u.last_name || '',
           email: u.email || '',
           phone: u.phone || '',
-          date_of_birth: this.normalizeDateForInput(u.date_of_birth),
+          date_of_birth: dateStr,
           profile_picture: u.profile_picture || '',
           bio: u.bio || '',
           location: u.location || '',
@@ -150,7 +185,9 @@ export class Profile implements OnInit, OnDestroy {
 
     // BASIC
     const b = this.basicForm.value;
-    const dob = this.normalizeDateForApi(b.date_of_birth);
+    // Use dateOfBirthDate if available, otherwise use form value
+    const dobValue = this.dateOfBirthDate || b.date_of_birth;
+    const dob = this.normalizeDateForApi(dobValue);
     if (b.date_of_birth && !dob) {
       this.toastr.error('صيغة التاريخ يجب أن تكون YYYY-MM-DD');
       return;
@@ -289,5 +326,15 @@ export class Profile implements OnInit, OnDestroy {
       : fallback;
     this.toastr.error(msg);
     console.error(err);
+  }
+
+  // Handle date selection from PrimeNG Calendar
+  onDateOfBirthSelect(event: any): void {
+    if (event) {
+      const dateStr = this.normalizeDateForApi(event);
+      this.basicForm.patchValue({ date_of_birth: dateStr }, { emitEvent: false });
+    } else {
+      this.basicForm.patchValue({ date_of_birth: '' }, { emitEvent: false });
+    }
   }
 }

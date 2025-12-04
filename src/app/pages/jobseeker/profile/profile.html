@@ -14,23 +14,28 @@
       </div>
 
       <div class="resume-actions">
-        <label class="btn btn-light m-0">
-          تغيير الملف
+        <label>
+          <p-button
+            label="تغيير الملف"
+            styleClass="p-button-secondary"
+            [style]="{ margin: 0 }"
+          ></p-button>
           <input
             type="file"
             class="d-none"
             accept=".pdf,.doc,.docx"
             (change)="onResumeChange($event)"
+            title="تغيير ملف السيرة الذاتية"
+            aria-label="تغيير ملف السيرة الذاتية"
           />
         </label>
 
-        <button
+        <p-button
           type="button"
-          class="btn btn-secondary"
-          (click)="showPreview = !showPreview"
-        >
-          {{ showPreview ? 'إخفاء المعاينة' : 'معاينة' }}
-        </button>
+          [label]="showPreview ? 'إخفاء المعاينة' : 'معاينة'"
+          styleClass="p-button-secondary"
+          (onClick)="showPreview = !showPreview"
+        ></p-button>
 
         <a
           class="btn btn-primary"
@@ -47,13 +52,19 @@
     <ng-container>
       <div class="resume-empty">
         لا توجد سيرة ذاتية مرفوعة
-        <label class="btn btn-primary ml-2">
-          رفع ملف
+        <label>
+          <p-button
+            label="رفع ملف"
+            styleClass="p-button-primary"
+            [style]="{ marginLeft: '0.5rem' }"
+          ></p-button>
           <input
             type="file"
             class="d-none"
             accept=".pdf,.doc,.docx"
             (change)="onResumeChange($event)"
+            title="رفع ملف السيرة الذاتية"
+            aria-label="رفع ملف السيرة الذاتية"
           />
         </label>
       </div>
@@ -61,61 +72,98 @@
     }
 
     <!-- معاينة PDF فقط -->
-    <div class="resume-preview" *ngIf="isPdf && resumeSafeUrl">
-      <iframe [src]="resumeSafeUrl"></iframe>
+    @if (isPdf && resumeSafeUrl) {
+    <div class="resume-preview">
+      <iframe [src]="resumeSafeUrl" title="معاينة السيرة الذاتية"></iframe>
     </div>
-    <div class="resume-note" *ngIf="!isPdf && resumeUrl">
+    }
+    @if (!isPdf && resumeUrl) {
+    <div class="resume-note">
       لا يمكن عرض الملف داخل الصفحة بسبب إعدادات الخادم. استخدم زر «تنزيل».
     </div>
+    }
   </div>
 
   <!-- المعلومات الشخصية -->
   <section class="form-card" dir="rtl">
     <h3 class="form-card__title">👤 المعلومات الشخصية</h3>
 
-    <div class="form-grid">
-      <label class="field">
-        <span class="field__label">الاسم الأول</span>
-        <input class="field__control" formControlName="first_name" />
-      </label>
-
-      <label class="field">
-        <span class="field__label">الاسم الأخير</span>
-        <input class="field__control" formControlName="last_name" />
-      </label>
-
-      <label class="field">
-        <span class="field__label">البريد الإلكتروني</span>
-        <input type="email" class="field__control" formControlName="email" />
-      </label>
-
-      <label class="field">
-        <span class="field__label">رقم الهاتف</span>
-        <input class="field__control" formControlName="phone" />
-      </label>
-
-      <label class="field">
-        <span class="field__label">تاريخ الميلاد</span>
+    <div class="form-grid form-grid-3">
+      <div class="field">
+        <label class="field__label" for="first_name">الاسم الأول</label>
         <input
-          type="date"
+          pInputText
+          id="first_name"
           class="field__control"
-          formControlName="date_of_birth"
+          formControlName="first_name"
         />
-      </label>
+      </div>
 
-      <label class="field">
-        <span class="field__label">العنوان</span>
-        <input class="field__control" formControlName="location" />
-      </label>
+      <div class="field">
+        <label class="field__label" for="last_name">الاسم الأخير</label>
+        <input
+          pInputText
+          id="last_name"
+          class="field__control"
+          formControlName="last_name"
+        />
+      </div>
 
-      <label class="field field--full">
-        <span class="field__label">نبذة مختصرة</span>
+      <div class="field">
+        <label class="field__label" for="email">البريد الإلكتروني</label>
+        <input
+          pInputText
+          type="email"
+          id="email"
+          class="field__control"
+          formControlName="email"
+        />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="phone">رقم الهاتف</label>
+        <input
+          pInputText
+          id="phone"
+          class="field__control"
+          formControlName="phone"
+        />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="date_of_birth">تاريخ الميلاد</label>
+        <p-datepicker
+          id="date_of_birth"
+          [(ngModel)]="dateOfBirthDate"
+          (onSelect)="onDateOfBirthSelect($event)"
+          dateFormat="yy-mm-dd"
+          placeholder="اختر تاريخ الميلاد"
+          appendTo="body"
+          styleClass="w-full"
+          inputStyleClass="field__control"
+        />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="location">العنوان</label>
+        <input
+          pInputText
+          id="location"
+          class="field__control"
+          formControlName="location"
+        />
+      </div>
+
+      <div class="field field--full">
+        <label class="field__label" for="bio">نبذة مختصرة</label>
         <textarea
+          pTextarea
+          id="bio"
           rows="4"
           class="field__control"
           formControlName="bio"
         ></textarea>
-      </label>
+      </div>
     </div>
   </section>
 
@@ -123,95 +171,135 @@
   <section class="form-card" dir="rtl" [formGroup]="jobForm">
     <h3 class="form-card__title">💼 المعلومات المهنية</h3>
 
-    <div class="form-grid">
-      <label class="field">
-        <span class="field__label">سنوات الخبرة</span>
-        <select class="field__control" formControlName="experience_level">
-          <option value="entry">مبتدئ</option>
-          <option value="mid">متوسط</option>
-          <option value="senior">متقدم</option>
-          <option value="lead">خبير</option>
-        </select>
-      </label>
+    <div class="form-grid form-grid-3">
+      <div class="field">
+        <label class="field__label" for="experience_level">سنوات الخبرة</label>
+        <p-select
+        [showClear]="true"
+          id="experience_level"
+          class="field__control"
+          formControlName="experience_level"
+          [options]="experienceLevelOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="اختر مستوى الخبرة"
+          appendTo="body"
+          styleClass="w-full"
+        ></p-select>
+      </div>
 
-      <label class="field">
-        <span class="field__label">المستوى التعليمي</span>
-        <select class="field__control" formControlName="education_level">
-          <option value="high_school">ثانوية عامة</option>
-          <option value="diploma">دبلوم</option>
-          <option value="bachelor">بكالوريوس</option>
-          <option value="master">ماجستير</option>
-          <option value="phd">دكتوراه</option>
-        </select>
-      </label>
+      <div class="field">
+        <label class="field__label" for="education_level">المستوى التعليمي</label>
+        <p-select
+        [showClear]="true"
+          id="education_level"
+          class="field__control"
+          formControlName="education_level"
+          [options]="educationLevelOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="اختر المستوى التعليمي"
+          appendTo="body"
+          styleClass="w-full"
+        ></p-select>
+      </div>
 
-      <label class="field">
-        <span class="field__label">الراتب الأدنى</span>
-        <input
-          type="number"
+      <div class="field">
+        <label class="field__label" for="preferred_job_type">نوع العمل المفضل</label>
+        <p-select
+        [showClear]="true"
+          id="preferred_job_type"
+          class="field__control"
+          formControlName="preferred_job_type"
+          [options]="jobTypeOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="اختر نوع العمل"
+          appendTo="body"
+          styleClass="w-full"
+        ></p-select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="expected_salary_min">الراتب الأدنى</label>
+        <p-inputNumber
+          id="expected_salary_min"
           class="field__control"
           formControlName="expected_salary_min"
-        />
-      </label>
+          [showButtons]="false"
+          [min]="0"
+          [useGrouping]="true"
+          placeholder="0"
+          styleClass="w-full"
+        ></p-inputNumber>
+      </div>
 
-      <label class="field">
-        <span class="field__label">الراتب الأعلى</span>
-        <input
-          type="number"
+      <div class="field">
+        <label class="field__label" for="expected_salary_max">الراتب الأعلى</label>
+        <p-inputNumber
+          id="expected_salary_max"
           class="field__control"
           formControlName="expected_salary_max"
-        />
-      </label>
+          [showButtons]="false"
+          [min]="0"
+          [useGrouping]="true"
+          placeholder="0"
+          styleClass="w-full"
+        ></p-inputNumber>
+      </div>
 
-      <label class="field">
-        <span class="field__label">نوع العمل المفضل</span>
-        <select class="field__control" formControlName="preferred_job_type">
-          <option value="full_time">دوام كامل</option>
-          <option value="part_time">دوام جزئي</option>
-          <option value="contract">عقد مؤقت</option>
-          <option value="freelance">عمل حر</option>
-          <option value="remote">عن بُعد</option>
-        </select>
-      </label>
+      <div class="field">
+        <label class="field__label" for="availability">متاح للعمل</label>
+        <!-- show the clear -->
+        <p-select
+        [showClear]="true"
+          id="availability"
+          class="field__control"
+          formControlName="availability"
+          [options]="availabilityOptions"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          styleClass="w-full"
+        ></p-select>
+      </div>
 
-      <label class="field">
-        <span class="field__label">متاح للعمل</span>
-        <select class="field__control" formControlName="availability">
-          <option [value]="true">نعم</option>
-          <option [value]="false">لا</option>
-        </select>
-      </label>
-
-      <label class="field">
-        <span class="field__label">المهارات (افصل بفواصل)</span>
+      <div class="field">
+        <label class="field__label" for="skills">المهارات (افصل بفواصل)</label>
         <input
+          pInputText
+          id="skills"
           class="field__control"
           formControlName="skills"
           placeholder="JS, React, Node"
         />
-      </label>
+      </div>
 
-      <label class="field">
-        <span class="field__label">اللغات (افصل بفواصل)</span>
+      <div class="field">
+        <label class="field__label" for="languages">اللغات (افصل بفواصل)</label>
         <input
+          pInputText
+          id="languages"
           class="field__control"
           formControlName="languages"
           placeholder="Arabic, English"
         />
-      </label>
+      </div>
     </div>
   </section>
 
   <div class="form-actions">
-    <button
+    <p-button
       type="button"
-      class="btn btn-secondary"
-      (click)="basicForm.reset(); jobForm.reset();"
-    >
-      إلغاء
-    </button>
-    <button type="button" class="btn btn-primary" (click)="saveChanges()">
-      حفظ التغييرات
-    </button>
+      label="إلغاء"
+      styleClass="p-button-secondary"
+      (onClick)="basicForm.reset(); jobForm.reset();"
+    ></p-button>
+    <p-button
+      type="button"
+      label="حفظ التغييرات"
+      styleClass="p-button-primary"
+      (onClick)="saveChanges()"
+    ></p-button>
   </div>
 </form>

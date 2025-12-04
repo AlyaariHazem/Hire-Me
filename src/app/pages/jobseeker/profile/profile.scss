@@ -414,16 +414,21 @@ textarea.form-control {
 
 /* Grid */
 .form-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.form-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
 .field{grid-column:span 6;display:flex;flex-direction:column;min-width:0}
+.form-grid-3 .field{grid-column:span 1}
 .field--full{grid-column:1/-1}
+.form-grid-3 .field--full{grid-column:1/-1}
 
 /* Field */
 .field__label{font-size:.85rem;color:#475569;margin:0 0 .35rem}
-.field__control{width:100%;padding:.65rem .8rem;border:1px solid #d1d5db;border-radius:10px;font-size:.95rem;background:#fff;transition:border-color .15s,box-shadow .15s}
+.field__control{width:100%;padding:.65rem .8rem;font-size:.95rem;background:#fff;transition:border-color .15s,box-shadow .15s}
 .field__control:focus{outline:0;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 .field__control.ng-invalid.ng-touched{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.12)}
 textarea.field__control{min-height:110px;resize:vertical}
-
+.p-select{
+  padding: 0.2rem !important;
+}
 /* Buttons */
 .form-actions{display:flex;justify-content:center;gap:.75rem;margin-top:1rem}
 .btn{padding:.55rem 1.1rem;border-radius:10px;font-weight:600;cursor:pointer;transition:.15s;border:1px solid transparent}
@@ -433,4 +438,64 @@ textarea.field__control{min-height:110px;resize:vertical}
 .btn-secondary:hover{background:#e5e7eb}
 
 /* Responsive */
-@media (max-width:768px){ .field{grid-column:1/-1} }
+@media (max-width:768px){ 
+  .field{grid-column:1/-1} 
+  .form-grid-3{grid-template-columns:1fr}
+  .form-grid-3 .field{grid-column:span 1}
+}
+
+// PrimeNG button overrides for blue theme
+::ng-deep {
+  .p-button-primary {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border-color: #2563eb;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+    
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      border-color: #1d4ed8;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+      transform: translateY(-1px);
+    }
+    
+    &:disabled {
+      opacity: 0.7;
+      cursor: default;
+      box-shadow: none;
+    }
+  }
+
+  .p-button-secondary {
+    border-color: #2563eb;
+    color: #2563eb;
+    
+    &:hover:not(:disabled) {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+  }
+
+  // Select styling
+  .p-select {
+    width: 100%;
+  }
+
+  // InputNumber styling
+  .p-inputnumber {
+    width: 100%;
+  }
+
+  .p-inputnumber-input {
+    width: 100%;
+  }
+
+  // Calendar styling
+  .p-calendar {
+    width: 100%;
+  }
+
+  .p-calendar .p-inputtext {
+    width: 100%;
+  }
+}

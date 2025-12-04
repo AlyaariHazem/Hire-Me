@@ -13,10 +13,15 @@ import { Alerts } from './alerts/alerts';
 import { Settings } from './settings/settings';
 import { SharedModule } from '../../../shared/shared-module';
 import { CvBuilder } from './cv-builder/cv-builder';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ProfileService } from './services/profile.service';
-
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { TextareaModule } from 'primeng/textarea';
+import { Select } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
+import { DatePickerModule } from 'primeng/datepicker';
 const components = [
   Dashboard,
   JobSeeker,
@@ -34,7 +39,14 @@ RouterLink,
 SideBar,
 SavedJobs,
 SharedModule,
-ReactiveFormsModule
+ReactiveFormsModule,
+FormsModule,
+InputTextModule,
+InputNumberModule,
+TextareaModule,
+Select,
+ButtonModule,
+DatePickerModule
 ];
 @NgModule({
   declarations: [...components],
