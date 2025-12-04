@@ -30,12 +30,12 @@ const routes: Routes = [
         component: Jobs,
       },
       {
-    path: 'jobs/:slug',
-    loadComponent: () =>
-      import('./../jobs/job-details/job-details').then(
-        (c) => c.JobDetails
-      ),
-  },
+        path: 'job-details/:slug',
+        loadComponent: () =>
+          import('./../jobs/job-details/job-details').then(
+            (c) => c.JobDetails
+          ),
+      },
     ],
   },
 ];

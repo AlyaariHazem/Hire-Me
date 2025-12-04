@@ -329,7 +329,7 @@ export class JobDetails extends Base implements OnInit {
   }
 
   navigateToJob(slug: string): void {
-    this.router.navigate(['/jobseeker/jobs', slug]).then(() => {
+    this.router.navigate(['/jobseeker/job-details', slug]).then(() => {
       window.location.reload();
     });
   }
