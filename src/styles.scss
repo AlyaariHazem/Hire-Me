@@ -154,4 +154,15 @@
     --gray-800: #424242;
     --gray-900: #212121;
     color-scheme: light;
+    --p-primary-500: #3b82f6!important; /* blue */
+
+    /* optional: adjust the rest so hover/active look nice */
+    --p-primary-600: #2563eb!important;
+    --p-primary-700: #1d4ed8!important;
+    --p-primary-800: #1e40af!important;
+  
+    /* if you want to be explicit */
+    --p-primary-color: var(--p-primary-500)!important;
+    --p-primary-hover-color: var(--p-primary-600)!important;
+    --p-primary-active-color: var(--p-primary-700)!important;
 }

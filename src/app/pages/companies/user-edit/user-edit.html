@@ -24,6 +24,8 @@
           class="picture-file-input"
           accept="image/*"
           (change)="onProfilePictureSelected($event)"
+          title="اختر صورة الملف الشخصي"
+          aria-label="اختر صورة الملف الشخصي"
         />
       </div>
 
@@ -42,47 +44,81 @@
       <div class="form-grid">
         <!-- First Name -->
         <div class="form-group">
-          <label class="form-label">الاسم الأول</label>
+          <label class="form-label" for="first_name">الاسم الأول</label>
           <input
-            class="form-input"
+            pInputText
+            id="first_name"
             required
             [(ngModel)]="form.first_name"
             name="first_name"
             placeholder="مثال: Hazem"
+            #firstNameCtrl="ngModel"
+            [class.p-invalid]="firstNameCtrl.invalid && (firstNameCtrl.dirty || firstNameCtrl.touched)"
           />
+          <small
+            class="p-error"
+            *ngIf="firstNameCtrl.errors?.['required'] && (firstNameCtrl.dirty || firstNameCtrl.touched)"
+          >
+            الاسم الأول مطلوب
+          </small>
         </div>
 
         <!-- Last Name -->
         <div class="form-group">
-          <label class="form-label">الاسم الأخير</label>
+          <label class="form-label" for="last_name">الاسم الأخير</label>
           <input
-            class="form-input"
+            pInputText
+            id="last_name"
             required
             [(ngModel)]="form.last_name"
             name="last_name"
             placeholder="مثال: AL-yaari"
+            #lastNameCtrl="ngModel"
+            [class.p-invalid]="lastNameCtrl.invalid && (lastNameCtrl.dirty || lastNameCtrl.touched)"
           />
+          <small
+            class="p-error"
+            *ngIf="lastNameCtrl.errors?.['required'] && (lastNameCtrl.dirty || lastNameCtrl.touched)"
+          >
+            الاسم الأخير مطلوب
+          </small>
         </div>
 
         <!-- Email -->
         <div class="form-group">
-          <label class="form-label">البريد الإلكتروني</label>
+          <label class="form-label" for="email">البريد الإلكتروني</label>
           <input
-            class="form-input"
+            pInputText
             type="email"
+            id="email"
             required
             [(ngModel)]="form.email"
             name="email"
             placeholder="مثال: user@example.com"
+            #emailCtrl="ngModel"
+            [class.p-invalid]="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)"
           />
+          <small
+            class="p-error"
+            *ngIf="emailCtrl.errors?.['required'] && (emailCtrl.dirty || emailCtrl.touched)"
+          >
+            البريد الإلكتروني مطلوب
+          </small>
+          <small
+            class="p-error"
+            *ngIf="emailCtrl.errors?.['email'] && (emailCtrl.dirty || emailCtrl.touched)"
+          >
+            بريد إلكتروني غير صالح
+          </small>
         </div>
 
         <!-- Phone -->
         <div class="form-group">
-          <label class="form-label">رقم الهاتف</label>
+          <label class="form-label" for="phone">رقم الهاتف</label>
           <input
-            class="form-input"
+            pInputText
             type="tel"
+            id="phone"
             [(ngModel)]="form.phone"
             name="phone"
             placeholder="مثال: 777777711"
@@ -91,10 +127,11 @@
 
         <!-- Date of Birth -->
         <div class="form-group">
-          <label class="form-label">تاريخ الميلاد</label>
+          <label class="form-label" for="date_of_birth">تاريخ الميلاد</label>
           <input
-            class="form-input"
+            pInputText
             type="date"
+            id="date_of_birth"
             [(ngModel)]="form.date_of_birth"
             name="date_of_birth"
           />
@@ -102,9 +139,10 @@
 
         <!-- Location -->
         <div class="form-group">
-          <label class="form-label">الموقع</label>
+          <label class="form-label" for="location">الموقع</label>
           <input
-            class="form-input"
+            pInputText
+            id="location"
             [(ngModel)]="form.location"
             name="location"
             placeholder="مثال:  صنعاء, عدن"
@@ -113,9 +151,10 @@
 
         <!-- Bio -->
         <div class="form-group form-group-full">
-          <label class="form-label">نبذة مختصرة</label>
+          <label class="form-label" for="bio">نبذة مختصرة</label>
           <textarea
-            class="form-input form-textarea"
+            pTextarea
+            id="bio"
             rows="4"
             [(ngModel)]="form.bio"
             name="bio"
@@ -134,9 +173,13 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="primary-btn" [disabled]="saving">
-          {{ saving ? 'جارٍ حفظ التغييرات...' : 'حفظ التغييرات' }}
-        </button>
+        <p-button
+          type="submit"
+          [label]="saving ? 'جارٍ حفظ التغييرات...' : 'حفظ التغييرات'"
+          [disabled]="saving"
+          [loading]="saving"
+          styleClass="p-button-primary"
+        ></p-button>
       </div>
     </form>
   </div>

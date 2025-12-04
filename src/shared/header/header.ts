@@ -195,6 +195,7 @@ private teardownDataBindings(): void {
       profile: '/companies/profile',
       'post-job': '/companies/post-job',
       'employer-settings': '/companies/settings',
+      'user-edit': '/companies/user-edit',
     };
     if (action === 'logout') {
       localStorage.removeItem('access');

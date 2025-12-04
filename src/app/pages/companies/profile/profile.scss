@@ -104,7 +104,7 @@
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px 24px;
 }
 
@@ -157,6 +157,28 @@
   margin-top: 8px;
   display: flex;
   justify-content: flex-start;
+}
+
+// Override PrimeNG button to use blue theme
+::ng-deep .form-actions {
+  .p-button-primary {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border-color: #2563eb;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+    
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      border-color: #1d4ed8;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+      transform: translateY(-1px);
+    }
+    
+    &:disabled {
+      opacity: 0.7;
+      cursor: default;
+      box-shadow: none;
+    }
+  }
 }
 
 .primary-btn {
@@ -218,7 +240,7 @@
     width: 100%;
   }
 }
-.error-text{
+.p-error {
   color: red;
   font-size: 0.8rem;
   margin-top: 4px;

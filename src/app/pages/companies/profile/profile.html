@@ -24,6 +24,8 @@
           class="logo-file-input"
           accept="image/*"
           (change)="onLogoSelected($event)"
+          title="اختر شعار الشركة"
+          aria-label="اختر شعار الشركة"
         />
       </div>
 
@@ -41,49 +43,56 @@
     <form class="company-form" (ngSubmit)="save()">
       <div class="form-grid">
         <!-- Company name -->
-        <div class="form-group form-group-full">
-          <label class="form-label">اسم الشركة</label>
+        <div class="form-group">
+          <label class="form-label" for="company_name">اسم الشركة</label>
           <input
-            class="form-input"
+            pInputText
+            id="company_name"
             required
             [(ngModel)]="form.company_name"
             name="company_name"
             placeholder="مثال: Data Trans"
+            #companyNameCtrl="ngModel"
+            [class.p-invalid]="companyNameCtrl.invalid && (companyNameCtrl.dirty || companyNameCtrl.touched)"
           />
-        </div>
-
-        <!-- Description -->
-        <div class="form-group form-group-full">
-          <label class="form-label">وصف الشركة</label>
-          <textarea
-            class="form-input form-textarea"
-            rows="4"
-            [(ngModel)]="form.company_description"
-            name="company_description"
-            placeholder="نبذة مختصرة عن نشاط الشركة والخدمات التي تقدمها"
-          ></textarea>
+          <small
+            class="p-error"
+            *ngIf="companyNameCtrl.errors?.['required'] && (companyNameCtrl.dirty || companyNameCtrl.touched)"
+          >
+            اسم الشركة مطلوب
+          </small>
         </div>
 
         <!-- Website -->
         <div class="form-group">
-          <label class="form-label">موقع الشركة</label>
+          <label class="form-label" for="company_website">موقع الشركة</label>
           <input
-            class="form-input"
+            pInputText
             type="url"
+            id="company_website"
             [(ngModel)]="form.company_website"
             name="company_website"
             placeholder="https://example.com"
+            #websiteCtrl="ngModel"
+            [class.p-invalid]="websiteCtrl.invalid && (websiteCtrl.dirty || websiteCtrl.touched)"
           />
+          <small
+            class="p-error"
+            *ngIf="websiteCtrl.errors?.['url'] && (websiteCtrl.dirty || websiteCtrl.touched)"
+          >
+            رابط غير صالح
+          </small>
         </div>
 
         <!-- Founded year -->
         <div class="form-group">
-          <label class="form-label">سنة التأسيس</label>
+          <label class="form-label" for="founded_year">سنة التأسيس</label>
           <input
-            class="form-input"
+            pInputText
             type="number"
+            id="founded_year"
             min="1900"
-          max="2100"
+            max="2100"
             [(ngModel)]="form.founded_year"
             name="founded_year"
             placeholder="2015"
@@ -92,7 +101,7 @@
 
         <!-- Size -->
         <div class="form-group">
-          <label class="form-label">حجم الشركة</label>
+          <label class="form-label" for="company_size">حجم الشركة</label>
           <p-select
             inputId="company_size"
             appendTo="body"
@@ -111,23 +120,36 @@
           >
           </p-select>
           <small
-            class="error-text"
+            class="p-error"
             *ngIf="companySizeCtrl.invalid && (companySizeCtrl.dirty || companySizeCtrl.touched)"
           >
             يرجى اختيار حجم الشركة.
           </small>
-         
         </div>
 
         <!-- Industry -->
         <div class="form-group">
-          <label class="form-label">الصناعة</label>
+          <label class="form-label" for="industry">الصناعة</label>
           <input
-            class="form-input"
+            pInputText
+            id="industry"
             [(ngModel)]="form.industry"
             name="industry"
             placeholder="تقنية المعلومات، تجارة، تعليم..."
           />
+        </div>
+
+        <!-- Description -->
+        <div class="form-group form-group-full">
+          <label class="form-label" for="company_description">وصف الشركة</label>
+          <textarea
+            pTextarea
+            id="company_description"
+            rows="4"
+            [(ngModel)]="form.company_description"
+            name="company_description"
+            placeholder="نبذة مختصرة عن نشاط الشركة والخدمات التي تقدمها"
+          ></textarea>
         </div>
 
         <!-- Logo note -->
@@ -141,9 +163,13 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="primary-btn" [disabled]="saving">
-          {{ saving ? 'جارٍ حفظ التغييرات...' : 'حفظ التغييرات' }}
-        </button>
+        <p-button
+          type="submit"
+          [label]="saving ? 'جارٍ حفظ التغييرات...' : 'حفظ التغييرات'"
+          [disabled]="saving"
+          [loading]="saving"
+          styleClass="p-button-primary"
+        ></p-button>
       </div>
     </form>
   </div>
