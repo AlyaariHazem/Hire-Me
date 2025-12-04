@@ -135,6 +135,7 @@
         <p-datepicker
           id="date_of_birth"
           [(ngModel)]="dateOfBirthDate"
+          [ngModelOptions]="{standalone: true}"
           (onSelect)="onDateOfBirthSelect($event)"
           dateFormat="yy-mm-dd"
           placeholder="اختر تاريخ الميلاد"
