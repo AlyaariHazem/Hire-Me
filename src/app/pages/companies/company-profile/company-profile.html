@@ -1,5 +1,6 @@
 <!-- Company Profile Hero -->
-<section class="company-profile-hero" *ngIf="company">
+@if (company) {
+<section class="company-profile-hero">
   <div class="container">
     <div class="company-header">
       <img
@@ -11,19 +12,25 @@
       />
       <div class="company-main-info">
         <h1 id="companyName">{{ company.name }}</h1>
-        <div class="company-industry" id="companyIndustry" *ngIf="company.industry">{{ company.industry }}</div>
-        <div class="company-location" *ngIf="company.city || company.country">
+        @if (company.industry) {
+        <div class="company-industry" id="companyIndustry">{{ company.industry }}</div>
+        }
+        @if (company.city || company.country) {
+        <div class="company-location">
           <span>📍</span>
-          <span id="companyLocation">{{ company.city }}<span *ngIf="company.city && company.country">، </span>{{ company.country }}</span>
+          <span id="companyLocation">{{ company.city }}@if (company.city && company.country) {<span>، </span>}{{ company.country }}</span>
         </div>
+        }
       </div>
     </div>
 
     <div class="company-quick-stats">
-      <div class="quick-stat" *ngIf="company.employees_count || company.size">
+      @if (company.employees_count || company.size) {
+      <div class="quick-stat">
         <div class="quick-stat-number" id="employeeCount">{{ company.employees_count || company.size }}</div>
         <div class="quick-stat-label">موظف</div>
       </div>
+      }
       <div class="quick-stat">
         <div class="quick-stat-number" id="openJobsCount">{{ company.active_jobs }}</div>
         <div class="quick-stat-label">وظيفة متاحة</div>
@@ -32,10 +39,12 @@
         <div class="quick-stat-number" id="followersCount">{{ company.followers_count }}</div>
         <div class="quick-stat-label">متابع</div>
       </div>
-      <div class="quick-stat" *ngIf="company.founded_year">
+      @if (company.founded_year) {
+      <div class="quick-stat">
         <div class="quick-stat-number" id="foundedYear">{{ company.founded_year }}</div>
         <div class="quick-stat-label">سنة التأسيس</div>
       </div>
+      }
     </div>
 
     <div class="company-actions">
@@ -53,9 +62,11 @@
     </div>
   </div>
 </section>
+}
 
 <!-- Company Content -->
-<section class="company-content" *ngIf="company">
+@if (company) {
+<section class="company-content">
   <div class="container">
     <div class="content-grid">
       <!-- Main Content -->
@@ -92,7 +103,8 @@
         </div>
 
         <!-- Overview Tab -->
-        <div class="tab-content active" *ngIf="activeTab === 'overview'">
+        @if (activeTab === 'overview') {
+        <div class="tab-content active">
           <div class="company-description">
             <h3>عن الشركة</h3>
             <p>{{ company.description || 'لا يوجد وصف متاح للشركة.' }}</p>
@@ -133,6 +145,7 @@
             </div>
           </div>
         </div>
+        }
 
         <!-- Jobs Tab -->
         @if (activeTab === 'jobs') {
@@ -198,7 +211,8 @@
         }
 
         <!-- Culture Tab (Static for now) -->
-        <div class="tab-content active" *ngIf="activeTab === 'culture'">
+        @if (activeTab === 'culture') {
+        <div class="tab-content active">
           <h3>ثقافة العمل</h3>
           <div class="company-description">
             <p>
@@ -208,9 +222,11 @@
              <p>تفاصيل ثقافة العمل...</p>
           </div>
         </div>
+        }
 
         <!-- Reviews Tab (Static for now) -->
-        <div class="tab-content active" *ngIf="activeTab === 'reviews'">
+        @if (activeTab === 'reviews') {
+        <div class="tab-content active">
           <h3>تقييمات الموظفين</h3>
           <div class="company-description">
              <div style="text-align: center; margin-bottom: 2rem">
@@ -227,6 +243,7 @@
             </div>
           </div>
         </div>
+        }
       </div>
 
       <!-- Sidebar -->
@@ -235,22 +252,30 @@
         <div class="sidebar-card">
           <h3 class="sidebar-title">معلومات الشركة</h3>
           <div class="info-list">
-            <div class="info-item" *ngIf="company.size">
+            @if (company.size) {
+            <div class="info-item">
               <span class="info-label">الحجم</span>
               <span class="info-value">{{ company.size }}</span>
             </div>
-            <div class="info-item" *ngIf="company.founded_year">
+            }
+            @if (company.founded_year) {
+            <div class="info-item">
               <span class="info-label">التأسيس</span>
               <span class="info-value">{{ company.founded_year }}</span>
             </div>
-            <div class="info-item" *ngIf="company.city">
+            }
+            @if (company.city) {
+            <div class="info-item">
               <span class="info-label">المقر الرئيسي</span>
               <span class="info-value">{{ company.city }}</span>
             </div>
-            <div class="info-item" *ngIf="company.industry">
+            }
+            @if (company.industry) {
+            <div class="info-item">
               <span class="info-label">التخصصات</span>
               <span class="info-value">{{ company.industry }}</span>
             </div>
+            }
           </div>
         </div>
 
@@ -258,33 +283,44 @@
         <div class="sidebar-card">
           <h3 class="sidebar-title">معلومات الاتصال</h3>
           <div class="contact-info">
-            <div class="contact-item" *ngIf="company.website">
+            @if (company.website) {
+            <div class="contact-item">
               <span class="contact-icon">🌐</span>
               <a [href]="company.website" target="_blank">{{ company.website }}</a>
             </div>
-            <div class="contact-item" *ngIf="company.email">
+            }
+            @if (company.email) {
+            <div class="contact-item">
               <span class="contact-icon">📧</span>
               <span>{{ company.email }}</span>
             </div>
-            <div class="contact-item" *ngIf="company.phone">
+            }
+            @if (company.phone) {
+            <div class="contact-item">
               <span class="contact-icon">�</span>
               <span>{{ company.phone }}</span>
             </div>
-            <div class="contact-item" *ngIf="company.address">
+            @if (company.address) {
+            <div class="contact-item">
               <span class="contact-icon">📍</span>
               <span>{{ company.address }}</span>
             </div>
+            }
+            }
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+}
 
 <!-- Similar Companies (Static placeholder) -->
-<section class="similar-companies" *ngIf="false">
+@if (false) {
+<section class="similar-companies">
   <div class="container">
     <h2 class="similar-title">شركات مشابهة</h2>
     <!-- ... -->
   </div>
 </section>
+}
