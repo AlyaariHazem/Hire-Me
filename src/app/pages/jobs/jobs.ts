@@ -8,10 +8,13 @@ import { SharedModule } from 'shared/shared-module';
 import { UserType } from 'core/types';
 import { LoaderService } from 'shared/services/loader.service';
 import { ApplicationService } from 'shared/services/application.service';
+import { InputTextModule } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-jobs',
-  imports: [SharedModule],
+  imports: [SharedModule, InputTextModule, Select, ButtonModule],
   templateUrl: './jobs.html',
   styleUrl: './jobs.scss'
 })
@@ -39,6 +42,32 @@ export class Jobs {
 
    // sort state
   sortValue = 'relevance';
+
+  // Options for select dropdowns
+  cityOptions = [
+    { label: 'جميع المواقع', value: '' },
+    { label: 'صنعاء', value: 'sanaa' },
+    { label: 'عدن', value: 'aden' },
+    { label: 'تعز', value: 'taiz' },
+    { label: 'الحديدة', value: 'hodeidah' },
+    { label: 'إب', value: 'ibb' },
+    { label: 'المكلا', value: 'mukalla' },
+    { label: 'عمل عن بُعد', value: 'remote' },
+  ];
+
+  categoryOptions = [
+    { label: 'جميع الفئات', value: undefined },
+    { label: 'تقنية المعلومات', value: 1 },
+    { label: 'الهندسة', value: 2 },
+    { label: 'التسويق', value: 3 },
+  ];
+
+  sortOptions = [
+    { label: 'الأكثر صلة', value: 'relevance' },
+    { label: 'الأحدث', value: 'date' },
+    { label: 'الراتب', value: 'salary' },
+    { label: 'اسم الشركة', value: 'company' },
+  ];
 
   // ALL filters state
    filters: JobFilters = {
@@ -100,13 +129,13 @@ export class Jobs {
     this.getJobs();
   }
 
-  onCityChange(city: string) {
-    this.filters.city = city as any || undefined;
+  onCityChange(city: string | null | undefined) {
+    this.filters.city = (city as any) || undefined;
     this.currentPage = 1;
     this.getJobs();
   }
 
-  onCategoryChange(categoryId: number | undefined) {
+  onCategoryChange(categoryId: number | undefined | null) {
     // backend expects integer id, empty string means no filter
     this.filters.category = categoryId ? Number(categoryId) : undefined;
     this.currentPage = 1;

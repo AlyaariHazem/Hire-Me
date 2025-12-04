@@ -8,9 +8,9 @@
           <div class="search-fields">
             <div class="field-group">
               <input
+                pInputText
                 type="text"
                 id="job-title"
-                class="form-input"
                 placeholder="عنوان الوظيفة أو الكلمات المفتاحية"
                 name="search"
                 [(ngModel)]="filters.search"
@@ -18,46 +18,44 @@
             </div>
 
             <div class="field-group">
-              <select
+              <p-select
                 id="location"
-                class="form-select"
                 name="city"
                 [(ngModel)]="filters.city"
-                (change)="onCityChange(filters.city || '')"
-              >
-                <option value="">جميع المواقع</option>
-                <option value="sanaa">صنعاء</option>
-                <option value="aden">عدن</option>
-                <option value="taiz">تعز</option>
-                <option value="hodeidah">الحديدة</option>
-                <option value="ibb">إب</option>
-                <option value="mukalla">المكلا</option>
-                <option value="remote">عمل عن بُعد</option>
-              </select>
+                [options]="cityOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="جميع المواقع"
+                [showClear]="true"
+                (onChange)="onCityChange($event.value || '')"
+                appendTo="body"
+                styleClass="w-full"
+              ></p-select>
             </div>
 
             <div class="field-group">
-              <!-- هنا يفضّل لاحقاً تعبّي الخيارات من getCategories() وتخلي value=id -->
-              <select
+              <p-select
                 id="category"
-                class="form-select"
                 name="category"
                 [(ngModel)]="filters.category"
-                (change)="onCategoryChange(filters.category)"
-              >
-                <option [ngValue]="undefined">جميع الفئات</option>
-                <option [ngValue]="1">تقنية المعلومات</option>
-                <option [ngValue]="2">الهندسة</option>
-                <option [ngValue]="3">التسويق</option>
-                <!-- الخ... من الـ backend لاحقاً -->
-              </select>
+                [options]="categoryOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="جميع الفئات"
+                [showClear]="true"
+                (onChange)="onCategoryChange($event.value)"
+                appendTo="body"
+                styleClass="w-full"
+              ></p-select>
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary search-btn">
-            <span class="icon-search"></span>
-            بحث
-          </button>
+          <p-button
+            type="submit"
+            label="بحث"
+            icon="pi pi-search"
+            styleClass="p-button-primary search-btn"
+          ></p-button>
         </form>
       </div>
     </section>
@@ -187,19 +185,17 @@
 
               <div class="sort-dropdown">
                 <label for="sort">ترتيب حسب:</label>
-                <select
+                <p-select
                   id="sort"
-                  class="form-select"
-                  style="width: auto"
-                  [(ngModel)]="sortValue"
-                  (ngModelChange)="onSortChange($event)"
                   name="sort"
-                >
-                  <option value="relevance">الأكثر صلة</option>
-                  <option value="date">الأحدث</option>
-                  <option value="salary">الراتب</option>
-                  <option value="company">اسم الشركة</option>
-                </select>
+                  [(ngModel)]="sortValue"
+                  [options]="sortOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="onSortChange($event.value)"
+                  appendTo="body"
+                  styleClass="w-auto"
+                ></p-select>
               </div>
             </div>
 
@@ -312,7 +308,8 @@
             </div>
 
             <!-- Pagination -->
-            <nav class="pagination" *ngIf="totalPages > 1">
+            @if (totalPages > 1) {
+            <nav class="pagination">
               <button
                 class="pagination-btn"
                 (click)="previousPage()"
@@ -341,6 +338,7 @@
                 التالي
               </button>
             </nav>
+            }
 
             <!-- Load More Button (Alternative to pagination) -->
             <div class="text-center" style="margin-top: 2rem; display: none">
