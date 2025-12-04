@@ -42,4 +42,22 @@ export class CompanyService {
     const url = environment.getUrl(slug, 'companies');
     return this.http.get<Company>(url);
   }
+
+  // Follow a company
+  followCompany(companyId: number): Observable<any> {
+    const url = environment.getUrl(`${companyId}/follow`, 'companies');
+    return this.http.post(url, {});
+  }
+
+  // Unfollow a company (delete the follow relationship)
+  unfollowCompany(companyId: number): Observable<any> {
+    const url = environment.getUrl(`${companyId}/follow`, 'companies');
+    return this.http.delete(url);
+  }
+
+  // Get jobs for a specific company
+  getCompanyJobs(companyId: number): Observable<any> {
+    const url = environment.getUrl(`${companyId}/jobs`, 'companies');
+    return this.http.get<any>(url);
+  }
 }

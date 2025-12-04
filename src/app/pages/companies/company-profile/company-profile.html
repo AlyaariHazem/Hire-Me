@@ -5,6 +5,7 @@
       <img
         [src]="company.logo || 'images/company-logo-1.jpg'"
         [alt]="company.name"
+        [title]="company.name"
         class="company-logo-large"
         id="companyLogo"
       />
@@ -38,8 +39,13 @@
     </div>
 
     <div class="company-actions">
-      <button class="btn-follow-large">
-        {{ company.is_following ? 'إلغاء المتابعة' : 'متابعة الشركة' }}
+      <button
+        class="btn-follow-large"
+        [class.following]="company.is_following"
+        [disabled]="isTogglingFollow"
+        (click)="toggleFollow()"
+      >
+        {{ isTogglingFollow ? 'جاري...' : (company.is_following ? 'إلغاء المتابعة' : 'متابعة الشركة') }}
       </button>
       <button class="btn-view-jobs-large" (click)="showTab('jobs')">
         عرض جميع الوظائف
@@ -129,14 +135,67 @@
         </div>
 
         <!-- Jobs Tab -->
-        <div class="tab-content active" *ngIf="activeTab === 'jobs'">
+        @if (activeTab === 'jobs') {
+        <div class="tab-content active">
           <h3>الوظائف المتاحة ({{ company.active_jobs }})</h3>
+          <!-- Debug info -->
+          <div style="font-size: 0.75rem; color: #666; margin-bottom: 1rem;">
+            Debug: isLoadingJobs={{ isLoadingJobs }}, companyJobs.length={{ companyJobs.length }}
+          </div>
           <div class="jobs-list">
-             <!-- Placeholder for jobs list, would need a separate API call or data in company object -->
-             <p *ngIf="company.active_jobs === 0">لا توجد وظائف متاحة حالياً.</p>
-             <p *ngIf="company.active_jobs > 0">قائمة الوظائف ستظهر هنا (تحتاج إلى ربط API).</p>
+            @if (isLoadingJobs) {
+            <div class="jobs-loading">
+              <p>جاري تحميل الوظائف...</p>
+            </div>
+            } @else if (companyJobs.length === 0) {
+            <div class="jobs-empty">
+              <p>لا توجد وظائف متاحة حالياً.</p>
+            </div>
+            } @else {
+            @for (job of companyJobs; track job.id) {
+            <article class="job-card-horizontal" [attr.data-job-id]="job.id">
+              <img
+                [src]="(job.company && job.company.logo) || company.logo || 'assets/images/company-placeholder.png'"
+                alt="شعار الشركة"
+                title="شعار الشركة"
+                class="company-logo"
+              />
+
+              <div class="job-info">
+                <h3 class="job-title">
+                  <a
+                    [routerLink]="['/jobseeker/job-details', job.slug]"
+                    class="job-title-link"
+                  >
+                    {{ job.title }}
+                  </a>
+                </h3>
+
+                <p class="company-name">{{ (job.company && job.company.name) || (company && company.name) || '-' }}</p>
+
+                <div class="job-meta">
+                  <span>📍 {{ cityLabel(job.city) }}</span>
+                  <span>🔥 {{ formatSalary(job) }}</span>
+                  <span>⏰ {{ getJobTypeLabel(job.job_type) }}</span>
+                  <span>📅 {{ timeAgo(job.created_at) }}</span>
+                </div>
+
+                @if (job.description) {
+                <p class="job-description">
+                  {{ job.description }}
+                </p>
+                } @else {
+                <p class="job-description">
+                  {{ (job.category && job.category.name) || '-' }} • {{ (job.company && job.company.city) || (company && company.city) || '-' }}
+                </p>
+                }
+              </div>
+            </article>
+            }
+            }
           </div>
         </div>
+        }
 
         <!-- Culture Tab (Static for now) -->
         <div class="tab-content active" *ngIf="activeTab === 'culture'">
