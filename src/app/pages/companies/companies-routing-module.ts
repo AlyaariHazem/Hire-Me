@@ -22,47 +22,57 @@ const routes: Routes = [
       {
         path: 'dashboard',
         component: Dashboard,
+        data: { breadcrumb: 'لوحة التحكم' }
       },
       {
         path: 'company-profile',
-        component:CompanyProfile
+        component: CompanyProfile,
+        data: { breadcrumb: 'ملف الشركة' }
       },
       {
         path: 'profile',
         component: ProfileComponent,
+        data: { breadcrumb: 'الملف الشخصي' }
       },
       {
         path: 'user-edit',
         component: UserEditComponent,
+        data: { breadcrumb: 'تعديل البيانات' }
       },
       {
         path: 'company-data',
-        component: CompanyData
-
+        component: CompanyData,
+        data: { breadcrumb: 'بيانات الشركة' }
       },
       {
         path: 'post-job',
         component: PostJob,
+        data: { breadcrumb: 'نشر وظيفة' }
       },
       {
         path: 'jobs',
-        component: Jobs
+        component: Jobs,
+        data: { breadcrumb: 'الوظائف' }
       },
       {
         path: 'manage-jobs',
-        component: ManageJobs
+        component: ManageJobs,
+        data: { breadcrumb: 'إدارة الوظائف' }
       },
       {
         path: 'job-details',
-        component: JobDetails
+        component: JobDetails,
+        data: { breadcrumb: 'تفاصيل الوظيفة' }
       },
       {
         path: 'applicants',
-        component: Applicants
+        component: Applicants,
+        data: { breadcrumb: 'المتقدمون' }
       },
       {
         path: 'applicants-for-job',
-        component: ApplicantsForJob
+        component: ApplicantsForJob,
+        data: { breadcrumb: 'المتقدمون للوظيفة' }
       },
     ],
   },

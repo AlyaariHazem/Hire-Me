@@ -16,18 +16,20 @@ const routes: Routes = [
     path: '',
     component: JobSeeker,
     children: [
-      { path: 'dashboard', component: Dashboard },
-      { path: 'saved-jobs', component: SavedJobs },
-      { path: 'profile', component: Profile },
-      { path: 'cv', component: CV },
-      { path: 'cv-builder', component: CvBuilder },
-      { path: 'alerts', component: Alerts },
-      { path: 'applications', component: Applications },
-      { path: 'settings', component: Settings },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: Dashboard, data: { breadcrumb: 'لوحة التحكم' } },
+      { path: 'saved-jobs', component: SavedJobs, data: { breadcrumb: 'الوظائف المحفوظة' } },
+      { path: 'profile', component: Profile, data: { breadcrumb: 'الملف الشخصي' } },
+      { path: 'cv', component: CV, data: { breadcrumb: 'السيرة الذاتية' } },
+      { path: 'cv-builder', component: CvBuilder, data: { breadcrumb: 'إنشاء السيرة الذاتية' } },
+      { path: 'alerts', component: Alerts, data: { breadcrumb: 'تنبيهات الوظائف' } },
+      { path: 'applications', component: Applications, data: { breadcrumb: 'طلباتي' } },
+      { path: 'settings', component: Settings, data: { breadcrumb: 'الإعدادات' } },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'jobs',
         component: Jobs,
+        data: { breadcrumb: 'الوظائف' }
       },
       {
         path: 'job-details/:slug',
@@ -35,7 +37,8 @@ const routes: Routes = [
           import('./../jobs/job-details/job-details').then(
             (c) => c.JobDetails
           ),
-      },
+        data: { breadcrumb: 'تفاصيل الوظيفة' }
+        },
     ],
   },
 ];
