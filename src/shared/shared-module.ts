@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Footer } from './footer/footer';
 import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { Header } from './header/header';
-import { JobDetails } from '../app/pages/jobs/job-details/job-details';
-import { SearchForJob } from './search-for-job/search-for-job';
 import { Messages } from './messages/messages';
 import { FormsModule } from '@angular/forms';
 import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
@@ -20,7 +18,6 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 const components = [
 Header,
 Footer,
-SearchForJob,
 Messages,
 ProgressSpinnerComponent,
 BreadcrumbComponent

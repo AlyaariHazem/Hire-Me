@@ -19,4 +19,5 @@ export interface CreateJobDto {
   contact_phone?: string;
   is_featured?: boolean;
   is_urgent?: boolean;
+  is_active?: boolean; // For updating job status
 }

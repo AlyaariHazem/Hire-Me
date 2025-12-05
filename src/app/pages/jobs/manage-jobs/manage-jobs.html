@@ -90,12 +90,24 @@
               </div>
             </div>
             <div class="job-posting-actions">
-              <span
-                class="job-status"
-                [ngClass]="j.is_active ? 'status-active' : 'status-closed'"
-              >
-                {{ j.is_active ? 'نشطة' : 'مغلقة' }}
-              </span>
+              <div class="status-control">
+                <label for="status-{{ j.id }}" class="status-label">الحالة:</label>
+                <select
+                  id="status-{{ j.id }}"
+                  class="status-select"
+                  [value]="getJobStatus(j)"
+                  [disabled]="isUpdating(j.id)"
+                  (change)="updateJobStatus(j, $any($event.target).value)"
+                  title="تغيير حالة الوظيفة"
+                >
+                  <option value="active">نشطة</option>
+                  <option value="paused">متوقفة</option>
+                  <option value="closed">مغلقة</option>
+                </select>
+                @if (isUpdating(j.id)) {
+                  <span class="updating-indicator">جاري التحديث...</span>
+                }
+              </div>
               <div class="action-buttons">
                 <a
                   [routerLink]="['/companies/applicants-for-job']"

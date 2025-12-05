@@ -2,6 +2,7 @@ import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { JobService } from 'shared/services/job.service';
+import { ToastrService } from 'ngx-toastr';
 
 type TabKey = 'active' | 'paused' | 'closed' | 'draft';
   export interface JobItem {
@@ -41,10 +42,14 @@ export class ManageJobs implements OnInit {
   activeTab = signal<TabKey>('active');
 
   // English: bucket the list using the available fields
+  // Note: API currently only supports is_active (true/false)
+  // For now, we'll treat:
+  // - is_active: true = active
+  // - is_active: false = closed/paused (we can't distinguish without additional API fields)
   jobsActive   = computed(() => this.jobs().filter(j => j.is_active === true));
-  jobsClosed   = computed(() => this.jobs().filter(j => j.is_active === false)); // if ever returned
-  jobsPaused   = computed(() => [] as JobItem[]); // no field in payload
-  jobsDraft    = computed(() => [] as JobItem[]); // no field in payload
+  jobsClosed   = computed(() => this.jobs().filter(j => j.is_active === false));
+  jobsPaused   = computed(() => [] as JobItem[]); // No separate field in API yet
+  jobsDraft    = computed(() => [] as JobItem[]); // No separate field in API yet
 
   // English: counts for the tabs
   countActive = computed(() => this.jobsActive().length);
@@ -63,8 +68,12 @@ export class ManageJobs implements OnInit {
   });
 
   loading = false;
+  updatingStatus: Record<number, boolean> = {}; // Track which job is being updated
 
-  constructor(private api: JobService) {}
+  constructor(
+    private api: JobService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.fetch();
@@ -106,5 +115,57 @@ export class ManageJobs implements OnInit {
     if (j.salary_min && j.salary_max) return `${j.salary_min} - ${j.salary_max}`;
     if (j.is_salary_negotiable) return 'قابل للتفاوض';
     return '—';
+  }
+
+  // Update job status
+  updateJobStatus(job: JobItem, newStatus: 'active' | 'paused' | 'closed'): void {
+    if (this.updatingStatus[job.id]) return;
+
+    this.updatingStatus[job.id] = true;
+    
+    // Determine is_active value based on status
+    // Note: API currently only supports is_active boolean
+    // For paused/closed, both will set is_active to false
+    // If API later adds separate fields, we can update this logic
+    const isActive = newStatus === 'active';
+    
+    // Update the job using PATCH
+    this.api.patchJob(job.slug, { is_active: isActive }).subscribe({
+      next: (updatedJob) => {
+        // Update the job in the list
+        const currentJobs = this.jobs();
+        const index = currentJobs.findIndex(j => j.id === job.id);
+        if (index !== -1) {
+          currentJobs[index] = { ...currentJobs[index], is_active: updatedJob.is_active };
+          this.jobs.set([...currentJobs]);
+        }
+        
+        const statusMessages: Record<string, string> = {
+          active: 'تم تفعيل الوظيفة بنجاح',
+          paused: 'تم إيقاف الوظيفة مؤقتاً',
+          closed: 'تم إغلاق الوظيفة'
+        };
+        this.toastr.success(statusMessages[newStatus] || 'تم تحديث حالة الوظيفة');
+        this.updatingStatus[job.id] = false;
+      },
+      error: (err) => {
+        console.error('Failed to update job status', err);
+        this.toastr.error('فشل في تحديث حالة الوظيفة');
+        this.updatingStatus[job.id] = false;
+      }
+    });
+  }
+
+  getJobStatus(job: JobItem): 'active' | 'paused' | 'closed' {
+    // Since API only has is_active boolean, we map:
+    // - true = active
+    // - false = closed (we can't distinguish paused without additional API field)
+    // TODO: Update when API adds separate paused/draft fields
+    if (job.is_active === true) return 'active';
+    return 'closed'; // Default to closed for false/undefined
+  }
+
+  isUpdating(jobId: number): boolean {
+    return this.updatingStatus[jobId] || false;
   }
 }

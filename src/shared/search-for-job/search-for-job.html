@@ -1,242 +1,0 @@
-Header
-<header class="header">
-  <nav class="navbar" [class.mobile-menu-open]="mobileOpen">
-    <div class="container">
-      <div class="navbar-brand">
-        <a href="index.html">
-          <img src="images/HireMe.png" alt="منصة التوظيف" class="logo" />
-        </a>
-      </div>
-
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a (click)="notImplemented()" class="nav-link">الوظائف</a>
-        </li>
-        <li class="nav-item">
-          <a  (click)="notImplemented()" class="nav-link">الشركات</a>
-        </li>
-        <li class="nav-item">
-          <a  (click)="notImplemented()" class="nav-link">الرواتب</a>
-        </li>
-        <li class="nav-item">
-          <a  (click)="notImplemented()" class="nav-link">الموارد</a>
-        </li>
-      </ul>
-
-      <div class="navbar-actions" dir="rtl" (click)="closeMobileMenu()">
-        <a routerLink="/login" class="btn btn-ghost" aria-label="تسجيل الدخول">تسجيل الدخول</a>
-        <a routerLink="/register" class="btn btn-primary" aria-label="إنشاء حساب">إنشاء حساب</a>
-      </div>
-
-      <!-- Mobile Menu Toggle -->
-      <button
-        class="mobile-menu-toggle"
-        type="button"
-        (click)="toggleMobileMenu()"
-        [class.active]="mobileOpen"
-        aria-label="فتح القائمة"
-        [attr.aria-expanded]="mobileOpen"
-        aria-controls="primary-nav"
-      >
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Backdrop -->
-  <div class="mobile-backdrop" *ngIf="mobileOpen" (click)="closeMobileMenu()"></div>
-</header>
-
-<!-- Hero Section -->
-<section class="companies-hero">
-  <div class="container">
-    <h1>اكتشف أفضل الشركات</h1>
-    <p>تصفح الشركات الرائدة في اليمن واكتشف الفرص الوظيفية المتاحة</p>
-
-    <div class="companies-search">
-      <input type="text" placeholder="ابحث عن الشركات..." [(ngModel)]="searchTerm" (input)="applyFilters()" />
-      <button type="button" (click)="applyFilters()">بحث</button>
-    </div>
-  </div>
-</section>
-
-<!-- Filters -->
-<section class="companies-filters">
-  <div class="container">
-    <div class="filters-container">
-      <div class="filter-group">
-        <label>القطاع:</label>
-        <select class="filter-select" id="industryFilter"
-                [(ngModel)]="industryFilter" (change)="applyFilters()">
-          <option value="">جميع القطاعات</option>
-          <option value="تقنية المعلومات">تقنية المعلومات</option>
-          <option value="الرعاية الصحية">الرعاية الصحية</option>
-          <option value="التعليم">التعليم</option>
-          <option value="المالية والمصرفية">المالية والمصرفية</option>
-          <option value="البناء والتشييد">البناء والتشييد</option>
-          <option value="التجارة والبيع بالتجزئة">التجارة والبيع بالتجزئة</option>
-          <option value="التصنيع">التصنيع</option>
-          <option value="الاتصالات">الاتصالات</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label>المدينة:</label>
-        <select class="filter-select" id="locationFilter"
-                [(ngModel)]="locationFilter" (change)="applyFilters()">
-          <option value="">جميع المدن</option>
-          <option value="صنعاء">صنعاء</option>
-          <option value="عدن">عدن</option>
-          <option value="تعز">تعز</option>
-          <option value="الحديدة">الحديدة</option>
-          <option value="إب">إب</option>
-          <option value="ذمار">ذمار</option>
-          <option value="المكلا">المكلا</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label>حجم الشركة:</label>
-        <select class="filter-select" id="sizeFilter"
-                [(ngModel)]="sizeFilter" (change)="applyFilters()">
-          <option value="">جميع الأحجام</option>
-          <option value="startup">ناشئة (1-10 موظفين)</option>
-          <option value="small">صغيرة (11-50 موظف)</option>
-          <option value="medium">متوسطة (51-200 موظف)</option>
-          <option value="large">كبيرة (201-1000 موظف)</option>
-          <option value="enterprise">مؤسسة (1000+ موظف)</option>
-        </select>
-      </div>
-
-      <button class="btn btn-primary" type="button" (click)="applyFilters()">
-        تطبيق الفلاتر
-      </button>
-    </div>
-  </div>
-</section>
-
-<!-- Stats -->
-<section class="companies-stats">
-  <div class="container">
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-number">250+</div>
-        <div class="stat-label">شركة مسجلة</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">1,500+</div>
-        <div class="stat-label">وظيفة متاحة</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">15</div>
-        <div class="stat-label">قطاع مختلف</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">8</div>
-        <div class="stat-label">محافظة</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Featured Companies -->
-<section class="featured-companies">
-  <div class="container">
-    <h2 class="featured-title">الشركات المميزة</h2>
-    <div class="featured-grid">
-      <div class="featured-company" (click)="viewCompany('tech-solutions')">
-        <img
-          src="images/company-logo-1.jpg"
-          alt="شركة التقنيات المتقدمة"
-          class="featured-logo"
-        />
-        <div class="featured-name">شركة التقنيات المتقدمة</div>
-        <div class="featured-jobs">5 وظائف متاحة</div>
-      </div>
-
-      <div class="featured-company" (click)="viewCompany('health-care')">
-        <img
-          src="images/company-logo-2.png"
-          alt="مستشفى الأمل"
-          class="featured-logo"
-        />
-        <div class="featured-name">مستشفى الأمل</div>
-        <div class="featured-jobs">8 وظائف متاحة</div>
-      </div>
-
-      <div class="featured-company" (click)="viewCompany('education-center')">
-        <img
-          src="images/company-logo-3.jpg"
-          alt="مركز التعليم الحديث"
-          class="featured-logo"
-        />
-        <div class="featured-name">مركز التعليم الحديث</div>
-        <div class="featured-jobs">3 وظائف متاحة</div>
-      </div>
-
-      <div class="featured-company" (click)="viewCompany('construction-co')">
-        <img
-          src="images/company-logo-4.jpg"
-          alt="شركة البناء والتطوير"
-          class="featured-logo"
-        />
-        <div class="featured-name">شركة البناء والتطوير</div>
-        <div class="featured-jobs">12 وظيفة متاحة</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Companies Grid -->
-<section class="companies-section">
-  <div class="container">
-    <div class="companies-grid">
-      <div class="company-card" *ngFor="let company of companiesData">
-        <div class="company-header">
-          <div class="company-info">
-            <img [src]="company.logo" [alt]="company.name" class="company-logo">
-            <div class="company-details">
-              <h3>{{ company.name }}</h3>
-              <div class="company-industry">{{ company.industry }}</div>
-              <div class="company-location">📍 {{ company.location }}</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="company-body">
-          <p class="company-description">{{ company.description }}</p>
-          <div class="company-tags">
-            <span class="company-tag" *ngFor="let tag of company.tags">{{ tag }}</span>
-          </div>
-
-          <div class="company-stats-row">
-            <div class="company-stat">
-              <div class="company-stat-number">{{ company.employees }}</div>
-              <div class="company-stat-label">موظف</div>
-            </div>
-            <div class="company-stat">
-              <div class="company-stat-number">{{ company.openJobs }}</div>
-              <div class="company-stat-label">وظيفة متاحة</div>
-            </div>
-            <div class="company-stat">
-              <div class="company-stat-number">{{ company.followers }}</div>
-              <div class="company-stat-label">متابع</div>
-            </div>
-          </div>
-
-          <div class="company-actions">
-            <button
-              [ngClass]="{ 'btn-follow': true, 'following': company.following }"
-              (click)="toggleFollow(company.id)">
-              {{ company.following ? 'متابع' : 'متابعة' }}
-            </button>
-            <button class="btn-view-jobs" (click)="viewCompany(company.id)">عرض الوظائف</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Footer -->
-<app-footer></app-footer>
