@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { Login } from './auth/login/login';
 import { Register } from './auth/register/register';
 
-import { authGuard } from './auth/auth.guard';
 import { loginRedirectGuard } from './auth/login-redirect.guard';
 import { employerGuard } from './auth/employer.guard';
 import { jobseekerGuard } from './auth/jobseeker.guard';

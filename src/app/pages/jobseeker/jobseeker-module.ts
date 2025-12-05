@@ -13,6 +13,7 @@ import { Alerts } from './alerts/alerts';
 import { Settings } from './settings/settings';
 import { SharedModule } from '../../../shared/shared-module';
 import { CvBuilder } from './cv-builder/cv-builder';
+import { Applications } from './applications/applications';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ProfileService } from './services/profile.service';
@@ -30,6 +31,7 @@ const components = [
   Alerts,
   Settings,
   CvBuilder,
+  Applications,
 ];
 
 const modules = [

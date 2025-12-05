@@ -1,47 +1,103 @@
-<!-- Applications Tab -->
 <div id="applications">
   <div class="dashboard-header">
     <h1 class="dashboard-title">طلباتي</h1>
     <div class="dashboard-actions">
-      <a routerLink="/jobs" class="btn btn-primary">البحث عن وظائف جديدة</a>
+      <a routerLink="/jobseeker/jobs" class="btn btn-primary">البحث عن وظائف جديدة</a>
     </div>
   </div>
 
   <div class="content-card">
     <div class="tab-navigation">
-      <button class="tab active" data-tab="all-applications">
-        جميع الطلبات (12)
+      <button
+        class="tab"
+        [class.active]="activeTab === 'all'"
+        (click)="setActiveTab('all')"
+      >
+        جميع الطلبات ({{ statusCounts.all }})
       </button>
-      <button class="tab" data-tab="pending-applications">
-        قيد المراجعة (5)
+      <button
+        class="tab"
+        [class.active]="activeTab === 'pending'"
+        (click)="setActiveTab('pending')"
+      >
+        قيد المراجعة ({{ statusCounts.pending }})
       </button>
-      <button class="tab" data-tab="reviewed-applications">
-        تمت المراجعة (4)
+      <button
+        class="tab"
+        [class.active]="activeTab === 'reviewed'"
+        (click)="setActiveTab('reviewed')"
+      >
+        تمت المراجعة ({{ statusCounts.reviewed }})
       </button>
-      <button class="tab" data-tab="accepted-applications">مقبولة (2)</button>
-      <button class="tab" data-tab="rejected-applications">مرفوضة (1)</button>
+      <button
+        class="tab"
+        [class.active]="activeTab === 'accepted'"
+        (click)="setActiveTab('accepted')"
+      >
+        مقبولة ({{ statusCounts.accepted }})
+      </button>
+      <button
+        class="tab"
+        [class.active]="activeTab === 'rejected'"
+        (click)="setActiveTab('rejected')"
+      >
+        مرفوضة ({{ statusCounts.rejected }})
+      </button>
     </div>
 
-    <div id="all-applications" class="tab-content active">
-      <!-- Application items would be dynamically loaded here -->
+    @if (isLoading) {
+    <div class="loading-state">
+      <p>جاري تحميل الطلبات...</p>
+    </div>
+    } @else if (filteredApplications.length === 0) {
+    <div class="empty-state">
+      <p>لا توجد طلبات في هذه الفئة.</p>
+      <a routerLink="/jobseeker/jobs" class="btn btn-primary">البحث عن وظائف جديدة</a>
+    </div>
+    } @else {
+    <div class="applications-list">
+      @for (application of filteredApplications; track application.id) {
       <div class="application-item">
         <img
-          src="images/company-logo-1.jpg"
-          alt="شعار الشركة"
+          [src]="getCompanyLogo(application.job.company.logo)"
+          [alt]="application.job.company.name"
           class="application-logo"
+          title="شعار الشركة"
         />
         <div class="application-info">
-          <h4 class="application-title">مطور تطبيقات الويب الأمامية</h4>
-          <p class="application-company">شركة التقنيات المتقدمة</p>
+          <h4 class="application-title">
+            <a
+              [routerLink]="['/jobseeker/job-details', application.job.slug]"
+              class="application-title-link"
+            >
+              {{ application.job.title }}
+            </a>
+          </h4>
+          <p class="application-company">
+            <a
+              [routerLink]="['/company', application.job.company.slug]"
+              class="company-link"
+            >
+              {{ application.job.company.name }}
+            </a>
+          </p>
           <div class="application-meta">
-            <span>تقدمت في 15 ديسمبر 2024</span>
-            <span>صنعاء</span>
-            <span>800-1200 ريال</span>
+            <span>تقدمت في {{ formatDate(application.applied_at) }}</span>
+            <span>{{ cityLabel(application.job.city) }}</span>
+            <span>
+              {{ formatSalary(application.job.salary_min, application.job.salary_max) }}
+            </span>
           </div>
         </div>
-        <span class="application-status status-pending">قيد المراجعة</span>
+        <span
+          class="application-status"
+          [ngClass]="getStatusClass(application.status)"
+        >
+          {{ getStatusLabel(application.status) }}
+        </span>
       </div>
-      <!-- More application items... -->
+      }
     </div>
+    }
   </div>
 </div>
