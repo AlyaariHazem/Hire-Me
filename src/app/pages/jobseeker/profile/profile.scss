@@ -422,7 +422,7 @@ textarea.form-control {
 
 /* Field */
 .field__label{font-size:.85rem;color:#475569;margin:0 0 .35rem}
-.field__control{width:100%;padding:.65rem .8rem;font-size:.95rem;background:#fff;transition:border-color .15s,box-shadow .15s}
+.field__control{width:100%;font-size:.95rem;background:#fff;transition:border-color .15s,box-shadow .15s}
 .field__control:focus{outline:0;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 .field__control.ng-invalid.ng-touched{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.12)}
 textarea.field__control{min-height:110px;resize:vertical}
