@@ -1,0 +1,181 @@
+<div id="messages" class="messages-container">
+  <div class="employer-header">
+    <div>
+      <h1 class="employer-title">الرسائل</h1>
+      <p class="subtitle">التواصل مع أصحاب العمل</p>
+    </div>
+  </div>
+
+  <div class="messages-layout">
+    <!-- Applications List (Left Sidebar) -->
+    <div class="applications-sidebar">
+      <div class="sidebar-header">
+        <h3>طلبات التقديم</h3>
+      </div>
+      
+      @if (loading) {
+        <div class="loading-state">
+          <p>جاري تحميل الطلبات...</p>
+        </div>
+      } @else if (applications.length === 0) {
+        <div class="empty-state">
+          <p>لا توجد طلبات متقدمة</p>
+        </div>
+      } @else {
+        <div class="applications-list">
+          @for (app of applications; track app.id) {
+            <div
+              class="application-item"
+              [class.active]="selectedApplication?.id === app.id"
+              (click)="selectApplication(app)"
+            >
+              <div class="company-logo">
+                @if (app.job && app.job.company && app.job.company.logo) {
+                  <img
+                    [src]="getCompanyLogo(app.job.company.logo)"
+                    [alt]="getCompanyName(app)"
+                    [title]="getCompanyName(app)"
+                    (error)="handleImageError($event)"
+                  />
+                }
+                <span [style.display]="(app.job && app.job.company && app.job.company.logo) ? 'none' : 'flex'">
+                  {{ getCompanyName(app).charAt(0) }}
+                </span>
+              </div>
+              <div class="application-info">
+                <h4 class="job-title">{{ getJobTitle(app) }}</h4>
+                <p class="company-name">{{ getCompanyName(app) }}</p>
+                <p class="application-date">{{ formatDate(app.applied_at) }}</p>
+                <span class="application-status" [ngClass]="getStatusClass(app.status)">
+                  {{ getStatusLabel(app.status) }}
+                </span>
+              </div>
+              @if (!app.is_viewed) {
+                <span class="unread-badge"></span>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Messages Area (Right Side) -->
+    <div class="messages-area">
+      @if (!selectedApplication) {
+        <div class="empty-messages">
+          <div class="empty-icon">💬</div>
+          <h3>اختر طلب تقديم للبدء</h3>
+          <p>اختر طلب تقديم من القائمة لعرض الرسائل وإرسال رسائل جديدة</p>
+        </div>
+      } @else {
+        <!-- Messages Header -->
+        <div class="messages-header">
+          <div class="conversation-info">
+            <div class="conversation-logo">
+              @if (selectedApplication.job && selectedApplication.job.company && selectedApplication.job.company.logo) {
+                <img
+                  [src]="getCompanyLogo(selectedApplication.job.company.logo)"
+                  [alt]="getCompanyName(selectedApplication)"
+                  [title]="getCompanyName(selectedApplication)"
+                  (error)="handleImageError($event)"
+                />
+              }
+              <span [style.display]="(selectedApplication.job && selectedApplication.job.company && selectedApplication.job.company.logo) ? 'none' : 'flex'">
+                {{ getCompanyName(selectedApplication).charAt(0) }}
+              </span>
+            </div>
+            <div class="conversation-details">
+              <h3>{{ getCompanyName(selectedApplication) }}</h3>
+              <p>{{ getJobTitle(selectedApplication) }}</p>
+              <a
+                [routerLink]="['/jobseeker/job-details', selectedApplication.job.slug]"
+                class="job-link"
+              >
+                عرض تفاصيل الوظيفة
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages List -->
+        <div class="messages-list">
+          @if (loadingMessages) {
+            <div class="loading-state">
+              <p>جاري تحميل الرسائل...</p>
+            </div>
+          } @else if (messages.length === 0) {
+            <div class="empty-messages-list">
+              <p>لا توجد رسائل بعد. ابدأ المحادثة!</p>
+            </div>
+          } @else {
+            @for (message of messages; track message.id) {
+              <div
+                class="message-item"
+                [class.my-message]="isMyMessage(message)"
+                [class.their-message]="!isMyMessage(message)"
+              >
+                <div class="message-content">
+                  <div class="message-header">
+                    <span class="sender-name">{{ message.sender_name || getCompanyName(selectedApplication) }}</span>
+                    <span class="message-time">{{ formatDate(message.sent_at) }}</span>
+                  </div>
+                  <div class="message-text">{{ message.message }}</div>
+                  @if (message.attachment) {
+                    <div class="message-attachment">
+                      <a [href]="message.attachment" target="_blank" rel="noopener noreferrer">
+                        📎 مرفق
+                      </a>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Message Input -->
+        <div class="message-input-area">
+          <form (ngSubmit)="sendMessage()" class="message-form">
+            @if (selectedFile) {
+              <div class="file-preview">
+                <span>📎 {{ selectedFile.name }}</span>
+                <button type="button" class="remove-file" (click)="removeFile()">×</button>
+              </div>
+            }
+            <div class="input-group">
+              <input
+                type="file"
+                id="file-input"
+                class="file-input"
+                (change)="onFileSelected($event)"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                title="إرفاق ملف"
+              />
+              <label for="file-input" class="file-label">📎</label>
+              <textarea
+                [(ngModel)]="newMessage"
+                name="message"
+                class="message-textarea"
+                placeholder="اكتب رسالتك هنا..."
+                rows="2"
+                [disabled]="sendingMessage"
+              ></textarea>
+              <button
+                type="submit"
+                class="send-button"
+                [disabled]="!newMessage.trim() || sendingMessage"
+              >
+                @if (sendingMessage) {
+                  <span>جاري الإرسال...</span>
+                } @else {
+                  <span>إرسال</span>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+

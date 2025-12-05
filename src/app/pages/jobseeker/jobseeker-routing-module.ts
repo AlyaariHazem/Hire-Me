@@ -10,6 +10,7 @@ import { Settings } from './settings/settings';
 import { CvBuilder } from './cv-builder/cv-builder';
 import { Applications } from './applications/applications';
 import { Jobs } from '../jobs/jobs';
+import { JobseekerMessages } from './messages/messages';
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
       { path: 'cv-builder', component: CvBuilder, data: { breadcrumb: 'إنشاء السيرة الذاتية' } },
       { path: 'alerts', component: Alerts, data: { breadcrumb: 'تنبيهات الوظائف' } },
       { path: 'applications', component: Applications, data: { breadcrumb: 'طلباتي' } },
+      { path: 'messages', component: JobseekerMessages, data: { breadcrumb: 'الرسائل' } },
       { path: 'settings', component: Settings, data: { breadcrumb: 'الإعدادات' } },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
