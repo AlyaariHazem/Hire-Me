@@ -5,12 +5,15 @@ import { finalize } from 'rxjs/operators';
 import { JobService, JobFilters, JobListResponse } from 'shared/services/job.service';
 import { JobItem } from '@app/companies/models';
 import { SharedModule } from 'shared/shared-module';
-import { UserType } from 'core/types';
+import { UserRole, UserType } from 'core/types';
 import { LoaderService } from 'shared/services/loader.service';
 import { ApplicationService } from 'shared/services/application.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
+import { Base } from 'shared/base/base';
+import { Router } from '@angular/router';
+import { AuthStateService } from 'app/auth/auth-state.service';
 
 @Component({
   selector: 'app-jobs',
@@ -18,11 +21,14 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './jobs.html',
   styleUrl: './jobs.scss'
 })
-export class Jobs {
+export class Jobs extends Base {
+  router = inject(Router);
+  authState = inject(AuthStateService);
   constructor(
-    private toastr: ToastrService,
     private loaderService: LoaderService
-  ) {}
+  ) {
+    super();
+  }
 
   jobService = inject(JobService);
   applicationService = inject(ApplicationService);
@@ -156,6 +162,16 @@ export class Jobs {
   this.getJobs();
 }
 
+navigate(slug: string) {
+  const role = this.authState.role() as UserRole || '';
+  if(role === 'jobseeker') {
+    this.router.navigate(['/jobseeker/job-details', slug]);
+  } else if(role === 'employer') {
+    this.router.navigate(['/companies/job-details', slug]);
+  } else {
+    this.router.navigate(['/jobs', slug]);
+  }
+}
 
   setExperienceLevel(level: string) {
   // English: toggle experience_level filter

@@ -65,6 +65,14 @@ const routes: Routes = [
         data: { breadcrumb: 'تفاصيل الوظيفة' }
       },
       {
+        path: 'job-details/:slug',
+        loadComponent: () =>
+          import('./../jobs/job-details/job-details').then(
+            (c) => c.JobDetails
+          ),
+        data: { breadcrumb: 'تفاصيل الوظيفة' }
+        },
+      {
         path: 'applicants',
         component: Applicants,
         data: { breadcrumb: 'المتقدمون' }

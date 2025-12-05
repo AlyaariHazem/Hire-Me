@@ -214,8 +214,8 @@
                   <div class="job-info">
                     <h3 class="job-title">
                       <a
-                      [routerLink]="['/jobseeker/job-details', job.slug]"
-                        style="text-decoration: none; color: inherit"
+                      (click)="navigate(job.slug)"
+                        style="text-decoration: none; color: inherit; cursor: pointer;"
                       >
                         {{ job.title }}
                       </a>
