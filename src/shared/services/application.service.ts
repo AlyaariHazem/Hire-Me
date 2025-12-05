@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'environments/environment';
 
 export interface Application {
@@ -173,4 +174,64 @@ export class ApplicationService {
     const url = environment.getUrl(`${applicationId}`, 'applications')+'update/'; // /api/applications/{id}/update/
     return this.http.patch<Application>(url, { status });
   }
+
+  // Get messages for an application
+  getApplicationMessages(applicationId: number): Observable<Message[]> {
+    const url = environment.getUrl(`${applicationId}/messages`, 'applications'); // /api/applications/{application_id}/messages/
+    return this.http.get<MessageListResponse>(url).pipe(
+      map(response => response.results || [])
+    );
+  }
+
+  // Send a message for an application
+  sendApplicationMessage(applicationId: number, messageData: CreateMessageDto): Observable<Message> {
+    const url = environment.getUrl(`${applicationId}/messages/create`, 'applications'); // /api/applications/{application_id}/messages/create/
+    return this.http.post<Message>(url, messageData);
+  }
+
+  // Mark application as viewed
+  markApplicationAsViewed(applicationId: number): Observable<any> {
+    const url = environment.getUrl(`${applicationId}/mark-viewed`, 'applications'); // /api/applications/{application_id}/mark-viewed/
+    return this.http.post(url, {});
+  }
+}
+
+// Message interfaces
+export interface Message {
+  id: number;
+  application: number;
+  sender: {
+    id: number;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    user_type: string;
+    phone: string | null;
+    date_of_birth: string | null;
+    profile_picture: string | null;
+    bio: string | null;
+    location: string | null;
+    is_verified: boolean;
+    created_at: string;
+  };
+  sender_name: string;
+  message: string;
+  attachment: string | null;
+  is_read: boolean;
+  sent_at: string;
+}
+
+export interface CreateMessageDto {
+  application: number;
+  message: string;
+  attachment?: string | null;
+  is_read?: boolean;
+}
+
+export interface MessageListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Message[];
 }

@@ -18,7 +18,7 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 const components = [
 Header,
 Footer,
-Messages,
+
 ProgressSpinnerComponent,
 BreadcrumbComponent
 ];
@@ -28,6 +28,7 @@ CommonModule,
 RouterModule,
 RouterLink,
 FormsModule,
+Messages,
 RouterLinkActive,
 DialogModule,
 ProgressSpinnerModule,
