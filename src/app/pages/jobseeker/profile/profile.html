@@ -15,27 +15,27 @@
       </div>
 
       <div class="resume-actions">
-        <label>
-          <p-button
-            label="تغيير الملف"
-            styleClass="p-button-secondary"
-            [style]="{ margin: 0 }"
-          ></p-button>
-          <input
-            type="file"
-            class="d-none"
-            accept=".pdf,.doc,.docx"
-            (change)="onResumeChange($event)"
-            title="تغيير ملف السيرة الذاتية"
-            aria-label="تغيير ملف السيرة الذاتية"
-          />
-        </label>
+        <p-button
+          label="تغيير الملف"
+          styleClass="p-button-secondary"
+          [style]="{ margin: 0 }"
+          (onClick)="resumeFileInput.click()"
+        ></p-button>
+        <input
+          #resumeFileInput
+          type="file"
+          class="d-none"
+          accept=".pdf,.doc,.docx"
+          (change)="onResumeChange($event)"
+          title="تغيير ملف السيرة الذاتية"
+          aria-label="تغيير ملف السيرة الذاتية"
+        />
 
         <p-button
           type="button"
           [label]="showPreview ? 'إخفاء المعاينة' : 'معاينة'"
           styleClass="p-button-secondary"
-          (onClick)="showPreview = !showPreview"
+          (onClick)="togglePreview()"
         ></p-button>
 
         <a
@@ -53,32 +53,46 @@
     <ng-container>
       <div class="resume-empty">
         لا توجد سيرة ذاتية مرفوعة
-        <label>
-          <p-button
-            label="رفع ملف"
-            styleClass="p-button-primary"
-            [style]="{ marginLeft: '0.5rem' }"
-          ></p-button>
-          <input
-            type="file"
-            class="d-none"
-            accept=".pdf,.doc,.docx"
-            (change)="onResumeChange($event)"
-            title="رفع ملف السيرة الذاتية"
-            aria-label="رفع ملف السيرة الذاتية"
-          />
-        </label>
+        <p-button
+          label="رفع ملف"
+          styleClass="p-button-primary"
+          [style]="{ marginLeft: '0.5rem' }"
+          (onClick)="resumeFileInputEmpty.click()"
+        ></p-button>
+        <input
+          #resumeFileInputEmpty
+          type="file"
+          class="d-none"
+          accept=".pdf,.doc,.docx"
+          (change)="onResumeChange($event)"
+          title="رفع ملف السيرة الذاتية"
+          aria-label="رفع ملف السيرة الذاتية"
+        />
       </div>
     </ng-container>
     }
 
     <!-- معاينة PDF فقط -->
-    @if (isPdf && resumeSafeUrl) {
-    <div class="resume-preview">
-      <iframe [src]="resumeSafeUrl" title="معاينة السيرة الذاتية"></iframe>
-    </div>
+    @if (showPreview && isPdf && resumeSafeUrl && !isResumeFromApi) {
+      <!-- For local/blob files, use iframe -->
+      <div class="resume-preview">
+        <iframe [src]="resumeSafeUrl" title="معاينة السيرة الذاتية"></iframe>
+      </div>
     }
-    @if (!isPdf && resumeUrl) {
+    @if (showPreview && isPdf && isResumeFromApi) {
+      <!-- For API files, show message (file already opened in new window) -->
+      <div class="resume-preview-api">
+        <div class="resume-preview-message">
+          <p>لا يمكن عرض الملف داخل الصفحة بسبب إعدادات الأمان. انقر على الزر أدناه لفتح الملف في نافذة جديدة.</p>
+          <p-button
+            label="فتح الملف في نافذة جديدة"
+            styleClass="p-button-primary"
+            (onClick)="openResumeInNewWindow()"
+          ></p-button>
+        </div>
+      </div>
+    }
+    @if (showPreview && !isPdf && resumeUrl) {
     <div class="resume-note">
       لا يمكن عرض الملف داخل الصفحة بسبب إعدادات الخادم. استخدم زر «تنزيل».
     </div>

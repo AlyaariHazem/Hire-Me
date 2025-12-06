@@ -25,6 +25,7 @@ export class Profile implements OnInit, OnDestroy {
   resumeUrl: string | null = null;
   resumeSafeUrl: SafeResourceUrl | null = null;
   isPdf = false;
+  isResumeFromApi = false; // Track if resume is from API (external domain)
   private toRevoke: string | null = null;
   showPreview = false;
 
@@ -265,14 +266,25 @@ export class Profile implements OnInit, OnDestroy {
 
   // ---------------- Preview helpers ----------------
   private canEmbed(url: string) {
-    return url.startsWith(location.origin) || url.startsWith('blob:');
+    // Allow embedding from same origin, blob URLs, or any HTTPS URL (for API files)
+    return url.startsWith(location.origin) || 
+           url.startsWith('blob:') || 
+           url.startsWith('https:') ||
+           url.startsWith('http:');
   }
 
   private setResumePreview(url: string, name?: string) {
     this.resumeUrl = url;
     const looksPdf =
       /\.pdf($|\?)/i.test(url) || !!name?.toLowerCase().endsWith('.pdf');
-    this.isPdf = looksPdf && this.canEmbed(url);
+    // For PDF files, try to embed them regardless of origin (browser will handle CORS)
+    this.isPdf = looksPdf;
+    
+    // Check if URL is from API (external domain)
+    this.isResumeFromApi = url.startsWith('https://') && 
+                           !url.startsWith(location.origin) && 
+                           !url.startsWith('blob:');
+    
     this.resumeSafeUrl = this.isPdf
       ? this.sanitizer.bypassSecurityTrustResourceUrl(url)
       : null;
@@ -282,6 +294,19 @@ export class Profile implements OnInit, OnDestroy {
     this.resumeUrl = null;
     this.resumeSafeUrl = null;
     this.isPdf = false;
+    this.isResumeFromApi = false;
+  }
+
+  // Open PDF in new window if from API (to avoid CORS/iframe issues)
+  openResumeInNewWindow(): void {
+    if (this.resumeUrl) {
+      window.open(this.resumeUrl, '_blank', 'noopener,noreferrer');
+    }
+  }
+
+  // Toggle preview
+  togglePreview(): void {
+      this.showPreview = !this.showPreview;
   }
 
   private toAbsolute(path?: string | null): string | null {
