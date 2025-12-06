@@ -18,11 +18,11 @@
           <p>جاري تحميل المتقدمين...</p>
         </div>
       } @else if (applications.length === 0) {
-        <div class="empty-state">
+        <div class="empty-state empty-state-in-sidebar">
           <p>لا توجد طلبات متقدمة</p>
         </div>
       } @else {
-        <div class="applications-list">
+        <div class="applications-list" #applicationsList (scroll)="onScroll($event)">
           @for (app of applications; track app.id) {
             <div
               class="application-item"
@@ -50,6 +50,16 @@
               @if (!app.is_viewed) {
                 <span class="unread-badge"></span>
               }
+            </div>
+          }
+          @if (loadingMore) {
+            <div class="loading-more">
+              <p>جاري تحميل المزيد...</p>
+            </div>
+          }
+          @if (loadingMore) {
+            <div class="loading-more">
+              <p>جاري تحميل المزيد...</p>
             </div>
           }
         </div>
