@@ -3,7 +3,6 @@ import { ApplicationService, Application } from 'shared/services/application.ser
 import { ToastrService } from 'ngx-toastr';
 import { Base } from 'shared/base/base';
 import { environment } from 'environments/environment';
-import { SharedModule } from 'shared/shared-module';
 
 type ApplicationStatus = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected';
 
@@ -11,7 +10,8 @@ type ApplicationStatus = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected
   selector: 'app-applications',
   standalone: false,
   templateUrl: './applications.html',
-  styleUrl: './applications.scss'
+  styleUrls: ['./applications.scss', 
+    '../../../../shared/scss/button.scss']
 })
 export class Applications extends Base implements OnInit {
   private applicationService = inject(ApplicationService);
