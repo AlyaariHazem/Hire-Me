@@ -23,6 +23,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DialogModule } from 'primeng/dialog';
 const components = [
   Dashboard,
   JobSeeker,
@@ -48,7 +50,9 @@ InputNumberModule,
 TextareaModule,
 Select,
 ButtonModule,
-DatePickerModule
+DatePickerModule,
+CheckboxModule,
+DialogModule
 ];
 @NgModule({
   declarations: [...components],

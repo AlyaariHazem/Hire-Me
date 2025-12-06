@@ -39,7 +39,17 @@ export interface JobListResponse {
 }
 export interface JobAlert {
   id: number;
-  // add other fields if you have them
+  title: string;
+  keywords?: string;
+  city?: string;
+  job_type?: string;
+  experience_level?: string;
+  salary_min?: number;
+  is_active: boolean;
+  email_notifications: boolean;
+  category?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface JobStatistics {
