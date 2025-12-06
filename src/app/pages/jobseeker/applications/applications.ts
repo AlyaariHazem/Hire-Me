@@ -1,10 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ApplicationService, Application } from 'shared/services/application.service';
+import { Application } from 'shared/services/application.service';
 import { ToastrService } from 'ngx-toastr';
 import { Base } from 'shared/base/base';
 import { environment } from 'environments/environment';
-
-type ApplicationStatus = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected';
+import { ApplicationsStoreService, ApplicationStatus } from '../services/applications.service';
 
 @Component({
   selector: 'app-applications',
@@ -14,7 +13,7 @@ type ApplicationStatus = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected
     '../../../../shared/scss/button.scss']
 })
 export class Applications extends Base implements OnInit {
-  private applicationService = inject(ApplicationService);
+  private applicationsStore = inject(ApplicationsStoreService);
 
   applications: Application[] = [];
   filteredApplications: Application[] = [];
@@ -31,31 +30,29 @@ export class Applications extends Base implements OnInit {
   };
 
   ngOnInit(): void {
-    this.loadApplications();
-  }
+    // Subscribe to loading state
+    this.applicationsStore.loading$.subscribe(loading => {
+      this.isLoading = loading;
+    });
 
-  loadApplications(): void {
-    this.isLoading = true;
-    this.applicationService.getMyApplications().subscribe({
-      next: (response) => {
-        this.applications = response.results || [];
-        this.updateStatusCounts();
+    // Load applications from store
+    this.applicationsStore.ensureLoaded();
+
+    // Subscribe to applications data
+    this.applicationsStore.applications$.subscribe({
+      next: (data) => {
+        this.applications = data.applications;
+        this.statusCounts = data.statusCounts;
         this.filterApplications();
-        this.isLoading = false;
       },
       error: (err) => {
         this.errors.error(err, { join: true });
-        this.isLoading = false;
+        // Set empty data on error
+        this.applications = [];
+        this.filteredApplications = [];
+        this.statusCounts = { all: 0, pending: 0, reviewed: 0, accepted: 0, rejected: 0 };
       },
     });
-  }
-
-  updateStatusCounts(): void {
-    this.statusCounts.all = this.applications.length;
-    this.statusCounts.pending = this.applications.filter((app) => app.status === 'pending').length;
-    this.statusCounts.reviewed = this.applications.filter((app) => app.status === 'reviewed').length;
-    this.statusCounts.accepted = this.applications.filter((app) => app.status === 'accepted').length;
-    this.statusCounts.rejected = this.applications.filter((app) => app.status === 'rejected').length;
   }
 
   setActiveTab(tab: ApplicationStatus): void {
@@ -64,13 +61,14 @@ export class Applications extends Base implements OnInit {
   }
 
   filterApplications(): void {
-    if (this.activeTab === 'all') {
-      this.filteredApplications = this.applications;
-    } else {
-      this.filteredApplications = this.applications.filter(
-        (app) => app.status === this.activeTab
-      );
-    }
+    this.filteredApplications = this.applicationsStore.getFilteredApplications(this.activeTab);
+  }
+
+  /**
+   * Refresh applications data (useful after actions like withdrawing an application)
+   */
+  refreshApplications(): void {
+    this.applicationsStore.refresh();
   }
 
   formatDate(dateString: string): string {
