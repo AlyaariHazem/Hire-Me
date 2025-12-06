@@ -265,17 +265,25 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
 
   sendMessage(): void {
     if (!this.selectedApplication || !this.newMessage.trim() || this.sendingMessage) {
+      if (!this.newMessage.trim()) {
+        this.toastr.warning('يرجى إدخال رسالة');
+      }
       return;
     }
 
     this.sendingMessage = true;
-    const messageData: CreateMessageDto = {
-      application: this.selectedApplication.id,
-      message: this.newMessage.trim(),
-      attachment: this.selectedFile ? this.selectedFile.name : null
-    };
+    
+    // Use FormData to support file uploads
+    const formData = new FormData();
+    formData.append('application', this.selectedApplication.id.toString());
+    formData.append('message', this.newMessage.trim() || '');
+    
+    // Append file if selected
+    if (this.selectedFile) {
+      formData.append('attachment', this.selectedFile, this.selectedFile.name);
+    }
 
-    this.applicationService.sendApplicationMessage(this.selectedApplication.id, messageData).subscribe({
+    this.applicationService.sendApplicationMessage(this.selectedApplication.id, formData).subscribe({
       next: (message) => {
         // Ensure messages is an array before pushing
         if (!Array.isArray(this.messages)) {
@@ -284,6 +292,11 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
         this.messages.push(message);
         this.newMessage = '';
         this.selectedFile = null;
+        // Clear file input
+        const fileInput = document.getElementById('file-input') as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = '';
+        }
         this.sendingMessage = false;
         this.scrollToBottom();
         this.toastr.success('تم إرسال الرسالة بنجاح');
@@ -298,12 +311,49 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0];
+      const file = input.files[0];
+      const maxFileSize = 10 * 1024 * 1024; // 10MB
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/gif',
+        'image/webp'
+      ];
+
+      // Validate file size
+      if (file.size > maxFileSize) {
+        this.toastr.error('حجم الملف يتجاوز 10MB');
+        input.value = '';
+        this.selectedFile = null;
+        return;
+      }
+
+      // Validate file type
+      if (!allowedTypes.includes(file.type)) {
+        this.toastr.error('صيغة الملف غير مدعومة. يرجى رفع ملف PDF, DOC, DOCX, أو صورة.');
+        input.value = '';
+        this.selectedFile = null;
+        return;
+      }
+
+      this.selectedFile = file;
+      console.log('File selected:', file.name, file.size, file.type); // Debug
+    } else {
+      this.selectedFile = null;
     }
   }
 
   removeFile(): void {
     this.selectedFile = null;
+    // Clear file input
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 
   getApplicantName(application: Application): string {
@@ -389,6 +439,39 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
       const span = img.nextElementSibling as HTMLElement;
       if (span) {
         span.style.display = 'flex';
+      }
+    }
+  }
+
+  isImageAttachment(attachmentUrl: string | null | undefined): boolean {
+    if (!attachmentUrl) return false;
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
+    const url = attachmentUrl.toLowerCase();
+    return imageExtensions.some(ext => url.includes(ext));
+  }
+
+  getAttachmentUrl(attachmentUrl: string | null | undefined): string {
+    if (!attachmentUrl) return '';
+    if (attachmentUrl.startsWith('http') || attachmentUrl.startsWith('blob:') || attachmentUrl.startsWith('data:')) {
+      return attachmentUrl;
+    }
+    return `${environment.apiBaseUrl.replace(/\/+$/, '')}/${attachmentUrl.replace(/^\/+/, '')}`;
+  }
+
+  openImageInNewTab(attachmentUrl: string | null | undefined): void {
+    if (attachmentUrl) {
+      window.open(this.getAttachmentUrl(attachmentUrl), '_blank');
+    }
+  }
+
+  handleAttachmentError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img) {
+      img.style.display = 'none';
+      // Show fallback link
+      const link = img.nextElementSibling as HTMLElement;
+      if (link) {
+        link.style.display = 'block';
       }
     }
   }

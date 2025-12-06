@@ -184,7 +184,7 @@ export class ApplicationService {
   }
 
   // Send a message for an application
-  sendApplicationMessage(applicationId: number, messageData: CreateMessageDto): Observable<Message> {
+  sendApplicationMessage(applicationId: number, messageData: CreateMessageDto | FormData): Observable<Message> {
     const url = environment.getUrl(`${applicationId}/messages/create`, 'applications'); // /api/applications/{application_id}/messages/create/
     return this.http.post<Message>(url, messageData);
   }

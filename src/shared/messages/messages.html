@@ -120,12 +120,35 @@
                     <span class="sender-name">{{ message.sender_name || getApplicantName(selectedApplication) }}</span>
                     <span class="message-time">{{ formatDate(message.sent_at) }}</span>
                   </div>
-                  <div class="message-text">{{ message.message }}</div>
+                  @if (message.message) {
+                    <div class="message-text">{{ message.message }}</div>
+                  }
                   @if (message.attachment) {
                     <div class="message-attachment">
-                      <a [href]="message.attachment" target="_blank" rel="noopener noreferrer">
-                        📎 مرفق
-                      </a>
+                      @if (isImageAttachment(message.attachment)) {
+                        <div class="attachment-image">
+                          <img
+                            [src]="getAttachmentUrl(message.attachment)"
+                            [alt]="'صورة مرفقة'"
+                            [title]="'صورة مرفقة'"
+                            (click)="openImageInNewTab(message.attachment)"
+                            (error)="handleAttachmentError($event)"
+                            class="attachment-img"
+                          />
+                          <a
+                            [href]="getAttachmentUrl(message.attachment)"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="attachment-link"
+                          >
+                            فتح الصورة في نافذة جديدة
+                          </a>
+                        </div>
+                      } @else {
+                        <a [href]="getAttachmentUrl(message.attachment)" target="_blank" rel="noopener noreferrer" class="attachment-file-link">
+                          📎 مرفق - تنزيل الملف
+                        </a>
+                      }
                     </div>
                   }
                 </div>
@@ -149,16 +172,18 @@
                 id="file-input"
                 class="file-input"
                 (change)="onFileSelected($event)"
-                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp"
                 title="إرفاق ملف"
+                aria-label="إرفاق ملف"
               />
-              <label for="file-input" class="file-label">📎</label>
+              <label for="file-input" class="file-label" title="إرفاق ملف">📎</label>
               <textarea
                 [(ngModel)]="newMessage"
                 name="message"
                 class="message-textarea"
                 placeholder="اكتب رسالتك هنا..."
                 rows="2"
+                required
                 [disabled]="sendingMessage"
               ></textarea>
               <button
