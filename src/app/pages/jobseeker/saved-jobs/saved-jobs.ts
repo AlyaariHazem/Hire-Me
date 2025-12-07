@@ -1,24 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Base } from 'shared/base/base';
-import { JobService } from 'shared/services/job.service';
 import { SharedModule } from 'shared/shared-module';
 import { JobItem } from '@app/companies/models';
 import { environment } from 'environments/environment';
-
-// English: bookmark wrapper returned by API
-interface BookmarkedJobItem {
-  id: number; // English: bookmark id
-  job: JobItem; // English: actual job payload
-  created_at: string; // English: when it was bookmarked
-}
-
-// English: list response for bookmarks
-interface BookmarkedJobsResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: BookmarkedJobItem[];
-}
+import { SavedJobsStoreService, BookmarkedJobItem } from '../services/saved-jobs.service';
 
 @Component({
   selector: 'app-saved-jobs',
@@ -28,18 +13,17 @@ interface BookmarkedJobsResponse {
   styleUrl: './saved-jobs.scss',
 })
 export class SavedJobs extends Base implements OnInit {
-  // English: inject job service
-  private jobService = inject(JobService);
+  private savedJobsStore = inject(SavedJobsStoreService);
 
-  // English: saved bookmarks list
+  // Saved bookmarks list
   bookmarks: BookmarkedJobItem[] = [];
 
-  // English: paging info
+  // Paging info
   page = 1;
   pageSize = 10;
   totalCount = 0;
 
-  // English: ui state
+  // UI state
   loading = false;
   errorMessage: string | null = null;
   baseUrl = environment.apiBaseUrl;
@@ -49,44 +33,39 @@ export class SavedJobs extends Base implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadSavedJobs();
-  }
+    // Subscribe to loading state
+    this.savedJobsStore.loading$.subscribe(loading => {
+      this.loading = loading;
+    });
 
-  // English: load bookmarked jobs from API
-  loadSavedJobs(): void {
-    this.loading = true;
-    this.errorMessage = null;
+    // Subscribe to saved jobs data
+    this.savedJobsStore.savedJobs$.subscribe({
+      next: (data) => {
+        this.bookmarks = data.bookmarks;
+        this.totalCount = data.totalCount;
+        this.page = data.currentPage;
+        this.pageSize = data.pageSize;
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = 'حدث خطأ أثناء تحميل الوظائف المحفوظة';
+        console.error(err);
+      },
+    });
 
-    // English: reuse getBookmarkedJobs but expect the bookmark wrapper
-    this.jobService
-      .getBookmarkedJobs({
-        page: this.page,
-        page_size: this.pageSize,
-      })
-      .subscribe({
-        next: (res: any) => {
-          const data = res as BookmarkedJobsResponse;
-          this.bookmarks = data.results ?? [];
-          this.totalCount = data.count ?? 0;
-          this.loading = false;
-        },
-        error: (err) => {
-          this.loading = false;
-          this.errorMessage = 'حدث خطأ أثناء تحميل الوظائف المحفوظة';
-          console.error(err);
-        },
-      });
+    // Load initial saved jobs
+    this.savedJobsStore.loadSavedJobs();
   }
 
   removeFromSaved(job: JobItem): void {
-    // optimistic toggle value
+    // Optimistic toggle value
     const newValue = !job.is_bookmarked;
 
-    this.jobService.bookmarkJob(job.id).subscribe({
+    this.savedJobsStore.removeBookmark(job.id).subscribe({
       next: () => {
-        // update UI state so button text / class change immediately
+        // Update UI state so button text / class change immediately
         job.is_bookmarked = newValue;
-        this.loadSavedJobs();
 
         this.toastr.success(
           newValue
@@ -95,8 +74,10 @@ export class SavedJobs extends Base implements OnInit {
         );
       },
       error: () => {
-        // keep old value because API failed
+        // Keep old value because API failed
         this.toastr.error('تعذر حفظ الوظيفة');
+        // Refresh to get correct state
+        this.savedJobsStore.refresh();
       },
     });
   }
@@ -111,22 +92,25 @@ export class SavedJobs extends Base implements OnInit {
     return `حتى ${max}`;
   }
 
-  // English: total pages based on count
+  // Total pages based on count
   get totalPages(): number {
-    return this.pageSize > 0
-      ? Math.max(1, Math.ceil(this.totalCount / this.pageSize))
-      : 1;
+    return this.savedJobsStore.snapshot.totalPages;
   }
 
-  // English: array for *ngFor pagination
+  // Array for pagination
   get pages(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
-  // English: change current page
+  // Change current page
   goToPage(page: number): void {
-    if (page === this.page || page < 1 || page > this.totalPages) return;
-    this.page = page;
-    this.loadSavedJobs();
+    this.savedJobsStore.goToPage(page);
+  }
+
+  /**
+   * Refresh saved jobs data
+   */
+  refreshSavedJobs(): void {
+    this.savedJobsStore.refresh();
   }
 }

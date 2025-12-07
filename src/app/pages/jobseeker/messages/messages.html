@@ -31,12 +31,7 @@
             >
               <div class="company-logo">
                 @if (app.job && app.job.company && app.job.company.logo) {
-                  <img
-                    [src]="getCompanyLogo(app.job.company.logo)"
-                    [alt]="getCompanyName(app)"
-                    [title]="getCompanyName(app)"
-                    (error)="handleImageError($event)"
-                  />
+                  <img [src]="getCompanyLogo(app.job.company.logo)" [alt]="getCompanyName(app)" title="شعار الشركة" (error)="handleImageError($event)" />
                 }
                 <span [style.display]="(app.job && app.job.company && app.job.company.logo) ? 'none' : 'flex'">
                   {{ getCompanyName(app).charAt(0) }}
@@ -73,12 +68,7 @@
           <div class="conversation-info">
             <div class="conversation-logo">
               @if (selectedApplication.job && selectedApplication.job.company && selectedApplication.job.company.logo) {
-                <img
-                  [src]="getCompanyLogo(selectedApplication.job.company.logo)"
-                  [alt]="getCompanyName(selectedApplication)"
-                  [title]="getCompanyName(selectedApplication)"
-                  (error)="handleImageError($event)"
-                />
+                <img [src]="getCompanyLogo(selectedApplication.job.company.logo)" [alt]="getCompanyName(selectedApplication)" title="شعار الشركة" (error)="handleImageError($event)" />
               }
               <span [style.display]="(selectedApplication.job && selectedApplication.job.company && selectedApplication.job.company.logo) ? 'none' : 'flex'">
                 {{ getCompanyName(selectedApplication).charAt(0) }}
@@ -126,14 +116,7 @@
                     <div class="message-attachment">
                       @if (isImageAttachment(message.attachment)) {
                         <div class="attachment-image">
-                          <img
-                            [src]="getAttachmentUrl(message.attachment)"
-                            [alt]="'صورة مرفقة'"
-                            [title]="'صورة مرفقة'"
-                            (click)="openImageInNewTab(message.attachment)"
-                            (error)="handleAttachmentError($event)"
-                            class="attachment-img"
-                          />
+                          <img [src]="getAttachmentUrl(message.attachment)" alt="صورة مرفقة" title="صورة مرفقة" (click)="openImageInNewTab(message.attachment)" (error)="handleAttachmentError($event)" class="attachment-img" />
                           <a
                             [href]="getAttachmentUrl(message.attachment)"
                             target="_blank"

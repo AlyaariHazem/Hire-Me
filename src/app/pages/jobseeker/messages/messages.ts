@@ -1,11 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ApplicationService, Application, Message, CreateMessageDto } from 'shared/services/application.service';
+import { Application, Message } from 'shared/services/application.service';
 import { ToastrService } from 'ngx-toastr';
 import { Errors } from 'shared/services/errors';
 import { environment } from 'environments/environment';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { MessagesStoreService } from '../services/messages.service';
 
 @Component({
   selector: 'app-jobseeker-messages',
@@ -15,7 +16,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './messages.scss'
 })
 export class JobseekerMessages implements OnInit {
-  private applicationService = inject(ApplicationService);
+  private messagesStore = inject(MessagesStoreService);
   private toastr = inject(ToastrService);
   protected errors = inject(Errors);
 
@@ -31,62 +32,44 @@ export class JobseekerMessages implements OnInit {
   selectedFile: File | null = null;
 
   ngOnInit(): void {
-    this.loadApplications();
-  }
+    // Subscribe to loading states
+    this.messagesStore.loadingApplications$.subscribe(loading => {
+      this.loading = loading;
+    });
 
-  loadApplications(): void {
-    this.loading = true;
-    this.applicationService.getMyApplications({
-      ordering: '-applied_at',
-      page_size: 100
-    }).subscribe({
-      next: (response) => {
-        this.applications = response.results || [];
-        this.loading = false;
+    this.messagesStore.loadingMessages$.subscribe(loading => {
+      this.loadingMessages = loading;
+    });
+
+    // Subscribe to messages data
+    this.messagesStore.messages$.subscribe({
+      next: (data) => {
+        this.applications = data.applications;
+        this.selectedApplication = data.selectedApplication;
+        this.messages = data.messages;
+        // Scroll to bottom after messages load
+        if (data.messages.length > 0) {
+          setTimeout(() => this.scrollToBottom(), 100);
+        }
       },
       error: (err) => {
         this.errors.error(err, { join: true });
-        this.loading = false;
-        this.applications = [];
       }
     });
+
+    // Load initial applications
+    this.messagesStore.loadApplications();
   }
 
   selectApplication(application: Application): void {
-    this.selectedApplication = application;
     this.newMessage = '';
     this.selectedFile = null;
-    this.loadMessages(application.id);
-    // Mark as viewed when opening
-    if (!application.is_viewed) {
-      this.applicationService.markApplicationAsViewed(application.id).subscribe({
-        next: () => {
-          application.is_viewed = true;
-        },
-        error: (err) => {
-          console.error('Failed to mark as viewed', err);
-        }
-      });
+    // Clear file input
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
     }
-  }
-
-  loadMessages(applicationId: number): void {
-    this.loadingMessages = true;
-    this.messages = [];
-    this.applicationService.getApplicationMessages(applicationId).subscribe({
-      next: (messages) => {
-        // Ensure messages is always an array
-        this.messages = Array.isArray(messages) ? messages : [];
-        this.loadingMessages = false;
-        // Scroll to bottom after loading
-        setTimeout(() => this.scrollToBottom(), 100);
-      },
-      error: (err) => {
-        this.errors.error(err, { join: true });
-        this.messages = [];
-        this.loadingMessages = false;
-      }
-    });
+    this.messagesStore.selectApplication(application);
   }
 
   sendMessage(): void {
@@ -109,13 +92,8 @@ export class JobseekerMessages implements OnInit {
       formData.append('attachment', this.selectedFile, this.selectedFile.name);
     }
 
-    this.applicationService.sendApplicationMessage(this.selectedApplication.id, formData).subscribe({
+    this.messagesStore.sendMessage(this.selectedApplication.id, formData).subscribe({
       next: (message) => {
-        // Ensure messages is an array before pushing
-        if (!Array.isArray(this.messages)) {
-          this.messages = [];
-        }
-        this.messages.push(message);
         this.newMessage = '';
         this.selectedFile = null;
         // Clear file input

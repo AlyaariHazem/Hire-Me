@@ -14,6 +14,7 @@ import { ButtonModule } from 'primeng/button';
 import { Base } from 'shared/base/base';
 import { Router } from '@angular/router';
 import { AuthStateService } from 'app/auth/auth-state.service';
+import { JobsStoreService } from 'app/pages/jobseeker/services/jobs.service';
 
 @Component({
   selector: 'app-jobs',
@@ -24,6 +25,7 @@ import { AuthStateService } from 'app/auth/auth-state.service';
 export class Jobs extends Base {
   router = inject(Router);
   authState = inject(AuthStateService);
+  jobsStore = inject(JobsStoreService);
   constructor(
     private loaderService: LoaderService
   ) {
@@ -36,8 +38,9 @@ export class Jobs extends Base {
   jobs: JobItem[] = [];
   totalJobs = 0;
   mode: UserType = 'public';
-  role:string = '';
+  role: string = '';
   isSavedView = signal(false);
+  isLoading = false;
   
   // Track which jobs are being processed (to disable buttons during API calls)
   applyingJobs = new Set<number>();
@@ -46,7 +49,7 @@ export class Jobs extends Base {
   currentPage = 1;
   totalPages = 0;
 
-   // sort state
+  // sort state
   sortValue = 'relevance';
 
   // Options for select dropdowns
@@ -75,183 +78,120 @@ export class Jobs extends Base {
     { label: 'اسم الشركة', value: 'company' },
   ];
 
-  // ALL filters state
-   filters: JobFilters = {
-    search: '',
-    city: undefined,
-    category: undefined,
-    job_type: undefined,
-    experience_level: undefined,
-    ordering: undefined,
-    page: 1
-  };
+  // Local search value for two-way binding
+  searchValue: string = '';
 
-  ngOnInit() {
-    this.role = localStorage.getItem('role') || '';
-    this.getJobs();
-    
+  // ALL filters state - now synced with store
+  get filters(): JobFilters {
+    return this.jobsStore.filters;
   }
 
-  getJobs() {
-  // comments are in English only
-  const requestFilters: JobFilters = {
-    ...this.filters,
-    page: this.currentPage,
-    page_size: 5
-  };
+  // Sync search value with store filters
+  ngOnInit() {
+    this.role = localStorage.getItem('role') || '';
 
-  this.jobService.getJobs(requestFilters).pipe(
-    finalize(() => {
-      // Ensure loader is stopped when request completes (success or error)
-      this.loaderService.stop();
-    })
-  ).subscribe({
-    next: (res: JobListResponse) => {
-      // Normalize jobs to ensure company and category are never null
-      // Also ensure is_applied defaults to false if not provided by backend
-      this.jobs = (res.results || []).map(job => ({
-        ...job,
-        company: job.company || { id: 0, name: '-', logo: null, city: '-' },
-        category: job.category || { id: 0, name: '-' },
-        is_applied: job.is_applied ?? false // Default to false if not provided
-      }));
-      console.log('hazem', this.jobs);
-      this.totalJobs = res.count;
-      this.totalPages = Math.ceil(res.count / 5);
-    },
-    error: () => {
-      this.toastr.error('حدث خطأ أثناء جلب الوظائف');
-      this.jobs = []; // Clear jobs on error
-    }
-  });
-}
+    // Initialize search value from store
+    this.searchValue = this.jobsStore.filters.search || '';
+
+    // Subscribe to loading state
+    this.jobsStore.loading$.subscribe(loading => {
+      this.isLoading = loading;
+      if (loading) {
+        this.loaderService.start();
+      } else {
+        this.loaderService.stop();
+      }
+    });
+
+    // Subscribe to jobs data - this will emit immediately with cached data if available
+    this.jobsStore.jobs$.subscribe({
+      next: (data) => {
+        this.jobs = data.jobs;
+        this.totalJobs = data.totalJobs;
+        this.totalPages = data.totalPages;
+        this.currentPage = data.currentPage;
+        // Sync search value when filters change
+        this.searchValue = data.filters.search || '';
+      },
+      error: (err) => {
+        this.toastr.error('حدث خطأ أثناء جلب الوظائف');
+        this.jobs = [];
+        this.totalJobs = 0;
+        this.totalPages = 0;
+      }
+    });
+
+    // Load initial jobs only if not already loaded or if filters/page changed
+    // The store will check internally if reload is needed
+    this.jobsStore.loadJobs();
+  }
+
 
 
   // -------- filters handlers --------
 
   onSearchSubmit() {
-    // called when search form is submitted
-    this.currentPage = 1;
-    this.getJobs();
+    // Use the bound searchValue
+    this.jobsStore.setSearch(this.searchValue);
   }
 
   onCityChange(city: string | null | undefined) {
-    this.filters.city = (city as any) || undefined;
-    this.currentPage = 1;
-    this.getJobs();
+    this.jobsStore.setCity(city || undefined);
   }
 
   onCategoryChange(categoryId: number | undefined | null) {
-    // backend expects integer id, empty string means no filter
-    this.filters.category = categoryId ? Number(categoryId) : undefined;
-    this.currentPage = 1;
-    this.getJobs();
+    this.jobsStore.setCategory(categoryId ? Number(categoryId) : undefined);
   }
 
   setJobType(type: string) {
-  // English: toggle job_type filter
-  if (this.filters.job_type === type) {
-    // English: same type clicked again, clear filter
-    this.filters.job_type = undefined;
-  } else {
-    // English: apply new type
-    this.filters.job_type = type as any;
+    this.jobsStore.toggleJobType(type);
   }
 
-  this.currentPage = 1;
-  this.getJobs();
-}
-
-navigate(slug: string) {
-  const role = this.authState.role() as UserRole || '';
-  if(role === 'jobseeker') {
-    this.router.navigate(['/jobseeker/job-details', slug]);
-  } else if(role === 'employer') {
-    this.router.navigate(['/companies/job-details', slug]);
-  } else {
-    this.router.navigate(['/jobs', slug]);
+  navigate(slug: string) {
+    const role = this.authState.role() as UserRole || '';
+    if(role === 'jobseeker') {
+      this.router.navigate(['/jobseeker/job-details', slug]);
+    } else if(role === 'employer') {
+      this.router.navigate(['/companies/job-details', slug]);
+    } else {
+      this.router.navigate(['/jobs', slug]);
+    }
   }
-}
 
   setExperienceLevel(level: string) {
-  // English: toggle experience_level filter
-  if (this.filters.experience_level === level) {
-    // English: same level clicked again, clear filter
-    this.filters.experience_level = undefined;
-  } else {
-    // English: apply new level
-    this.filters.experience_level = level as any;
+    this.jobsStore.toggleExperienceLevel(level);
   }
 
-  this.currentPage = 1;
-  this.getJobs();
-}
-
-
   onSortChange(value: string) {
-    // comments are in English only
-    switch (value) {
-      case 'date':
-        this.filters.ordering = '-created_at';
-        break;
-      case 'salary':
-        this.filters.ordering = '-salary_max';
-        break;
-      case 'company':
-        this.filters.ordering = 'company__name';
-        break;
-      default:
-        this.filters.ordering = undefined; // relevance or default
-    }
-    this.currentPage = 1;
-    this.getJobs();
+    this.sortValue = value;
+    this.jobsStore.setSorting(value);
   }
 
   clearAllFilters(): void {
-    this.filters = {
-      search: '',
-      city: undefined,
-      category: undefined,
-      job_type: undefined,
-      experience_level: undefined,
-      ordering: undefined,
-      page: 1
-    };
-    this.currentPage = 1;
-    this.getJobs();
+    this.jobsStore.clearFilters();
   }
 
   applyFilters(): void {
-    // if you later add salary/date filters, handle them here then call getJobs
-    this.currentPage = 1;
-    this.getJobs();
+    // Filters are applied automatically when changed
+    this.jobsStore.refresh();
   }
 
   // -------- pagination --------
 
   get pages(): number[] {
-    // comments are in English only
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
   goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages) {
-      return;
-    }
-    this.currentPage = page;
-    this.getJobs();
+    this.jobsStore.goToPage(page);
   }
 
   previousPage(): void {
-    if (this.currentPage > 1) {
-      this.goToPage(this.currentPage - 1);
-    }
+    this.jobsStore.previousPage();
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.goToPage(this.currentPage + 1);
-    }
+    this.jobsStore.nextPage();
   }
 
   // -------- other existing stuff --------
@@ -307,6 +247,7 @@ navigate(slug: string) {
       next: () => {
         // Update job state to show as applied
         job.is_applied = true;
+        this.jobsStore.updateJob(job.id, { is_applied: true });
         this.applyingJobs.delete(job.id);
         this.toastr.success(`تم التقديم على الوظيفة "${job.title}" بنجاح`);
       },
@@ -328,26 +269,27 @@ navigate(slug: string) {
   }
 
   saveJob(job: JobItem): void {
-  // optimistic toggle value
-  const newValue = !job.is_bookmarked;
+    // optimistic toggle value
+    const newValue = !job.is_bookmarked;
 
-  this.jobService.bookmarkJob(job.id).subscribe({
-    next: () => {
-      // update UI state so button text / class change immediately
-      job.is_bookmarked = newValue;
+    this.jobService.bookmarkJob(job.id).subscribe({
+      next: () => {
+        // update UI state so button text / class change immediately
+        job.is_bookmarked = newValue;
+        this.jobsStore.updateJob(job.id, { is_bookmarked: newValue });
 
-      this.toastr.success(
-        newValue
-          ? `تم حفظ الوظيفة ${job.id} بنجاح`
-          : `تم إزالة الوظيفة ${job.id} من المحفوظات`
-      );
-    },
-    error: () => {
-      // keep old value because API failed
-      this.toastr.error('تعذر حفظ الوظيفة');
-    }
-  });
-}
+        this.toastr.success(
+          newValue
+            ? `تم حفظ الوظيفة ${job.id} بنجاح`
+            : `تم إزالة الوظيفة ${job.id} من المحفوظات`
+        );
+      },
+      error: () => {
+        // keep old value because API failed
+        this.toastr.error('تعذر حفظ الوظيفة');
+      }
+    });
+  }
 
 
   shareJob(jobId: any, title?: string): void {
