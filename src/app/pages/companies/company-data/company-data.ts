@@ -26,8 +26,14 @@ export class CompanyData implements OnInit, OnDestroy {
   COMPANY_SIZES = COMPANY_SIZES;
 
   companies: ICompanyData[] = [];
+  filteredCompanies: ICompanyData[] = [];
   maxYear = new Date().getFullYear();
 
+  // table state
+  loading = false;
+  globalFilterValue = '';
+  filterIndustry: string | null = null;
+  filterSize: string | null = null;
 
   // dialog state
   dialogVisible = false;
@@ -78,15 +84,75 @@ export class CompanyData implements OnInit, OnDestroy {
   }
 
   private loadMyCompanies(): void {
+    this.loading = true;
     this.companyService
       .getMyCompanies()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (list) => {
           this.companies = list || [];
+          this.applyFilters();
+          this.loading = false;
         },
-        error: (err) => this.errors.error(err, { join: true }),
+        error: (err) => {
+          this.errors.error(err, { join: true });
+          this.loading = false;
+        },
       });
+  }
+
+  // ---------- Filtering ----------
+
+  onGlobalFilter(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.globalFilterValue = input.value;
+    this.applyFilters();
+  }
+
+  applyFilters(): void {
+    let filtered = [...this.companies];
+
+    // Search filter
+    if (this.globalFilterValue) {
+      const searchTerm = this.globalFilterValue.toLowerCase();
+      filtered = filtered.filter(company => 
+        (company.name || '').toLowerCase().includes(searchTerm) ||
+        (company.slug || '').toLowerCase().includes(searchTerm) ||
+        (company.email || '').toLowerCase().includes(searchTerm) ||
+        (company.country || '').toLowerCase().includes(searchTerm) ||
+        (company.city || '').toLowerCase().includes(searchTerm) ||
+        (company.industry || '').toLowerCase().includes(searchTerm)
+      );
+    }
+
+    // Industry filter
+    if (this.filterIndustry) {
+      filtered = filtered.filter(company => company.industry === this.filterIndustry);
+    }
+
+    // Size filter
+    if (this.filterSize) {
+      filtered = filtered.filter(company => company.size === this.filterSize);
+    }
+
+    this.filteredCompanies = filtered;
+  }
+
+  getIndustryLabel(value: string): string {
+    const industry = this.INDUSTRY_TYPES.find(i => i.value === value);
+    return industry ? industry.label : value;
+  }
+
+  getSizeLabel(value: string): string {
+    const size = this.COMPANY_SIZES.find(s => s.value === value);
+    return size ? size.label : value;
+  }
+
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img) {
+      img.src = 'assets/images/company-placeholder.png';
+    }
   }
 
   // ---------- Dialog controls ----------
@@ -204,6 +270,7 @@ export class CompanyData implements OnInit, OnDestroy {
 
           if (created) {
             this.companies = [created, ...this.companies];
+            this.applyFilters();
           } else {
             this.loadMyCompanies();
           }
@@ -239,6 +306,7 @@ export class CompanyData implements OnInit, OnDestroy {
           this.companies = this.companies.map((c) =>
             c.id === updated.id ? updated : c
           );
+          this.applyFilters();
         } else {
           this.loadMyCompanies();
         }
@@ -266,6 +334,7 @@ export class CompanyData implements OnInit, OnDestroy {
         this.toastr.success('تم حذف الشركة بنجاح');
         this.deletingId = null;
         this.companies = this.companies.filter((c) => c.id !== company.id);
+        this.applyFilters();
       },
       error: (err) => {
         this.errors.error(err, { join: true });

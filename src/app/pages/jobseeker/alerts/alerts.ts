@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { JobService, JobAlert } from 'shared/services/job.service';
+import { JobAlert } from 'shared/services/job.service';
 import { ToastrService } from 'ngx-toastr';
 import { Base } from 'shared/base/base';
 import { JOB_CITIES, JOB_TYPES, EXPERIENCE_LEVELS } from '@app/companies/enums';
@@ -12,6 +12,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
+import { AlertsStoreService } from '../services/alerts.service';
 
 @Component({
   selector: 'app-alerts',
@@ -20,7 +21,7 @@ import { DialogModule } from 'primeng/dialog';
   styleUrl: './alerts.scss'
 })
 export class Alerts extends Base implements OnInit {
-  private jobService = inject(JobService);
+  private alertsStore = inject(AlertsStoreService);
   private fb = inject(FormBuilder);
 
   alerts: JobAlert[] = [];
@@ -36,8 +37,37 @@ export class Alerts extends Base implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.loadAlerts();
-    this.loadCategories();
+
+    // Subscribe to loading state
+    this.alertsStore.loadingAlerts$.subscribe(loading => {
+      this.loading = loading;
+    });
+
+    // Subscribe to alerts data
+    this.alertsStore.alerts$.subscribe({
+      next: (data) => {
+        this.alerts = data.alerts;
+        this.categories = data.categories;
+      },
+      error: (err) => {
+        this.errors.error(err, { join: true });
+        this.loading = false;
+      }
+    });
+
+    // Subscribe to categories data
+    this.alertsStore.categories$.subscribe({
+      next: (categories) => {
+        this.categories = categories;
+      },
+      error: (err) => {
+        console.error('Failed to load categories', err);
+      }
+    });
+
+    // Load initial data
+    this.alertsStore.loadAlerts();
+    this.alertsStore.loadCategories();
   }
 
   initForm(): void {
@@ -51,41 +81,6 @@ export class Alerts extends Base implements OnInit {
       category: [null],
       is_active: [true],
       email_notifications: [true]
-    });
-  }
-
-  loadAlerts(): void {
-    this.loading = true;
-    this.jobService.getAlerts().subscribe({
-      next: (response: any) => {
-        // Handle both array response and paginated response
-        if (Array.isArray(response)) {
-          this.alerts = response;
-        } else if (response && Array.isArray((response as any).results)) {
-          this.alerts = (response as any).results;
-        } else if (response && Array.isArray((response as any).alerts)) {
-          this.alerts = (response as any).alerts;
-        } else {
-          this.alerts = [];
-        }
-        this.loading = false;
-      },
-      error: (err) => {
-        this.errors.error(err, { join: true });
-        this.alerts = [];
-        this.loading = false;
-      }
-    });
-  }
-
-  loadCategories(): void {
-    this.jobService.getCategories().subscribe({
-      next: (response) => {
-        this.categories = response.results || [];
-      },
-      error: (err) => {
-        console.error('Failed to load categories', err);
-      }
     });
   }
 
@@ -145,11 +140,10 @@ export class Alerts extends Base implements OnInit {
 
     if (this.editingAlert) {
       // Update existing alert
-      this.jobService.updateAlert(this.editingAlert.id, payload).subscribe({
+      this.alertsStore.updateAlert(this.editingAlert.id, payload).subscribe({
         next: () => {
           this.toastr.success('تم تحديث التنبيه بنجاح');
           this.closeDialog();
-          this.loadAlerts();
         },
         error: (err) => {
           this.errors.error(err, { join: true });
@@ -157,11 +151,10 @@ export class Alerts extends Base implements OnInit {
       });
     } else {
       // Create new alert
-      this.jobService.createAlert(payload).subscribe({
+      this.alertsStore.createAlert(payload).subscribe({
         next: () => {
           this.toastr.success('تم إنشاء التنبيه بنجاح');
           this.closeDialog();
-          this.loadAlerts();
         },
         error: (err) => {
           this.errors.error(err, { join: true });
@@ -172,10 +165,9 @@ export class Alerts extends Base implements OnInit {
 
   deleteAlert(alert: JobAlert): void {
     if (confirm('هل أنت متأكد من حذف هذا التنبيه؟')) {
-      this.jobService.deleteAlert(alert.id).subscribe({
+      this.alertsStore.deleteAlert(alert.id).subscribe({
         next: () => {
           this.toastr.success('تم حذف التنبيه بنجاح');
-          this.loadAlerts();
         },
         error: (err) => {
           this.errors.error(err, { join: true });
@@ -186,10 +178,10 @@ export class Alerts extends Base implements OnInit {
 
   toggleAlertStatus(alert: JobAlert): void {
     const payload = { is_active: !alert.is_active };
-    this.jobService.patchAlert(alert.id, payload).subscribe({
-      next: () => {
-        alert.is_active = !alert.is_active;
-        this.toastr.success(alert.is_active ? 'تم تفعيل التنبيه' : 'تم تعطيل التنبيه');
+    this.alertsStore.patchAlert(alert.id, payload).subscribe({
+      next: (updatedAlert) => {
+        // The store will update the alert automatically
+        this.toastr.success(updatedAlert.is_active ? 'تم تفعيل التنبيه' : 'تم تعطيل التنبيه');
       },
       error: (err) => {
         this.errors.error(err, { join: true });

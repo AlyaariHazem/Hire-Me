@@ -91,9 +91,9 @@ export class MessagesStoreService {
   }
 
   /**
-   * Applications observable
+   * Applications observable (private, used internally)
    */
-  readonly applications$: Observable<Application[]> = this.applicationsTrigger$.pipe(
+  private applicationsList$: Observable<Application[]> = this.applicationsTrigger$.pipe(
     exhaustMap(() => {
       this.loadingApplicationsSubject.next(true);
       return this.loadApplicationsData();
@@ -109,14 +109,17 @@ export class MessagesStoreService {
         loadingApplications: false
       });
     }),
-    startWith([]),
+    startWith(this.messagesDataSubject.value.applications),
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
+  // Keep subscription alive to ensure observable stays active
+  private applicationsSubscription = this.applicationsList$.subscribe();
+
   /**
-   * Messages observable for selected application
+   * Messages observable for selected application (private, used internally)
    */
-  readonly messagesForApplication$: Observable<Message[]> = this.messagesTrigger$.pipe(
+  private messagesForApplication$: Observable<Message[]> = this.messagesTrigger$.pipe(
     exhaustMap((applicationId) => {
       this.loadingMessagesSubject.next(true);
       return this.loadMessagesData(applicationId);
@@ -135,10 +138,14 @@ export class MessagesStoreService {
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
+  // Keep subscription alive to ensure observable stays active
+  private messagesSubscription = this.messagesForApplication$.subscribe();
+
   /**
    * Load applications
    */
   loadApplications(): void {
+    // Only trigger if not already loaded
     if (!this.applicationsLoaded) {
       this.applicationsTrigger$.next();
     }
@@ -185,7 +192,11 @@ export class MessagesStoreService {
    * Load messages for an application
    */
   loadMessages(applicationId: number): void {
-    this.messagesTrigger$.next(applicationId);
+    const currentData = this.messagesDataSubject.value;
+    // Only load if different application or no messages loaded yet
+    if (!currentData.selectedApplication || currentData.selectedApplication.id !== applicationId) {
+      this.messagesTrigger$.next(applicationId);
+    }
   }
 
   /**

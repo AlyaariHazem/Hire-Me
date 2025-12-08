@@ -57,7 +57,7 @@ export class JobseekerMessages implements OnInit {
       }
     });
 
-    // Load initial applications
+    // Load initial applications - this will trigger the observable
     this.messagesStore.loadApplications();
   }
 
