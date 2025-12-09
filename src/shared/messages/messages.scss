@@ -455,14 +455,14 @@
 
 .message-textarea {
   flex: 1;
-  padding: 0.75rem;
+  padding: 0 5rem !important;
   border: 1px solid var(--border-color, #e0e0e0);
   border-radius: 4px;
   font-size: 0.95rem;
   font-family: inherit;
   resize: none;
-  min-height: 50px;
-  max-height: 120px;
+  min-height: 32px !important;
+  max-height: 48px !important;
 
   &:focus {
     outline: none;

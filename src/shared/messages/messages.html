@@ -13,20 +13,20 @@
         <h3>المتقدمون</h3>
       </div>
       
-      @if (loading) {
+      @if (loading()) {
         <div class="loading-state">
           <p>جاري تحميل المتقدمين...</p>
         </div>
-      } @else if (applications.length === 0) {
+      } @else if (applications().length === 0) {
         <div class="empty-state empty-state-in-sidebar">
           <p>لا توجد طلبات متقدمة</p>
         </div>
       } @else {
         <div class="applications-list" #applicationsList (scroll)="onScroll($event)">
-          @for (app of applications; track app.id) {
+          @for (app of applications(); track app.id) {
             <div
               class="application-item"
-              [class.active]="selectedApplication?.id === app.id"
+              [class.active]="selectedApplication()?.id === app.id"
               (click)="selectApplication(app)"
             >
               <div class="applicant-avatar">
@@ -52,12 +52,7 @@
               }
             </div>
           }
-          @if (loadingMore) {
-            <div class="loading-more">
-              <p>جاري تحميل المزيد...</p>
-            </div>
-          }
-          @if (loadingMore) {
+          @if (loadingMore()) {
             <div class="loading-more">
               <p>جاري تحميل المزيد...</p>
             </div>
@@ -68,48 +63,42 @@
 
     <!-- Messages Area (Right Side) -->
     <div class="messages-area">
-      @if (!selectedApplication) {
-        <div class="empty-messages">
-          <div class="empty-icon">💬</div>
-          <h3>اختر متقدماً للبدء</h3>
-          <p>اختر متقدماً من القائمة لعرض الرسائل وإرسال رسائل جديدة</p>
-        </div>
-      } @else {
+      @if (selectedApplication(); as app) {
         <!-- Messages Header -->
         <div class="messages-header">
           <div class="conversation-info">
             <div class="conversation-avatar">
-              @if (selectedApplication.applicant && selectedApplication.applicant.profile_picture) {
+              @if (app.applicant && app.applicant.profile_picture) {
                 <img
-                  [src]="getProfilePicture(selectedApplication.applicant.profile_picture)"
-                  [alt]="getApplicantName(selectedApplication)"
-                  [title]="getApplicantName(selectedApplication)"
+                  [src]="getProfilePicture(app.applicant.profile_picture)"
+                  [alt]="getApplicantName(app)"
+                  [title]="getApplicantName(app)"
                   (error)="handleImageError($event)"
                 />
               }
-              <span [style.display]="(selectedApplication.applicant && selectedApplication.applicant.profile_picture) ? 'none' : 'flex'">
-                {{ getApplicantInitials(selectedApplication) }}
+              <span [style.display]="(app.applicant && app.applicant.profile_picture) ? 'none' : 'flex'">
+                {{ getApplicantInitials(app) }}
               </span>
             </div>
             <div class="conversation-details">
-              <h3>{{ getApplicantName(selectedApplication) }}</h3>
-              <p>{{ selectedApplication.job.title }}</p>
+              <h3>{{ getApplicantName(app) }}</h3>
+              <p>{{ app.job.title }}</p>
             </div>
           </div>
         </div>
 
         <!-- Messages List -->
         <div class="messages-list">
-          @if (loadingMessages) {
+          @if (loadingMessages()) {
             <div class="loading-state">
               <p>جاري تحميل الرسائل...</p>
             </div>
-          } @else if (messages.length === 0) {
+          } @else if (messages().length === 0) {
             <div class="empty-messages-list">
               <p>لا توجد رسائل بعد. ابدأ المحادثة!</p>
             </div>
           } @else {
-            @for (message of messages; track message.id) {
+            @for (message of messages(); track message.id) {
               <div
                 class="message-item"
                 [class.my-message]="isMyMessage(message)"
@@ -117,7 +106,7 @@
               >
                 <div class="message-content">
                   <div class="message-header">
-                    <span class="sender-name">{{ message.sender_name || getApplicantName(selectedApplication) }}</span>
+                    <span class="sender-name">{{ message.sender_name || getApplicantName(app) }}</span>
                     <span class="message-time">{{ formatDate(message.sent_at) }}</span>
                   </div>
                   @if (message.message) {
@@ -199,6 +188,12 @@
               </button>
             </div>
           </form>
+        </div>
+      } @else {
+        <div class="empty-messages">
+          <div class="empty-icon">💬</div>
+          <h3>اختر متقدماً للبدء</h3>
+          <p>اختر متقدماً من القائمة لعرض الرسائل وإرسال رسائل جديدة</p>
         </div>
       }
     </div>

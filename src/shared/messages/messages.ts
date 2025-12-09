@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, inject, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { ApplicationService, Application, Message, CreateMessageDto } from 'shared/services/application.service';
+import { Component, OnInit, OnDestroy, inject, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, effect } from '@angular/core';
+import { Application, Message, CreateMessageDto } from 'shared/services/application.service';
+import { SharedMessagesStoreService } from './messages.store';
 import { ToastrService } from 'ngx-toastr';
 import { Errors } from 'shared/services/errors';
 import { environment } from 'environments/environment';
@@ -16,33 +17,50 @@ import { FormsModule } from '@angular/forms';
 export class Messages implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('applicationsList', { static: false }) applicationsListRef!: ElementRef<HTMLElement>;
 
-  private applicationService = inject(ApplicationService);
+  private store = inject(SharedMessagesStoreService);
   private toastr = inject(ToastrService);
   protected errors = inject(Errors);
   private cdr = inject(ChangeDetectorRef);
 
-  applications: Application[] = [];
-  selectedApplication: Application | null = null;
-  messages: Message[] = [];
-  loading = false;
-  loadingMessages = false;
-  loadingMore = false;
-  sendingMessage = false;
+  // Store Signals
+  applications = this.store.applications;
+  selectedApplication = this.store.selectedApplication;
+  messages = this.store.messages;
+  loading = this.store.loading;
+  loadingMessages = this.store.loadingMessages;
+  loadingMore = this.store.loadingMore;
+  hasNext = this.store.hasNext;
 
-  // Pagination
-  currentPage = 1;
-  pageSize = 5; // Show 5 initially
-  hasNext = false;
-  nextPageUrl: string | null = null;
+  sendingMessage = false;
 
   // Message form
   newMessage: string = '';
   selectedFile: File | null = null;
-
+  
   private scrollHandler = this.onScroll.bind(this);
+  
+  constructor() {
+    // Re-setup scroll listener when applications change (new data loaded)
+    effect(() => {
+      // Access signal to register dependency
+      const apps = this.applications();
+      // Using untracked/timer to avoid excessive effect execution loops if not careful, 
+      // but here we just want to re-run setup when data changes.
+      setTimeout(() => {
+        this.setupScrollListener();
+        this.checkIfNeedMoreContent();
+      }, 300);
+    });
+    
+    // Auto scroll to bottom when messages change
+    effect(() => {
+       const msgs = this.messages();
+       setTimeout(() => this.scrollToBottom(), 100);
+    });
+  }
 
   ngOnInit(): void {
-    this.loadApplications();
+    this.store.init();
   }
 
   ngAfterViewInit(): void {
@@ -62,9 +80,9 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
     if (this.applicationsListRef?.nativeElement) {
       const element = this.applicationsListRef.nativeElement;
       // If content doesn't fill the container and we have more pages, load more
-      if (element.scrollHeight <= element.clientHeight && this.hasNext && !this.loadingMore) {
+      if (element.scrollHeight <= element.clientHeight && this.hasNext() && !this.loadingMore()) {
         console.log('Content too short, loading more...'); // Debug
-        this.loadMoreApplications();
+        this.store.loadMoreApplications();
       }
     }
   }
@@ -106,9 +124,9 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
         }); // Debug
         
         // Also check if we need to load more immediately
-        if (!hasScroll && this.hasNext && !this.loadingMore) {
+        if (!hasScroll && this.hasNext() && !this.loadingMore()) {
           console.log('No scroll needed, but has more data. Loading...'); // Debug
-          this.loadMoreApplications();
+          this.store.loadMoreApplications();
         }
       } else {
         console.warn('applicationsListRef is not available, retrying...'); // Debug
@@ -142,129 +160,33 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // Load more when user scrolls near bottom (within 150px for better trigger)
-    if (distanceFromBottom < 150 && this.hasNext && !this.loadingMore) {
-      console.log('Triggering loadMoreApplications...', { distanceFromBottom, hasNext: this.hasNext, loadingMore: this.loadingMore }); // Debug
-      this.loadMoreApplications();
+    if (distanceFromBottom < 150 && this.hasNext() && !this.loadingMore()) {
+      console.log('Triggering loadMoreApplications...', { distanceFromBottom, hasNext: this.hasNext(), loadingMore: this.loadingMore() }); // Debug
+      this.store.loadMoreApplications();
     }
   }
 
-  loadApplications(): void {
-    this.loading = true;
-    this.currentPage = 1;
-    this.applications = [];
-    this.hasNext = false;
-    this.nextPageUrl = null;
-    
-    this.applicationService.getAllJobApplications({
-      ordering: '-applied_at',
-      page: 1,
-      page_size: this.pageSize
-    }).subscribe({
-      next: (response) => {
-        console.log('Applications response:', response); // Debug
-        this.applications = response.results || [];
-        this.hasNext = !!response.next;
-        this.nextPageUrl = response.next;
-        this.loading = false;
-        
-        // Force change detection
-        this.cdr.detectChanges();
-        
-        // Re-setup scroll listener after data loads and view updates
-        setTimeout(() => {
-          this.setupScrollListener();
-          this.checkIfNeedMoreContent();
-        }, 300);
-      },
-      error: (err) => {
-        this.errors.error(err, { join: true });
-        this.loading = false;
-        this.applications = [];
-      }
-    });
-  }
-
-  loadMoreApplications(): void {
-    if (!this.hasNext || this.loadingMore) {
-      console.log('Cannot load more:', { hasNext: this.hasNext, loadingMore: this.loadingMore }); // Debug
-      return;
-    }
-
-    this.loadingMore = true;
-    this.currentPage++;
-    
-    console.log('Loading page:', this.currentPage, 'pageSize:', this.pageSize); // Debug
-    
-    this.applicationService.getAllJobApplications({
-      ordering: '-applied_at',
-      page: this.currentPage,
-      page_size: this.pageSize
-    }).subscribe({
-      next: (response) => {
-        console.log('More applications loaded:', response.results?.length, 'Total now:', this.applications.length + (response.results?.length || 0)); // Debug
-        const newApplications = response.results || [];
-        this.applications = [...this.applications, ...newApplications];
-        this.hasNext = !!response.next;
-        this.nextPageUrl = response.next;
-        this.loadingMore = false;
-        
-        // Force change detection
-        this.cdr.detectChanges();
-        
-        // Re-setup scroll listener after new data is loaded
-        setTimeout(() => {
-          this.setupScrollListener();
-          this.checkIfNeedMoreContent();
-        }, 300);
-      },
-      error: (err) => {
-        console.error('Error loading more applications:', err); // Debug
-        this.errors.error(err, { join: true });
-        this.loadingMore = false;
-        this.currentPage--; // Revert page increment on error
-      }
-    });
-  }
+  // loadApplications removed - handled by store
+  // loadMoreApplications removed - handled by store 
 
   selectApplication(application: Application): void {
-    this.selectedApplication = application;
-    this.newMessage = '';
-    this.selectedFile = null;
-    this.loadMessages(application.id);
-    // Mark as viewed when opening
-    if (!application.is_viewed) {
-      this.applicationService.markApplicationAsViewed(application.id).subscribe({
-        next: () => {
-          application.is_viewed = true;
-        },
-        error: (err) => {
-          console.error('Failed to mark as viewed', err);
-        }
-      });
-    }
+     this.newMessage = '';
+     this.selectedFile = null;
+     
+     // Clear file input
+     const fileInput = document.getElementById('file-input') as HTMLInputElement;
+     if (fileInput) {
+       fileInput.value = '';
+     }
+
+     this.store.selectApplication(application);
   }
 
-  loadMessages(applicationId: number): void {
-    this.loadingMessages = true;
-    this.messages = [];
-    this.applicationService.getApplicationMessages(applicationId).subscribe({
-      next: (messages) => {
-        // Ensure messages is always an array
-        this.messages = Array.isArray(messages) ? messages : [];
-        this.loadingMessages = false;
-        // Scroll to bottom after loading
-        setTimeout(() => this.scrollToBottom(), 100);
-      },
-      error: (err) => {
-        this.errors.error(err, { join: true });
-        this.messages = [];
-        this.loadingMessages = false;
-      }
-    });
-  }
+  // loadMessages removed - handled by store
 
   sendMessage(): void {
-    if (!this.selectedApplication || !this.newMessage.trim() || this.sendingMessage) {
+    const selectedApp = this.selectedApplication();
+    if (!selectedApp || !this.newMessage.trim() || this.sendingMessage) {
       if (!this.newMessage.trim()) {
         this.toastr.warning('يرجى إدخال رسالة');
       }
@@ -275,7 +197,7 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
     
     // Use FormData to support file uploads
     const formData = new FormData();
-    formData.append('application', this.selectedApplication.id.toString());
+    formData.append('application', selectedApp.id.toString());
     formData.append('message', this.newMessage.trim() || '');
     
     // Append file if selected
@@ -283,13 +205,8 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
       formData.append('attachment', this.selectedFile, this.selectedFile.name);
     }
 
-    this.applicationService.sendApplicationMessage(this.selectedApplication.id, formData).subscribe({
+    this.store.sendMessage(selectedApp.id, formData).subscribe({
       next: (message) => {
-        // Ensure messages is an array before pushing
-        if (!Array.isArray(this.messages)) {
-          this.messages = [];
-        }
-        this.messages.push(message);
         this.newMessage = '';
         this.selectedFile = null;
         // Clear file input
@@ -298,7 +215,6 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
           fileInput.value = '';
         }
         this.sendingMessage = false;
-        this.scrollToBottom();
         this.toastr.success('تم إرسال الرسالة بنجاح');
       },
       error: (err) => {
