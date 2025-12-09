@@ -735,11 +735,8 @@
   margin-top: 4px;
 }
 
-:host ::ng-deep .p-select,
 :host ::ng-deep .p-inputtext,
-:host ::ng-deep .p-inputtextarea,
-:host ::ng-deep .p-inputnumber,
-:host ::ng-deep .p-inputwrapper {
+:host ::ng-deep .p-inputtextarea {
   /* Full width inside the responsive grid to avoid tiny inputs */
   width: 100%;
   max-width: 100%;

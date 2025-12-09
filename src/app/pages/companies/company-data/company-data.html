@@ -31,9 +31,8 @@
       #dt
       [value]="filteredCompanies"
       [paginator]="true"
-      [rows]="10"
-      [rowsPerPageOptions]="[10, 25, 50]"
-      [loading]="loading"
+      [rows]="5"
+      [rowsPerPageOptions]="[5, 10, 25]"
       [showCurrentPageReport]="true"
       currentPageReportTemplate="عرض {first} إلى {last} من {totalRecords} شركة"
       [rowHover]="true"
@@ -71,6 +70,7 @@
               [options]="INDUSTRY_TYPES"
               optionLabel="label"
               optionValue="value"
+              appendTo="body"
               [(ngModel)]="filterIndustry"
               (onChange)="applyFilters()"
               placeholder="الكل"
@@ -84,6 +84,7 @@
               [options]="COMPANY_SIZES"
               optionLabel="label"
               optionValue="value"
+              appendTo="body"
               [(ngModel)]="filterSize"
               (onChange)="applyFilters()"
               placeholder="الكل"
@@ -312,12 +313,14 @@
           </div>
 
           <div class="form-group">
-            <label for="email">البريد الإلكتروني</label>
+            <label for="email">البريد الإلكتروني <span class="required">*</span></label>
             <input
               pInputText
               type="email"
               id="email"
               name="email"
+              maxlength="254"
+              required
               [(ngModel)]="form.email"
               #emailCtrl="ngModel"
               [class.p-invalid]="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)"
@@ -327,11 +330,15 @@
             emailCtrl.touched)){
             <small class="p-error"> بريد إلكتروني غير صالح </small>
             }
+            <!-- this feild is required -->
+            @if(emailCtrl.errors?.['required'] && (emailCtrl.dirty ||
+            emailCtrl.touched)){
+            <small class="p-error"> هذا الحقل مطلوب </small>
+            }
           </div>
         </div>
 
         <!-- Description / Website -->
-        <div class="form-row">
           <div class="form-group">
             <label for="description">وصف الشركة<span class="required">*</span></label
             >
@@ -340,7 +347,7 @@
               id="description"
               name="description"
               [(ngModel)]="form.description"
-              rows="4"
+              rows="2"
               required
               #descriptionCtrl="ngModel"
               [class.p-invalid]="descriptionCtrl.invalid && (descriptionCtrl.dirty || descriptionCtrl.touched)"
@@ -352,31 +359,12 @@
             >
              هذا الحقل مطلوب
             </small>
-          </div>
 
-          <div class="form-group">
-            <label for="website">موقع الشركة</label>
-            <input
-              pInputText
-              type="url"
-              id="website"
-              name="website"
-              [(ngModel)]="form.website"
-              #websiteCtrl="ngModel"
-              [class.p-invalid]="websiteCtrl.invalid && (websiteCtrl.dirty || websiteCtrl.touched)"
-              placeholder="https://example.com"
-            />
-            <small
-              class="p-error"
-              *ngIf="websiteCtrl.errors?.['url'] && (websiteCtrl.dirty || websiteCtrl.touched)"
-            >
-              رابط غير صالح
-            </small>
-          </div>
+
         </div>
 
         <!-- Address -->
-        <div class="form-row">
+        <div class="form-row form-row-3">
           <div class="form-group">
             <label for="country"
               >الدولة <span class="required">*</span></label
@@ -405,7 +393,25 @@
               الحد الأقصى 100 حرف
             </small>
           </div>
-
+          <div class="form-group">
+          <label for="website">موقع الشركة</label>
+          <input
+            pInputText
+            type="url"
+            id="website"
+            name="website"
+            [(ngModel)]="form.website"
+            #websiteCtrl="ngModel"
+            [class.p-invalid]="websiteCtrl.invalid && (websiteCtrl.dirty || websiteCtrl.touched)"
+            placeholder="https://example.com"
+          />
+          <small
+            class="p-error"
+            *ngIf="websiteCtrl.errors?.['url'] && (websiteCtrl.dirty || websiteCtrl.touched)"
+          >
+            رابط غير صالح
+          </small>
+        </div>
           <div class="form-group">
             <label for="city"
               >المدينة <span class="required">*</span></label
@@ -436,34 +442,32 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="address">العنوان</label>
-          <input
-            pInputText
-            id="address"
-            name="address"
-            [(ngModel)]="form.address"
-            maxlength="254"
-            #addressCtrl="ngModel"
-            [class.p-invalid]="addressCtrl.invalid && (addressCtrl.dirty || addressCtrl.touched)"
-            placeholder="الحي، الشارع، تفاصيل إضافية"
-          />
-          <small
-            class="p-error"
-            *ngIf="addressCtrl.errors?.['maxlength'] && (addressCtrl.dirty || addressCtrl.touched)"
-          >
-            الحد الأقصى 254 حرفًا
-          </small>
-        </div>
-
-        <!-- Logo / Cover -->
-        <div class="form-row">
+        <div class="form-row form-row-3">
+          <div class="form-group ">
+            <label for="address">العنوان</label>
+            <input
+              pInputText
+              id="address"
+              name="address"
+              [(ngModel)]="form.address"
+              maxlength="254"
+              #addressCtrl="ngModel"
+              [class.p-invalid]="addressCtrl.invalid && (addressCtrl.dirty || addressCtrl.touched)"
+              placeholder="الحي، الشارع، تفاصيل إضافية"
+            />
+            <small
+              class="p-error"
+              *ngIf="addressCtrl.errors?.['maxlength'] && (addressCtrl.dirty || addressCtrl.touched)"
+            >
+              الحد الأقصى 254 حرفًا
+            </small>
+          </div>
           <div class="form-group">
             <label for="logo">رابط الشعار (Logo URL)</label>
             <input
+              pInputText
               id="logo"
               name="logo"
-              class="form-control"
               [(ngModel)]="form.logo"
               placeholder="/media/logos/company.png أو رابط كامل"
             />
@@ -471,9 +475,9 @@
           <div class="form-group">
             <label for="cover_image">رابط صورة الغلاف</label>
             <input
+              pInputText
               id="cover_image"
               name="cover_image"
-              class="form-control"
               [(ngModel)]="form.cover_image"
               placeholder="/media/covers/cover.jpg"
             />

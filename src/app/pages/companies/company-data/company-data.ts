@@ -88,7 +88,6 @@ export class CompanyData implements OnInit, OnDestroy {
   }
 
   private loadMyCompanies(): void {
-    this.loading = true;
     this.companyService
       .getMyCompanies()
       .pipe(takeUntil(this.destroy$))
