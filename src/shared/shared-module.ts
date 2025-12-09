@@ -41,6 +41,6 @@ BreadcrumbModule,
     ...modules
   ],
   exports: [...components,...modules],
-  providers: [JobService, ProfileStoreService, BreadcrumbService]
+  providers: [BreadcrumbService]
 })
 export class SharedModule { }

@@ -155,21 +155,14 @@ private teardownDataBindings(): void {
     this.toastr.info('هذه الميزة غير متوفرة حالياً', 'لم يتم التنفيذ');
   }
 
-  private toAbsolute(path: string | null | undefined): string | null {
-    if (!path) return null;
-    if (/^(https?:|blob:|data:)/i.test(path)) return path;
-    const base = environment.apiBaseUrl.replace(/\/+$/, '');
-    const p = String(path).replace(/^\/+/, '');
-    return `${base}/${p}`;
-  }
-
  logout(): void {
   this.logoutService.logout().subscribe((res: any) => {
     this.authState.clear();
     this.profileStore.reset();
     this.teardownDataBindings();
-    this.router.navigate(['/login']);
     this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
+    // Force a full page reload to the login page to clear all state/guards
+    window.location.href = '/login';
   });
 }
 

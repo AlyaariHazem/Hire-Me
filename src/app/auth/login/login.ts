@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UserRole, UserType } from 'core/types';
 import { Router } from '@angular/router';
+import { take } from 'rxjs'; // Import take
 
 import { SharedModule } from 'shared/shared-module';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { AuthService } from '../auth.service';
 import { Base } from 'shared/base/base';
+import { ProfileStoreService } from 'shared/services/profile.service';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +20,8 @@ import { Base } from 'shared/base/base';
   providers: [Document],
 })
 export class Login extends Base implements OnInit {
+  private profileStore = inject(ProfileStoreService);
+
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -99,11 +103,25 @@ export class Login extends Base implements OnInit {
 
         // Temporarily set tokens to call /profile
         this.auth.setTokens(access, refresh);
+        
+        // Reset and load profile via store
+        this.profileStore.reset();
+        this.profileStore.ensureLoaded();
 
         // 4) Fetch profile to verify backend role
-        this.getProfile().subscribe({
-          next: (data: any) => {
-            const backendType = data?.data?.user?.user_type as string | undefined;
+        // We subscribe to profile$ which will emit once loaded
+        this.profileStore.profile$
+          .pipe(take(1)) // specific import needed
+          .subscribe({
+          next: (profile) => {
+            if (!profile) return; // wait for valid profile
+            const backendType = profile.user.user_type; // Adjust based on Profile interface
+            // Note: Profile interface in service has 'user' object. 
+            // In original code: data?.data?.user?.user_type. 
+            // ProfileStoreService returns the inner 'profile' object but the Interface definition says:
+            // export interface Profile { ... user: { ... user_type ... } }
+            // So `profile.user.user_type` should be correct if the interface matches.
+            
             const backendRole = this.mapBackendRole(backendType);
 
             if (!backendRole) {
@@ -111,17 +129,6 @@ export class Login extends Base implements OnInit {
               this.auth.logout(); // clear temporary tokens
               return;
             }
-
-            // 5) Compare selected role with backend role
-            // if (backendRole !== chosen) {
-            //   const chosenAr = chosen === 'jobseeker' ? 'باحث عن عمل' : 'صاحب عمل';
-            //   const backendAr = backendRole === 'jobseeker' ? 'باحث عن عمل' : 'صاحب عمل';
-            //   this.toastr.error(
-            //     `نوع الحساب الذي اخترته (${chosenAr}) لا يطابق نوع حسابك الفعلي (${backendAr}).`
-            //   );
-            //   this.auth.logout(); // prevent entering with wrong role
-            //   return;
-            // }
 
             // 6) Role matches → persist role & go in
             this.auth.setRole(backendRole as UserRole);
@@ -138,12 +145,6 @@ export class Login extends Base implements OnInit {
         this.errors.error(err, { join: true });
       },
     });
-  }
-
-  getProfile() {
-    // Adjust second argument if your environment.getUrl accepts a namespace
-    // In your snippet: environment.getUrl('profile', 'accounts')
-    return this.http.get(environment.getUrl('profile', 'accounts'));
   }
 
   loginWithLinkedIn() {
