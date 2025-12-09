@@ -6,18 +6,18 @@
     </div>
     <div class="employer-actions">
       <span class="p-input-icon-left search-input">
-        <i class="pi pi-search"></i>
         <input
           pInputText
           type="text"
           [(ngModel)]="globalFilterValue"
           placeholder="بحث في الشركات..."
           (input)="onGlobalFilter($event)"
+          class="p-inputtext p-component"
         />
       </span>
       <button
         type="button"
-        class="btn btn-primary"
+        class="btn btn-primary px-5 py-3"
         (click)="openCreateDialog()"
       >
         <i class="pi pi-plus"></i>
