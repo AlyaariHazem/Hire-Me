@@ -7,7 +7,7 @@ import { Messages } from './messages/messages';
 import { FormsModule } from '@angular/forms';
 import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
 import { DialogModule } from 'primeng/dialog';
-import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { JobService } from './services/job.service';
@@ -32,7 +32,7 @@ Messages,
 RouterLinkActive,
 DialogModule,
 ProgressSpinnerModule,
-ConfirmDialog,
+ConfirmDialogModule,
 BreadcrumbModule,
 ];
 @NgModule({

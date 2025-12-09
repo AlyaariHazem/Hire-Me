@@ -22,6 +22,7 @@ import { User } from 'app/pages/jobseeker/services/user';
 import { ProfileStoreService } from 'shared/services/profile.service';
 
 import { environment } from 'environments/environment';
+import { ConfirmationService } from 'primeng/api';
 import { UserType } from 'core/types';
 import { AuthStateService } from 'app/auth/auth-state.service';
 
@@ -31,7 +32,7 @@ import { AuthStateService } from 'app/auth/auth-state.service';
   standalone: false,
   templateUrl: './header.html',
   styleUrl: './header.scss',
-  providers: [Logout, ToastrService],
+  providers: [Logout, ToastrService, ConfirmationService],
 })
 export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   // ===== Auth / mode =====
@@ -89,6 +90,7 @@ export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   cdr = inject(ChangeDetectorRef);
   logoutService = inject(Logout);
   toastr = inject(ToastrService);
+  private confirmationService = inject(ConfirmationService);
 
   ngOnInit(): void {
    if (this.isLoggedIn()) this.profileStore.ensureLoaded();
@@ -156,14 +158,24 @@ private teardownDataBindings(): void {
   }
 
  logout(): void {
-  this.logoutService.logout().subscribe((res: any) => {
-    this.authState.clear();
-    this.profileStore.reset();
-    this.teardownDataBindings();
-    this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
-    // Force a full page reload to the login page to clear all state/guards
-    window.location.href = '/login';
-  });
+    this.confirmationService.confirm({
+      key: 'logout',
+      message: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+      header: 'تسجيل الخروج',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'نعم',
+      rejectLabel: 'لا',
+      accept: () => {
+        this.logoutService.logout().subscribe((res: any) => {
+          this.authState.clear();
+          this.profileStore.reset();
+          this.teardownDataBindings();
+          this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
+          // Force a full page reload to the login page to clear all state/guards
+          window.location.href = '/login';
+        });
+      }
+    });
 }
 
 
