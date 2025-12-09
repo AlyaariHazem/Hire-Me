@@ -391,4 +391,10 @@ export class Messages implements OnInit, OnDestroy, AfterViewInit {
       }
     }
   }
+
+  adjustTextareaHeight(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto'; // Reset to calculate scrollHeight
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
 }

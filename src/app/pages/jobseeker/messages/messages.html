@@ -164,9 +164,10 @@
                 name="message"
                 class="message-textarea"
                 placeholder="اكتب رسالتك هنا..."
-                rows="2"
+                rows="1"
                 required
                 [disabled]="sendingMessage"
+                (input)="adjustTextareaHeight($event)"
               ></textarea>
               <button
                 type="submit"

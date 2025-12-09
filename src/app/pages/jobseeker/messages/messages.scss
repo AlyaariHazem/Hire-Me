@@ -470,8 +470,13 @@
   font-size: 0.95rem;
   font-family: inherit;
   resize: none;
-  min-height: 32px !important;
-  max-height: 48px !important;
+  min-height: 50px !important;
+  max-height: 150px !important;
+  overflow-y: auto;
+  transition: height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  line-height: 1.5;
 
   &:focus {
     outline: none;
