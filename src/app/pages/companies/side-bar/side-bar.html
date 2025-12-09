@@ -7,15 +7,15 @@
       class="company-logo1"
     />
     <h3 class="company-name">{{companyName}}</h3>
-    <p class="company-type">تقنية المعلومات</p>
+    <p class="company-type">{{industry}}</p>
 
     <div class="company-stats">
       <div class="company-stat">
-        <div class="stat-number">5</div>
+        <div class="stat-number">{{ activeJobsCount() }}</div>
         <div class="stat-label">وظائف نشطة</div>
       </div>
       <div class="company-stat">
-        <div class="stat-number">89</div>
+        <div class="stat-number">{{ newApplicantsCount() }}</div>
         <div class="stat-label">متقدم جديد</div>
       </div>
     </div>

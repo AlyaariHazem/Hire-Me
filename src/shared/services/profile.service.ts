@@ -12,6 +12,7 @@ export interface Profile {
   company_name: string;
   company_logo: string;
   profile: { company_logo: string };
+  industry: string;
   user: { first_name: string; last_name: string; profile_picture: string };
   // ...other fields
 }

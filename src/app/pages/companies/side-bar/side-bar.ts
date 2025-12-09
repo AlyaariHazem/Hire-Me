@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { filter } from 'rxjs';
 import { environment } from 'environments/environment';
 import { ProfileStoreService, Profile } from 'shared/services/profile.service';
+import { SidebarStoreService } from '../services/sidebar.store';
 import { SharedModule } from 'shared/shared-module';
 
 @Component({
@@ -17,8 +18,14 @@ export class SideBarCompany implements OnInit {
   logo = signal<string>('');
   // English: default company name until profile loads
   companyName = 'شركة التقنيات المتقدمة';
+  industry = 'IT';
 
   private profileStore = inject(ProfileStoreService);
+  private sidebarStore = inject(SidebarStoreService);
+
+  // Stats signals
+  activeJobsCount = this.sidebarStore.activeJobsCount;
+  newApplicantsCount = this.sidebarStore.newApplicantsCount;
 
   constructor(
     private http: HttpClient,
@@ -28,11 +35,15 @@ export class SideBarCompany implements OnInit {
   ngOnInit(): void {
     // English: trigger initial load once (safe to call many times)
      this.profileStore.ensureLoaded(); // English: harmless repeated call
+     this.sidebarStore.init();
+     
   this.profileStore.profile$
     .pipe(filter((p): p is Profile => !!p))
     .subscribe(p => {
+      console.log('hazemm',p);
       this.companyName = p.company_name ?? this.companyName;
       this.logo.set(this.toAbsolute(p.company_logo));
+      this.industry = p.industry ?? this.industry;
     });
   }
 

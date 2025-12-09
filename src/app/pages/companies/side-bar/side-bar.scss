@@ -80,7 +80,10 @@
     
     .company-stat:hover .stat-number {
       transform: scale(1.1);
-      color: var(--primary-dark, #1d4ed8);
+      color: white;
+    }
+    .company-stat:hover .stat-label{
+      color: white!important;
     }
   }
   
