@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, inject, computed, effect } from '@angular/core';
+import { ConfirmationService } from 'primeng/api';
 import { NgForm } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -21,6 +22,7 @@ export class CompanyData implements OnInit, OnDestroy {
    baseUrl = environment.apiBaseUrl;
   private errors = inject(Errors);
   private toastr = inject(ToastrService);
+  private confirmationService = inject(ConfirmationService);
   private store = inject(CompanyDataStoreService);
 
   // Signals from store
@@ -270,19 +272,26 @@ export class CompanyData implements OnInit, OnDestroy {
 
   deleteCompany(company: ICompanyData): void {
     if (!company.slug) return;
-    if (!confirm(`هل أنت متأكد من حذف شركة "${company.name}"؟`)) return;
 
-    this.deletingId = company.id ?? null;
-
-    this.store.deleteCompany(company.slug, company.id!).subscribe({
-      next: () => {
-        this.toastr.success('تم حذف الشركة بنجاح');
-        this.deletingId = null;
-      },
-      error: (err) => {
-        this.errors.error(err, { join: true });
-        this.deletingId = null;
-      },
+    this.confirmationService.confirm({
+      message: `هل أنت متأكد من حذف شركة "${company.name}"؟`,
+      header: 'تأكيد الحذف',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'نعم',
+      rejectLabel: 'لا',
+      accept: () => {
+        this.deletingId = company.id ?? null;
+        this.store.deleteCompany(company.slug!, company.id!).subscribe({
+          next: () => {
+            this.toastr.success('تم حذف الشركة بنجاح');
+            this.deletingId = null;
+          },
+          error: (err) => {
+            this.errors.error(err, { join: true });
+            this.deletingId = null;
+          },
+        });
+      }
     });
   }
 }

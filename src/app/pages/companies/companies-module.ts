@@ -25,6 +25,8 @@ import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 
 
@@ -57,10 +59,12 @@ const modules = [
   Applicants,
   SideBarCompany,
   CompanyProfile,
+  ConfirmDialogModule,
 ];
 @NgModule({
   declarations: [...components],
   imports: [...modules],
   exports: [...modules, ...components],
+  providers: [ConfirmationService],
 })
 export class CompaniesModule {}
