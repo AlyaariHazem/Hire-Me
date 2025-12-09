@@ -1,9 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApplicationService, Application } from 'shared/services/application.service';
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
+
+import { ApplicantsStoreService } from '../services/applicants.store';
 
 type StatusFilter = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected';
 
@@ -18,40 +20,42 @@ export class Applicants implements OnInit {
   private router = inject(Router);
   private applicationService = inject(ApplicationService);
   private toastr = inject(ToastrService);
+  private store = inject(ApplicantsStoreService);
 
-  applications: Application[] = [];
-  filteredApplications: Application[] = [];
+  // Signals from store
+  applications = this.store.applications;
+  filteredApplications = this.store.applications; // For compatibility
+  loading = this.store.loading;
+  statusFilter = computed(() => this.store.filters().status as StatusFilter);
+  jobFilter = computed(() => this.store.filters().jobId);
+  currentPage = computed(() => this.store.filters().page);
+  pageSize = computed(() => this.store.filters().pageSize);
+  totalCount = this.store.totalCount;
+  hasNext = this.store.hasNext;
+  hasPrevious = this.store.hasPrevious;
+  totalPages = this.store.totalPages;
 
-  loading = false;
-  statusFilter: StatusFilter = 'all';
-  jobFilter: number | null = null;
-
-  // Pagination
-  currentPage = 1;
-  pageSize = 5;
-  totalCount = 0;
-  hasNext = false;
-  hasPrevious = false;
-  totalPages = 0;
-
-  // Get unique jobs from applications
-  get uniqueJobs(): Array<{ id: number; title: string }> {
+  // Computed properties
+  uniqueJobs = computed(() => {
     const jobsMap = new Map<number, string>();
-    this.applications.forEach(app => {
+    this.applications().forEach(app => {
       if (app.job && !jobsMap.has(app.job.id)) {
         jobsMap.set(app.job.id, app.job.title);
       }
     });
     return Array.from(jobsMap.entries()).map(([id, title]) => ({ id, title }));
-  }
+  });
 
-  statusCounts = {
-    all: 0,
-    pending: 0,
-    reviewed: 0,
-    accepted: 0,
-    rejected: 0
-  };
+  statusCounts = computed(() => {
+    const apps = this.applications();
+    return {
+      all: this.totalCount(),
+      pending: apps.filter(a => a.status === 'pending').length,
+      reviewed: apps.filter(a => a.status === 'reviewed').length,
+      accepted: apps.filter(a => a.status === 'accepted').length,
+      rejected: apps.filter(a => a.status === 'rejected').length,
+    };
+  });
 
   // Modal state
   showDetailsModal = false;
@@ -59,108 +63,55 @@ export class Applicants implements OnInit {
   loadingDetails = false;
 
   ngOnInit(): void {
-    this.loadAllApplications();
+    this.store.init();
   }
 
+  // Helper for template compatibility since we removed loadAllApplications
   loadAllApplications(page: number = 1): void {
-    this.loading = true;
-    this.currentPage = page;
-
-    const params: any = {
-      ordering: '-applied_at',
-      page: page,
-      page_size: this.pageSize
-    };
-
-    // Add job filter if selected
-    if (this.jobFilter) {
-      params.job = this.jobFilter;
-    }
-
-    // Add status filter if not 'all'
-    if (this.statusFilter !== 'all') {
-      params.status = this.statusFilter;
-    }
-
-    this.applicationService.getAllJobApplications(params).subscribe({
-      next: (response) => {
-        this.applications = response.results || [];
-        this.totalCount = response.count || 0;
-        this.hasNext = !!response.next;
-        this.hasPrevious = !!response.previous;
-        this.totalPages = Math.ceil(this.totalCount / this.pageSize);
-        
-        // No need to filter client-side since API handles it
-        this.filteredApplications = [...this.applications];
-        this.updateStatusCounts();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to load applications', err);
-        this.toastr.error('فشل في تحميل المتقدمين');
-        this.loading = false;
-      }
-    });
+     this.store.setPage(page);
   }
 
   private updateStatusCounts(): void {
-    // Counts are for current page only
-    // For accurate totals, we'd need separate API calls per status
-    const apps = this.applications;
-
-    this.statusCounts = {
-      all: this.totalCount, // Use total from API
-      pending: apps.filter(a => a.status === 'pending').length,
-      reviewed: apps.filter(a => a.status === 'reviewed').length,
-      accepted: apps.filter(a => a.status === 'accepted').length,
-      rejected: apps.filter(a => a.status === 'rejected').length,
-    };
+     // Handled by signal
   }
 
-  // Note: Filtering is now done server-side via API parameters
-  // This method is kept for compatibility but filtering happens in loadAllApplications
   private applyFilters(): void {
-    // Since filtering is done server-side, just copy applications
-    this.filteredApplications = [...this.applications];
+    // Handled by store
   }
 
   setStatusFilter(status: StatusFilter): void {
-    this.statusFilter = status;
-    this.currentPage = 1; // Reset to first page when filtering
-    this.loadAllApplications(1);
+    this.store.setStatusFilter(status);
   }
 
   setJobFilter(jobId: number | null): void {
-    this.jobFilter = jobId;
-    this.currentPage = 1; // Reset to first page when filtering
-    this.loadAllApplications(1);
+    this.store.setJobFilter(jobId);
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.loadAllApplications(page);
+    if (page >= 1 && page <= this.totalPages()) {
+      this.store.setPage(page);
       // Scroll to top of the list
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
   nextPage(): void {
-    if (this.hasNext) {
-      this.goToPage(this.currentPage + 1);
+    if (this.hasNext()) {
+      this.goToPage(this.currentPage() + 1);
     }
   }
 
   previousPage(): void {
-    if (this.hasPrevious) {
-      this.goToPage(this.currentPage - 1);
+    if (this.hasPrevious()) {
+      this.goToPage(this.currentPage() - 1);
     }
   }
 
   getPageNumbers(): number[] {
     const pages: number[] = [];
     const maxPagesToShow = 5;
-    let startPage = Math.max(1, this.currentPage - Math.floor(maxPagesToShow / 2));
-    let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+    let startPage = Math.max(1, this.currentPage() - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(this.totalPages(), startPage + maxPagesToShow - 1);
 
     // Adjust start page if we're near the end
     if (endPage - startPage < maxPagesToShow - 1) {
@@ -342,49 +293,32 @@ export class Applicants implements OnInit {
     applicationId: number,
     newStatus: 'pending' | 'reviewed' | 'accepted' | 'rejected'
   ): void {
-    const application = this.applications.find(app => app.id === applicationId);
+    const application = this.applications().find(app => app.id === applicationId);
     if (!application) {
       this.toastr.error('لم يتم العثور على الطلب');
       return;
     }
 
     const oldStatus = application.status;
-    application.status = newStatus;
-
-    const statusLabels: Record<string, string> = {
-      pending: 'قيد المراجعة',
-      reviewed: 'تم المراجعة',
-      accepted: 'مقبول',
-      rejected: 'مرفوض'
-    };
-    application.status_display = statusLabels[newStatus] || newStatus;
-
-    this.updateStatusCounts();
-    this.applyFilters();
-
+    
+    // For optimistic update, we can update the list in the store or just refresh
+    // Since we're using a single source of truth in the store, we should ideally ask the store to update
+    // But for now, let's just refresh the data after update
+    // Or we can manually update the local application object which is a reference to the store data?
+    // Store data is readonly from component perspective usually.
+    
+    // We can't mutate the object directly if it comes from the signal in strict mode, but let's see.
+    // Ideally we should have an updateStatus action in the store.
+    
+    // For now, let's call the API and then refresh the store.
+    
     this.applicationService.updateApplicationStatus(applicationId, newStatus).subscribe({
       next: (updatedApp) => {
-        const index = this.applications.findIndex(app => app.id === applicationId);
-        if (index !== -1) {
-          this.applications[index] = updatedApp;
-        }
-
-        // Reload current page to reflect changes
-        this.loadAllApplications(this.currentPage);
-
-        const statusMessages: Record<string, string> = {
-          pending: 'تم تحديث حالة الطلب إلى قيد المراجعة',
-          reviewed: 'تم تحديث حالة الطلب إلى تم المراجعة',
-          accepted: 'تم قبول الطلب بنجاح',
-          rejected: 'تم رفض الطلب'
-        };
-        this.toastr.success(statusMessages[newStatus] || 'تم تحديث حالة الطلب بنجاح');
+        this.toastr.success('تم تحديث حالة الطلب بنجاح');
+        this.store.refresh();
       },
       error: (err) => {
         console.error('Failed to update application status', err);
-        application.status = oldStatus;
-        this.updateStatusCounts();
-        this.applyFilters();
         this.toastr.error('فشل في تحديث حالة الطلب. يرجى المحاولة مرة أخرى');
       }
     });

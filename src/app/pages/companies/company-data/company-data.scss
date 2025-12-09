@@ -746,7 +746,7 @@
 :host ::ng-deep .p-inputtextarea {
   border-radius: 8px;
   border: 1.5px solid #e2e8f0;
-  padding: 10px 14px;
+  padding: 6px 14px;
   transition: all 0.2s ease;
   
   &:hover {
@@ -1079,10 +1079,6 @@
       border-color: #cbd5e1;
     }
 
-    &.p-focus .p-select-label {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-    }
   }
   
   .p-button-rounded {

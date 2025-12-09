@@ -17,48 +17,48 @@
       <div class="tab-navigation">
         <button 
           class="tab" 
-          [class.active]="statusFilter === 'all'"
+          [class.active]="statusFilter() === 'all'"
           (click)="setStatusFilter('all')">
-          الكل ({{ statusCounts.all }})
+          الكل ({{ statusCounts().all }})
         </button>
         <button 
           class="tab" 
-          [class.active]="statusFilter === 'pending'"
+          [class.active]="statusFilter() === 'pending'"
           (click)="setStatusFilter('pending')">
-          قيد الانتظار ({{ statusCounts.pending }})
+          قيد الانتظار ({{ statusCounts().pending }})
         </button>
         <button 
           class="tab" 
-          [class.active]="statusFilter === 'reviewed'"
+          [class.active]="statusFilter() === 'reviewed'"
           (click)="setStatusFilter('reviewed')">
-          تم المراجعة ({{ statusCounts.reviewed }})
+          تم المراجعة ({{ statusCounts().reviewed }})
         </button>
         <button 
           class="tab" 
-          [class.active]="statusFilter === 'accepted'"
+          [class.active]="statusFilter() === 'accepted'"
           (click)="setStatusFilter('accepted')">
-          مقبول ({{ statusCounts.accepted }})
+          مقبول ({{ statusCounts().accepted }})
         </button>
         <button 
           class="tab" 
-          [class.active]="statusFilter === 'rejected'"
+          [class.active]="statusFilter() === 'rejected'"
           (click)="setStatusFilter('rejected')">
-          مرفوض ({{ statusCounts.rejected }})
+          مرفوض ({{ statusCounts().rejected }})
         </button>
       </div>
 
       <!-- Job Filter -->
-      @if (uniqueJobs.length > 0) {
+      @if (uniqueJobs().length > 0) {
         <div class="job-filter">
           <label>تصفية حسب الوظيفة:</label>
           <select 
             class="form-select"
-            [value]="jobFilter || ''"
+            [value]="jobFilter() || ''"
             title="تصفية حسب الوظيفة"
             aria-label="تصفية حسب الوظيفة"
             (change)="setJobFilter($any($event.target).value ? +$any($event.target).value : null)">
             <option value="">جميع الوظائف</option>
-            @for (job of uniqueJobs; track job.id) {
+            @for (job of uniqueJobs(); track job.id) {
               <option [value]="job.id">{{ job.title }}</option>
             }
           </select>
@@ -67,14 +67,14 @@
     </div>
 
     <!-- Loading State -->
-    @if (loading) {
+    @if (loading()) {
       <div class="tab-content">
         <div class="skeleton"></div>
       </div>
     }
 
     <!-- Empty State -->
-    @if (!loading && filteredApplications.length === 0) {
+    @if (!loading() && filteredApplications().length === 0) {
       <div class="tab-content">
         <div class="empty">
           <p>لا توجد طلبات متقدمة</p>
@@ -83,9 +83,9 @@
     }
 
     <!-- Applications List -->
-    @if (!loading && filteredApplications.length > 0) {
+    @if (!loading() && filteredApplications().length > 0) {
       <div class="tab-content">
-        @for (app of filteredApplications; track app.id) {
+        @for (app of filteredApplications(); track app.id) {
           <div class="application-item">
             <div class="application-info">
               <div class="candidate-header">
@@ -178,12 +178,12 @@
     }
 
     <!-- Pagination -->
-    @if (!loading && totalPages > 1) {
+    @if (!loading() && totalPages() > 1) {
       <div class="pagination">
         <button 
           class="pagination-btn"
-          [class.disabled]="!hasPrevious"
-          [disabled]="!hasPrevious"
+          [class.disabled]="!hasPrevious()"
+          [disabled]="!hasPrevious()"
           (click)="previousPage()">
           السابق
         </button>
@@ -192,7 +192,7 @@
           @for (page of getPageNumbers(); track page) {
             <button 
               class="pagination-page"
-              [class.active]="page === currentPage"
+              [class.active]="page === currentPage()"
               (click)="goToPage(page)">
               {{ page }}
             </button>
@@ -201,15 +201,15 @@
 
         <button 
           class="pagination-btn"
-          [class.disabled]="!hasNext"
-          [disabled]="!hasNext"
+          [class.disabled]="!hasNext()"
+          [disabled]="!hasNext()"
           (click)="nextPage()">
           التالي
         </button>
       </div>
 
       <div class="pagination-info">
-        <p>عرض {{ ((currentPage - 1) * pageSize) + 1 }} - {{ Math.min(currentPage * pageSize, totalCount) }} من {{ totalCount }} متقدم</p>
+        <p>عرض {{ ((currentPage() - 1) * pageSize()) + 1 }} - {{ Math.min(currentPage() * pageSize(), totalCount()) }} من {{ totalCount() }} متقدم</p>
       </div>
     }
   </div>

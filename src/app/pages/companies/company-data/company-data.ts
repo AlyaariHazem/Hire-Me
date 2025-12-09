@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, computed, effect } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 import { Errors } from 'shared/services/errors';
 import { CompanyService } from '../core/services/company.service';
+import { CompanyDataStoreService } from '../services/company-data.store';
 import { ICompanyData } from '@app/companies/models';
 import { environment } from 'environments/environment';
 import { COMPANY_SIZES, INDUSTRY_TYPES } from '@app/companies/enums';
@@ -20,25 +21,22 @@ export class CompanyData implements OnInit, OnDestroy {
    baseUrl = environment.apiBaseUrl;
   private errors = inject(Errors);
   private toastr = inject(ToastrService);
-  private companyService = inject(CompanyService);
-  private cdr = inject(ChangeDetectorRef);
+  private store = inject(CompanyDataStoreService);
 
+  // Signals from store
+  filteredCompanies = this.store.filteredCompanies;
+  loading = this.store.loading;
+  maxYear = this.store.maxYear;
   // Default placeholder image as data URI
   readonly defaultPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YxZjVmOSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5NDk4YjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Yp9mE2YLYp9mE2YI8L3RleHQ+PC9zdmc+';
 
   INDUSTRY_TYPES = INDUSTRY_TYPES;
   COMPANY_SIZES = COMPANY_SIZES;
 
-  companies: ICompanyData[] = [];
-  filteredCompanies: ICompanyData[] = [];
-  maxYear = new Date().getFullYear();
-
   // table state
-  loading = false;
   globalFilterValue = '';
   filterIndustry: string | null = null;
   filterSize: string | null = null;
-
   // dialog state
   dialogVisible = false;
   dialogMode: 'create' | 'edit' = 'create';
@@ -52,7 +50,7 @@ export class CompanyData implements OnInit, OnDestroy {
   deletingId: number | null = null;
 
   ngOnInit(): void {
-    this.loadMyCompanies();
+    this.store.init();
   }
 
   ngOnDestroy(): void {
@@ -87,62 +85,21 @@ export class CompanyData implements OnInit, OnDestroy {
     return path.startsWith('http') ? path : environment.apiBaseUrl + path;
   }
 
-  private loadMyCompanies(): void {
-    this.companyService
-      .getMyCompanies()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (list) => {
-          this.companies = list || [];
-          this.loading = false;
-          // Use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
-          setTimeout(() => {
-            this.applyFilters();
-            this.cdr.markForCheck();
-          }, 0);
-        },
-        error: (err) => {
-          this.errors.error(err, { join: true });
-          this.loading = false;
-        },
-      });
-  }
+  // Helper load method removed. Store handles it.
 
   // ---------- Filtering ----------
 
   onGlobalFilter(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.globalFilterValue = input.value;
-    this.applyFilters();
+    this.store.setSearchFilter(input.value);
   }
 
   applyFilters(): void {
-    let filtered = [...this.companies];
-
-    // Search filter
-    if (this.globalFilterValue) {
-      const searchTerm = this.globalFilterValue.toLowerCase();
-      filtered = filtered.filter(company => 
-        (company.name || '').toLowerCase().includes(searchTerm) ||
-        (company.slug || '').toLowerCase().includes(searchTerm) ||
-        (company.email || '').toLowerCase().includes(searchTerm) ||
-        (company.country || '').toLowerCase().includes(searchTerm) ||
-        (company.city || '').toLowerCase().includes(searchTerm) ||
-        (company.industry || '').toLowerCase().includes(searchTerm)
-      );
-    }
-
-    // Industry filter
-    if (this.filterIndustry) {
-      filtered = filtered.filter(company => company.industry === this.filterIndustry);
-    }
-
-    // Size filter
-    if (this.filterSize) {
-      filtered = filtered.filter(company => company.size === this.filterSize);
-    }
-
-    this.filteredCompanies = filtered;
+     // Handled by store, but kept for method binding compatibility if needed, 
+     // though we should invoke store methods directly where possible.
+     this.store.setIndustryFilter(this.filterIndustry);
+     this.store.setSizeFilter(this.filterSize);
   }
 
   getIndustryLabel(value: string): string {
@@ -262,7 +219,7 @@ export class CompanyData implements OnInit, OnDestroy {
     appendIf('country', this.form.country);
     appendIf('city', this.form.city);
     appendIf('address', this.form.address);
-    appendIf('employees_count', this.form.employees_count);
+    appendIf('employees_count', this.form.employees_count !== null ? String(this.form.employees_count) : '');
 
     // Append files if selected
     if (this.selectedLogoFile) {
@@ -276,23 +233,11 @@ export class CompanyData implements OnInit, OnDestroy {
 
     // CREATE
     if (this.dialogMode === 'create') {
-      this.companyService.createCompany(formData).subscribe({
+      this.store.createCompany(formData).subscribe({
         next: (created) => {
           this.toastr.success('تم إنشاء الشركة بنجاح');
           this.saving = false;
-          this.dialogVisible = false;
-          document.body.style.overflow = '';
-
-          if (created) {
-            this.companies = [created, ...this.companies];
-            this.applyFilters();
-          } else {
-            this.loadMyCompanies();
-          }
-
-          this.form = this.emptyForm();
-          this.selectedLogoFile = null;
-          this.selectedCoverFile = null;
+          this.closeDialog();
         },
         error: (err) => {
           this.errors.error(err, { join: true });
@@ -310,26 +255,11 @@ export class CompanyData implements OnInit, OnDestroy {
     }
 
     const slug = this.editingCompany.slug;
-    this.companyService.updateCompany(slug, formData).subscribe({
+    this.store.updateCompany(slug, formData).subscribe({
       next: (updated) => {
         this.toastr.success('تم تحديث بيانات الشركة بنجاح');
         this.saving = false;
-        this.dialogVisible = false;
-        document.body.style.overflow = '';
-
-        if (updated) {
-          this.companies = this.companies.map((c) =>
-            c.id === updated.id ? updated : c
-          );
-          this.applyFilters();
-        } else {
-          this.loadMyCompanies();
-        }
-
-        this.editingCompany = null;
-        this.form = this.emptyForm();
-        this.selectedLogoFile = null;
-        this.selectedCoverFile = null;
+        this.closeDialog();
       },
       error: (err) => {
         this.errors.error(err, { join: true });
@@ -344,12 +274,10 @@ export class CompanyData implements OnInit, OnDestroy {
 
     this.deletingId = company.id ?? null;
 
-    this.companyService.deleteCompany(company.slug).subscribe({
+    this.store.deleteCompany(company.slug, company.id!).subscribe({
       next: () => {
         this.toastr.success('تم حذف الشركة بنجاح');
         this.deletingId = null;
-        this.companies = this.companies.filter((c) => c.id !== company.id);
-        this.applyFilters();
       },
       error: (err) => {
         this.errors.error(err, { join: true });

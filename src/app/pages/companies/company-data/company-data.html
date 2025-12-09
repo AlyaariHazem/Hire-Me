@@ -29,7 +29,7 @@
   <div class="employer-content-card">
     <p-table
       #dt
-      [value]="filteredCompanies"
+      [value]="filteredCompanies()"
       [paginator]="true"
       [rows]="5"
       [rowsPerPageOptions]="[5, 10, 25]"
@@ -274,7 +274,7 @@
               name="founded_year"
               [(ngModel)]="form.founded_year"
               [min]="1900"
-              [max]="maxYear"
+              [max]="maxYear()"
               [showButtons]="true"
               [useGrouping]="false"
               #foundedCtrl="ngModel"
@@ -286,7 +286,7 @@
             && (foundedCtrl.dirty || foundedCtrl.touched)){
 
             <small class="p-error">
-              يجب أن تكون بين 1900 و {{ maxYear }}
+              يجب أن تكون بين 1900 و {{ maxYear() }}
             </small>
             }
           </div>
