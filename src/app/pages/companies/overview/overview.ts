@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationService, Application } from 'shared/services/application.service';
-import { JobService } from 'shared/services/job.service';
+import { Application } from 'shared/services/application.service';
 import { JobItem } from '../core/models/job-item.model';
 import { ToastrService } from 'ngx-toastr';
+import { OverviewStoreService } from '../services/overview.store';
 
 @Component({
   selector: 'app-overview',
@@ -12,39 +12,21 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './overview.scss'
 })
 export class Overview implements OnInit {
-  private applicationService = inject(ApplicationService);
-  private jobService = inject(JobService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
+  private store = inject(OverviewStoreService);
 
-  recentApplications: Application[] = [];
-  recentJobs: JobItem[] = [];
-  loading = false;
-  loadingJobs = false;
+  // Signals from store
+  recentApplications = this.store.recentApplications;
+  recentJobs = this.store.recentJobs;
+  loadingApplications = this.store.loadingApplications;
+  loadingJobs = this.store.loadingJobs;
 
   ngOnInit(): void {
-    this.loadRecentApplications();
-    this.loadRecentJobs();
+    this.store.init();
   }
 
-  loadRecentApplications(): void {
-    this.loading = true;
-    // Get recent applications for all company jobs (last 4)
-    this.applicationService.getAllJobApplications({ 
-      ordering: '-applied_at',
-      page_size: 4 
-    }).subscribe({
-      next: (response) => {
-        this.recentApplications = response.results || [];
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to load recent applications', err);
-        this.toastr.error('فشل في تحميل المتقدمين الجدد');
-        this.loading = false;
-      }
-    });
-  }
+  // loadRecentApplications removed - handled by store
 
   getApplicantName(app: Application): string {
     if (app.applicant) {
@@ -150,30 +132,7 @@ export class Overview implements OnInit {
     }
   }
 
-  loadRecentJobs(): void {
-    this.loadingJobs = true;
-    this.jobService.getMyJobs({
-      ordering: '-created_at',
-      page: 1,
-      page_size: 3
-    }).subscribe({
-      next: (response) => {
-        // Normalize jobs to ensure company and category are never null
-        this.recentJobs = (response.results || []).map(job => ({
-          ...job,
-          company: job.company ?? { id: 0, name: '-', logo: null, city: '-' },
-          category: job.category ?? { id: 0, name: '-' },
-        }));
-        this.loadingJobs = false;
-      },
-      error: (err) => {
-        console.error('Failed to load recent jobs', err);
-        this.toastr.error('فشل في تحميل الوظائف المنشورة');
-        this.recentJobs = [];
-        this.loadingJobs = false;
-      }
-    });
-  }
+  // loadRecentJobs removed - handled by store
 
   getTimeAgoForJob(dateStr: string): string {
     if (!dateStr) return 'غير محدد';

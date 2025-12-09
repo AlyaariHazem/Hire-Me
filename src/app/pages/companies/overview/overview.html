@@ -95,16 +95,16 @@
         >
       </div>
 
-      @if (loadingJobs) {
+      @if (loadingJobs()) {
         <div class="loading-state">
           <p>جاري التحميل...</p>
         </div>
-      } @else if (recentJobs.length === 0) {
+      } @else if (recentJobs().length === 0) {
         <div class="empty-state">
           <p>لا توجد وظائف منشورة</p>
         </div>
       } @else {
-        @for (job of recentJobs; track job.id) {
+        @for (job of recentJobs(); track job.id) {
           <div class="job-posting-item">
             <div class="job-posting-info">
               <h4 class="job-posting-title">{{ job.title }}</h4>
@@ -142,16 +142,16 @@
         >
       </div>
 
-      @if (loading) {
+      @if (loadingApplications()) {
         <div class="loading-state">
           <p>جاري التحميل...</p>
         </div>
-      } @else if (recentApplications.length === 0) {
+      } @else if (recentApplications().length === 0) {
         <div class="empty-state">
           <p>لا توجد طلبات متقدمة جديدة</p>
         </div>
       } @else {
-        @for (app of recentApplications; track app.id) {
+        @for (app of recentApplications(); track app.id) {
           <div class="candidate-item">
             <div class="candidate-avatar">
               @if (app.applicant?.profile_picture) {
