@@ -192,11 +192,7 @@ export class MessagesStoreService {
    * Load messages for an application
    */
   loadMessages(applicationId: number): void {
-    const currentData = this.messagesDataSubject.value;
-    // Only load if different application or no messages loaded yet
-    if (!currentData.selectedApplication || currentData.selectedApplication.id !== applicationId) {
       this.messagesTrigger$.next(applicationId);
-    }
   }
 
   /**
