@@ -10,6 +10,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { ButtonModule } from 'primeng/button';
 import { JobService } from './services/job.service';
 import { ProfileStoreService } from './services/profile.service';
 import { BreadcrumbService } from './services/breadcrumb.service';
@@ -33,7 +34,8 @@ RouterLinkActive,
 DialogModule,
 ProgressSpinnerModule,
 ConfirmDialogModule,
-BreadcrumbModule,
+ButtonModule,
+BreadcrumbModule
 ];
 @NgModule({
   declarations: [...components],

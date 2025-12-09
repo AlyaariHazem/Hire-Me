@@ -1,2 +1,13 @@
-<p-breadcrumb [model]="items" [home]="home"></p-breadcrumb>
+<div class="breadcrumb-container flex align-items-center justify-content-between">
+  <p-breadcrumb [model]="items" [home]="home" styleClass="border-0 bg-transparent p-0"></p-breadcrumb>
+  <p-button 
+    icon="pi pi-refresh" 
+    [text]="true" 
+    [rounded]="true" 
+    severity="secondary" 
+    (onClick)="onRefresh()" 
+    pTooltip="تحديث البيانات" 
+    tooltipPosition="bottom">
+  </p-button>
+</div>
 

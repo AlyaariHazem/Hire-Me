@@ -1,5 +1,5 @@
 <header class="header">
-  <p-confirmDialog key="logout" [style]="{width: '350px'}" [rtl]="true" rejectButtonStyleClass="p-button-outlined"></p-confirmDialog>
+  <p-confirmDialog key="logout" [style]="{width: '350px'}" rejectButtonStyleClass="p-button-outlined"></p-confirmDialog>
   <nav class="navbar" [class.mobile-menu-open]="mobileOpen">
     <div class="container">
       <!-- Brand -->
@@ -11,9 +11,7 @@
 
       <!-- Main nav links (shared) -->
       <ul class="navbar-nav" id="primary-nav" (click)="closeMobileMenu()">
-          <li class="nav-item"
-            routerLinkActive="active1"
-            [routerLinkActiveOptions]="{ exact: false }">
+          <li class="nav-item">
           <a class="nav-link" (click)="routeToJobs()">الوظائف</a>
         </li>
         <li class="nav-item">

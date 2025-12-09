@@ -4,6 +4,7 @@ import { DashboardStoreService } from 'app/pages/jobseeker/services/dashboard.se
 import { JobStatistics } from 'shared/services/job.service';
 import { Application } from 'shared/services/application.service';
 import { JobItem } from '@app/companies/models';
+import { BreadcrumbService } from 'shared/services/breadcrumb.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,6 +20,7 @@ export class Dashboard implements OnInit {
 
   private userService = inject(User);
   private dashboardStore = inject(DashboardStoreService);
+  private breadcrumbService = inject(BreadcrumbService);
 
   ngOnInit(): void {
     this.userService.user$.subscribe(data => {
@@ -33,6 +35,13 @@ export class Dashboard implements OnInit {
       this.stats = data.stats;
       this.recentApplications = data.recentApplications;
       this.savedJobs = data.savedJobs;
+    });
+
+    // Listen for breadcrumb refresh
+    this.breadcrumbService.refresh$.subscribe(() => {
+        this.refreshDashboard();
+        // Also refresh user data if needed, or just dashboard
+        this.dashboardStore.refresh();
     });
   }
 

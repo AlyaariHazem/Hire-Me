@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter } from 'rxjs';
+import { BehaviorSubject, filter, Subject } from 'rxjs';
 import { MenuItem } from 'primeng/api';
 
 @Injectable({
@@ -9,6 +9,14 @@ import { MenuItem } from 'primeng/api';
 export class BreadcrumbService {
   private breadcrumbsSubject = new BehaviorSubject<MenuItem[]>([]);
   public breadcrumbs$ = this.breadcrumbsSubject.asObservable();
+
+  // Refresh signal
+  private refreshSubject = new Subject<void>();
+  public refresh$ = this.refreshSubject.asObservable();
+
+  triggerRefresh(): void {
+    this.refreshSubject.next();
+  }
 
   private homeItem: MenuItem = {
     icon: 'pi pi-home',
