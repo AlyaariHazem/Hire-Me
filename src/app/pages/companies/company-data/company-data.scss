@@ -740,7 +740,9 @@
 :host ::ng-deep .p-inputtextarea,
 :host ::ng-deep .p-inputnumber,
 :host ::ng-deep .p-inputwrapper {
-  width: 6%;
+  /* Full width inside the responsive grid to avoid tiny inputs */
+  width: 100%;
+  max-width: 100%;
 }
 
 :host ::ng-deep .p-inputtext,
