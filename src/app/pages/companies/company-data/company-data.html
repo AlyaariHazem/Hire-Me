@@ -104,7 +104,7 @@
           <td>
             <img
               class="table-logo"
-              [src]="company.logo ? (company.logo.startsWith('http') ? company.logo : (baseUrl + company.logo)) : 'assets/images/company-placeholder.png'"
+              [src]="getCompanyLogo(company.logo)"
               [alt]="company.name"
               [title]="company.name || 'شعار الشركة'"
               title="Company logo"
@@ -172,11 +172,11 @@
     <div class="dialog">
       <div class="dialog-header">
         <div class="dialog-title">
-          <img
-            class="dialog-logo"
-            [src]="logoPreview || 'assets/images/company-placeholder.png'"
-            alt=""
-          />
+            <img
+              class="dialog-logo"
+              [src]="logoPreview || defaultPlaceholder"
+              alt=""
+            />
           <h2>{{ dialogTitle }}</h2>
         </div>
         <button type="button" class="dialog-close" (click)="closeDialog()">

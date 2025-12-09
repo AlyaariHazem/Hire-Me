@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -21,6 +21,10 @@ export class CompanyData implements OnInit, OnDestroy {
   private errors = inject(Errors);
   private toastr = inject(ToastrService);
   private companyService = inject(CompanyService);
+  private cdr = inject(ChangeDetectorRef);
+
+  // Default placeholder image as data URI
+  readonly defaultPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YxZjVmOSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5NDk4YjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7Yp9mE2YLYp9mE2YI8L3RleHQ+PC9zdmc+';
 
   INDUSTRY_TYPES = INDUSTRY_TYPES;
   COMPANY_SIZES = COMPANY_SIZES;
@@ -91,8 +95,12 @@ export class CompanyData implements OnInit, OnDestroy {
       .subscribe({
         next: (list) => {
           this.companies = list || [];
-          this.applyFilters();
           this.loading = false;
+          // Use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+          setTimeout(() => {
+            this.applyFilters();
+            this.cdr.markForCheck();
+          }, 0);
         },
         error: (err) => {
           this.errors.error(err, { join: true });
@@ -151,8 +159,16 @@ export class CompanyData implements OnInit, OnDestroy {
   handleImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     if (img) {
-      img.src = 'assets/images/company-placeholder.png';
+      img.src = this.defaultPlaceholder;
     }
+  }
+
+  getCompanyLogo(logo: string | null | undefined): string {
+    if (!logo) return this.defaultPlaceholder;
+    if (logo.startsWith('http') || logo.startsWith('blob:') || logo.startsWith('data:')) {
+      return logo;
+    }
+    return `${this.baseUrl.replace(/\/+$/, '')}/${logo.replace(/^\/+/, '')}`;
   }
 
   // ---------- Dialog controls ----------
