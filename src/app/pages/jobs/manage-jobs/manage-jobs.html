@@ -45,14 +45,14 @@
     </div>
 
     <!-- Loading State -->
-    @if (loading) {
+    @if (loading()) {
       <div class="tab-content">
         <div class="skeleton"></div>
       </div>
     }
 
     <!-- Empty State -->
-    @if (!loading && visibleJobs().length === 0) {
+    @if (!loading() && visibleJobs().length === 0) {
       <div class="tab-content">
         <div class="empty">
           <p>لا توجد وظائف في هذه الفئة.</p>
@@ -62,7 +62,7 @@
     }
 
     <!-- Jobs List -->
-    @if (!loading && visibleJobs().length > 0) {
+    @if (!loading() && visibleJobs().length > 0) {
       <div class="tab-content">
         @for (j of visibleJobs(); track j.id) {
           <div class="job-posting-item">

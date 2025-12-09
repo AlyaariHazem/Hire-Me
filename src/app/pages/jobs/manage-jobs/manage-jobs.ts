@@ -1,31 +1,12 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { JobService } from 'shared/services/job.service';
 import { ToastrService } from 'ngx-toastr';
 
-type TabKey = 'active' | 'paused' | 'closed' | 'draft';
-  export interface JobItem {
-  id: number;
-  title: string;
-  slug: string;
-  job_type: string;
-  experience_level: string;
-  city: string;
-  salary_min: number | null;
-  salary_max: number | null;
-  is_salary_negotiable: boolean;
-  created_at: string;
-  company?: { id: number; name: string; logo: string | null; city: string };
-  category?: { id: number; name: string };
-
-  // fields seen in the API
-  is_active?: boolean;
-  is_featured?: boolean;
-  is_urgent?: boolean;
-  views_count?: number;
-  applications_count?: number;
-}
+// JobItem interface is now in store, or we can just import the specific parts we need or keep it here if it's not exported. 
+// Ideally we import from store or usage.
+import { ManageJobsStoreService, TabKey, JobItem } from '../services/manage-jobs.store';
 
 @Component({
   selector: 'app-manage-jobs',
@@ -35,75 +16,36 @@ type TabKey = 'active' | 'paused' | 'closed' | 'draft';
   styleUrls: ['./manage-jobs.scss'],
 })
 export class ManageJobs implements OnInit {
-  // English: raw list
-  private jobs = signal<JobItem[]>([]);
+  private store = inject(ManageJobsStoreService);
+  private toastr = inject(ToastrService);
 
-  // English: current tab
-  activeTab = signal<TabKey>('active');
+  // Store Signals
+  activeTab = this.store.activeTab;
+  visibleJobs = this.store.visibleJobs;
+  loading = this.store.loading;
 
-  // English: bucket the list using the available fields
-  // Note: API currently only supports is_active (true/false)
-  // For now, we'll treat:
-  // - is_active: true = active
-  // - is_active: false = closed/paused (we can't distinguish without additional API fields)
-  jobsActive   = computed(() => this.jobs().filter(j => j.is_active === true));
-  jobsClosed   = computed(() => this.jobs().filter(j => j.is_active === false));
-  jobsPaused   = computed(() => [] as JobItem[]); // No separate field in API yet
-  jobsDraft    = computed(() => [] as JobItem[]); // No separate field in API yet
+  // Counts
+  countActive = this.store.countActive;
+  countClosed = this.store.countClosed;
+  countPaused = this.store.countPaused;
+  countDraft = this.store.countDraft;
 
-  // English: counts for the tabs
-  countActive = computed(() => this.jobsActive().length);
-  countClosed = computed(() => this.jobsClosed().length);
-  countPaused = computed(() => this.jobsPaused().length);
-  countDraft  = computed(() => this.jobsDraft().length);
-
-  // English: list visible based on the active tab
-  visibleJobs = computed(() => {
-    switch (this.activeTab()) {
-      case 'active': return this.jobsActive();
-      case 'closed': return this.jobsClosed();
-      case 'paused': return this.jobsPaused();
-      case 'draft':  return this.jobsDraft();
-    }
-  });
-
-  loading = false;
   updatingStatus: Record<number, boolean> = {}; // Track which job is being updated
 
-  constructor(
-    private api: JobService,
-    private toastr: ToastrService
-  ) {}
+
+
+  constructor() {}
 
   ngOnInit(): void {
-    this.fetch();
+    this.store.init();
   }
 
   // English: pull employer jobs
-  fetch(): void {
-    this.loading = true;
-    this.api.getMyJobs({ page: 1, page_size: 50, ordering: '-created_at' }).subscribe({
-      next: res => {
-        // English: normalize a bit so templates are safe
-        const list = (res?.results ?? []).map(j => ({
-          ...j,
-          company: j.company ?? { id: 0, name: '-', logo: null, city: '-' },
-          category: j.category ?? { id: 0, name: '-' },
-        }));
-        this.jobs.set(list);
-        this.loading = false;
-      },
-      error: err => {
-        console.error('Failed to load jobs', err);
-        this.jobs.set([]);
-        this.loading = false;
-      }
-    });
-  }
+  // fetch removed - handled by store
 
   // English: tab click
   selectTab(key: TabKey) {
-    this.activeTab.set(key);
+    this.store.setTab(key);
   }
 
   // English: minor helpers for template
@@ -129,17 +71,9 @@ export class ManageJobs implements OnInit {
     // If API later adds separate fields, we can update this logic
     const isActive = newStatus === 'active';
     
-    // Update the job using PATCH
-    this.api.patchJob(job.slug, { is_active: isActive }).subscribe({
+    // Update using store
+    this.store.updateJobStatus(job.slug, job.id, newStatus).subscribe({
       next: (updatedJob) => {
-        // Update the job in the list
-        const currentJobs = this.jobs();
-        const index = currentJobs.findIndex(j => j.id === job.id);
-        if (index !== -1) {
-          currentJobs[index] = { ...currentJobs[index], is_active: updatedJob.is_active };
-          this.jobs.set([...currentJobs]);
-        }
-        
         const statusMessages: Record<string, string> = {
           active: 'تم تفعيل الوظيفة بنجاح',
           paused: 'تم إيقاف الوظيفة مؤقتاً',
