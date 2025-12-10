@@ -1,11 +1,20 @@
 <!-- Sidebar -->
 <aside class="employer-sidebar">
   <div class="company-profile">
-    <img
-      [src]="logo() || 'images/company-logo-1.jpg'"
-      alt="شركة التقنيات المتقدمة"
-      class="company-logo1"
-    />
+    <div class="company-logo-wrapper">
+      <img
+        [src]="logo() || 'images/company-logo-1.jpg'"
+        [alt]="companyName"
+        [title]="companyName || 'شعار الشركة'"
+        class="company-logo1"
+        (error)="handleImageError($event)"
+      />
+      @if (!logo()) {
+        <div class="company-logo-placeholder">
+          <span>{{ getCompanyInitials() }}</span>
+        </div>
+      }
+    </div>
     <h3 class="company-name">{{companyName}}</h3>
     <p class="company-type">{{industry}}</p>
 

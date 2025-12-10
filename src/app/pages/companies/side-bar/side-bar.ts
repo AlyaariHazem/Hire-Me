@@ -55,4 +55,26 @@ export class SideBarCompany implements OnInit {
     const clean = String(path).replace(/^\/+/, '');
     return `${base}/${clean}`;
   }
+
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img) {
+      img.style.display = 'none';
+      const placeholder = img.nextElementSibling as HTMLElement;
+      if (placeholder && placeholder.classList.contains('company-logo-placeholder')) {
+        placeholder.style.display = 'flex';
+      }
+    }
+  }
+
+  getCompanyInitials(): string {
+    if (!this.companyName || this.companyName === 'شركة التقنيات المتقدمة') {
+      return 'شركة';
+    }
+    const words = this.companyName.trim().split(/\s+/);
+    if (words.length >= 2) {
+      return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
+    }
+    return this.companyName.charAt(0).toUpperCase();
+  }
 }
