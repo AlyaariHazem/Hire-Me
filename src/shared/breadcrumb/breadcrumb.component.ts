@@ -34,6 +34,7 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
 
   onRefresh(): void {
     this.breadcrumbService.triggerRefresh();
+    window.location.reload();
   }
 
   ngOnDestroy(): void {

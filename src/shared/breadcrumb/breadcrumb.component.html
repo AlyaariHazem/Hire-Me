@@ -1,13 +1,22 @@
-<div class="breadcrumb-container flex align-items-center justify-content-between">
-  <p-breadcrumb [model]="items" [home]="home" styleClass="border-0 bg-transparent p-0"></p-breadcrumb>
-  <p-button 
-    icon="pi pi-refresh" 
-    [text]="true" 
-    [rounded]="true" 
-    severity="secondary" 
-    (onClick)="onRefresh()" 
-    pTooltip="تحديث البيانات" 
-    tooltipPosition="bottom">
-  </p-button>
+<div class="breadcrumb-wrapper">
+  <div class="breadcrumb-card">
+    <div class="breadcrumb-content">
+      <div class="icon-box">
+        <i class="pi pi-compass text-primary-500 text-xl"></i>
+      </div>
+      <p-breadcrumb [model]="items" [home]="home" styleClass="premium-breadcrumb"></p-breadcrumb>
+    </div>
+    
+    <div class="actions">
+      <button 
+        pButton 
+        class="refresh-btn p-button-rounded p-button-text" 
+        (click)="onRefresh()" 
+        pTooltip="تحديث البيانات" 
+        tooltipPosition="bottom">
+        <i class="pi pi-refresh" ></i>
+      </button>
+    </div>
+  </div>
 </div>
 
