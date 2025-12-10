@@ -33,6 +33,36 @@
   }
 }
 
+/* Desktop: Ensure navbar-nav is visible */
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  
+  .nav-item {
+    list-style: none;
+    
+    .nav-link {
+      color: var(--gray-700, #374151);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+      display: block;
+      cursor: pointer;
+      
+      &:hover {
+        color: var(--primary-color, #2563eb);
+        background-color: var(--bg-hover, #f3f4f6);
+      }
+    }
+  }
+}
+
 /* the backdrop should be below the header/menu */
 .mobile-backdrop { 
   z-index: 900; 
@@ -44,13 +74,43 @@
   background: rgba(0, 0, 0, 0.5);
 }  /* was 99; keep it below header */
 
+/* Desktop: Ensure navbar-nav is visible */
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  
+  .nav-item {
+    list-style: none;
+    
+    .nav-link {
+      color: var(--gray-700, #374151);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+      display: block;
+      cursor: pointer;
+      
+      &:hover {
+        color: var(--primary-color, #2563eb);
+        background-color: var(--bg-hover, #f3f4f6);
+      }
+    }
+  }
+}
+
 /* MOBILE: show the menu panel ABOVE the backdrop and make it fixed */
 @media (max-width: 768px) {
   /* Ensure navbar-brand (logo) is always visible */
   .navbar-brand {
-    display: flex !important;
+    display: none !important;
     flex-shrink: 0;
-    z-index: 1004;
+    z-index: 1004;  
   }
   
   /* hide by default (already in your CSS) */
