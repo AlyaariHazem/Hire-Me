@@ -40,6 +40,26 @@ export class CompanyService {
     );
   }
 
+  // Get all companies (public endpoint)
+  getAllCompanies(params?: {
+    search?: string;
+    industry?: string;
+    city?: string;
+    size?: string;
+    is_featured?: boolean;
+    is_verified?: boolean;
+    ordering?: string;
+    page?: number;
+    page_size?: number;
+  }) {
+    return this.http
+      .get<CompaniesListResponse>(
+        environment.getUrl('', 'companies'),
+        { params: params as any }
+      )
+      .pipe(map(res => res ?? { count: 0, results: [], next: null, previous: null }));
+  }
+
   updateCompany(slug: string, payload: Partial<ICompanyData> | FormData) {
     return this.http.put<ICompanyData>(
       environment.getUrl(`${slug}/update`, 'companies'),

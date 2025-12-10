@@ -1,0 +1,196 @@
+
+<!-- Hero Section -->
+<section class="companies-hero">
+  <div class="container">
+    <h1>اكتشف أفضل الشركات</h1>
+    <p>تصفح الشركات الرائدة في اليمن واكتشف الفرص الوظيفية المتاحة</p>
+
+    <div class="companies-search">
+      <input type="text" placeholder="ابحث عن الشركات..." [(ngModel)]="searchTerm" (input)="applyFilters()" />
+      <button type="button" (click)="applyFilters()">بحث</button>
+    </div>
+  </div>
+</section>
+
+<!-- Filters -->
+<section class="companies-filters">
+  <div class="container">
+    <div class="filters-container">
+      <div class="filter-group">
+        <label>القطاع:</label>
+        <select class="filter-select" [(ngModel)]="industryFilter" (change)="applyFilters()" aria-label="القطاع">
+          <option value="">جميع القطاعات</option>
+          @for (industry of INDUSTRY_TYPES; track industry.value) {
+            <option [value]="industry.value">{{ industry.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>المدينة:</label>
+        <select class="filter-select" [(ngModel)]="locationFilter" (change)="applyFilters()" aria-label="المدينة">
+          <option value="">جميع المدن</option>
+          @for (city of cities; track city.value) {
+            <option [value]="city.value">{{ city.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>حجم الشركة:</label>
+        <select class="filter-select" [(ngModel)]="sizeFilter" (change)="applyFilters()" aria-label="حجم الشركة">
+          <option value="">جميع الأحجام</option>
+          @for (size of COMPANY_SIZES; track size.value) {
+            <option [value]="size.value">{{ size.label }}</option>
+          }
+        </select>
+      </div>
+
+      <button class="btn btn-primary" (click)="applyFilters()">
+        تطبيق الفلاتر
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="companies-stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">250+</div>
+        <div class="stat-label">شركة مسجلة</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1,500+</div>
+        <div class="stat-label">وظيفة متاحة</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">15</div>
+        <div class="stat-label">قطاع مختلف</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">8</div>
+        <div class="stat-label">محافظة</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Companies -->
+@if (featuredCompanies.length > 0) {
+  <section class="featured-companies">
+    <div class="container">
+      <h2 class="featured-title">الشركات المميزة</h2>
+      <div class="featured-grid">
+        @for (company of featuredCompanies; track company.id || company.slug) {
+          <div class="featured-company" (click)="viewCompany(company.slug || company.id)">
+            <img
+              [src]="company.logo"
+              [alt]="company.name"
+              [title]="company.name"
+              class="featured-logo"
+              (error)="handleImageError($event)"
+            />
+            <div class="featured-name">{{ company.name }}</div>
+            <div class="featured-jobs">{{ company.openJobs }} وظائف متاحة</div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+}
+
+<!-- Loading State -->
+@if (loading) {
+  <section class="companies-section">
+    <div class="container">
+      <div class="loading-state">
+        <p>جاري تحميل الشركات...</p>
+      </div>
+    </div>
+  </section>
+}
+
+<!-- Companies Grid -->
+@if (!loading && companiesData.length > 0) {
+  <section class="companies-section">
+    <div class="container">
+      <div class="companies-grid">
+        @for (company of companiesData; track company.id || company.slug) {
+          <div class="company-card">
+            <div class="company-header">
+              <div class="company-info">
+                <img 
+                  [src]="company.logo" 
+                  [alt]="company.name"
+                  [title]="company.name"
+                  class="company-logo"
+                  (error)="handleImageError($event)"
+                >
+                <div class="company-details">
+                  <h3>{{ company.name }}</h3>
+                  <div class="company-industry">{{ company.industry }}</div>
+                  <div class="company-location">📍 {{ company.location }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="company-body">
+              <p class="company-description">{{ company.description }}</p>
+              @if (company.tags && company.tags.length > 0) {
+                <div class="company-tags">
+                  @for (tag of company.tags; track tag) {
+                    <span class="company-tag">{{ tag }}</span>
+                  }
+                </div>
+              }
+
+              <div class="company-stats-row">
+                @if (company.employees) {
+                  <div class="company-stat">
+                    <div class="company-stat-number">{{ company.employees }}</div>
+                    <div class="company-stat-label">موظف</div>
+                  </div>
+                }
+                <div class="company-stat">
+                  <div class="company-stat-number">{{ company.openJobs }}</div>
+                  <div class="company-stat-label">وظيفة متاحة</div>
+                </div>
+                @if (company.followers > 0) {
+                  <div class="company-stat">
+                    <div class="company-stat-number">{{ company.followers }}</div>
+                    <div class="company-stat-label">متابع</div>
+                  </div>
+                }
+              </div>
+
+              <div class="company-actions">
+                <button
+                  [ngClass]="{ 'btn-follow': true, 'following': company.following }"
+                  (click)="toggleFollow(company.slug || company.id)">
+                  {{ company.following ? 'متابع' : 'متابعة' }}
+                </button>
+                <button class="btn-view-jobs" (click)="viewCompany(company.slug || company.id)">عرض الوظائف</button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+}
+
+<!-- Empty State -->
+@if (!loading && companiesData.length === 0) {
+  <section class="companies-section">
+    <div class="container">
+      <div class="empty-state">
+        <p>لا توجد شركات متاحة</p>
+      </div>
+    </div>
+  </section>
+}
+
+<!-- Footer -->
+<app-footer></app-footer>

@@ -50,6 +50,13 @@ export const routes: Routes = [
     path: 'jobs',
     component: Jobs,
   },
+  {
+    path: 'companies-list',
+    loadComponent: () =>
+      import('shared/search-for-job/search-for-job').then(
+        (m) => m.SearchForJob
+      ),
+  },
   // simple logout route that clears storage and returns to login
   {
     path: 'company/:slug',

@@ -121,6 +121,10 @@ export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   }
 }
 
+  routeToCompanies(): void {
+    this.router.navigate(['/companies-list']);
+  }
+
   ngOnDestroy(): void {
     window.removeEventListener('storage', this.syncToken);
     this.destroy$.next();
