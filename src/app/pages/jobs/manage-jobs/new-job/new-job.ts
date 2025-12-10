@@ -10,6 +10,7 @@ import { CompanyService } from 'app/pages/companies/core/services/company.servic
 import { SharedModule } from 'shared/shared-module';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { ManageJobsStoreService } from '../../services/manage-jobs.store';
 
 @Component({
   selector: 'app-new-job',
@@ -37,6 +38,7 @@ export class NewJob implements OnInit, OnChanges {
   private companyService = inject(CompanyService);
   private toastr = inject(ToastrService);
   private router = inject(Router);
+  private store = inject(ManageJobsStoreService);
 
   get isEdit() { return !!this.editSlug; }
 
@@ -233,6 +235,7 @@ export class NewJob implements OnInit, OnChanges {
       this.api.createJob(payload).subscribe({
         next: (created) => {
           this.toastr.success('تم نشر الوظيفة بنجاح ✅');
+          this.store.refresh();
           this.router.navigate(['/companies/manage-jobs']);
           this.saved.emit(created); this.resetForCreate(); },
         error: (err) => { console.error(err); 
@@ -243,6 +246,7 @@ export class NewJob implements OnInit, OnChanges {
       this.api.updateJob(this.editSlug!, payload).subscribe({
         next: (updated) => { 
           this.toastr.success('تم تحديث الوظيفة بنجاح ✅'); 
+          this.store.refresh();
           this.router.navigate(['/companies/manage-jobs']);
           this.saved.emit(updated); 
         },

@@ -260,6 +260,8 @@ export class CompanyData implements OnInit, OnDestroy {
     this.store.updateCompany(slug, formData).subscribe({
       next: (updated) => {
         this.toastr.success('تم تحديث بيانات الشركة بنجاح');
+        // ensure table reflects latest data from API (handles backend transformations)
+        this.store.refresh();
         this.saving = false;
         this.closeDialog();
       },

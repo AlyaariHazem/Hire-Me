@@ -62,7 +62,19 @@ export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
 
   // ===== Employer info =====
   companyName = () => this.profileStore.profile()?.company_name ?? '';
-  logoUrl = () => this.profileStore.profile()?.profile?.company_logo ?? '';
+  
+  logoUrl = computed(() => {
+    const p = this.profileStore.profile();
+    return this.toAbsolute(p?.company_logo ?? p?.profile?.company_logo);
+  });
+
+  private toAbsolute(path?: string | null): string {
+    if (!path) return '';
+    if (/^(https?:|blob:|data:)/i.test(path)) return path;
+    const base = environment.apiBaseUrl.replace(/\/+$/, '');
+    const clean = String(path).replace(/^\/+/, '');
+    return `${base}/${clean}`;
+  }
 
   private destroy$ = new Subject<void>();
 

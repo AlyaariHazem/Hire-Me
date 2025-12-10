@@ -81,6 +81,7 @@ export class ManageJobs implements OnInit {
         };
         this.toastr.success(statusMessages[newStatus] || 'تم تحديث حالة الوظيفة');
         this.updatingStatus[job.id] = false;
+        this.store.refresh();
       },
       error: (err) => {
         console.error('Failed to update job status', err);
