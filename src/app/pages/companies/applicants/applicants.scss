@@ -1,5 +1,7 @@
 .applicants-container {
   padding: 2rem;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .employer-header {
@@ -32,6 +34,11 @@
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+  }
 }
 
 .filters-section {
@@ -44,6 +51,7 @@
   margin-bottom: 1rem;
   border-bottom: 2px solid var(--border-color, #e0e0e0);
   padding-bottom: 0.5rem;
+  position: relative;
 
   .tab {
     padding: 0.75rem 1.5rem;
@@ -54,6 +62,8 @@
     font-size: 0.95rem;
     border-radius: 4px 4px 0 0;
     transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
 
     &:hover {
       background: var(--bg-hover, #f5f5f5);
@@ -183,19 +193,45 @@
       margin: 0 0 0.5rem 0;
     }
 
-    .candidate-meta {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.85rem;
-      color: var(--text-secondary, #666);
-      margin-top: 0.5rem;
+  .candidate-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary, #666);
+    margin-top: 0.5rem;
 
-      span {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-      }
+    span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
+  }
+
+  .cover-letter-preview {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: var(--bg-light, #f5f5f5);
+    border-radius: 4px;
+    border-left: 3px solid var(--primary-color, #007bff);
+    max-height: 150px;
+    overflow-y: auto;
+
+    .cover-letter-text {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-primary, #1a1a1a);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
   }
 
   .application-actions {
@@ -562,39 +598,332 @@
   }
 }
 
-// Responsive
+// Responsive Styles
 @media (max-width: 1200px) {
   .detail-content {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 768px) {
-  .detail-content {
-    grid-template-columns: 1fr;
+@media (max-width: 992px) {
+  .applicants-container {
+    padding: 1.5rem;
   }
 
-  .modal-backdrop {
+  .employer-header {
+    .employer-title {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .applicants-container {
     padding: 1rem;
   }
 
-  .modal-dialog {
-    width: 95%;
-    max-width: 100%;
-    max-height: 95vh;
+  .employer-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    
+    .employer-title {
+      font-size: 1.5rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+    }
+    
+    .employer-actions {
+      width: 100%;
+      
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
   }
 
-  .modal-actions {
-    flex-direction: column;
+  .employer-content-card {
+    padding: 1rem;
+  }
+
+  .filters-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .tab-navigation {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 0.75rem;
+    
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-color, #e0e0e0);
+      border-radius: 2px;
+    }
+    
+    .tab {
+      padding: 0.625rem 1rem;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
   }
 
   .job-filter {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+
+    label {
+      font-size: 0.9rem;
+    }
 
     .form-select {
       max-width: 100%;
+      width: 100%;
     }
+  }
+
+  .application-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    
+    .application-info {
+      width: 100%;
+    }
+
+    .candidate-header {
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .candidate-avatar {
+      width: 50px;
+      height: 50px;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .candidate-details {
+      min-width: 0;
+      flex: 1;
+      
+      .candidate-name {
+        font-size: 1rem;
+      }
+
+      .candidate-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        
+        span {
+          white-space: normal;
+          word-break: break-all;
+        }
+      }
+
+      .cover-letter-preview {
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        max-height: 100px;
+        font-size: 0.85rem;
+      }
+    }
+    
+    .application-actions {
+      width: 100%;
+      align-items: stretch;
+      border-top: 1px solid var(--border-color, #e0e0e0);
+      padding-top: 1rem;
+      gap: 0.75rem;
+      min-width: auto;
+
+      .application-status {
+        align-self: flex-start;
+        margin-bottom: 0.5rem;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.75rem;
+        
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+      
+      .status-actions {
+        flex-direction: row;
+        gap: 0.5rem;
+        
+        .btn {
+          flex: 1;
+        }
+      }
+    }
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    
+    .pagination-btn {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+    }
+    
+    .pagination-pages {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .pagination-page {
+      min-width: 36px;
+      height: 36px;
+      font-size: 0.875rem;
+    }
+  }
+
+  .pagination-info {
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+    padding: 0 0.5rem;
+  }
+
+  // Modal responsive
+  .detail-content {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-backdrop {
+    padding: 0.5rem;
+    align-items: flex-start;
+    padding-top: 1rem;
+  }
+
+  .modal-dialog {
+    width: 100%;
+    max-width: 100%;
+    max-height: 98vh;
+    border-radius: 8px 8px 0 0;
+    margin-top: auto;
+  }
+
+  .modal-header {
+    padding: 1rem;
+    
+    h2 {
+      font-size: 1.25rem;
+    }
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .applicants-container {
+    padding: 0.75rem;
+  }
+
+  .employer-content-card {
+    padding: 0.75rem;
+  }
+
+  .employer-header {
+    margin-bottom: 1rem;
+    
+    .employer-title {
+      font-size: 1.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+    }
+  }
+
+  .tab-navigation {
+    .tab {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+    }
+  }
+
+  .application-item {
+    padding: 0.75rem;
+    
+    .candidate-avatar {
+      width: 45px;
+      height: 45px;
+      font-size: 1.1rem;
+    }
+
+    .candidate-details {
+      .candidate-name {
+        font-size: 0.95rem;
+      }
+
+      .candidate-meta {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .pagination {
+    gap: 0.25rem;
+    
+    .pagination-btn {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    .pagination-page {
+      min-width: 32px;
+      height: 32px;
+      font-size: 0.8rem;
+    }
+  }
+
+  .pagination-info {
+    font-size: 0.75rem;
   }
 }
 
@@ -607,6 +936,7 @@
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border-color, #e0e0e0);
+  flex-wrap: wrap;
 }
 
 .pagination-btn {
@@ -634,6 +964,8 @@
 .pagination-pages {
   display: flex;
   gap: 0.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .pagination-page {
@@ -650,6 +982,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  flex-shrink: 0;
 
   &:hover:not(.active) {
     background: var(--bg-hover, #f5f5f5);
@@ -672,6 +1005,8 @@
 
   p {
     margin: 0;
+    word-break: break-word;
+    padding: 0 0.5rem;
   }
 }
 
