@@ -1,15 +1,63 @@
 /* ensure header is the top stacking context */
-.header { position: sticky; top: 0; z-index: 1000; }
-.navbar { position: relative; z-index: 1001; }  /* inside header */
+.header { 
+  position: sticky; 
+  top: 0; 
+  z-index: 1000; 
+  background: var(--white, #fff);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar { 
+  position: relative; 
+  z-index: 1001; 
+  background: var(--white, #fff);
+  padding: 1rem 0;
+}  /* inside header */
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  
+  a {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 40px;
+    width: auto;
+    max-width: 150px;
+    object-fit: contain;
+    display: block;
+  }
+}
 
 /* the backdrop should be below the header/menu */
-.mobile-backdrop { z-index: 900; }  /* was 99; keep it below header */
+.mobile-backdrop { 
+  z-index: 900; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}  /* was 99; keep it below header */
 
 /* MOBILE: show the menu panel ABOVE the backdrop and make it fixed */
 @media (max-width: 768px) {
+  /* Ensure navbar-brand (logo) is always visible */
+  .navbar-brand {
+    display: flex !important;
+    flex-shrink: 0;
+    z-index: 1004;
+  }
+  
   /* hide by default (already in your CSS) */
   .navbar-nav,
-  .navbar-actions { display: none; }
+  .navbar-actions { 
+    display: none; 
+  }
 
   /* when open, show as a single fixed panel under the header */
   .navbar.mobile-menu-open .navbar-nav {
@@ -35,6 +83,19 @@
     position: static;      /* no absolute overlay */
     gap: var(--spacing-4);
     margin-top: var(--spacing-4);
+  }
+  
+  /* Ensure employer menu is visible in mobile menu */
+  .navbar.mobile-menu-open .navbar-actions.company {
+    display: flex;
+  }
+  
+  /* Ensure logout is visible */
+  .navbar.mobile-menu-open .user-menu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    margin-top: 0.5rem;
   }
 }
 
@@ -118,6 +179,8 @@ a{
   box-shadow: var(--shadow-lg);
   min-width: 200px;
   z-index: 1000;
+  display: block;
+  margin-top: 0.5rem;
 }
 .user-menu-item {
   display: block;
@@ -130,7 +193,15 @@ a{
   display: block;
   padding: 0.75rem 1rem;
   text-decoration: none;
-  color: var(--error-color);
+  color: var(--error-color, #ef4444);
+  cursor: pointer;
+  border-bottom: none;
+  border-top: 1px solid var(--gray-100);
+  font-weight: 500;
+  
+  &:hover {
+    background-color: #fee2e2;
+  }
 }
 a{
   cursor: pointer;
@@ -143,17 +214,56 @@ a:hover {
   color: white;
 }
 
-.navbar-actions{
-  & .btn-secondary:hover{
-    color:#2563eb;
-    
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  & .btn-secondary:hover {
+    color: #2563eb;
   }
-}
-.company:hover{
-    & .btn-secondary:hover{
-      color: white;
+  
+  &.company {
+    position: relative;
+    
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      
+      img {
+        display: block;
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        object-fit: cover;
+      }
+    }
+    
+    &:hover {
+      & .btn-secondary:hover {
+        color: white;
+      }
     }
   }
-.active1{
+}
+
+.active1 {
   color: #2563eb;
+}
+
+.company-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  .company-logo-small {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+  }
 }

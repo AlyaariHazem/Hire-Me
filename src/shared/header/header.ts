@@ -297,4 +297,11 @@ private teardownDataBindings(): void {
       this.closeMobileMenu();
     }
   }
+
+  handleLogoError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img) {
+      img.src = 'images/HireMe.png';
+    }
+  }
 }

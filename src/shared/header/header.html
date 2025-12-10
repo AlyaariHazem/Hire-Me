@@ -5,7 +5,12 @@
       <!-- Brand -->
       <div class="navbar-brand">
         <a routerLink="/">
-          <img [src]="logoUrl() || 'images/HireMe.png'" alt="منصة التوظيف" class="logo" />
+          <img 
+            [src]="logoUrl() || 'images/HireMe.png'" 
+            alt="منصة التوظيف" 
+            class="logo"
+            (error)="handleLogoError($event)"
+          />
         </a>
       </div>
 
@@ -52,18 +57,14 @@
            <div class="navbar-actions company" (click)="$event.stopPropagation()">
              <div style="position: relative">
                <button
-                 class="btn btn-secondary"
+                 class="btn btn-secondary company-menu-btn"
                  (click)="toggleEmployerMenu($event)"
                >
                  <img
                    [src]="logoUrl() || 'images/company-logo-1.jpg'"
                    alt="شركة التقنيات المتقدمة"
-                   style="
-                     width: 24px;
-                     height: 24px;
-                     border-radius: 4px;
-                     margin-left: 0.5rem;
-                   "
+                   class="company-logo-small"
+                   (error)="handleLogoError($event)"
                  />
                  {{ companyName() }}
                </button>
