@@ -11,6 +11,18 @@ import { ToastrService } from 'ngx-toastr';
 import { Errors } from 'shared/services/errors';
 import { SharedModule } from '../shared-module';
 
+// PrimeNG Imports
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { TagModule } from 'primeng/tag';
+import { PaginatorModule } from 'primeng/paginator';
+import { SkeletonModule } from 'primeng/skeleton';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+
 interface CompanyDisplay {
   id?: number;
   slug?: string;
@@ -31,7 +43,22 @@ interface CompanyDisplay {
 @Component({
   selector: 'app-search-for-job',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SharedModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    RouterModule, 
+    SharedModule,
+    InputTextModule,
+    SelectModule,
+    ButtonModule,
+    CardModule,
+    TagModule,
+    PaginatorModule,
+    SkeletonModule,
+    ProgressSpinnerModule,
+    IconFieldModule,
+    InputIconModule
+  ],
   templateUrl: './search-for-job.html',
   styleUrls: ['./search-for-job.scss'],
 })
@@ -48,11 +75,11 @@ export class SearchForJob implements OnInit {
   loading = false;
   totalCount = 0;
   currentPage = 1;
-  pageSize = 12;
+  pageSize = 6;
 
-  industryFilter = '';
-  locationFilter = '';
-  sizeFilter = '';
+  industryFilter: any = null;
+  locationFilter: any = null;
+  sizeFilter: any = null;
   searchTerm = '';
 
   INDUSTRY_TYPES = INDUSTRY_TYPES;
@@ -60,13 +87,29 @@ export class SearchForJob implements OnInit {
 
   // Available cities (you can fetch these from API if available)
   cities = [
-    { value: 'sanaa', label: 'صنعاء' },
-    { value: 'aden', label: 'عدن' },
-    { value: 'taiz', label: 'تعز' },
-    { value: 'hodeidah', label: 'الحديدة' },
-    { value: 'ibb', label: 'إب' },
-    { value: 'dhamar', label: 'ذمار' },
-    { value: 'mukalla', label: 'المكلا' },
+    { label: 'صنعاء', value: 'sanaa' },
+    { label: 'عدن', value: 'aden' },
+    { label: 'تعز', value: 'taiz' },
+    { label: 'الحديدة', value: 'hodeidah' },
+    { label: 'إب', value: 'ibb' },
+    { label: 'ذمار', value: 'dhamar' },
+    { label: 'المكلا', value: 'mukalla' },
+  ];
+
+  // Dropdown options for PrimeNG
+  industryOptions = [
+    { label: 'جميع القطاعات', value: null },
+    ...INDUSTRY_TYPES.map(i => ({ label: i.label, value: i.value }))
+  ];
+
+  cityOptions = [
+    { label: 'جميع المدن', value: null },
+    ...this.cities
+  ];
+
+  sizeOptions = [
+    { label: 'جميع الأحجام', value: null },
+    ...COMPANY_SIZES.map(s => ({ label: s.label, value: s.value }))
   ];
 
   ngOnInit(): void {
@@ -174,6 +217,12 @@ export class SearchForJob implements OnInit {
 
   applyFilters(): void {
     this.currentPage = 1;
+    this.loadCompanies();
+  }
+
+  onPageChange(event: any): void {
+    this.currentPage = event.page + 1; // PrimeNG paginator is 0-based
+    this.pageSize = event.rows;
     this.loadCompanies();
   }
 

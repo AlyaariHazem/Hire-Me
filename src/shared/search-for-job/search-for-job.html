@@ -6,8 +6,25 @@
     <p>تصفح الشركات الرائدة في اليمن واكتشف الفرص الوظيفية المتاحة</p>
 
     <div class="companies-search">
-      <input type="text" placeholder="ابحث عن الشركات..." [(ngModel)]="searchTerm" (input)="applyFilters()" />
-      <button type="button" (click)="applyFilters()">بحث</button>
+      <p-iconfield iconPosition="left">
+        <p-inputicon>
+          <i class="pi pi-search"></i>
+        </p-inputicon>
+        <input 
+          type="text" 
+          pInputText 
+          placeholder="ابحث عن الشركات..." 
+          [(ngModel)]="searchTerm" 
+          (input)="applyFilters()"
+          class="w-full"
+        />
+      </p-iconfield>
+      <p-button 
+        label="بحث" 
+        icon="pi pi-search" 
+        (onClick)="applyFilters()"
+        styleClass="p-button-primary"
+      ></p-button>
     </div>
   </div>
 </section>
@@ -18,37 +35,52 @@
     <div class="filters-container">
       <div class="filter-group">
         <label>القطاع:</label>
-        <select class="filter-select" [(ngModel)]="industryFilter" (change)="applyFilters()" aria-label="القطاع">
-          <option value="">جميع القطاعات</option>
-          @for (industry of INDUSTRY_TYPES; track industry.value) {
-            <option [value]="industry.value">{{ industry.label }}</option>
-          }
-        </select>
+        <p-select
+          [options]="industryOptions"
+          [(ngModel)]="industryFilter"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="جميع القطاعات"
+          (onChange)="applyFilters()"
+          [showClear]="true"
+          styleClass="w-full"
+        ></p-select>
       </div>
 
       <div class="filter-group">
         <label>المدينة:</label>
-        <select class="filter-select" [(ngModel)]="locationFilter" (change)="applyFilters()" aria-label="المدينة">
-          <option value="">جميع المدن</option>
-          @for (city of cities; track city.value) {
-            <option [value]="city.value">{{ city.label }}</option>
-          }
-        </select>
+        <p-select
+          [options]="cityOptions"
+          [(ngModel)]="locationFilter"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="جميع المدن"
+          (onChange)="applyFilters()"
+          [showClear]="true"
+          styleClass="w-full"
+        ></p-select>
       </div>
 
       <div class="filter-group">
         <label>حجم الشركة:</label>
-        <select class="filter-select" [(ngModel)]="sizeFilter" (change)="applyFilters()" aria-label="حجم الشركة">
-          <option value="">جميع الأحجام</option>
-          @for (size of COMPANY_SIZES; track size.value) {
-            <option [value]="size.value">{{ size.label }}</option>
-          }
-        </select>
+        <p-select
+          [options]="sizeOptions"
+          [(ngModel)]="sizeFilter"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="جميع الأحجام"
+          (onChange)="applyFilters()"
+          [showClear]="true"
+          styleClass="w-full"
+        ></p-select>
       </div>
 
-      <button class="btn btn-primary" (click)="applyFilters()">
-        تطبيق الفلاتر
-      </button>
+      <p-button 
+        label="تطبيق الفلاتر" 
+        icon="pi pi-filter" 
+        (onClick)="applyFilters()"
+        styleClass="p-button-primary"
+      ></p-button>
     </div>
   </div>
 </section>
@@ -108,6 +140,21 @@
       <div class="loading-state">
         <p>جاري تحميل الشركات...</p>
       </div>
+      <div class="companies-grid">
+        @for (item of [1,2,3,4,5,6]; track item) {
+          <p-card styleClass="company-card-skeleton">
+            <div class="skeleton-content">
+              <p-skeleton width="80px" height="80px" shape="circle"></p-skeleton>
+              <div class="skeleton-text">
+                <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="40%" height="1rem"></p-skeleton>
+              </div>
+            </div>
+            <p-skeleton width="100%" height="3rem" styleClass="mb-2"></p-skeleton>
+            <p-skeleton width="100%" height="3rem"></p-skeleton>
+          </p-card>
+        }
+      </div>
     </div>
   </section>
 }
@@ -118,7 +165,7 @@
     <div class="container">
       <div class="companies-grid">
         @for (company of companiesData; track company.id || company.slug) {
-          <div class="company-card">
+          <p-card styleClass="company-card">
             <div class="company-header">
               <div class="company-info">
                 <img 
@@ -130,7 +177,7 @@
                 >
                 <div class="company-details">
                   <h3>{{ company.name }}</h3>
-                  <div class="company-industry">{{ company.industry }}</div>
+                  <p-tag [value]="company.industry" severity="info" styleClass="mb-2"></p-tag>
                   <div class="company-location">📍 {{ company.location }}</div>
                 </div>
               </div>
@@ -141,7 +188,7 @@
               @if (company.tags && company.tags.length > 0) {
                 <div class="company-tags">
                   @for (tag of company.tags; track tag) {
-                    <span class="company-tag">{{ tag }}</span>
+                    <p-tag [value]="tag" severity="secondary"></p-tag>
                   }
                 </div>
               }
@@ -166,16 +213,35 @@
               </div>
 
               <div class="company-actions">
-                <button
-                  [ngClass]="{ 'btn-follow': true, 'following': company.following }"
-                  (click)="toggleFollow(company.slug || company.id)">
-                  {{ company.following ? 'متابع' : 'متابعة' }}
-                </button>
-                <button class="btn-view-jobs" (click)="viewCompany(company.slug || company.id)">عرض الوظائف</button>
+                <p-button
+                  [label]="company.following ? 'متابع' : 'متابعة'"
+                  [icon]="company.following ? 'pi pi-check' : 'pi pi-plus'"
+                  [severity]="company.following ? 'success' : 'secondary'"
+                  [outlined]="!company.following"
+                  (onClick)="toggleFollow(company.slug || company.id)"
+                  styleClass="p-button-sm"
+                ></p-button>
+                <p-button
+                  label="عرض الوظائف"
+                  icon="pi pi-briefcase"
+                  (onClick)="viewCompany(company.slug || company.id)"
+                  styleClass="p-button-primary p-button-sm"
+                ></p-button>
               </div>
             </div>
-          </div>
+          </p-card>
         }
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination-container">
+        <p-paginator
+          [rows]="pageSize"
+          [totalRecords]="totalCount"
+          [first]="(currentPage - 1) * pageSize"
+          (onPageChange)="onPageChange($event)"
+          [rowsPerPageOptions]="[6, 12, 24, 48]"
+        ></p-paginator>
       </div>
     </div>
   </section>
