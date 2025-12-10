@@ -1,9 +1,26 @@
 /* Component-specific enhanced styles */
 
+.employer-sidebar {
+  background-color: var(--white);
+  border-left: 1px solid var(--gray-200);
+  /* Removed width: 100% and height: 100% to fix desktop regression */
+  
+  @media (max-width: 768px) {
+    width: 100% !important; /* Force override any external 15% */
+    border-left: none;
+    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: 1rem;
+    height: auto;
+  }
+}
+
+
 /* Company Logo */
 .company-logo1 {
-  width: 100%;
+  max-width: 100%;
   height: 80px;
+  display: block;
+  margin: 0 auto 1rem auto; /* Centered */
   border-radius: var(--radius-lg);
   margin-bottom: 1rem;
   border: 3px solid var(--primary-color);
