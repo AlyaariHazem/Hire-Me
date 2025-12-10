@@ -1,15 +1,39 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs';
 import { environment } from 'environments/environment';
 import { ProfileStoreService, Profile } from 'shared/services/profile.service';
 import { SidebarStoreService } from '../services/sidebar.store';
 import { SharedModule } from 'shared/shared-module';
 
+// PrimeNG Imports
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { BadgeModule } from 'primeng/badge';
+import { AvatarModule } from 'primeng/avatar';
+import { DividerModule } from 'primeng/divider';
+import { MenuModule } from 'primeng/menu';
+import { RippleModule } from 'primeng/ripple';
+import { TagModule } from 'primeng/tag';
+
 @Component({
   selector: 'app-side-bar-company',
-  imports:[SharedModule],
+  imports: [
+    SharedModule,
+    CommonModule,
+    RouterModule,
+    CardModule,
+    ButtonModule,
+    BadgeModule,
+    AvatarModule,
+    DividerModule,
+    MenuModule,
+    RippleModule,
+    TagModule
+  ],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.scss'
 })
@@ -56,15 +80,10 @@ export class SideBarCompany implements OnInit {
     return `${base}/${clean}`;
   }
 
-  handleImageError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    if (img) {
-      img.style.display = 'none';
-      const placeholder = img.nextElementSibling as HTMLElement;
-      if (placeholder && placeholder.classList.contains('company-logo-placeholder')) {
-        placeholder.style.display = 'flex';
-      }
-    }
+  handleImageError(event: any): void {
+    // Handle PrimeNG Avatar image error
+    // The avatar will automatically fallback to label if image fails
+    console.warn('Company logo failed to load, using placeholder');
   }
 
   getCompanyInitials(): string {

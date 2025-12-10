@@ -1,43 +1,55 @@
 <!-- Sidebar -->
 <aside class="employer-sidebar">
-  <div class="company-profile">
-    <div class="company-logo-wrapper">
-      <img
-        [src]="logo() || 'images/company-logo-1.jpg'"
-        [alt]="companyName"
-        [title]="companyName || 'شعار الشركة'"
-        class="company-logo1"
-        (error)="handleImageError($event)"
-      />
-      @if (!logo()) {
-        <div class="company-logo-placeholder">
-          <span>{{ getCompanyInitials() }}</span>
+  <p-card styleClass="company-profile-card">
+    <div class="company-profile">
+      <div class="company-logo-wrapper">
+        @if (logo()) {
+          <p-avatar 
+            [image]="logo()" 
+            [title]="companyName || 'شعار الشركة'"
+            shape="circle"
+            size="large"
+            styleClass="company-logo-avatar"
+            (onImageError)="handleImageError($event)"
+          ></p-avatar>
+        } @else {
+          <p-avatar 
+            [label]="getCompanyInitials()"
+            shape="circle"
+            size="large"
+            styleClass="company-logo-avatar company-logo-placeholder"
+            [title]="companyName || 'شعار الشركة'"
+          ></p-avatar>
+        }
+      </div>
+      
+      <h3 class="company-name">{{companyName}}</h3>
+      <p-tag [value]="industry" severity="info" styleClass="company-type-tag"></p-tag>
+
+      <p-divider></p-divider>
+
+      <div class="company-stats">
+        <div class="company-stat">
+          <div class="stat-number">{{ activeJobsCount() }}</div>
+          <div class="stat-label">وظائف نشطة</div>
         </div>
-      }
-    </div>
-    <h3 class="company-name">{{companyName}}</h3>
-    <p class="company-type">{{industry}}</p>
-
-    <div class="company-stats">
-      <div class="company-stat">
-        <div class="stat-number">{{ activeJobsCount() }}</div>
-        <div class="stat-label">وظائف نشطة</div>
+        <div class="company-stat">
+          <div class="stat-number">{{ newApplicantsCount() }}</div>
+          <div class="stat-label">متقدم جديد</div>
+        </div>
       </div>
-      <div class="company-stat">
-        <div class="stat-number">{{ newApplicantsCount() }}</div>
-        <div class="stat-label">متقدم جديد</div>
-      </div>
+
+      <p-button
+        label="تحديث ملف الشركة"
+        icon="pi pi-pencil"
+        [routerLink]="['/companies/profile']"
+        styleClass="p-button-primary p-button-sm w-full company-profile-btn"
+        [outlined]="false"
+      ></p-button>
     </div>
+  </p-card>
 
-    <a
-      routerLink="/companies/profile"
-      class="btn btn-small btn-primary company-profile-btn"
-    >
-      تحديث ملف الشركة
-    </a>
-  </div>
-
-  <nav>
+  <nav class="employer-nav-container">
     <ul class="employer-nav">
       <li class="employer-nav-item">
         <a
@@ -45,9 +57,10 @@
           class="employer-nav-link"
           routerLinkActive="active"
           data-tab="overview"
+          pRipple
         >
-          <span class="employer-nav-icon">📊</span>
-          نظرة عامة
+          <i class="pi pi-chart-bar employer-nav-icon"></i>
+          <span>نظرة عامة</span>
         </a>
       </li>
       <li class="employer-nav-item">
@@ -56,35 +69,59 @@
           class="employer-nav-link" 
           routerLinkActive="active" 
           data-tab="jobs-list"
+          pRipple
         >
-          <span class="employer-nav-icon">🔍</span>
-          الوظائف
+          <i class="pi pi-search employer-nav-icon"></i>
+          <span>الوظائف</span>
         </a>
       </li>
       <li class="employer-nav-item">
-        <a routerLink="/companies/manage-jobs" class="employer-nav-link" routerLinkActive="active" data-tab="jobs">
-          <span class="employer-nav-icon">💼</span>
-          إدارة الوظائف
+        <a 
+          routerLink="/companies/manage-jobs" 
+          class="employer-nav-link" 
+          routerLinkActive="active" 
+          data-tab="jobs"
+          pRipple
+        >
+          <i class="pi pi-briefcase employer-nav-icon"></i>
+          <span>إدارة الوظائف</span>
         </a>
       </li>
       <li class="employer-nav-item">
-        <a routerLink="/companies/applicants" class="employer-nav-link" routerLinkActive="active" data-tab="candidates">
-          <span class="employer-nav-icon">👥</span>
-          المتقدمون
-          <span class="badge">12</span>
+        <a 
+          routerLink="/companies/applicants" 
+          class="employer-nav-link" 
+          routerLinkActive="active" 
+          data-tab="candidates"
+          pRipple
+        >
+          <i class="pi pi-users employer-nav-icon"></i>
+          <span>المتقدمون</span>
+          <p-badge value="12" severity="danger"></p-badge>
         </a>
       </li>
       <li class="employer-nav-item">
-        <a  class="employer-nav-link" routerLinkActive="active" data-tab="analytics">
-          <span class="employer-nav-icon">📈</span>
-          التحليلات
+        <a 
+          class="employer-nav-link" 
+          routerLinkActive="active" 
+          data-tab="analytics"
+          pRipple
+        >
+          <i class="pi pi-chart-line employer-nav-icon"></i>
+          <span>التحليلات</span>
         </a>
       </li>
       <li class="employer-nav-item">
-        <a routerLink="/companies/messages" class="employer-nav-link" routerLinkActive="active" data-tab="messages">
-          <span class="employer-nav-icon">💬</span>
-          الرسائل
-          <span class="badge">3</span>
+        <a 
+          routerLink="/companies/messages" 
+          class="employer-nav-link" 
+          routerLinkActive="active" 
+          data-tab="messages"
+          pRipple
+        >
+          <i class="pi pi-envelope employer-nav-icon"></i>
+          <span>الرسائل</span>
+          <p-badge value="3" severity="danger"></p-badge>
         </a>
       </li>
       <li class="employer-nav-item">
@@ -93,21 +130,32 @@
           class="employer-nav-link"
           routerLinkActive="active"
           data-tab="company-profile"
+          pRipple
         >
-          <span class="employer-nav-icon">🏢</span>
-          جميع الشركات 
+          <i class="pi pi-building employer-nav-icon"></i>
+          <span>جميع الشركات</span>
         </a>
       </li>
       <li class="employer-nav-item">
-        <a  routerLinkActive="active" class="employer-nav-link" data-tab="billing">
-          <span class="employer-nav-icon">💳</span>
-          الفواتير والدفع
+        <a 
+          routerLinkActive="active" 
+          class="employer-nav-link" 
+          data-tab="billing"
+          pRipple
+        >
+          <i class="pi pi-credit-card employer-nav-icon"></i>
+          <span>الفواتير والدفع</span>
         </a>
       </li>
       <li class="employer-nav-item">
-        <a  routerLinkActive="active" class="employer-nav-link" data-tab="settings">
-          <span class="employer-nav-icon">⚙️</span>
-          الإعدادات
+        <a 
+          routerLinkActive="active" 
+          class="employer-nav-link" 
+          data-tab="settings"
+          pRipple
+        >
+          <i class="pi pi-cog employer-nav-icon"></i>
+          <span>الإعدادات</span>
         </a>
       </li>
     </ul>
