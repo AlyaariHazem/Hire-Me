@@ -52,7 +52,7 @@ export class CompanyService {
   // Unfollow a company (delete the follow relationship)
   unfollowCompany(companyId: number): Observable<any> {
     const url = environment.getUrl(`${companyId}/follow`, 'companies');
-    return this.http.delete(url);
+    return this.http.post(url, {});
   }
 
   // Get jobs for a specific company
