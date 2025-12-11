@@ -154,15 +154,59 @@
     --gray-800: #424242;
     --gray-900: #212121;
     color-scheme: light;
-    --p-primary-500: #3b82f6!important; /* blue */
+    
+    /* PrimeNG v20 Primary Color Overrides - Force Blue */
+    --p-primary-50: #eff6ff !important;
+    --p-primary-100: #dbeafe !important;
+    --p-primary-200: #bfdbfe !important;
+    --p-primary-300: #93c5fd !important;
+    --p-primary-400: #60a5fa !important;
+    --p-primary-500: #3b82f6 !important;
+    --p-primary-600: #2563eb !important;
+    --p-primary-700: #1d4ed8 !important;
+    --p-primary-800: #1e40af !important;
+    --p-primary-900: #1e3a8a !important;
+    --p-primary-color: #3b82f6 !important;
+    --p-primary-hover-color: #2563eb !important;
+    --p-primary-active-color: #1d4ed8 !important;
+    --p-primary-contrast-color: #ffffff !important;
+}
 
-    /* optional: adjust the rest so hover/active look nice */
-    --p-primary-600: #2563eb!important;
-    --p-primary-700: #1d4ed8!important;
-    --p-primary-800: #1e40af!important;
-  
-    /* if you want to be explicit */
-    --p-primary-color: var(--p-primary-500)!important;
-    --p-primary-hover-color: var(--p-primary-600)!important;
-    --p-primary-active-color: var(--p-primary-700)!important;
+/* Additional PrimeNG Component Overrides */
+:root {
+    /* Button overrides */
+    --p-button-primary-background: #3b82f6 !important;
+    --p-button-primary-hover-background: #2563eb !important;
+    --p-button-primary-active-background: #1d4ed8 !important;
+    --p-button-primary-border-color: #3b82f6 !important;
+    --p-button-primary-hover-border-color: #2563eb !important;
+    --p-button-primary-active-border-color: #1d4ed8 !important;
+    
+    /* Input focus colors */
+    --p-focus-ring-color: #3b82f6 !important;
+    --p-focus-ring-offset-color: #ffffff !important;
+    
+    /* Link colors */
+    --p-link-color: #3b82f6 !important;
+    --p-link-hover-color: #2563eb !important;
+    --p-link-active-color: #1d4ed8 !important;
+}
+
+/* Force blue on all PrimeNG primary buttons */
+::ng-deep .p-button-primary,
+::ng-deep .p-button.p-button-primary {
+    background: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+}
+
+::ng-deep .p-button-primary:not(:disabled):hover,
+::ng-deep .p-button.p-button-primary:not(:disabled):hover {
+    background: #2563eb !important;
+    border-color: #2563eb !important;
+}
+
+::ng-deep .p-button-primary:not(:disabled):active,
+::ng-deep .p-button.p-button-primary:not(:disabled):active {
+    background: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
 }
