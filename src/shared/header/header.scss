@@ -103,7 +103,9 @@
     }
   }
 }
-
+span{
+  padding-right: 5px!important;
+}
 /* MOBILE: show the menu panel ABOVE the backdrop and make it fixed */
 @media (max-width: 768px) {
   /* Ensure navbar-brand (logo) is always visible */

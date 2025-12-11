@@ -50,7 +50,7 @@ export class CompanyService {
     is_verified?: boolean;
     ordering?: string;
     page?: number;
-    page_size?: number;
+    pagesize?: number;
   }) {
     return this.http
       .get<CompaniesListResponse>(

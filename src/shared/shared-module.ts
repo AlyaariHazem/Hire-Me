@@ -11,6 +11,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
+import { AvatarModule } from 'primeng/avatar';
+import { MenuModule } from 'primeng/menu';
+import { RippleModule } from 'primeng/ripple';
+import { DividerModule } from 'primeng/divider';
 import { JobService } from './services/job.service';
 import { ProfileStoreService } from './services/profile.service';
 import { BreadcrumbService } from './services/breadcrumb.service';
@@ -35,7 +39,11 @@ DialogModule,
 ProgressSpinnerModule,
 ConfirmDialogModule,
 ButtonModule,
-BreadcrumbModule
+BreadcrumbModule,
+AvatarModule,
+MenuModule,
+RippleModule,
+DividerModule
 ];
 @NgModule({
   declarations: [...components],

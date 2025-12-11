@@ -210,7 +210,6 @@ private teardownDataBindings(): void {
   }
 
   navigate(action: string): void {
-    
     const routes: Record<string, string> = {
       dashboard: '/companies/dashboard',
       profile: '/companies/profile',

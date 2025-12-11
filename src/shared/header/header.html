@@ -17,28 +17,38 @@
       <!-- Main nav links (shared) -->
       <ul class="navbar-nav" id="primary-nav" (click)="closeMobileMenu()">
           <li class="nav-item">
-          <a class="nav-link" (click)="routeToJobs()">الوظائف</a>
+          <a class="nav-link" (click)="routeToJobs()" pRipple>
+            <i class="pi pi-briefcase"></i>
+            <span class="pr-2">الوظائف</span>
+          </a>
         </li>
         <li class="nav-item">
-          <a (click)="routeToCompanies()" class="nav-link">الشركات</a>
+          <a (click)="routeToCompanies()" class="nav-link" pRipple>
+            <i class="pi pi-building"></i>
+            <span>الشركات</span>
+          </a>
         </li>
         <li class="nav-item">
-          <a (click)="notImplemented()" class="nav-link">الرواتب</a>
+          <a (click)="notImplemented()" class="nav-link" pRipple>
+            <i class="pi pi-dollar"></i>
+            <span>الرواتب</span>
+          </a>
         </li>
         <li class="nav-item">
-          <a (click)="notImplemented()" class="nav-link">الموارد</a>
+          <a (click)="notImplemented()" class="nav-link" pRipple>
+            <i class="pi pi-book"></i>
+            <span>الموارد</span>
+          </a>
         </li>
         @if (isLoggedIn() && role() === 'jobseeker') {
         <li role="none">
-          <button
-            role="menuitem"
-            type="button"
-            (click)="logout()"
-            class="menu-link danger"
-          >
-            <i class="pi pi-sign-out menu-ic" aria-hidden="true"></i
-            ><span>تسجيل الخروج</span>
-          </button>
+          <p-button
+            label="تسجيل الخروج"
+            icon="pi pi-sign-out"
+            (onClick)="logout()"
+            styleClass="p-button-text p-button-danger"
+            pRipple
+          ></p-button>
         </li>
         }
       </ul>
@@ -47,55 +57,81 @@
       <div class="navbar-actions" dir="rtl" (click)="closeMobileMenu()">
         <!-- ========== Public header (login / register) ========== -->
          @if (!isLoggedIn()) {
-            <a routerLink="/login" class="btn btn-secondary" routerLinkActive="active">تسجيل الدخول</a>
-            <a routerLink="/register" class="btn btn-secondary" routerLinkActive="active">إنشاء حساب</a>
+            <a routerLink="/login" routerLinkActive="active">
+              <p-button 
+                label="تسجيل الدخول" 
+                icon="pi pi-sign-in"
+                styleClass="p-button-outlined"
+              ></p-button>
+            </a>
+            <a routerLink="/register" routerLinkActive="active">
+              <p-button 
+                label="إنشاء حساب" 
+                icon="pi pi-user-plus"
+                styleClass="p-button-primary"
+              ></p-button>
+            </a>
           }
 
         <!-- ========== Employer header ========== -->
          @if (isLoggedIn() && role() === 'employer') {
-
-           <div class="navbar-actions company" (click)="$event.stopPropagation()">
-             <div style="position: relative">
-               <button
-                 class="btn btn-secondary company-menu-btn"
-                 (click)="toggleEmployerMenu($event)"
-               >
-                 <img
-                   [src]="logoUrl() || 'images/company-logo-1.jpg'"
-                   alt="شركة التقنيات المتقدمة"
-                   class="company-logo-small"
-                   (error)="handleLogoError($event)"
-                 />
-                 {{ companyName() }}
-               </button>
-               <div
-                 class="user-menu"
-                 *ngIf="isEmployerMenuOpen"
-                 (click)="$event.stopPropagation()"
-               >
-                 <a class="user-menu-item" (click)="navigate('dashboard')"
-                   >لوحة التحكم</a
-                 >
-                 <a class="user-menu-item" (click)="navigate('profile')"
-                   >ملف الشركة</a
-                 >
-                 <a class="user-menu-item" (click)="navigate('user-edit')"
-                   >تعديل الملف الشخصي</a
-                 >
-                 <a class="user-menu-item" (click)="navigate('post-job')"
-                   >نشر وظيفة</a
-                 >
-                 
-                 <a
-                   class="user-menu-item"
-                   (click)="navigate('employer-settings')"
-                   >الإعدادات</a
-                 >
-                 <a class="user-menu-item-logout" (click)="logout()"
-                   >تسجيل الخروج</a
-                 >
-               </div>
+           <div class="navbar-actions company" (click)="$event.stopPropagation()" #menuRoot>
+             <div
+               class="user-menu"
+               *ngIf="isEmployerMenuOpen"
+               (click)="$event.stopPropagation()"
+             >
+               <a class="user-menu-item" (click)="navigate('dashboard')">
+                 <i class="pi pi-chart-bar"></i>
+                 <span>لوحة التحكم</span>
+               </a>
+               <a class="user-menu-item" (click)="navigate('profile')">
+                 <i class="pi pi-building"></i>
+                 <span>ملف الشركة</span>
+               </a>
+               <a class="user-menu-item" (click)="navigate('user-edit')">
+                 <i class="pi pi-user-edit"></i>
+                 <span>تعديل الملف الشخصي</span>
+               </a>
+               <a class="user-menu-item" (click)="navigate('post-job')">
+                 <i class="pi pi-plus-circle"></i>
+                 <span>نشر وظيفة</span>
+               </a>
+               <a class="user-menu-item" (click)="navigate('employer-settings')">
+                 <i class="pi pi-cog"></i>
+                 <span>الإعدادات</span>
+               </a>
+               <p-divider></p-divider>
+               <a class="user-menu-item-logout" (click)="logout()">
+                 <i class="pi pi-sign-out"></i>
+                 <span>تسجيل الخروج</span>
+               </a>
              </div>
+             <button
+               type="button"
+               class="p-button p-button-outlined company-menu-btn"
+               (click)="toggleEmployerMenu($event)"
+               pRipple
+             >
+               @if (logoUrl()) {
+                 <p-avatar 
+                   [image]="logoUrl()" 
+                   shape="circle"
+                   size="normal"
+                   styleClass="company-logo-small-avatar"
+                   (onImageError)="handleLogoError($event)"
+                 ></p-avatar>
+               } @else {
+                 <p-avatar 
+                   [label]="companyName().charAt(0)"
+                   shape="circle"
+                   size="normal"
+                   styleClass="company-logo-small-avatar"
+                 ></p-avatar>
+               }
+               <span>{{ companyName() }}</span>
+               <i class="pi pi-chevron-down"></i>
+             </button>
            </div>
          }
       </div>
