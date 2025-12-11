@@ -45,6 +45,21 @@ export class Jobs extends Base {
   // Track which jobs are being processed (to disable buttons during API calls)
   applyingJobs = new Set<number>();
 
+  // Filter counts from backend
+  filterCounts = {
+    jobType: {
+      full_time: 0,
+      part_time: 0,
+      contract: 0,
+      freelance: 0
+    },
+    experienceLevel: {
+      entry: 0,
+      mid: 0,
+      senior: 0
+    }
+  };
+
   // pagination
   currentPage = 1;
   totalPages = 0;
@@ -124,6 +139,51 @@ export class Jobs extends Base {
     // Load initial jobs only if not already loaded or if filters/page changed
     // The store will check internally if reload is needed
     this.jobsStore.loadJobs();
+    
+    // Load filter counts from backend
+    this.loadFilterCounts();
+  }
+
+  /**
+   * Load filter counts from backend
+   * Fetches counts for each filter option by making API calls with minimal page_size
+   */
+  loadFilterCounts(): void {
+    // Fetch counts for job types
+    const jobTypes: Array<'full_time' | 'part_time' | 'contract' | 'freelance'> = ['full_time', 'part_time', 'contract', 'freelance'];
+    jobTypes.forEach(jobType => {
+      const filters: JobFilters = {
+        job_type: jobType,
+        page_size: 1 // Just need count, not actual jobs
+      };
+      
+      this.jobService.getJobs(filters).subscribe({
+        next: (response) => {
+          this.filterCounts.jobType[jobType] = response.count || 0;
+        },
+        error: (err) => {
+          console.error(`Failed to load count for job_type:${jobType}`, err);
+        }
+      });
+    });
+
+    // Fetch counts for experience levels
+    const experienceLevels: Array<'entry' | 'mid' | 'senior'> = ['entry', 'mid', 'senior'];
+    experienceLevels.forEach(level => {
+      const filters: JobFilters = {
+        experience_level: level,
+        page_size: 1 // Just need count, not actual jobs
+      };
+      
+      this.jobService.getJobs(filters).subscribe({
+        next: (response) => {
+          this.filterCounts.experienceLevel[level] = response.count || 0;
+        },
+        error: (err) => {
+          console.error(`Failed to load count for experience_level:${level}`, err);
+        }
+      });
+    });
   }
 
 
