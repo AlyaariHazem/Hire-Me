@@ -4,7 +4,8 @@ import { ApplicationService, Application } from 'shared/services/application.ser
 
 export interface ApplicantsState {
   applications: Application[];
-  totalCount: number;
+  totalCount: number; // Current filtered count
+  totalCountAll: number; // Total count when status is 'all' (for "الكل" tab)
   loading: boolean;
   statusCounts: {
     pending: number;
@@ -28,6 +29,7 @@ export class ApplicantsStoreService {
   private initialState: ApplicantsState = {
     applications: [],
     totalCount: 0,
+    totalCountAll: 0, // Total count for "الكل" tab
     loading: false,
     statusCounts: {
       pending: 0,
@@ -49,6 +51,7 @@ export class ApplicantsStoreService {
   // Selectors
   readonly applications = computed(() => this.state().applications);
   readonly totalCount = computed(() => this.state().totalCount);
+  readonly totalCountAll = computed(() => this.state().totalCountAll);
   readonly loading = computed(() => this.state().loading);
   readonly filters = computed(() => this.state().filters);
   readonly statusCounts = computed(() => this.state().statusCounts);
@@ -103,23 +106,32 @@ export class ApplicantsStoreService {
         );
       })
     ).subscribe(response => {
-      // Extract status_counts from API response if available
-      const statusCounts = response.status_counts || {
-        pending: 0,
-        reviewed: 0,
-        accepted: 0,
-        rejected: 0
-      };
+      const currentState = this.state();
+      const currentFilters = currentState.filters;
+      
+      // Only update status_counts and totalCountAll when status filter is 'all' to get accurate counts for all statuses
+      // When filtering by a specific status, preserve the existing status_counts and totalCountAll
+      let statusCounts = currentState.statusCounts;
+      let totalCountAll = currentState.totalCountAll;
+      
+      if (currentFilters.status === 'all' && response.status_counts) {
+        // Update status_counts and totalCountAll only when viewing all applications
+        const backendCounts = response.status_counts;
+        statusCounts = {
+          pending: backendCounts.pending || 0,
+          reviewed: backendCounts.reviewed || 0,
+          accepted: backendCounts.accepted || 0,
+          rejected: backendCounts.rejected || 0
+        };
+        // Store the total count for "الكل" tab
+        totalCountAll = response.count || 0;
+      }
 
       this.patchState({
         applications: response.results || [],
-        totalCount: response.count || 0,
-        statusCounts: {
-          pending: statusCounts.pending || 0,
-          reviewed: statusCounts.reviewed || 0,
-          accepted: statusCounts.accepted || 0,
-          rejected: statusCounts.rejected || 0
-        },
+        totalCount: response.count || 0, // Current filtered count
+        totalCountAll: totalCountAll, // Preserve or update the total for "الكل"
+        statusCounts: statusCounts,
         loading: false
       });
     });
@@ -140,8 +152,45 @@ export class ApplicantsStoreService {
   
   // This method ensures we start loading if nothing is loaded or if we want to reset
   init() {
-    if (this.state().applications.length === 0 && !this.state().loading) {
-       this.filters$.next(this.state().filters);
+    const currentState = this.state();
+    
+    // If status_counts are not loaded yet (all zeros), first load with 'all' status to get counts
+    const needsCounts = currentState.statusCounts.pending === 0 && 
+                        currentState.statusCounts.reviewed === 0 && 
+                        currentState.statusCounts.accepted === 0 && 
+                        currentState.statusCounts.rejected === 0;
+    
+    if (needsCounts && !currentState.loading) {
+      // First, load with 'all' status to get status_counts
+      const originalStatus = currentState.filters.status;
+      if (originalStatus !== 'all') {
+        // Load 'all' first to get counts, then load the requested status
+        this.applicationService.getAllJobApplications({
+          ordering: '-applied_at',
+          page: 1,
+          pageSize: currentState.filters.pageSize
+        }).subscribe(response => {
+          if (response.status_counts) {
+            const backendCounts = response.status_counts;
+            this.patchState({
+              statusCounts: {
+                pending: backendCounts.pending || 0,
+                reviewed: backendCounts.reviewed || 0,
+                accepted: backendCounts.accepted || 0,
+                rejected: backendCounts.rejected || 0
+              },
+              totalCountAll: response.count || 0 // Store total count for "الكل" tab
+            });
+          }
+          // Now load with the original filter
+          this.filters$.next(currentState.filters);
+        });
+      } else {
+        // Already 'all', just load normally
+        this.filters$.next(currentState.filters);
+      }
+    } else if (currentState.applications.length === 0 && !currentState.loading) {
+      this.filters$.next(currentState.filters);
     }
   }
 

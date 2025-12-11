@@ -38,8 +38,10 @@ export class Applicants implements OnInit {
   // Get status counts from store (from backend)
   statusCounts = computed(() => {
     const backendCounts = this.store.statusCounts();
+    // Use totalCountAll for "الكل" tab, which is the total when status is 'all'
+    // This ensures "الكل" always shows the correct total, not the filtered count
     return {
-      all: this.totalCount(),
+      all: this.store.totalCountAll(),
       pending: backendCounts.pending,
       reviewed: backendCounts.reviewed,
       accepted: backendCounts.accepted,
