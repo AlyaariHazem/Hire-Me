@@ -159,4 +159,8 @@ export class Login extends Base implements OnInit {
     this.user = role === 'jobseeker';
     this.admin = role === 'employer';
   }
+
+  navigateToRegister(): void {
+    this.router.navigate(['/register']);
+  }
 }

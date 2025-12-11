@@ -201,22 +201,31 @@ a:hover {
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid var(--gray-200);
-}
-
-.auth-footer p {
-  color: var(--gray-600);
-  font-size: var(--font-size-sm);
-  margin-bottom: 0.5rem;
-}
-
-.auth-footer a {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.auth-footer a:hover {
-  text-decoration: underline;
+  
+  p {
+    color: var(--gray-600);
+    font-size: var(--font-size-sm);
+    margin-bottom: 0.5rem;
+  }
+  
+  .register-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    transition: all 0.2s ease;
+    display: inline-block;
+    
+    &:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+      transform: translateY(-1px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
 }
 
 .user-type-selector {
