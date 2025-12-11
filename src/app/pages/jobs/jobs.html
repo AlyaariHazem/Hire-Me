@@ -2,7 +2,6 @@
       <div class="container">
         <form
           class="search-form"
-          style="max-width: 100%; margin: 0"
           (ngSubmit)="onSearchSubmit()"
         >
           <div class="search-fields">
@@ -74,7 +73,7 @@
                 >
                   <div class="filter-checkbox"></div>
                   <span>دوام كامل</span>
-                  <span style="margin-right: auto; color: var(--gray-500)"
+                  <span class="filter-count"
                     >({{ filterCounts.jobType.full_time }})</span
                   >
                 </div>
@@ -86,7 +85,7 @@
                 >
                   <div class="filter-checkbox"></div>
                   <span>دوام جزئي</span>
-                  <span style="margin-right: auto; color: var(--gray-500)"
+                  <span class="filter-count"
                     >({{ filterCounts.jobType.part_time }})</span
                   >
                 </div>
@@ -98,7 +97,7 @@
                 >
                   <div class="filter-checkbox"></div>
                   <span>عقد مؤقت</span>
-                  <span style="margin-right: auto; color: var(--gray-500)"
+                  <span class="filter-count"
                     >({{ filterCounts.jobType.contract }})</span
                   >
                 </div>
@@ -110,7 +109,7 @@
                 >
                   <div class="filter-checkbox"></div>
                   <span>عمل عن بُعد</span>
-                  <span style="margin-right: auto; color: var(--gray-500)"
+                  <span class="filter-count"
                     >({{ filterCounts.jobType.freelance }})</span
                   >
                 </div>
@@ -128,7 +127,7 @@
                 >
                   <div class="filter-checkbox"></div>
                   <span>مبتدئ (0-2 سنة)</span>
-                  <span style="margin-right: auto; color: var(--gray-500)"
+                  <span class="filter-count"
                     >({{ filterCounts.experienceLevel.entry }})</span
                   >
                 </div>
@@ -140,7 +139,7 @@
                 >
                   <div class="filter-checkbox"></div>
                   <span>متوسط (3-5 سنوات)</span>
-                  <span style="margin-right: auto; color: var(--gray-500)"
+                  <span class="filter-count"
                     >({{ filterCounts.experienceLevel.mid }})</span
                   >
                 </div>
@@ -152,22 +151,22 @@
                 >
                   <div class="filter-checkbox"></div>
                   <span>خبير (6+ سنوات)</span>
-                  <span style="margin-right: auto; color: var(--gray-500)"
+                  <span class="filter-count"
                     >({{ filterCounts.experienceLevel.senior }})</span
                   >
                 </div>
               </div>
             </div>
 
-            <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem">
+            <div class="filter-actions">
               <button
-                class="btn btn-small btn-primary"
+                class="btn btn-small btn-primary filter-apply-btn"
                 (click)="applyFilters()"
               >
                 تطبيق
               </button>
               <button
-                class="btn btn-small btn-secondary"
+                class="btn btn-small btn-secondary filter-clear-btn"
                 (click)="clearAllFilters()"
               >
                 مسح الكل
@@ -214,8 +213,8 @@
                   <div class="job-info">
                     <h3 class="job-title">
                       <a
-                      (click)="navigate(job.slug)"
-                        style="text-decoration: none; color: inherit; cursor: pointer;"
+                        (click)="navigate(job.slug)"
+                        class="job-title-link"
                       >
                         {{ job.title }}
                       </a>
@@ -258,10 +257,7 @@
                     </div>
                   </div>
   
-                  <div
-                    class="job-actions"
-                    style="display: flex; flex-direction: column; gap: 0.5rem"
-                  >
+                  <div class="job-actions">
                     <button
                       class="btn btn-small btn-secondary save-btn"
                       [class.active]="job.is_applied"
@@ -299,9 +295,7 @@
 
               <!-- في حالة ما في وظائف -->
                @if(jobs.length === 0){
-                 <div
-                   style="padding: 1rem; text-align: center"
-                 >
+                 <div class="no-jobs-message">
                    لا توجد وظائف مطابقة حالياً.
                  </div>
                }
@@ -341,7 +335,7 @@
             }
 
             <!-- Load More Button (Alternative to pagination) -->
-            <div class="text-center" style="margin-top: 2rem; display: none">
+            <div class="load-more-container hidden">
               <button class="btn btn-secondary load-more-btn">
                 تحميل المزيد من الوظائف
               </button>
