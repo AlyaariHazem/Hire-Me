@@ -8,6 +8,8 @@
       'images/candidate-3.jpg'
     "
     class="profile-avatar"
+    [alt]="jobSeekerName || 'صورة الملف الشخصي'"
+    [title]="jobSeekerName || 'صورة الملف الشخصي'"
   />
   <input type="file" accept="image/*" (change)="onAvatarChange($event)" />
   <span class="edit-badge">تغيير الصورة</span>
@@ -16,7 +18,7 @@
     <h3 class="profile-name">
   {{ jobSeekerName || 'اسم المستخدم' }}
 </h3>
-    <p class="profile-title">مطور برمجيات</p>
+    <p class="profile-title">{{ jobSeekerTitle || 'لا يوجد عنوان وظيفي' }}</p>
 
     <div class="avatar-actions" *ngIf="selectedFile">
       <button

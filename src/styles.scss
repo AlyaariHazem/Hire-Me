@@ -210,3 +210,26 @@
     background: #1d4ed8 !important;
     border-color: #1d4ed8 !important;
 }
+
+/* Active state for header navigation buttons */
+::ng-deep .navbar-actions a.active .p-button {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: white !important;
+}
+
+::ng-deep .navbar-actions a.active .p-button .p-button-label,
+::ng-deep .navbar-actions a.active .p-button .p-button-icon {
+    color: white !important;
+}
+
+::ng-deep .navbar-actions a.active .p-button:hover {
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+    color: white !important;
+}
+
+::ng-deep .navbar-actions a.active .p-button:hover .p-button-label,
+::ng-deep .navbar-actions a.active .p-button:hover .p-button-icon {
+    color: white !important;
+}

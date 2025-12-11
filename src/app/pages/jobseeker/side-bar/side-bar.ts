@@ -29,6 +29,9 @@ export class SideBar implements OnInit, OnDestroy {
 
   // English: company name display
   jobSeekerName = 'المستخدم';
+  
+  // English: job seeker title/profession
+  jobSeekerTitle = '';
 
   // English: local image selection state
   selectedFile: File | null = null;
@@ -63,6 +66,16 @@ export class SideBar implements OnInit, OnDestroy {
       .subscribe((p) => {
         this.profile = p;
         this.jobSeekerName = p.user.first_name + ' ' + p.user.last_name || this.jobSeekerName;
+        
+        // English: get job title from profile - check multiple possible fields
+        // Try job_seeker.title, bio, or any other title field
+        this.jobSeekerTitle = (p as any).job_seeker?.title || 
+                              (p as any).job_seeker?.profession || 
+                              (p as any).title || 
+                              (p as any).profession || 
+                              (p as any).bio || 
+                              (p as any).user?.bio || 
+                              '';
         
         // English: prefer nested profile.company_logo, then root company_logo
         const logoPath = p.profile?.company_logo || p.user.profile_picture || null;

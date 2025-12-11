@@ -271,15 +271,91 @@ a{
 a:hover {
   background-color: white
 }
-.active{
-  background-color: #2563eb;
-  color: white;
+// Active state for navbar action links
+.navbar-actions a.active {
+  // Style PrimeNG button when parent link is active
+  ::ng-deep .p-button {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: white !important;
+    
+    .p-button-label,
+    .p-button-icon {
+      color: white !important;
+    }
+    
+    &:hover {
+      background-color: #1d4ed8 !important;
+      border-color: #1d4ed8 !important;
+      color: white !important;
+      
+      .p-button-label,
+      .p-button-icon {
+        color: white !important;
+      }
+    }
+  }
+  
+  // For outlined button specifically
+  ::ng-deep .p-button-outlined {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: white !important;
+    
+    .p-button-label,
+    .p-button-icon {
+      color: white !important;
+    }
+    
+    &:hover {
+      background-color: #1d4ed8 !important;
+      border-color: #1d4ed8 !important;
+      color: white !important;
+      
+      .p-button-label,
+      .p-button-icon {
+        color: white !important;
+      }
+    }
+  }
+  
+  // For primary button specifically
+  ::ng-deep .p-button-primary {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: white !important;
+    
+    .p-button-label,
+    .p-button-icon {
+      color: white !important;
+    }
+    
+    &:hover {
+      background-color: #1d4ed8 !important;
+      border-color: #1d4ed8 !important;
+      
+      .p-button-label,
+      .p-button-icon {
+        color: white !important;
+      }
+    }
+  }
 }
 
 .navbar-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
+  
+  // Remove default link styling
+  a {
+    text-decoration: none;
+    display: inline-block;
+    
+    &:hover {
+      text-decoration: none;
+    }
+  }
   
   & .btn-secondary:hover {
     color: #2563eb;

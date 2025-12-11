@@ -57,18 +57,18 @@
       <div class="navbar-actions" dir="rtl" (click)="closeMobileMenu()">
         <!-- ========== Public header (login / register) ========== -->
          @if (!isLoggedIn()) {
-            <a routerLink="/login" routerLinkActive="active">
+            <a routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
               <p-button 
                 label="تسجيل الدخول" 
                 icon="pi pi-sign-in"
                 styleClass="p-button-outlined"
               ></p-button>
             </a>
-            <a routerLink="/register" routerLinkActive="active">
+            <a routerLink="/register" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
               <p-button 
                 label="إنشاء حساب" 
                 icon="pi pi-user-plus"
-                styleClass="p-button-primary"
+                styleClass="p-button-outlined"
               ></p-button>
             </a>
           }
