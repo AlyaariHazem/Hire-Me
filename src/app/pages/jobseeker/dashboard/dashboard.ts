@@ -51,4 +51,11 @@ export class Dashboard implements OnInit {
   refreshDashboard(): void {
     this.dashboardStore.refresh();
   }
+
+  /**
+   * Get company route - use slug if available, otherwise use ID
+   */
+  getCompanyRoute(company: { id: number; name: string; logo: string | null; city: string; slug?: string }): any[] {
+    return ['/company', (company as any).slug || company.id];
+  }
 }

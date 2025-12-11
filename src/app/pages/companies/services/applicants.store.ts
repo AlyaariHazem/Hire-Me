@@ -6,6 +6,12 @@ export interface ApplicantsState {
   applications: Application[];
   totalCount: number;
   loading: boolean;
+  statusCounts: {
+    pending: number;
+    reviewed: number;
+    accepted: number;
+    rejected: number;
+  };
   filters: {
     page: number;
     pageSize: number;
@@ -23,6 +29,12 @@ export class ApplicantsStoreService {
     applications: [],
     totalCount: 0,
     loading: false,
+    statusCounts: {
+      pending: 0,
+      reviewed: 0,
+      accepted: 0,
+      rejected: 0
+    },
     filters: {
       page: 1,
       pageSize: 5,
@@ -39,6 +51,7 @@ export class ApplicantsStoreService {
   readonly totalCount = computed(() => this.state().totalCount);
   readonly loading = computed(() => this.state().loading);
   readonly filters = computed(() => this.state().filters);
+  readonly statusCounts = computed(() => this.state().statusCounts);
   readonly hasNext = computed(() => {
     const { totalCount, filters } = this.state();
     return filters.page * filters.pageSize < totalCount;
@@ -76,14 +89,37 @@ export class ApplicantsStoreService {
         return this.applicationService.getAllJobApplications(params).pipe(
           catchError(err => {
             console.error('Failed to load applications', err);
-            return of({ results: [], count: 0 });
+            return of({ 
+              results: [], 
+              count: 0,
+              status_counts: {
+                pending: 0,
+                reviewed: 0,
+                accepted: 0,
+                rejected: 0
+              }
+            });
           })
         );
       })
     ).subscribe(response => {
+      // Extract status_counts from API response if available
+      const statusCounts = response.status_counts || {
+        pending: 0,
+        reviewed: 0,
+        accepted: 0,
+        rejected: 0
+      };
+
       this.patchState({
         applications: response.results || [],
         totalCount: response.count || 0,
+        statusCounts: {
+          pending: statusCounts.pending || 0,
+          reviewed: statusCounts.reviewed || 0,
+          accepted: statusCounts.accepted || 0,
+          rejected: statusCounts.rejected || 0
+        },
         loading: false
       });
     });

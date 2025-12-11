@@ -35,6 +35,18 @@ export class Applicants implements OnInit {
   hasPrevious = this.store.hasPrevious;
   totalPages = this.store.totalPages;
 
+  // Get status counts from store (from backend)
+  statusCounts = computed(() => {
+    const backendCounts = this.store.statusCounts();
+    return {
+      all: this.totalCount(),
+      pending: backendCounts.pending,
+      reviewed: backendCounts.reviewed,
+      accepted: backendCounts.accepted,
+      rejected: backendCounts.rejected,
+    };
+  });
+
   // Computed properties
   uniqueJobs = computed(() => {
     const jobsMap = new Map<number, string>();
@@ -44,17 +56,6 @@ export class Applicants implements OnInit {
       }
     });
     return Array.from(jobsMap.entries()).map(([id, title]) => ({ id, title }));
-  });
-
-  statusCounts = computed(() => {
-    const apps = this.applications();
-    return {
-      all: this.totalCount(),
-      pending: apps.filter(a => a.status === 'pending').length,
-      reviewed: apps.filter(a => a.status === 'reviewed').length,
-      accepted: apps.filter(a => a.status === 'accepted').length,
-      rejected: apps.filter(a => a.status === 'rejected').length,
-    };
   });
 
   // Modal state

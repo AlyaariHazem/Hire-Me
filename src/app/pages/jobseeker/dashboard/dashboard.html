@@ -94,11 +94,26 @@
         <img
           [src]="app.job.company.logo || 'images/company-logo-1.jpg'"
           [alt]="app.job.company.name"
+          [title]="app.job.company.name"
           class="application-logo"
         />
         <div class="application-info">
-          <h4 class="application-title">{{ app.job.title }}</h4>
-          <p class="application-company">{{ app.job.company.name }}</p>
+          <h4 class="application-title">
+            <a 
+              [routerLink]="['/jobseeker/job-details', app.job.slug]"
+              class="application-title-link"
+              (click)="$event.stopPropagation()"
+            >
+              {{ app.job.title }}
+            </a>
+          </h4>
+          <a 
+            [routerLink]="['/company', app.job.company.slug]"
+            class="application-company"
+            (click)="$event.stopPropagation()"
+          >
+            {{ app.job.company.name }}
+          </a>
           <div class="application-meta">
             <span>تقدمت {{ app.applied_at | date:'short' }}</span>
             <span *ngIf="app.job.city">{{ app.job.city }}</span>
@@ -136,11 +151,26 @@
         <img
           [src]="job.company.logo || 'images/company-logo-1.jpg'"
           [alt]="job.company.name"
+          [title]="job.company.name"
           class="saved-job-logo"
         />
         <div class="saved-job-info">
-          <h4 class="saved-job-title">{{ job.title }}</h4>
-          <p class="saved-job-company">{{ job.company.name }}</p>
+          <h4 class="saved-job-title">
+            <a 
+              [routerLink]="['/jobseeker/job-details', job.slug]"
+              class="saved-job-title-link"
+              (click)="$event.stopPropagation()"
+            >
+              {{ job.title }}
+            </a>
+          </h4>
+          <a 
+            [routerLink]="getCompanyRoute(job.company)"
+            class="saved-job-company"
+            (click)="$event.stopPropagation()"
+          >
+            {{ job.company.name }}
+          </a>
           <p class="saved-job-meta">
             <span *ngIf="job.salary_min && job.salary_max">
               {{ job.salary_min }}-{{ job.salary_max }} ريال

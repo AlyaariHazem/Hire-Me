@@ -67,6 +67,12 @@ export interface ApplicationListResponse {
   next: string | null;
   previous: string | null;
   results: Application[];
+  status_counts?: {
+    pending?: number;
+    reviewed?: number;
+    accepted?: number;
+    rejected?: number;
+  };
 }
 
 @Injectable({ providedIn: 'root' })
