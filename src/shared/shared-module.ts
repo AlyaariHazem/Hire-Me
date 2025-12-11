@@ -15,8 +15,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { RippleModule } from 'primeng/ripple';
 import { DividerModule } from 'primeng/divider';
-import { JobService } from './services/job.service';
-import { ProfileStoreService } from './services/profile.service';
 import { BreadcrumbService } from './services/breadcrumb.service';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
@@ -43,7 +41,7 @@ BreadcrumbModule,
 AvatarModule,
 MenuModule,
 RippleModule,
-DividerModule
+DividerModule,
 ];
 @NgModule({
   declarations: [...components],

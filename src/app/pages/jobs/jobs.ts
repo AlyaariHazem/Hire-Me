@@ -352,8 +352,59 @@ export class Jobs extends Base {
   }
 
 
-  shareJob(jobId: any, title?: string): void {
-    this.toastr.success(`تم مشاركة الوظيفة ${title || jobId} بنجاح`);
+  shareJob(job: JobItem): void {
+    // Generate share URL
+    const role = this.authState.role();
+    let baseUrl = window.location.origin;
+    let shareUrl = '';
+    
+    if (job.slug) {
+      if (role === 'jobseeker') {
+        shareUrl = `${baseUrl}/jobseeker/job-details/${job.slug}`;
+      } else if (role === 'employer') {
+        shareUrl = `${baseUrl}/companies/job-details/${job.slug}`;
+      } else {
+        shareUrl = `${baseUrl}/jobs/${job.slug}`;
+      }
+    } else {
+      shareUrl = `${baseUrl}/jobs/${job.id}`;
+    }
+
+    // Use native share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: job.title,
+        text: `تحقق من هذه الوظيفة: ${job.title}`,
+        url: shareUrl
+      }).catch((error) => {
+        // User cancelled or error occurred - fallback to copy link
+        if (error.name !== 'AbortError') {
+          this.copyLink(shareUrl);
+        }
+      });
+    } else {
+      // Fallback: copy link to clipboard
+      this.copyLink(shareUrl);
+    }
+  }
+
+  copyLink(url: string): void {
+    if (url) {
+      navigator.clipboard.writeText(url).then(() => {
+        this.toastr.success('تم نسخ الرابط بنجاح');
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        this.toastr.success('تم نسخ الرابط بنجاح');
+      });
+    }
   }
 
 formatSalary(job: JobItem): string {
