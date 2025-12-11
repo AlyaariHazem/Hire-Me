@@ -102,7 +102,7 @@ export class SavedJobsStoreService {
   private loadSavedJobsData(page: number, pageSize: number): Observable<SavedJobsData> {
     return this.jobService.getBookmarkedJobs({
       page,
-      page_size: pageSize,
+      pageSize: pageSize,
     }).pipe(
       map((res: any) => {
         const data = res as BookmarkedJobsResponse;

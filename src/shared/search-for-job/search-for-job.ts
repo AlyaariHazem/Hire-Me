@@ -121,7 +121,7 @@ export class SearchForJob implements OnInit {
     
     const params: any = {
       page: this.currentPage,
-      pagesize: this.pageSize,
+      pageSize: this.pageSize,
     };
 
     if (this.searchTerm) {
@@ -154,7 +154,7 @@ export class SearchForJob implements OnInit {
   }
 
   loadFeaturedCompanies(): void {
-    this.companyDataService.getAllCompanies({ is_featured: true, pagesize: 4 }).subscribe({
+    this.companyDataService.getAllCompanies({ is_featured: true, pageSize: 4 }).subscribe({
       next: (response) => {
         this.featuredCompanies = (response.results || []).map(company => this.mapToDisplay(company));
       },

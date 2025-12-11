@@ -146,7 +146,7 @@ export class Jobs extends Base {
 
   /**
    * Load filter counts from backend
-   * Fetches counts for each filter option by making API calls with minimal page_size
+   * Fetches counts for each filter option by making API calls with minimal pageSize
    */
   loadFilterCounts(): void {
     // Fetch counts for job types
@@ -154,7 +154,7 @@ export class Jobs extends Base {
     jobTypes.forEach(jobType => {
       const filters: JobFilters = {
         job_type: jobType,
-        page_size: 1 // Just need count, not actual jobs
+        pageSize: 1 // Just need count, not actual jobs
       };
       
       this.jobService.getJobs(filters).subscribe({
@@ -172,7 +172,7 @@ export class Jobs extends Base {
     experienceLevels.forEach(level => {
       const filters: JobFilters = {
         experience_level: level,
-        page_size: 1 // Just need count, not actual jobs
+        pageSize: 1 // Just need count, not actual jobs
       };
       
       this.jobService.getJobs(filters).subscribe({

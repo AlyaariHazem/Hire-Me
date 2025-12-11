@@ -56,7 +56,7 @@ export class SidebarStoreService {
     });
 
     // Load new applicants count (using status='pending')
-    this.applicationService.getAllJobApplications({ status: 'pending', page_size: 1 }).subscribe({
+    this.applicationService.getAllJobApplications({ status: 'pending', pageSize: 1 }).subscribe({
       next: (res) => {
         this.patchState({ newApplicantsCount: res.count, loading: false, loaded: true });
       },

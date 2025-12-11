@@ -60,7 +60,7 @@ export class SharedMessagesStoreService {
     this.applicationService.getAllJobApplications({
       ordering: '-applied_at',
       page: 1,
-      page_size: this.state().pageSize
+      pageSize: this.state().pageSize
     }).subscribe({
       next: (response) => {
         this.patchState({
@@ -88,7 +88,7 @@ export class SharedMessagesStoreService {
     this.applicationService.getAllJobApplications({
       ordering: '-applied_at',
       page: nextPage,
-      page_size: currentState.pageSize
+      pageSize: currentState.pageSize
     }).subscribe({
       next: (response) => {
         this.patchState({

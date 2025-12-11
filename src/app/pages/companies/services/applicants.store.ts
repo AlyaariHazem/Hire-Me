@@ -62,7 +62,7 @@ export class ApplicantsStoreService {
         const params: any = {
           ordering: '-applied_at',
           page: filters.page,
-          page_size: filters.pageSize
+          pageSize: filters.pageSize
         };
 
         if (filters.jobId) {

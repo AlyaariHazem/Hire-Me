@@ -62,7 +62,7 @@ export class DashboardStoreService {
       })
     );
 
-    const applications$ = this.applicationService.getMyApplications({ page_size: 3 }).pipe(
+    const applications$ = this.applicationService.getMyApplications({ pageSize: 3 }).pipe(
       map((data: ApplicationListResponse) => data.results || []),
       catchError((err) => {
         console.error('Failed to load applications', err);
@@ -70,7 +70,7 @@ export class DashboardStoreService {
       })
     );
 
-    const savedJobs$ = this.jobService.getBookmarkedJobs({ page_size: 5 }).pipe(
+    const savedJobs$ = this.jobService.getBookmarkedJobs({ pageSize: 5 }).pipe(
       map((data) => {
         if (data.results && data.results.length > 0) {
           return data.results.map((item: any) => item.job ? item.job : item);
