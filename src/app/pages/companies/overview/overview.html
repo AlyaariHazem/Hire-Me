@@ -1,5 +1,15 @@
 <!-- Overview Tab -->
 <div id="overview" class="tab-content active">
+  <!-- Header Skeleton -->
+  @if (loadingJobs() || loadingApplications()) {
+  <div class="employer-header">
+    <p-skeleton width="250px" height="2rem" styleClass="skeleton-title"></p-skeleton>
+    <div class="employer-actions">
+      <p-skeleton width="180px" height="2.5rem" styleClass="skeleton-button"></p-skeleton>
+      <p-skeleton width="180px" height="2.5rem" styleClass="skeleton-button"></p-skeleton>
+    </div>
+  </div>
+  } @else {
   <div class="employer-header">
     <h1 class="employer-title">مرحباً بك في لوحة التحكم</h1>
     <div class="employer-actions">
@@ -9,6 +19,7 @@
       >
     </div>
   </div>
+  }
 
   <!-- Stats Grid Skeleton -->
   @if (loadingJobs() || loadingApplications()) {
@@ -119,6 +130,12 @@
   <div class="employer-content-grid">
     <!-- Recent Job Postings -->
     <div class="employer-content-card">
+      @if (loadingJobs()) {
+      <div class="card-header">
+        <p-skeleton width="200px" height="1.5rem" styleClass="skeleton-card-title"></p-skeleton>
+        <p-skeleton width="80px" height="1.2rem" styleClass="skeleton-card-action"></p-skeleton>
+      </div>
+      } @else {
       <div class="card-header">
         <h2 class="card-title">الوظائف المنشورة مؤخراً</h2>
         <a 
@@ -127,6 +144,7 @@
           >عرض الكل</a
         >
       </div>
+      }
 
       @if (loadingJobs()) {
         <div class="jobs-skeleton">
@@ -183,6 +201,12 @@
 
     <!-- Recent Candidates -->
     <div class="employer-content-card">
+      @if (loadingApplications()) {
+      <div class="card-header">
+        <p-skeleton width="150px" height="1.5rem" styleClass="skeleton-card-title"></p-skeleton>
+        <p-skeleton width="80px" height="1.2rem" styleClass="skeleton-card-action"></p-skeleton>
+      </div>
+      } @else {
       <div class="card-header">
         <h2 class="card-title">المتقدمون الجدد</h2>
         <a
@@ -191,6 +215,7 @@
           >عرض الكل</a
         >
       </div>
+      }
 
       @if (loadingApplications()) {
         <div class="applications-skeleton">

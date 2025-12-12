@@ -132,3 +132,50 @@
   align-items: flex-end;
 }
 
+// Skeleton styles for header and card titles
+.skeleton-title {
+  margin: 0;
+}
+
+.skeleton-button {
+  border-radius: var(--radius-md);
+}
+
+.skeleton-card-title {
+  margin: 0;
+}
+
+.skeleton-card-action {
+  margin: 0;
+  border-radius: var(--radius-md);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.card-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.card-action {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.card-action:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
