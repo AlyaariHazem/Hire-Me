@@ -480,6 +480,47 @@
   font-weight: 500;
 }
 
+// Skeleton loader styles
+.skeleton-main-info {
+  flex: 1;
+}
+
+.skeleton-info-item {
+  margin-bottom: 1rem;
+}
+
+.skeleton-job-info {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.skeleton-job-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.debug-info {
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.rating-display {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.rating-number {
+  font-size: 3rem;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.rating-label {
+  color: var(--gray-600);
+}
+
 @media (max-width: 768px) {
   .company-header {
     flex-direction: column;

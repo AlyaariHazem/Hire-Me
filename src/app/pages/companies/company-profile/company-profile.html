@@ -1,5 +1,82 @@
+<!-- Company Profile Hero Skeleton -->
+@if (isLoading) {
+<section class="company-profile-hero">
+  <div class="container">
+    <div class="company-header">
+      <p-skeleton width="120px" height="120px" shape="circle" styleClass="mb-2"></p-skeleton>
+      <div class="company-main-info skeleton-main-info">
+        <p-skeleton width="60%" height="2.5rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="40%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="30%" height="1.2rem"></p-skeleton>
+      </div>
+    </div>
+
+    <div class="company-quick-stats">
+      @for (item of [1,2,3,4]; track item) {
+      <div class="quick-stat">
+        <p-skeleton width="60px" height="2rem" styleClass="mb-1"></p-skeleton>
+        <p-skeleton width="80px" height="1rem"></p-skeleton>
+      </div>
+      }
+    </div>
+
+    <div class="company-actions">
+      <p-skeleton width="150px" height="3rem" styleClass="mb-0"></p-skeleton>
+      <p-skeleton width="150px" height="3rem" styleClass="mb-0"></p-skeleton>
+    </div>
+  </div>
+</section>
+
+<!-- Company Content Skeleton -->
+<section class="company-content">
+  <div class="container">
+    <div class="content-grid">
+      <div class="main-content">
+        <div class="content-tabs">
+          @for (item of [1,2,3,4]; track item) {
+          <p-skeleton width="100px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+          }
+        </div>
+
+        <div class="tab-content active">
+          <p-skeleton width="100%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="1rem" styleClass="mb-1"></p-skeleton>
+          <p-skeleton width="90%" height="1rem" styleClass="mb-1"></p-skeleton>
+          <p-skeleton width="95%" height="1rem" styleClass="mb-3"></p-skeleton>
+          
+          <p-skeleton width="100%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          <div class="values-grid">
+            @for (item of [1,2,3,4]; track item) {
+            <div class="value-item">
+              <p-skeleton width="60px" height="60px" shape="circle" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="80%" height="1.2rem" styleClass="mb-1"></p-skeleton>
+              <p-skeleton width="100%" height="1rem" styleClass="mb-0"></p-skeleton>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        @for (item of [1,2]; track item) {
+        <div class="sidebar-card">
+          <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          @for (info of [1,2,3,4]; track info) {
+          <div class="info-item skeleton-info-item">
+            <p-skeleton width="40%" height="1rem" styleClass="mb-1"></p-skeleton>
+            <p-skeleton width="60%" height="1rem"></p-skeleton>
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+}
+
 <!-- Company Profile Hero -->
-@if (company) {
+@if (!isLoading && company) {
 <section class="company-profile-hero">
   <div class="container">
     <div class="company-header">
@@ -7,6 +84,7 @@
         [src]="company.logo || 'images/company-logo-1.jpg'"
         [alt]="company.name"
         [title]="company.name"
+        title="شعار الشركة"
         class="company-logo-large"
         id="companyLogo"
       />
@@ -152,13 +230,28 @@
         <div class="tab-content active">
           <h3>الوظائف المتاحة ({{ company.active_jobs }})</h3>
           <!-- Debug info -->
-          <div style="font-size: 0.75rem; color: #666; margin-bottom: 1rem;">
+          <div class="debug-info">
             Debug: isLoadingJobs={{ isLoadingJobs }}, companyJobs.length={{ companyJobs.length }}
           </div>
           <div class="jobs-list">
             @if (isLoadingJobs) {
             <div class="jobs-loading">
-              <p>جاري تحميل الوظائف...</p>
+              @for (item of [1,2,3]; track item) {
+              <article class="job-card-horizontal">
+                <p-skeleton width="80px" height="80px" shape="rectangle" styleClass="mb-0"></p-skeleton>
+                <div class="job-info skeleton-job-info">
+                  <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+                  <p-skeleton width="40%" height="1rem" styleClass="mb-2"></p-skeleton>
+                  <div class="skeleton-job-meta">
+                    <p-skeleton width="100px" height="1rem"></p-skeleton>
+                    <p-skeleton width="120px" height="1rem"></p-skeleton>
+                    <p-skeleton width="100px" height="1rem"></p-skeleton>
+                  </div>
+                  <p-skeleton width="100%" height="1rem" styleClass="mb-1"></p-skeleton>
+                  <p-skeleton width="90%" height="1rem"></p-skeleton>
+                </div>
+              </article>
+              }
             </div>
             } @else if (companyJobs.length === 0) {
             <div class="jobs-empty">
@@ -229,17 +322,11 @@
         <div class="tab-content active">
           <h3>تقييمات الموظفين</h3>
           <div class="company-description">
-             <div style="text-align: center; margin-bottom: 2rem">
-              <div
-                style="
-                  font-size: 3rem;
-                  color: var(--primary-color);
-                  font-weight: bold;
-                "
-              >
+             <div class="rating-display">
+              <div class="rating-number">
                 {{ company.average_rating || 0 }}
               </div>
-              <div style="color: var(--gray-600)">من 5 نجوم</div>
+              <div class="rating-label">من 5 نجوم</div>
             </div>
           </div>
         </div>

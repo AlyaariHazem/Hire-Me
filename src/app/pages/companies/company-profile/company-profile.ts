@@ -6,11 +6,12 @@ import { CommonModule } from '@angular/common';
 import { Base } from 'shared/base/base';
 import { ToastrService } from 'ngx-toastr';
 import { JobItem } from '@app/companies/models';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-company-profile',
   standalone: true,
-  imports: [SharedModule, CommonModule, RouterLink],
+  imports: [SharedModule, CommonModule, RouterLink, SkeletonModule],
   templateUrl: './company-profile.html',
   styleUrl: './company-profile.scss'
 })
