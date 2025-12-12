@@ -588,6 +588,67 @@
   min-height: 200px;
 }
 
+// Skeleton loader styles
+.skeleton-header-content {
+  flex: 1;
+}
+
+.skeleton-avatar {
+  flex-shrink: 0;
+  margin-right: 1rem;
+}
+
+.skeleton-application-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  
+  .applicant-info {
+    flex: 1;
+  }
+}
+
+.messages-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.skeleton-message {
+  display: flex;
+  margin-bottom: 0.5rem;
+  
+  &.my-message {
+    justify-content: flex-end;
+    
+    .message-content {
+      background: var(--primary-color, #007bff);
+      color: white;
+      border-radius: 12px 12px 0 12px;
+      max-width: 70%;
+    }
+  }
+  
+  &:not(.my-message) {
+    justify-content: flex-start;
+    
+    .message-content {
+      background: white;
+      color: var(--text-primary, #1a1a1a);
+      border-radius: 12px 12px 12px 0;
+      max-width: 70%;
+    }
+  }
+  
+  .message-content {
+    padding: 0.75rem 1rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+}
+
 // Responsive
 @media (max-width: 1024px) {
   .messages-layout {

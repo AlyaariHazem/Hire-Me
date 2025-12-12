@@ -1,10 +1,23 @@
 <div id="messages" class="messages-container">
+  <!-- Header Skeleton -->
+  @if (loading()) {
+  <div class="employer-header">
+    <div class="skeleton-header-content">
+      <p-skeleton width="150px" height="2rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="250px" height="1.2rem"></p-skeleton>
+    </div>
+  </div>
+  }
+
+  <!-- Actual Header -->
+  @if (!loading()) {
   <div class="employer-header">
     <div>
       <h1 class="employer-title">الرسائل</h1>
       <p class="subtitle">التواصل مع المتقدمين والمرشحين</p>
     </div>
   </div>
+  }
 
   <div class="messages-layout">
     <!-- Applications List (Left Sidebar) -->
@@ -13,9 +26,19 @@
         <h3>المتقدمون</h3>
       </div>
       
+      <!-- Applications Loading Skeleton -->
       @if (loading()) {
-        <div class="loading-state">
-          <p>جاري تحميل المتقدمين...</p>
+        <div class="applications-list">
+          @for (item of [1,2,3,4,5]; track item) {
+          <div class="application-item skeleton-application-item">
+            <p-skeleton width="50px" height="50px" shape="circle" styleClass="skeleton-avatar"></p-skeleton>
+            <div class="applicant-info">
+              <p-skeleton width="150px" height="1.2rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="120px" height="1rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="100px" height="0.9rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </div>
+          }
         </div>
       } @else if (applications().length === 0) {
         <div class="empty-state empty-state-in-sidebar">
@@ -35,6 +58,7 @@
                     [src]="getProfilePicture(app.applicant.profile_picture)"
                     [alt]="getApplicantName(app)"
                     [title]="getApplicantName(app)"
+                    title="Applicant profile picture"
                     (error)="handleImageError($event)"
                   />
                 }
@@ -54,7 +78,7 @@
           }
           @if (loadingMore()) {
             <div class="loading-more">
-              <p>جاري تحميل المزيد...</p>
+              <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
             </div>
           }
         </div>
@@ -64,7 +88,21 @@
     <!-- Messages Area (Right Side) -->
     <div class="messages-area">
       @if (selectedApplication(); as app) {
+        <!-- Messages Header Skeleton -->
+        @if (loadingMessages()) {
+        <div class="messages-header">
+          <div class="conversation-info">
+            <p-skeleton width="50px" height="50px" shape="circle" styleClass="skeleton-avatar"></p-skeleton>
+            <div class="conversation-details">
+              <p-skeleton width="150px" height="1.3rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </div>
+        </div>
+        }
+
         <!-- Messages Header -->
+        @if (!loadingMessages()) {
         <div class="messages-header">
           <div class="conversation-info">
             <div class="conversation-avatar">
@@ -73,6 +111,7 @@
                   [src]="getProfilePicture(app.applicant.profile_picture)"
                   [alt]="getApplicantName(app)"
                   [title]="getApplicantName(app)"
+                  title="Applicant profile picture"
                   (error)="handleImageError($event)"
                 />
               }
@@ -86,12 +125,21 @@
             </div>
           </div>
         </div>
+        }
 
-        <!-- Messages List -->
+        <!-- Messages List Skeleton -->
         <div class="messages-list">
           @if (loadingMessages()) {
-            <div class="loading-state">
-              <p>جاري تحميل الرسائل...</p>
+            <div class="messages-skeleton">
+              @for (item of [1,2,3,4,5]; track item) {
+              <div class="message-item skeleton-message" [class.my-message]="item % 2 === 0">
+                <div class="message-content">
+                  <p-skeleton width="100px" height="1rem" styleClass="mb-2"></p-skeleton>
+                  <p-skeleton width="80%" height="1rem" styleClass="mb-1"></p-skeleton>
+                  <p-skeleton width="60%" height="1rem" styleClass="mb-0"></p-skeleton>
+                </div>
+              </div>
+              }
             </div>
           } @else if (messages().length === 0) {
             <div class="empty-messages-list">
@@ -120,6 +168,7 @@
                             [src]="getAttachmentUrl(message.attachment)"
                             [alt]="'صورة مرفقة'"
                             [title]="'صورة مرفقة'"
+                            title="صورة مرفقة"
                             (click)="openImageInNewTab(message.attachment)"
                             (error)="handleAttachmentError($event)"
                             class="attachment-img"

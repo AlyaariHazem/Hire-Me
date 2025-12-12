@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ApplicationService, Application } from 'shared/services/application.service';
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { ApplicantsStoreService } from '../services/applicants.store';
 
@@ -12,7 +13,7 @@ type StatusFilter = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected';
 @Component({
   selector: 'app-all-applicants',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, SkeletonModule],
   templateUrl: './applicants.html',
   styleUrls: ['./applicants.scss']
 })

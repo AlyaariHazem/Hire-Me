@@ -297,6 +297,26 @@
   }
 }
 
+// Skeleton loader styles
+.skeleton-header-content {
+  flex: 1;
+}
+
+.skeleton-header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.skeleton-avatar {
+  flex-shrink: 0;
+  margin-right: 1rem;
+}
+
+.skeleton-details {
+  padding: 1rem 0;
+}
+
 .skeleton {
   height: 200px;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);

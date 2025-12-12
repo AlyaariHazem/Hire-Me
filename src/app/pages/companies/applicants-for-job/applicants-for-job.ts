@@ -5,13 +5,14 @@ import { ApplicationService, Application } from 'shared/services/application.ser
 import { JobService } from 'shared/services/job.service';
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
+import { SkeletonModule } from 'primeng/skeleton';
 
 type StatusFilter = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected';
 
 @Component({
   selector: 'app-applicants',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, SkeletonModule],
   templateUrl: './applicants-for-job.html',
   styleUrls: ['./applicants-for-job.scss']
 })
