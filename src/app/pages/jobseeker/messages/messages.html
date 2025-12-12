@@ -1,10 +1,23 @@
 <div id="messages" class="messages-container">
+  <!-- Header Skeleton -->
+  @if (loading) {
+  <div class="employer-header">
+    <div class="skeleton-header-content">
+      <p-skeleton width="150px" height="2rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="200px" height="1.2rem"></p-skeleton>
+    </div>
+  </div>
+  }
+
+  <!-- Actual Header -->
+  @if (!loading) {
   <div class="employer-header">
     <div>
       <h1 class="employer-title">الرسائل</h1>
       <p class="subtitle">التواصل مع أصحاب العمل</p>
     </div>
   </div>
+  }
 
   <div class="messages-layout">
     <!-- Applications List (Left Sidebar) -->
@@ -13,9 +26,20 @@
         <h3>طلبات التقديم</h3>
       </div>
       
+      <!-- Applications Loading Skeleton -->
       @if (loading) { 
-        <div class="loading-state">
-          <p>جاري تحميل الطلبات...</p>
+        <div class="applications-list">
+          @for (item of [1,2,3,4,5]; track item) {
+          <div class="application-item skeleton-application-item">
+            <p-skeleton width="50px" height="50px" shape="rectangle" styleClass="skeleton-logo"></p-skeleton>
+            <div class="application-info">
+              <p-skeleton width="150px" height="1.2rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="120px" height="1rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="100px" height="0.9rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="90px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </div>
+          }
         </div>
       } @else if (applications.length === 0) {
         <div class="empty-state">
@@ -63,7 +87,22 @@
           <p>اختر طلب تقديم من القائمة لعرض الرسائل وإرسال رسائل جديدة</p>
         </div>
       } @else {
+        <!-- Messages Header Skeleton -->
+        @if (loadingMessages) {
+        <div class="messages-header">
+          <div class="conversation-info">
+            <p-skeleton width="50px" height="50px" shape="circle" styleClass="skeleton-logo"></p-skeleton>
+            <div class="conversation-details">
+              <p-skeleton width="150px" height="1.3rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="120px" height="1rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="140px" height="1rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </div>
+        </div>
+        }
+
         <!-- Messages Header -->
+        @if (!loadingMessages) {
         <div class="messages-header">
           <div class="conversation-info">
             <div class="conversation-logo">
@@ -86,12 +125,21 @@
             </div>
           </div>
         </div>
+        }
 
-        <!-- Messages List -->
+        <!-- Messages List Skeleton -->
         <div class="messages-list">
           @if (loadingMessages) {
-            <div class="loading-state">
-              <p>جاري تحميل الرسائل...</p>
+            <div class="messages-skeleton">
+              @for (item of [1,2,3,4,5]; track item) {
+              <div class="message-item skeleton-message" [class.my-message]="item % 2 === 0">
+                <div class="message-content">
+                  <p-skeleton width="100px" height="1rem" styleClass="mb-2"></p-skeleton>
+                  <p-skeleton width="80%" height="1rem" styleClass="mb-1"></p-skeleton>
+                  <p-skeleton width="60%" height="1rem" styleClass="mb-0"></p-skeleton>
+                </div>
+              </div>
+              }
             </div>
           } @else if (messages.length === 0) {
             <div class="empty-messages-list">

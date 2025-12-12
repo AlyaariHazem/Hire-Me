@@ -1,12 +1,28 @@
 <div id="applications">
+  <!-- Header Skeleton -->
+  @if (isLoading) {
+  <div class="dashboard-header">
+    <p-skeleton width="150px" height="2rem" styleClass="skeleton-title"></p-skeleton>
+    <p-skeleton width="200px" height="2.5rem" styleClass="skeleton-button"></p-skeleton>
+  </div>
+  } @else {
   <div class="dashboard-header">
     <h1 class="dashboard-title">طلباتي</h1>
     <div class="dashboard-actions">
       <a routerLink="/jobseeker/jobs" class="btn btn-primary">البحث عن وظائف جديدة</a>
     </div>
   </div>
+  }
 
   <div class="content-card">
+    <!-- Tab Navigation Skeleton -->
+    @if (isLoading) {
+    <div class="tab-navigation">
+      @for (tab of [1,2,3,4,5]; track tab) {
+      <p-skeleton width="120px" height="3rem" styleClass="skeleton-tab"></p-skeleton>
+      }
+    </div>
+    } @else {
     <div class="tab-navigation">
       <button
         class="tab"
@@ -44,10 +60,26 @@
         مرفوضة ({{ statusCounts.rejected }})
       </button>
     </div>
+    }
 
     @if (isLoading) {
-    <div class="loading-state">
-      <p>جاري تحميل الطلبات...</p>
+    <!-- Applications List Skeleton -->
+    <div class="applications-list">
+      @for (item of [1,2,3]; track item) {
+      <div class="application-item skeleton-application-item">
+        <p-skeleton width="80px" height="80px" shape="circle" styleClass="skeleton-logo"></p-skeleton>
+        <div class="application-info skeleton-application-info">
+          <p-skeleton width="200px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="150px" height="1.2rem" styleClass="mb-2"></p-skeleton>
+          <div class="skeleton-meta-container">
+            <p-skeleton width="120px" height="1rem"></p-skeleton>
+            <p-skeleton width="80px" height="1rem"></p-skeleton>
+            <p-skeleton width="100px" height="1rem"></p-skeleton>
+          </div>
+        </div>
+        <p-skeleton width="80px" height="2rem" styleClass="skeleton-status"></p-skeleton>
+      </div>
+      }
     </div>
     } @else if (filteredApplications.length === 0) {
     <div class="empty-state">

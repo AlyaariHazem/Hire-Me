@@ -1,4 +1,11 @@
 <div id="saved-jobs">
+  <!-- Header Skeleton -->
+  @if (loading) {
+  <div class="dashboard-header">
+    <p-skeleton width="200px" height="2rem" styleClass="skeleton-title"></p-skeleton>
+    <p-skeleton width="180px" height="2.5rem" styleClass="skeleton-button"></p-skeleton>
+  </div>
+  } @else {
   <div class="dashboard-header">
     <h1 class="dashboard-title">الوظائف المحفوظة</h1>
     <div class="dashboard-actions">
@@ -7,14 +14,28 @@
       >
     </div>
   </div>
+  }
 
   <div class="content-card">
-    <!-- loading -->
-     @if(loading){
-       <div class="saved-jobs-state">
-         <p>جارٍ تحميل الوظائف المحفوظة...</p>
-       </div>
-     }
+    <!-- Saved Jobs List Skeleton -->
+    @if (loading) {
+    <div class="saved-jobs-list-skeleton">
+      @for (item of [1,2,3]; track item) {
+      <div class="saved-job-item skeleton-saved-job-item">
+        <p-skeleton width="80px" height="80px" shape="circle" styleClass="skeleton-logo"></p-skeleton>
+        <div class="saved-job-info skeleton-job-info">
+          <p-skeleton width="200px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="150px" height="1.2rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="250px" height="1rem" styleClass="mb-0"></p-skeleton>
+        </div>
+        <div class="saved-job-actions skeleton-actions">
+          <p-skeleton width="60px" height="2rem" styleClass="skeleton-action-btn"></p-skeleton>
+          <p-skeleton width="70px" height="2rem" styleClass="skeleton-action-btn"></p-skeleton>
+        </div>
+      </div>
+      }
+    </div>
+    }
 
     <!-- error -->
      @if(!loading && errorMessage){
@@ -34,7 +55,7 @@
      }
 
     <!-- list -->
-    <ng-container *ngIf="!loading && !errorMessage && bookmarks.length > 0">
+    @if(!loading && !errorMessage && bookmarks.length > 0) {
       @for(bm of bookmarks;track bm;){
         <div class="saved-job-item" >
           <img
@@ -52,7 +73,7 @@
             </p>
           </div>
   
-          <div class="saved-job-actions" style="display: flex; gap: 0.5rem">
+          <div class="saved-job-actions">
             <a
               [routerLink]="['/jobseeker/job-details', bm.job.slug]"
               class="btn btn-small btn-primary"
@@ -99,6 +120,6 @@
           </button>
         </nav>
       }
-    </ng-container>
+    }
   </div>
 </div>

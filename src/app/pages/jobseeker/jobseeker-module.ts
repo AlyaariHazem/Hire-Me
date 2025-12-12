@@ -25,6 +25,7 @@ import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
+import { SkeletonModule } from 'primeng/skeleton';
 const components = [
   Dashboard,
   JobSeeker,
@@ -52,7 +53,8 @@ Select,
 ButtonModule,
 DatePickerModule,
 CheckboxModule,
-DialogModule
+DialogModule,
+SkeletonModule
 ];
 @NgModule({
   declarations: [...components],

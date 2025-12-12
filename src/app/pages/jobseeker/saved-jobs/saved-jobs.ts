@@ -4,11 +4,12 @@ import { SharedModule } from 'shared/shared-module';
 import { JobItem } from '@app/companies/models';
 import { environment } from 'environments/environment';
 import { SavedJobsStoreService, BookmarkedJobItem } from '../services/saved-jobs.service';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-saved-jobs',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, SkeletonModule],
   templateUrl: './saved-jobs.html',
   styleUrl: './saved-jobs.scss',
 })

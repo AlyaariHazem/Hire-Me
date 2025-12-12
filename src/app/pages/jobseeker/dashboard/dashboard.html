@@ -1,7 +1,20 @@
 <!-- Dashboard Container -->
 <div id="overview" class="tab-content active">
+  <!-- Header Skeleton -->
+  @if (stats === null) {
   <div class="dashboard-header">
-    <h1 class="dashboard-title">مرحباً، {{ userData?.user?.first_name || 'المستخدم' }}!</h1>
+    <p-skeleton width="300px" height="2.5rem" styleClass="mb-2"></p-skeleton>
+    <div class="dashboard-actions">
+      <p-skeleton width="150px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+      <p-skeleton width="180px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+    </div>
+  </div>
+  }
+
+  <!-- Actual Header -->
+  @if (stats !== null) {
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">مرحباً، {{ userData.user.first_name || 'المستخدم' }}!</h1>
     <div class="dashboard-actions">
       <a routerLink="/jobs" class="btn btn-primary">البحث عن وظائف</a>
       <a routerLink="/jobseeker/cv-builder" class="btn btn-secondary"
@@ -9,15 +22,33 @@
       >
     </div>
   </div>
+  }
+
+  <!-- Stats Grid Skeleton -->
+  @if (stats === null) {
+  <div class="stats-grid">
+    @for (item of [1,2,3,4]; track item) {
+    <div class="stat-card">
+      <div class="stat-header">
+        <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+        <p-skeleton width="24px" height="24px" styleClass="mb-0"></p-skeleton>
+      </div>
+      <p-skeleton width="60px" height="2rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+    </div>
+    }
+  </div>
+  }
 
   <!-- Stats Grid -->
+  @if (stats !== null) {
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-header">
         <span class="stat-title">إجمالي الوظائف</span>
         <span class="stat-icon">📝</span>
       </div>
-      <div class="stat-value">{{ stats?.total_jobs || 0 }}</div>
+      <div class="stat-value">{{ stats.total_jobs || 0 }}</div>
       <div class="stat-change">متاحة الآن</div>
     </div>
 
@@ -26,7 +57,7 @@
         <span class="stat-title">وظائف مميزة</span>
         <span class="stat-icon">⭐</span>
       </div>
-      <div class="stat-value">{{ stats?.featured_jobs || 0 }}</div>
+      <div class="stat-value">{{ stats.featured_jobs || 0 }}</div>
       <div class="stat-change">مميزة</div>
     </div>
 
@@ -35,7 +66,7 @@
         <span class="stat-title">وظائف عاجلة</span>
         <span class="stat-icon">🗓️</span>
       </div>
-      <div class="stat-value">{{ stats?.urgent_jobs || 0 }}</div>
+      <div class="stat-value">{{ stats.urgent_jobs || 0 }}</div>
       <div class="stat-change">عاجلة</div>
     </div>
 
@@ -44,12 +75,27 @@
         <span class="stat-title">الوظائف المحفوظة</span>
         <span class="stat-icon">💾</span>
       </div>
-      <div class="stat-value">{{ stats?.saved_jobs_count || savedJobs.length }}</div>
-      <div class="stat-change">+{{ stats?.daily_saved || 0 }} اليوم</div>
+      <div class="stat-value">{{ stats.saved_jobs_count || savedJobs.length }}</div>
+      <div class="stat-change">+{{ stats.daily_saved || 0 }} اليوم</div>
     </div>
   </div>
+  }
+
+  <!-- Quick Actions Skeleton -->
+  @if (stats === null) {
+  <div class="quick-actions">
+    @for (item of [1,2,3,4]; track item) {
+    <div class="quick-action-card skeleton-quick-action">
+      <p-skeleton width="48px" height="48px" shape="circle" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="150px" height="1.3rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="200px" height="1rem" styleClass="mb-0"></p-skeleton>
+    </div>
+    }
+  </div>
+  }
 
   <!-- Quick Actions -->
+  @if (stats !== null) {
   <div class="quick-actions">
     <a routerLink="/jobs" class="quick-action-card">
       <div class="quick-action-icon">🔍</div>
@@ -75,10 +121,33 @@
       <p class="quick-action-desc">تعرف على متوسط الرواتب</p>
     </a>
   </div>
+  }
 
   <!-- Content Grid -->
   <div class="content-grid">
+    <!-- Recent Applications Skeleton -->
+    @if (stats === null) {
+    <div class="content-card">
+      <div class="card-header">
+        <p-skeleton width="150px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+        <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+      </div>
+      @for (item of [1,2,3]; track item) {
+      <div class="application-item skeleton-application-item">
+        <p-skeleton width="50px" height="50px" shape="circle" styleClass="skeleton-logo"></p-skeleton>
+        <div class="application-info">
+          <p-skeleton width="200px" height="1.3rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="150px" height="1rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="180px" height="0.9rem" styleClass="mb-0"></p-skeleton>
+        </div>
+        <p-skeleton width="100px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+      </div>
+      }
+    </div>
+    }
+
     <!-- Recent Applications -->
+    @if (stats !== null) {
     <div class="content-card">
       <div class="card-header">
         <h2 class="card-title">آخر الطلبات</h2>
@@ -95,6 +164,7 @@
           [src]="app.job.company.logo || 'images/company-logo-1.jpg'"
           [alt]="app.job.company.name"
           [title]="app.job.company.name"
+          title="Company logo"
           class="application-logo"
         />
         <div class="application-info">
@@ -134,8 +204,30 @@
 
       <p *ngIf="recentApplications.length === 0">لا توجد طلبات حالياً</p>
     </div>
+    }
+
+    <!-- Saved Jobs Skeleton -->
+    @if (stats === null) {
+    <div class="content-card">
+      <div class="card-header">
+        <p-skeleton width="150px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+        <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+      </div>
+      @for (item of [1,2]; track item) {
+      <div class="saved-job-item skeleton-saved-job-item">
+        <p-skeleton width="50px" height="50px" shape="circle" styleClass="skeleton-logo"></p-skeleton>
+        <div class="saved-job-info">
+          <p-skeleton width="200px" height="1.3rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="150px" height="1rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="180px" height="0.9rem" styleClass="mb-0"></p-skeleton>
+        </div>
+      </div>
+      }
+    </div>
+    }
 
     <!-- Saved Jobs -->
+    @if (stats !== null) {
     <div class="content-card">
       <div class="card-header">
         <h2 class="card-title">الوظائف المحفوظة</h2>
@@ -152,6 +244,7 @@
           [src]="job.company.logo || 'images/company-logo-1.jpg'"
           [alt]="job.company.name"
           [title]="job.company.name"
+          title="Company logo"
           class="saved-job-logo"
         />
         <div class="saved-job-info">
@@ -183,5 +276,6 @@
 
       <p *ngIf="savedJobs.length === 0">لا توجد وظائف محفوظة</p>
     </div>
+    }
   </div>
 </div>

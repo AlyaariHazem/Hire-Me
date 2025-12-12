@@ -362,3 +362,25 @@
     grid-template-columns: 1fr;
   }
 }
+
+// Skeleton loader styles
+.skeleton-logo {
+  flex-shrink: 0;
+}
+
+.skeleton-header-content {
+  flex-grow: 1;
+}
+
+.skeleton-similar-job {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--gray-200);
+  pointer-events: none;
+  
+  .similar-job-info {
+    flex: 1;
+  }
+}

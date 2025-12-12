@@ -458,11 +458,108 @@
 </section>
 }
 
-<!-- English: Optional loading fallback if you want it visible before jobDetail exists -->
+<!-- Loading Skeleton -->
 @if (!jobDetail && isLoading) {
 <section class="job-details-section">
   <div class="container">
-    جاري تحميل تفاصيل الوظيفة...
+    <div class="job-details-container">
+      <!-- Main Content Skeleton -->
+      <main class="job-main-content">
+        <!-- Job Header Skeleton -->
+        <div class="job-header">
+          <div class="job-header-top">
+            <p-skeleton width="80px" height="80px" shape="rectangle" styleClass="skeleton-logo"></p-skeleton>
+            <div class="skeleton-header-content">
+              <p-skeleton width="60%" height="2rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="40%" height="1.5rem" styleClass="mb-3"></p-skeleton>
+              <div class="job-meta-large">
+                @for (item of [1,2,3,4,5,6]; track item) {
+                <div class="meta-item">
+                  <p-skeleton width="24px" height="24px" shape="circle" styleClass="mb-0"></p-skeleton>
+                  <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="job-actions-large">
+            <p-skeleton width="120px" height="3rem" styleClass="mb-0"></p-skeleton>
+            <p-skeleton width="150px" height="3rem" styleClass="mb-0"></p-skeleton>
+            <p-skeleton width="100px" height="3rem" styleClass="mb-0"></p-skeleton>
+          </div>
+        </div>
+
+        <!-- Content Sections Skeleton -->
+        @for (item of [1,2,3,4]; track item) {
+        <div class="content-section">
+          <p-skeleton width="200px" height="1.8rem" styleClass="mb-3"></p-skeleton>
+          <p-skeleton width="100%" height="1rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="95%" height="1rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="90%" height="1rem" styleClass="mb-0"></p-skeleton>
+        </div>
+        }
+      </main>
+
+      <!-- Sidebar Skeleton -->
+      <aside class="job-sidebar">
+        <!-- Job Details Card Skeleton -->
+        <div class="sidebar-card">
+          <p-skeleton width="150px" height="1.5rem" styleClass="mb-3"></p-skeleton>
+          <ul class="job-details-list">
+            @for (item of [1,2,3,4,5]; track item) {
+            <li>
+              <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+              <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+            </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Skills Card Skeleton -->
+        <div class="sidebar-card">
+          <p-skeleton width="150px" height="1.5rem" styleClass="mb-3"></p-skeleton>
+          <div class="skills-list">
+            @for (item of [1,2,3,4]; track item) {
+            <p-skeleton width="80px" height="2rem" styleClass="mb-0"></p-skeleton>
+            }
+          </div>
+        </div>
+
+        <!-- Company Info Card Skeleton -->
+        <div class="sidebar-card">
+          <p-skeleton width="150px" height="1.5rem" styleClass="mb-3"></p-skeleton>
+          <div style="text-align: center; margin-bottom: 1rem">
+            <p-skeleton width="80px" height="80px" shape="circle" styleClass="mb-0"></p-skeleton>
+          </div>
+          <ul class="job-details-list">
+            @for (item of [1,2,3,4]; track item) {
+            <li>
+              <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+              <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+            </li>
+            }
+          </ul>
+          <p-skeleton width="100%" height="2.5rem" styleClass="mb-0 mt-2"></p-skeleton>
+        </div>
+
+        <!-- Similar Jobs Card Skeleton -->
+        <div class="sidebar-card">
+          <p-skeleton width="150px" height="1.5rem" styleClass="mb-3"></p-skeleton>
+          <div class="similar-jobs">
+            @for (item of [1,2,3]; track item) {
+            <div class="similar-job-card skeleton-similar-job">
+              <p-skeleton width="50px" height="50px" shape="circle" styleClass="skeleton-logo"></p-skeleton>
+              <div class="similar-job-info">
+                <p-skeleton width="150px" height="1.2rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="120px" height="1rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
   </div>
 </section>
 }

@@ -199,6 +199,47 @@
   margin: 0;
 }
 
+// Skeleton loader styles
+.skeleton-title {
+  margin: 0;
+}
+
+.skeleton-button {
+  border-radius: var(--radius-md);
+}
+
+.skeleton-tab {
+  border-radius: var(--radius-md);
+  margin: 0 0.5rem;
+}
+
+.skeleton-application-item {
+  pointer-events: none;
+}
+
+.skeleton-logo {
+  flex-shrink: 0;
+}
+
+.skeleton-status {
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-application-info {
+  flex: 1;
+}
+
+.skeleton-meta-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 // Responsive
 @media (max-width: 768px) {
   .dashboard-header {

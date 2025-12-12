@@ -6,12 +6,13 @@ import { environment } from 'environments/environment';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { SkeletonModule } from 'primeng/skeleton';
 import { MessagesStoreService } from '../services/messages.service';
 
 @Component({
   selector: 'app-jobseeker-messages',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, SkeletonModule],
   templateUrl: './messages.html',
   styleUrl: './messages.scss'
 })

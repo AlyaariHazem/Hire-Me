@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
+import { SkeletonModule } from 'primeng/skeleton';
 
 interface Company {
   id: number;
@@ -91,6 +92,7 @@ interface JobDetail extends Base {
     TextareaModule,
     Select,
     ButtonModule,
+    SkeletonModule,
   ],
   templateUrl: './job-details.html',
   styleUrl: './job-details.scss',

@@ -1,15 +1,33 @@
 <aside class="dashboard-sidebar">
+  <!-- Profile Skeleton -->
+  @if (profile === null) {
+  <div class="sidebar-profile">
+    <div class="skeleton-avatar-container">
+      <p-skeleton width="120px" height="120px" shape="circle" styleClass="skeleton-avatar"></p-skeleton>
+      <p-skeleton width="100px" height="1.5rem" styleClass="skeleton-edit-badge"></p-skeleton>
+    </div>
+    <p-skeleton width="150px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="120px" height="1rem" styleClass="mb-3"></p-skeleton>
+    <p-skeleton width="100%" height="0.5rem" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="80px" height="1rem" styleClass="mb-3"></p-skeleton>
+    <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
+  </div>
+  }
+
+  <!-- Actual Profile -->
+  @if (profile !== null) {
   <div class="sidebar-profile">
     <label class="avatar-uploader">
   <img
     [src]="
       previewUrl ||
-      toAbsolute(profile?.user?.profile_picture || profile?.user?.profile_picture) ||
+      toAbsolute(profile.user.profile_picture || profile.user.profile_picture) ||
       'images/candidate-3.jpg'
     "
     class="profile-avatar"
     [alt]="jobSeekerName || 'صورة الملف الشخصي'"
     [title]="jobSeekerName || 'صورة الملف الشخصي'"
+    title="صورة الملف الشخصي"
   />
   <input type="file" accept="image/*" (change)="onAvatarChange($event)" />
   <span class="edit-badge">تغيير الصورة</span>
@@ -43,13 +61,31 @@
 
     <a
       routerLink="/jobseeker/profile"
-      class="btn btn-small btn-primary employer-nav-link "
-      style="width: 100%"
+      class="btn btn-small btn-primary employer-nav-link btn-full-width"
     >
       تحديث الملف الشخصي
     </a>
   </div>
+  }
 
+  <!-- Navigation Skeleton -->
+  @if (profile === null) {
+  <nav>
+    <ul class="sidebar-nav">
+      @for (item of [1,2,3,4,5,6,7,8]; track item) {
+      <li class="sidebar-nav-item">
+        <div class="sidebar-nav-link skeleton-nav-link">
+          <p-skeleton width="24px" height="24px" shape="circle" styleClass="skeleton-nav-icon"></p-skeleton>
+          <p-skeleton width="120px" height="1rem" styleClass="skeleton-nav-text"></p-skeleton>
+        </div>
+      </li>
+      }
+    </ul>
+  </nav>
+  }
+
+  <!-- Actual Navigation -->
+  @if (profile !== null) {
   <nav>
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item">
@@ -145,4 +181,5 @@
       </li>
     </ul>
   </nav>
+  }
 </aside>
