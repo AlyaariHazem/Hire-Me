@@ -990,3 +990,67 @@
     }
   }
 }
+
+// Skeleton loader styles
+.skeleton-filter-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-checkbox {
+  flex-shrink: 0;
+}
+
+.skeleton-filter-text {
+  flex: 1;
+}
+
+.skeleton-filter-count {
+  flex-shrink: 0;
+}
+
+.skeleton-company-logo {
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+}
+
+.job-results .job-card-horizontal {
+  display: grid;
+  grid-template-columns: 80px 1fr 160px;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  transition: all 0.2s ease;
+
+  .job-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .job-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .job-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .job-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+}

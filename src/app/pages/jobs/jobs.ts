@@ -11,6 +11,7 @@ import { ApplicationService } from 'shared/services/application.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
+import { SkeletonModule } from 'primeng/skeleton';
 import { Base } from 'shared/base/base';
 import { Router } from '@angular/router';
 import { AuthStateService } from 'app/auth/auth-state.service';
@@ -18,7 +19,7 @@ import { JobsStoreService } from 'app/pages/jobseeker/services/jobs.service';
 
 @Component({
   selector: 'app-jobs',
-  imports: [SharedModule, InputTextModule, Select, ButtonModule],
+  imports: [SharedModule, InputTextModule, Select, ButtonModule, SkeletonModule],
   templateUrl: './jobs.html',
   styleUrl: './jobs.scss'
 })

@@ -1,3 +1,21 @@
+<!-- Search Header Skeleton -->
+@if (isLoading) {
+<section class="search-page-header">
+  <div class="container">
+    <div class="search-form">
+      <div class="search-fields">
+        <p-skeleton width="100%" height="48px" styleClass="mb-0"></p-skeleton>
+        <p-skeleton width="100%" height="48px" styleClass="mb-0"></p-skeleton>
+        <p-skeleton width="100%" height="48px" styleClass="mb-0"></p-skeleton>
+      </div>
+      <p-skeleton width="100%" height="48px" styleClass="mb-0"></p-skeleton>
+    </div>
+  </div>
+</section>
+}
+
+<!-- Search Header -->
+@if (!isLoading) {
 <section class="search-page-header">
       <div class="container">
         <form
@@ -58,10 +76,42 @@
         </form>
       </div>
     </section>
+}
     <section class="search-results-section">
       <div class="container">
         <div class="search-results-container">
+          <!-- Filters Sidebar Skeleton -->
+          @if (isLoading) {
+          <aside class="filters-sidebar">
+            <div class="filter-section">
+              <p-skeleton width="120px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+              @for (item of [1,2,3,4]; track item) {
+              <div class="filter-option skeleton-filter-option">
+                <p-skeleton width="20px" height="20px" shape="rectangle" styleClass="skeleton-checkbox"></p-skeleton>
+                <p-skeleton width="100px" height="1rem" styleClass="skeleton-filter-text"></p-skeleton>
+                <p-skeleton width="30px" height="1rem" styleClass="skeleton-filter-count"></p-skeleton>
+              </div>
+              }
+            </div>
+            <div class="filter-section">
+              <p-skeleton width="120px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+              @for (item of [1,2,3]; track item) {
+              <div class="filter-option skeleton-filter-option">
+                <p-skeleton width="20px" height="20px" shape="rectangle" styleClass="skeleton-checkbox"></p-skeleton>
+                <p-skeleton width="120px" height="1rem" styleClass="skeleton-filter-text"></p-skeleton>
+                <p-skeleton width="30px" height="1rem" styleClass="skeleton-filter-count"></p-skeleton>
+              </div>
+              }
+            </div>
+            <div class="filter-actions">
+              <p-skeleton width="100%" height="2.5rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </aside>
+          }
+
           <!-- Filters Sidebar -->
+          @if (!isLoading) {
           <aside class="filters-sidebar">
             <div class="filter-section">
               <h3 class="filter-title">نوع الوظيفة</h3>
@@ -173,8 +223,52 @@
               </button>
             </div>
           </aside>
+          }
+
+          <!-- Results Content Skeleton -->
+          @if (isLoading) {
+          <main class="results-content">
+            <div class="results-header">
+              <p-skeleton width="200px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+              <div class="sort-dropdown">
+                <p-skeleton width="150px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+              </div>
+            </div>
+
+            <div class="job-results">
+              @for (item of [1,2,3,4,5,6]; track item) {
+              <article class="job-card-horizontal">
+                <p-skeleton width="80px" height="80px" shape="rectangle" styleClass="skeleton-company-logo"></p-skeleton>
+                <div class="job-info">
+                  <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+                  <p-skeleton width="40%" height="1rem" styleClass="mb-2"></p-skeleton>
+                  <div class="job-meta">
+                    <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+                    <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+                    <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+                    <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+                  </div>
+                  <p-skeleton width="100%" height="1rem" styleClass="mb-1"></p-skeleton>
+                  <p-skeleton width="90%" height="1rem" styleClass="mb-2"></p-skeleton>
+                  <div class="job-tags">
+                    <p-skeleton width="80px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+                    <p-skeleton width="60px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+                    <p-skeleton width="100px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+                  </div>
+                </div>
+                <div class="job-actions">
+                  <p-skeleton width="100px" height="2.5rem" styleClass="mb-2"></p-skeleton>
+                  <p-skeleton width="80px" height="2.5rem" styleClass="mb-2"></p-skeleton>
+                  <p-skeleton width="80px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+                </div>
+              </article>
+              }
+            </div>
+          </main>
+          }
 
           <!-- Results Content -->
+          @if (!isLoading) {
           <main class="results-content">
             <div class="results-header">
               <div class="results-count">
@@ -206,7 +300,9 @@
                 >
                   <img
                     [src]="job.company.logo || 'assets/images/company-placeholder.png'"
-                    alt="شعار الشركة"
+                    [alt]="job.company.name || 'شعار الشركة'"
+                    [title]="job.company.name || 'شعار الشركة'"
+                    title="Company logo"
                     class="company-logo"
                   />
   
@@ -341,6 +437,7 @@
               </button>
             </div>
           </main>
+          }
         </div>
       </div>
     </section>

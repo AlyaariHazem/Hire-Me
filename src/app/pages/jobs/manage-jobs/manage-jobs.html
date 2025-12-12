@@ -1,4 +1,19 @@
 <div id="jobs" class="jobs-container">
+  <!-- Header Skeleton -->
+  @if (loading()) {
+  <div class="employer-header">
+    <div class="skeleton-header-content">
+      <p-skeleton width="250px" height="2rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="300px" height="1.2rem"></p-skeleton>
+    </div>
+    <div class="skeleton-header-actions">
+      <p-skeleton width="150px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+    </div>
+  </div>
+  }
+
+  <!-- Actual Header -->
+  @if (!loading()) {
   <div class="employer-header">
     <div>
       <h1 class="employer-title">إدارة الوظائف</h1>
@@ -8,9 +23,22 @@
       <a [routerLink]="['/companies/post-job']" class="btn btn-primary">نشر وظيفة جديدة</a>
     </div>
   </div>
+  }
 
   <div class="employer-content-card">
+    <!-- Tab Navigation Skeleton -->
+    @if (loading()) {
+    <div class="filters-section">
+      <div class="tab-navigation">
+        @for (item of [1,2,3,4]; track item) {
+        <p-skeleton width="150px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+        }
+      </div>
+    </div>
+    }
+
     <!-- Tab Navigation -->
+    @if (!loading()) {
     <div class="filters-section">
       <div class="tab-navigation">
         <button
@@ -43,11 +71,38 @@
         </button>
       </div>
     </div>
+    }
 
-    <!-- Loading State -->
+    <!-- Loading State Skeleton -->
     @if (loading()) {
       <div class="tab-content">
-        <div class="skeleton"></div>
+        @for (item of [1,2,3]; track item) {
+        <div class="job-posting-item">
+          <div class="job-posting-info">
+            <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+            <div class="job-posting-meta">
+              <p-skeleton width="150px" height="1rem" styleClass="mb-0"></p-skeleton>
+              <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+              <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+            </div>
+            <div class="job-posting-stats">
+              <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+              <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+              <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </div>
+          <div class="job-posting-actions">
+            <div class="status-control">
+              <p-skeleton width="60px" height="1rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
+            </div>
+            <div class="action-buttons">
+              <p-skeleton width="100%" height="2.5rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </div>
+        </div>
+        }
       </div>
     }
 

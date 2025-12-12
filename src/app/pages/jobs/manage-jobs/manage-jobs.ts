@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { JobService } from 'shared/services/job.service';
 import { ToastrService } from 'ngx-toastr';
+import { SkeletonModule } from 'primeng/skeleton';
 
 // JobItem interface is now in store, or we can just import the specific parts we need or keep it here if it's not exported. 
 // Ideally we import from store or usage.
@@ -11,7 +12,7 @@ import { ManageJobsStoreService, TabKey, JobItem } from '../services/manage-jobs
 @Component({
   selector: 'app-manage-jobs',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, SkeletonModule],
   templateUrl: './manage-jobs.html',
   styleUrls: ['./manage-jobs.scss'],
 })
