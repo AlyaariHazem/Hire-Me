@@ -298,16 +298,25 @@ export class ApplicantsForJob implements OnInit {
     }
   }
 
+  updatingStatus = new Set<number>(); // Track which applications are being updated
+
   updateApplicationStatus(
     applicationId: number,
     newStatus: 'pending' | 'reviewed' | 'accepted' | 'rejected'
   ): void {
+    // Prevent multiple clicks
+    if (this.updatingStatus.has(applicationId)) {
+      return;
+    }
+
     // Find the application in the local array
     const application = this.applications.find(app => app.id === applicationId);
     if (!application) {
       this.toastr.error('لم يتم العثور على الطلب');
       return;
     }
+
+    this.updatingStatus.add(applicationId);
 
     // Optimistic update: update UI immediately
     const oldStatus = application.status;
@@ -347,17 +356,24 @@ export class ApplicantsForJob implements OnInit {
           rejected: 'تم رفض الطلب'
         };
         this.toastr.success(statusMessages[newStatus] || 'تم تحديث حالة الطلب بنجاح');
+        this.updatingStatus.delete(applicationId);
       },
       error: (err) => {
-        console.error('Failed to update application status', err);
-
-        // Revert optimistic update
+        // Revert optimistic update on error
         application.status = oldStatus;
+        const statusLabels: Record<string, string> = {
+          pending: 'قيد المراجعة',
+          reviewed: 'تم المراجعة',
+          accepted: 'مقبول',
+          rejected: 'مرفوض'
+        };
+        application.status_display = statusLabels[oldStatus] || oldStatus;
         this.updateStatusCounts();
         this.applyStatusFilter();
-
-        // Show error message
+        
+        console.error('Failed to update application status', err);
         this.toastr.error('فشل في تحديث حالة الطلب. يرجى المحاولة مرة أخرى');
+        this.updatingStatus.delete(applicationId);
       }
     });
   }

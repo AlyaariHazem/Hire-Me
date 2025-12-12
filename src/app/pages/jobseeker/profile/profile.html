@@ -313,9 +313,10 @@
     ></p-button> -->
     <p-button
       type="button"
-      label="حفظ التغييرات"
+      [label]="isSaving ? 'جاري الحفظ...' : 'حفظ التغييرات'"
       styleClass="p-button-primary"
       (onClick)="saveChanges()"
+      [disabled]="isSaving"
     ></p-button>
   </div>
 </form>

@@ -198,14 +198,23 @@ export class PostJob extends Base implements OnInit {
     (groups[this.step] || []).forEach((n) => this.form.get(n)?.markAsTouched());
   }
 
+  isSubmitting = false;
+
   // ---- Submit ----
   submit() {
+    // Prevent multiple submissions
+    if (this.isSubmitting) {
+      return;
+    }
+
     // final validation of all steps
     if (this.form.invalid) {
       this.step = 1;
       this.form.markAllAsTouched();
       return;
     }
+
+    this.isSubmitting = true;
 
     const v = this.form.value;
 
@@ -251,10 +260,12 @@ export class PostJob extends Base implements OnInit {
           languages: { arabic: true },
         });
         this.step = 1;
+        this.isSubmitting = false;
       },
       error: (err) => {
         console.error(err);
         this.toastr.error('حدث خطأ أثناء نشر الوظيفة. حاول مرة أخرى.');
+        this.isSubmitting = false;
       },
     });
   }

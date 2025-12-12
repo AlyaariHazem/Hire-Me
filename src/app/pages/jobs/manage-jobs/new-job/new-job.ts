@@ -25,6 +25,7 @@ export class NewJob implements OnInit, OnChanges {
 
   step = 1;
   form: FormGroup;
+  isSubmitting = false;
 
   jobCities = JOB_CITIES;
   jobTypes = JOB_TYPES;
@@ -201,11 +202,18 @@ export class NewJob implements OnInit, OnChanges {
   }
 
   submit() {
+    // Prevent multiple submissions
+    if (this.isSubmitting) {
+      return;
+    }
+
     if (this.form.invalid) {
       this.step = 1;
       this.form.markAllAsTouched();
       return;
     }
+
+    this.isSubmitting = true;
 
     const v = this.form.value;
     const payload: CreateJobDto = {
@@ -237,10 +245,15 @@ export class NewJob implements OnInit, OnChanges {
           this.toastr.success('تم نشر الوظيفة بنجاح ✅');
           this.store.refresh();
           this.router.navigate(['/companies/manage-jobs']);
-          this.saved.emit(created); this.resetForCreate(); },
-        error: (err) => { console.error(err); 
+          this.saved.emit(created); 
+          this.resetForCreate();
+          this.isSubmitting = false;
+        },
+        error: (err) => { 
+          console.error(err); 
           this.toastr.error(err?.error?.message || 'تعذر نشر الوظيفة');
-         },
+          this.isSubmitting = false;
+        },
       });
     } else {
       this.api.updateJob(this.editSlug!, payload).subscribe({
@@ -248,10 +261,14 @@ export class NewJob implements OnInit, OnChanges {
           this.toastr.success('تم تحديث الوظيفة بنجاح ✅'); 
           this.store.refresh();
           this.router.navigate(['/companies/manage-jobs']);
-          this.saved.emit(updated); 
+          this.saved.emit(updated);
+          this.isSubmitting = false;
         },
-        error: (err) => { console.error(err); 
-          this.toastr.error(err?.error?.message || 'تعذر تحديث الوظيفة'); },
+        error: (err) => { 
+          console.error(err); 
+          this.toastr.error(err?.error?.message || 'تعذر تحديث الوظيفة');
+          this.isSubmitting = false;
+        },
       });
     }
   }

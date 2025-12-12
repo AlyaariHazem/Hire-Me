@@ -28,6 +28,7 @@ export class Profile implements OnInit, OnDestroy {
   isResumeFromApi = false; // Track if resume is from API (external domain)
   private toRevoke: string | null = null;
   showPreview = false;
+  isSaving = false;
 
   // Date of birth as Date object for PrimeNG Calendar
   dateOfBirthDate: Date | null = null;
@@ -179,10 +180,17 @@ export class Profile implements OnInit, OnDestroy {
 
   // ---------------- Save ----------------
   saveChanges(): void {
+    // Prevent multiple submissions
+    if (this.isSaving) {
+      return;
+    }
+
     if (this.basicForm.invalid || this.jobForm.invalid) {
       this.toastr.error('تحقق من الحقول المطلوبة');
       return;
     }
+
+    this.isSaving = true;
 
     // BASIC
     const b = this.basicForm.value;
@@ -256,11 +264,18 @@ export class Profile implements OnInit, OnDestroy {
             this.toastr.success('تم حفظ التغييرات بنجاح');
             // English: refresh store so the latest data propagates across the app
             this.store.refresh();
+            this.isSaving = false;
           },
-          error: (e) => this.handleErr(e, 'فشل حفظ معلومات الوظيفة'),
+          error: (e) => {
+            this.handleErr(e, 'فشل حفظ معلومات الوظيفة');
+            this.isSaving = false;
+          },
         });
       },
-      error: (e) => this.handleErr(e, 'فشل حفظ المعلومات الشخصية'),
+      error: (e) => {
+        this.handleErr(e, 'فشل حفظ المعلومات الشخصية');
+        this.isSaving = false;
+      },
     });
   }
 

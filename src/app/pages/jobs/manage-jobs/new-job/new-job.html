@@ -365,7 +365,12 @@
       </button>
 
       @if(step === 4){
-        <button type="submit" class="btn-submit">
+        <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+          @if (isSubmitting) {
+            جاري النشر...
+          } @else {
+            {{ isEdit ? 'تحديث الوظيفة' : 'نشر الوظيفة' }}
+          }
           @if(isEdit) {تحديث الوظيفة } @else {نشر الوظيفة }
         </button>
       }

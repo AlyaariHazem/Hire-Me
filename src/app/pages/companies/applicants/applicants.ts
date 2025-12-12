@@ -293,10 +293,17 @@ export class Applicants implements OnInit {
     });
   }
 
+  updatingStatus = new Set<number>(); // Track which applications are being updated
+
   updateApplicationStatus(
     applicationId: number,
     newStatus: 'pending' | 'reviewed' | 'accepted' | 'rejected'
   ): void {
+    // Prevent multiple clicks
+    if (this.updatingStatus.has(applicationId)) {
+      return;
+    }
+
     const application = this.applications().find(app => app.id === applicationId);
     if (!application) {
       this.toastr.error('لم يتم العثور على الطلب');
@@ -304,6 +311,7 @@ export class Applicants implements OnInit {
     }
 
     const oldStatus = application.status;
+    this.updatingStatus.add(applicationId);
     
     // For optimistic update, we can update the list in the store or just refresh
     // Since we're using a single source of truth in the store, we should ideally ask the store to update
@@ -320,10 +328,12 @@ export class Applicants implements OnInit {
       next: (updatedApp) => {
         this.toastr.success('تم تحديث حالة الطلب بنجاح');
         this.store.refresh();
+        this.updatingStatus.delete(applicationId);
       },
       error: (err) => {
         console.error('Failed to update application status', err);
         this.toastr.error('فشل في تحديث حالة الطلب. يرجى المحاولة مرة أخرى');
+        this.updatingStatus.delete(applicationId);
       }
     });
   }

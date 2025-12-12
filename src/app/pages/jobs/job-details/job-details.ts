@@ -199,6 +199,11 @@ export class JobDetails extends Base implements OnInit {
   }
 
   onSubmitApplication(): void {
+    // Prevent multiple submissions
+    if (this.isSubmittingApplication) {
+      return;
+    }
+
     if (!this.jobDetail) return;
 
     // Basic validation

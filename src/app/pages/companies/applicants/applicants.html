@@ -224,13 +224,23 @@
                 <div class="status-actions">
                   <button 
                     class="btn btn-small btn-success"
+                    [disabled]="updatingStatus.has(app.id)"
                     (click)="updateApplicationStatus(app.id, 'accepted')">
-                    قبول
+                    @if (updatingStatus.has(app.id)) {
+                      جاري التحديث...
+                    } @else {
+                      قبول
+                    }
                   </button>
                   <button 
                     class="btn btn-small btn-danger"
+                    [disabled]="updatingStatus.has(app.id)"
                     (click)="updateApplicationStatus(app.id, 'rejected')">
-                    رفض
+                    @if (updatingStatus.has(app.id)) {
+                      جاري التحديث...
+                    } @else {
+                      رفض
+                    }
                   </button>
                 </div>
               }
@@ -534,13 +544,23 @@
             <div class="modal-actions">
               <button 
                 class="btn btn-success"
+                [disabled]="updatingStatus.has(selectedApplication.id)"
                 (click)="updateApplicationStatus(selectedApplication.id, 'accepted'); closeDetailsModal();">
-                قبول الطلب
+                @if (updatingStatus.has(selectedApplication.id)) {
+                  جاري التحديث...
+                } @else {
+                  قبول الطلب
+                }
               </button>
               <button 
                 class="btn btn-danger"
+                [disabled]="updatingStatus.has(selectedApplication.id)"
                 (click)="updateApplicationStatus(selectedApplication.id, 'rejected'); closeDetailsModal();">
-                رفض الطلب
+                @if (updatingStatus.has(selectedApplication.id)) {
+                  جاري التحديث...
+                } @else {
+                  رفض الطلب
+                }
               </button>
             </div>
           }
