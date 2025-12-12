@@ -559,37 +559,233 @@
 
 @media (max-width: 768px) {
   .search-page-header {
-    padding: 2rem 0;
+    padding: 1.25rem 0;
+  }
+  
+  .search-form {
+    padding: 0 0.875rem;
+    
+    .search-fields {
+      gap: 0.625rem;
+      margin-bottom: 0.625rem;
+    }
+    
+    .field-group {
+      .p-inputtext,
+      ::ng-deep .p-select .p-select-trigger {
+        height: 38px;
+        font-size: 0.95rem;
+        padding: 0.5rem 0.875rem;
+        border-radius: 8px;
+      }
+    }
+    
+    .search-btn {
+      height: 38px;
+      font-size: 0.95rem;
+      padding: 0.5rem 1.25rem;
+      margin-top: 0.5rem;
+      border-radius: 8px;
+    }
+  }
+  
+  .search-results-section {
+    padding: 0.875rem 0;
+  }
+  
+  .search-results-container {
+    padding: 0 0.875rem;
+    gap: 1rem;
+  }
+  
+  .filters-sidebar {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  .filter-section {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+  }
+  
+  .filter-title {
+    font-size: 1rem;
+    margin-bottom: 0.875rem;
+  }
+  
+  .filter-option {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 8px;
+  }
+  
+  .filter-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    
+    button {
+      width: 100%;
+      height: 34px;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+  }
+  
+  .results-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.875rem;
+    padding: 0.875rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    
+    .results-count {
+      font-size: 0.9rem;
+      
+      strong {
+        font-size: 1rem;
+      }
+    }
+    
+    .sort-dropdown {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+      
+      label {
+        font-size: 0.85rem;
+      }
+      
+      ::ng-deep .p-select {
+        width: 100%;
+        
+        .p-select-trigger {
+          height: 34px;
+          font-size: 0.875rem;
+          border-radius: 8px;
+        }
+      }
+    }
   }
   
   .job-card-horizontal {
     grid-template-columns: 1fr;
-    padding: 1.5rem;
+    gap: 0.875rem;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--gray-200);
     
     .company-logo {
       width: 60px;
       height: 60px;
-      margin: 0 auto;
+      margin: 0 auto 0.625rem;
+      display: block;
+      border-radius: 8px;
     }
     
     .job-info {
-      text-align: center;
+      text-align: right;
+      
+      .job-title {
+        font-size: 1.05rem;
+        margin-bottom: 0.375rem;
+        line-height: 1.4;
+      }
+      
+      .company-name {
+        font-size: 0.875rem;
+        margin-bottom: 0.625rem;
+        color: var(--gray-600);
+      }
+      
+      .job-meta {
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        margin-bottom: 0.625rem;
+        flex-wrap: wrap;
+        
+        span {
+          flex: 0 1 auto;
+          white-space: nowrap;
+        }
+      }
+      
+      .job-description {
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 0.625rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        color: var(--gray-600);
+      }
+      
+      .job-tags {
+        gap: 0.375rem;
+        margin-top: 0.5rem;
+        
+        .job-tag {
+          font-size: 0.7rem;
+          padding: 0.25rem 0.625rem;
+          border-radius: 12px;
+        }
+      }
     }
-  }
-  
-  .job-actions {
-    flex-direction: row;
-    flex-wrap: wrap;
     
-    .btn-small {
-      flex: 1;
-      min-width: calc(50% - 0.375rem);
+    .job-actions {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      width: 100%;
+      margin-top: 0.875rem;
+      padding-top: 0.875rem;
+      border-top: 1px solid var(--gray-200);
+      
+      button,
+      .btn,
+      .btn-small,
+      .btn-secondary {
+        flex: 1;
+        min-width: calc(50% - 0.25rem);
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+        font-size: 0.8rem !important;
+        padding: 0.4rem 0.5rem !important;
+        font-weight: 600;
+        border-radius: 8px;
+        line-height: 1.2 !important;
+      }
     }
   }
   
-  .filter-section {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
+  .pagination {
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    padding: 1.25rem 0;
+    margin-top: 1.5rem;
+    
+    .pagination-btn {
+      padding: 0.5rem 0.75rem;
+      min-width: 36px;
+      height: 32px;
+      font-size: 0.8rem;
+      border-radius: 8px;
+    }
+  }
+  
+  .no-jobs-message {
+    padding: 1.5rem 0.875rem;
+    font-size: 0.95rem;
+    border-radius: 12px;
   }
 }
 .active {
@@ -690,6 +886,24 @@
       animation: spin 0.6s linear infinite;
     }
   }
+  
+  @media (max-width: 768px) {
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.8rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  @media (max-width: 480px) {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    padding: 0.35rem 0.45rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1.1 !important;
+  }
 }
 
 // Save Button Styles
@@ -726,6 +940,24 @@
       box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
     }
   }
+  
+  @media (max-width: 768px) {
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.8rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  @media (max-width: 480px) {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    padding: 0.35rem 0.45rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1.1 !important;
+  }
 }
 
 // Share Button Styles (always outlined)
@@ -746,21 +978,59 @@
   &:active {
     transform: translateY(0);
   }
+  
+  @media (max-width: 768px) {
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.8rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  @media (max-width: 480px) {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    padding: 0.35rem 0.45rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1.1 !important;
+  }
 }
 
 // Button size consistency
-.job-actions .btn-small {
+.job-actions .btn-small,
+.job-actions button,
+.job-actions .btn,
+.job-actions .btn-secondary {
   padding: 0.75rem 1.25rem;
   font-size: 0.9rem;
-  min-height: 44px;
+  min-height: 40px;
   width: 100%;
   font-weight: 600;
   border-radius: var(--radius-md);
   transition: all 0.2s ease;
   
   @media (max-width: 768px) {
+    min-height: 32px !important;
+    height: 32px !important;
+    max-height: 32px !important;
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.8rem !important;
     flex: 1;
-    min-width: 120px;
+    min-width: calc(50% - 0.25rem);
+    border-radius: 8px;
+    line-height: 1.2 !important;
+  }
+  
+  @media (max-width: 480px) {
+    min-height: 30px !important;
+    height: 30px !important;
+    max-height: 30px !important;
+    padding: 0.35rem 0.45rem !important;
+    font-size: 0.75rem !important;
+    min-width: calc(50% - 0.2rem);
+    line-height: 1.1 !important;
   }
 }
 
@@ -771,16 +1041,218 @@
   }
 }
 
-// Responsive adjustments
-@media (max-width: 768px) {
-  .job-actions {
-    min-width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
+// Additional mobile optimizations for very small screens
+@media (max-width: 480px) {
+  .search-page-header {
+    padding: 1rem 0;
+  }
+  
+  .search-form {
+    padding: 0 0.625rem;
     
-    .btn-small {
-      flex: 1;
-      min-width: 100px;
+    .search-fields {
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .field-group {
+      .p-inputtext,
+      ::ng-deep .p-select .p-select-trigger {
+        height: 36px;
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+      }
+    }
+    
+    .search-btn {
+      height: 36px;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+  
+  .search-results-container {
+    padding: 0 0.625rem;
+    gap: 0.875rem;
+  }
+  
+  .filters-sidebar {
+    padding: 0.875rem;
+  }
+  
+  .filter-option {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.85rem;
+  }
+  
+  .filter-actions button {
+    height: 32px;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.875rem;
+  }
+  
+  .results-header {
+    padding: 0.75rem;
+    
+    .sort-dropdown ::ng-deep .p-select .p-select-trigger {
+      height: 32px;
+      font-size: 0.85rem;
+    }
+  }
+  
+  .job-card-horizontal {
+    padding: 0.875rem;
+    gap: 0.75rem;
+    
+    .company-logo {
+      width: 55px;
+      height: 55px;
+    }
+    
+    .job-info {
+      .job-title {
+        font-size: 1rem;
+      }
+      
+      .company-name {
+        font-size: 0.85rem;
+      }
+      
+      .job-meta {
+        font-size: 0.75rem;
+        gap: 0.5rem;
+      }
+      
+      .job-description {
+        font-size: 0.8rem;
+      }
+      
+      .job-tags .job-tag {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.5rem;
+      }
+    }
+    
+     .job-actions {
+       gap: 0.375rem;
+       margin-top: 0.75rem;
+       padding-top: 0.75rem;
+       
+       button,
+       .btn,
+       .btn-small,
+       .btn-secondary {
+         height: 30px !important;
+         min-height: 30px !important;
+         max-height: 30px !important;
+         font-size: 0.75rem !important;
+         padding: 0.35rem 0.45rem !important;
+         min-width: calc(50% - 0.1875rem);
+         line-height: 1.1 !important;
+       }
+     }
+  }
+  
+  .pagination {
+    gap: 0.375rem;
+    padding: 1rem 0;
+    
+    .pagination-btn {
+      padding: 0.4rem 0.625rem;
+      min-width: 32px;
+      height: 30px;
+      font-size: 0.75rem;
+    }
+  }
+  
+  .filters-sidebar {
+    padding: 1rem;
+  }
+  
+  .filter-option {
+    padding: 0.625rem;
+    font-size: 0.85rem;
+  }
+  
+  .filter-actions button {
+    height: 36px;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.875rem;
+  }
+  
+  .results-header {
+    padding: 0.875rem;
+    
+    .results-count {
+      font-size: 0.9rem;
+      
+      strong {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  .job-card-horizontal {
+    padding: 1rem;
+    
+    .company-logo {
+      width: 55px;
+      height: 55px;
+    }
+    
+    .job-info {
+      .job-title {
+        font-size: 1rem;
+      }
+      
+      .company-name {
+        font-size: 0.85rem;
+      }
+      
+      .job-meta {
+        font-size: 0.75rem;
+        gap: 0.5rem;
+      }
+      
+      .job-description {
+        font-size: 0.8rem;
+      }
+      
+      .job-tags .job-tag {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
+      }
+    }
+    
+     .job-actions {
+       gap: 0.4rem;
+       margin-top: 0.75rem;
+       padding-top: 0.75rem;
+       
+       button,
+       .btn,
+       .btn-small,
+       .btn-secondary {
+         height: 32px !important;
+         min-height: 32px !important;
+         max-height: 32px !important;
+         font-size: 0.8rem !important;
+         padding: 0.4rem 0.5rem !important;
+         min-width: calc(50% - 0.2rem);
+         line-height: 1.2 !important;
+       }
+     }
+  }
+  
+  .pagination {
+    gap: 0.4rem;
+    padding: 1.25rem 0;
+    
+    .pagination-btn {
+      padding: 0.5rem 0.75rem;
+      min-width: 36px;
+      height: 34px;
+      font-size: 0.8rem;
     }
   }
 }
@@ -835,6 +1307,41 @@
 
   .p-select.w-auto {
     width: auto;
+  }
+  
+  // Mobile button overrides for job actions
+  @media (max-width: 768px) {
+    .job-actions {
+      button,
+      .p-button,
+      .btn,
+      .btn-small,
+      .btn-secondary {
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+        padding: 0.4rem 0.5rem !important;
+        font-size: 0.8rem !important;
+        line-height: 1.2 !important;
+      }
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .job-actions {
+      button,
+      .p-button,
+      .btn,
+      .btn-small,
+      .btn-secondary {
+        height: 30px !important;
+        min-height: 30px !important;
+        max-height: 30px !important;
+        padding: 0.35rem 0.45rem !important;
+        font-size: 0.75rem !important;
+        line-height: 1.1 !important;
+      }
+    }
   }
 }
 

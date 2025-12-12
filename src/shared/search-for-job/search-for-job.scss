@@ -1,9 +1,20 @@
 .companies-hero {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      color: var(--white);
-      padding: 4rem 0;
-      text-align: center;
+    color: var(--white);
+    padding: 4rem 0;
+    text-align: center;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    
+    .container {
+      position: relative;
+      z-index: 1;
     }
+  }
     
     .companies-hero h1 {
       font-size: var(--font-size-4xl);
