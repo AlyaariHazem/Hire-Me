@@ -16,6 +16,18 @@
 
       <!-- Main nav links (shared) -->
       <ul class="navbar-nav" id="primary-nav" (click)="closeMobileMenu()">
+        <!-- Close Button for Mobile Menu -->
+        <li class="nav-item mobile-close-item">
+          <button 
+            class="mobile-close-btn" 
+            type="button"
+            (click)="closeMobileMenu()"
+            aria-label="إغلاق القائمة"
+          >
+            <i class="pi pi-times"></i>
+            <span>إغلاق</span>
+          </button>
+        </li>
           <li class="nav-item">
           <a class="nav-link" (click)="routeToJobs()" pRipple>
             <i class="pi pi-briefcase"></i>

@@ -119,9 +119,9 @@ export class Jobs extends Base {
     this.jobsStore.loading$.subscribe(loading => {
       this.isLoading = loading;
       if (loading) {
-        this.loaderService.start();
+        // this.loaderService.start();
       } else {
-        this.loaderService.stop();
+        // this.loaderService.stop();
       }
     });
 

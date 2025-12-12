@@ -159,6 +159,48 @@ span{
     border: none;
     margin-top: 0.5rem;
   }
+
+
+  /* Mobile close button */
+  .mobile-close-item {
+    display: none;
+  }
+
+  .navbar.mobile-menu-open .mobile-close-item {
+    display: block;
+    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .mobile-close-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    justify-content: center;
+
+    i {
+      font-size: 1.2rem;
+    }
+
+    &:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
 }
 
 /* optional: animate the hamburger to X */
@@ -178,6 +220,11 @@ span{
 
   @media (max-width: 768px) {
       display: flex;
+      
+      /* Hide toggle button when menu is open (we have close button inside menu) */
+      .navbar.mobile-menu-open & {
+        display: none !important;
+      }
   }
 
   span {
