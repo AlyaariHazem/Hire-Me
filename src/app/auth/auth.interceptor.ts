@@ -19,7 +19,7 @@ export class AuthInterceptor implements HttpInterceptor {
     const authReq = token
       ? req.clone({ setHeaders: { Authorization: `Token ${token}` } })
       : req;
-       this.loaderService.start();
+      //  this.loaderService.start();
 
     return next.handle(authReq).pipe(
       catchError((err: HttpErrorResponse) => {
