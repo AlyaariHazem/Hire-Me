@@ -45,6 +45,12 @@ export class Jobs extends Base {
   
   // Track which jobs are being processed (to disable buttons during API calls)
   applyingJobs = new Set<number>();
+  savingJobs = new Set<number>();
+  
+  // Track form submissions
+  isSearching = false;
+  isApplyingFilters = false;
+  isClearingFilters = false;
 
   // Filter counts from backend
   filterCounts = {
@@ -192,8 +198,19 @@ export class Jobs extends Base {
   // -------- filters handlers --------
 
   onSearchSubmit() {
+    // Prevent multiple submissions
+    if (this.isSearching) {
+      return;
+    }
+    
+    this.isSearching = true;
     // Use the bound searchValue
     this.jobsStore.setSearch(this.searchValue);
+    
+    // Reset after a short delay to allow the store to process
+    setTimeout(() => {
+      this.isSearching = false;
+    }, 500);
   }
 
   onCityChange(city: string | null | undefined) {
@@ -229,12 +246,34 @@ export class Jobs extends Base {
   }
 
   clearAllFilters(): void {
+    // Prevent multiple clicks
+    if (this.isClearingFilters) {
+      return;
+    }
+    
+    this.isClearingFilters = true;
     this.jobsStore.clearFilters();
+    
+    // Reset after a short delay
+    setTimeout(() => {
+      this.isClearingFilters = false;
+    }, 500);
   }
 
   applyFilters(): void {
+    // Prevent multiple clicks
+    if (this.isApplyingFilters) {
+      return;
+    }
+    
+    this.isApplyingFilters = true;
     // Filters are applied automatically when changed
     this.jobsStore.refresh();
+    
+    // Reset after a short delay
+    setTimeout(() => {
+      this.isApplyingFilters = false;
+    }, 500);
   }
 
   // -------- pagination --------
@@ -330,14 +369,22 @@ export class Jobs extends Base {
   }
 
   saveJob(job: JobItem): void {
+    // Prevent duplicate clicks
+    if (this.savingJobs.has(job.id)) {
+      return;
+    }
+    
     // optimistic toggle value
     const newValue = !job.is_bookmarked;
+    
+    this.savingJobs.add(job.id);
 
     this.jobService.bookmarkJob(job.id).subscribe({
       next: () => {
         // update UI state so button text / class change immediately
         job.is_bookmarked = newValue;
         this.jobsStore.updateJob(job.id, { is_bookmarked: newValue });
+        this.savingJobs.delete(job.id);
 
         this.toastr.success(
           newValue
@@ -347,6 +394,7 @@ export class Jobs extends Base {
       },
       error: () => {
         // keep old value because API failed
+        this.savingJobs.delete(job.id);
         this.toastr.error('تعذر حفظ الوظيفة');
       }
     });

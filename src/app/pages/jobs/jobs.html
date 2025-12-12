@@ -69,9 +69,10 @@
 
           <p-button
             type="submit"
-            label="بحث"
+            [label]="isSearching ? 'جاري البحث...' : 'بحث'"
             icon="pi pi-search"
             styleClass="p-button-primary search-btn"
+            [disabled]="isSearching || isLoading"
           ></p-button>
         </form>
       </div>
@@ -212,14 +213,24 @@
               <button
                 class="btn btn-small btn-primary filter-apply-btn"
                 (click)="applyFilters()"
+                [disabled]="isApplyingFilters || isLoading"
               >
-                تطبيق
+                @if (isApplyingFilters) {
+                  جاري التطبيق...
+                } @else {
+                  تطبيق
+                }
               </button>
               <button
                 class="btn btn-small btn-secondary filter-clear-btn"
                 (click)="clearAllFilters()"
+                [disabled]="isClearingFilters || isLoading"
               >
-                مسح الكل
+                @if (isClearingFilters) {
+                  جاري المسح...
+                } @else {
+                  مسح الكل
+                }
               </button>
             </div>
           </aside>
@@ -373,9 +384,16 @@
                     <button
                       class="btn btn-small btn-secondary save-btn"
                       [ngClass]="job.is_bookmarked ? 'active' : ''"
+                      [disabled]="savingJobs.has(job.id)"
                       (click)="saveJob(job)"
                     >
-                      {{ job.is_bookmarked ? 'محفوظ' : 'حفظ' }}
+                      @if (savingJobs.has(job.id)) {
+                        جاري الحفظ...
+                      } @else if (job.is_bookmarked) {
+                        محفوظ
+                      } @else {
+                        حفظ
+                      }
                     </button>
   
                     <button

@@ -186,9 +186,15 @@ a:hover {
   transition: all var(--transition-fast);
 }
 
-.social-btn:hover {
+.social-btn:hover:not(.disabled) {
   border-color: var(--gray-300);
   background: var(--gray-50);
+}
+
+.social-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .social-icon {

@@ -37,6 +37,7 @@ export class Login extends Base implements OnInit {
 
   phone: string = '';
   password: string = '';
+  isSubmitting: boolean = false;
 
   ngOnInit(): void {
     // If token already exists, skip login
@@ -70,6 +71,11 @@ export class Login extends Base implements OnInit {
   }
 
   login(): void {
+    // Prevent multiple submissions
+    if (this.isSubmitting) {
+      return;
+    }
+
     // 1) Must choose a role
     // const chosen = this.selectedRole();
     // if (!chosen) {
@@ -86,6 +92,9 @@ export class Login extends Base implements OnInit {
       this.toastr.error('الرجاء إدخال كلمة المرور');
       return;
     }
+
+    // Set submitting state
+    this.isSubmitting = true;
 
     // 3) Attempt login
     const payload = { phone: this.phone, password: this.password };
@@ -134,15 +143,18 @@ export class Login extends Base implements OnInit {
             this.auth.setRole(backendRole as UserRole);
             this.toastr.success('تم تسجيل الدخول بنجاح');
             this.router.navigateByUrl(backendRole === 'employer' ? '/companies' : '/jobseeker');
+            this.isSubmitting = false;
           },
           error: (err) => {
             this.errors.error(err, { join: true });
             this.auth.logout(); // clear temp tokens on failure
+            this.isSubmitting = false;
           },
         });
       },
       error: (err) => {
         this.errors.error(err, { join: true });
+        this.isSubmitting = false;
       },
     });
   }
