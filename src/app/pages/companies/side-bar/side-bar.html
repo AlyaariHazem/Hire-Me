@@ -1,5 +1,32 @@
 <!-- Sidebar -->
 <aside class="employer-sidebar">
+  <!-- Sidebar Skeleton -->
+  @if (loading()) {
+  <p-card styleClass="company-profile-card">
+    <div class="company-profile">
+      <div class="company-logo-wrapper">
+        <p-skeleton width="80px" height="80px" shape="circle" styleClass="mb-0"></p-skeleton>
+      </div>
+      <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="100px" height="1.8rem" styleClass="mb-2"></p-skeleton>
+      <p-divider></p-divider>
+      <div class="company-stats">
+        <div class="company-stat">
+          <p-skeleton width="40px" height="1.8rem" styleClass="mb-1"></p-skeleton>
+          <p-skeleton width="80px" height="1rem"></p-skeleton>
+        </div>
+        <div class="company-stat">
+          <p-skeleton width="40px" height="1.8rem" styleClass="mb-1"></p-skeleton>
+          <p-skeleton width="80px" height="1rem"></p-skeleton>
+        </div>
+      </div>
+      <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
+    </div>
+  </p-card>
+  }
+
+  <!-- Actual Sidebar -->
+  @if (!loading()) {
   <p-card styleClass="company-profile-card">
     <div class="company-profile">
       <div class="company-logo-wrapper">
@@ -48,7 +75,26 @@
       ></p-button>
     </div>
   </p-card>
+  }
 
+  <!-- Navigation Skeleton -->
+  @if (loading()) {
+  <nav class="employer-nav-container">
+    <ul class="employer-nav">
+      @for (item of [1,2,3,4,5,6,7,8,9]; track item) {
+        <li class="employer-nav-item">
+          <div class="employer-nav-link skeleton-nav-link">
+            <p-skeleton width="20px" height="20px" shape="circle" styleClass="skeleton-nav-icon"></p-skeleton>
+            <p-skeleton width="100px" height="1rem" styleClass="skeleton-nav-text"></p-skeleton>
+          </div>
+        </li>
+      }
+    </ul>
+  </nav>
+  }
+
+  <!-- Actual Navigation -->
+  @if (!loading()) {
   <nav class="employer-nav-container">
     <ul class="employer-nav">
       <li class="employer-nav-item">
@@ -160,4 +206,5 @@
       </li>
     </ul>
   </nav>
+  }
 </aside>

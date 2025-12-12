@@ -13,14 +13,16 @@
     height: auto;
   }
 }
-
+:host ::ng-deep .p-card {
+  border-radius: 0;
+}
 
 /* PrimeNG Card Styles */
 .company-profile-card {
   margin-bottom: 1rem;
   
   ::ng-deep .p-card-body {
-    padding: 1.5rem 1rem;
+    padding: 0rem 1rem;
   }
   
   ::ng-deep .p-card-content {
@@ -248,6 +250,24 @@
   
   .employer-nav-link:hover .employer-nav-icon {
     transform: scale(1.15);
+  }
+
+  // Skeleton navigation styles
+  .skeleton-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .skeleton-nav-icon {
+    flex-shrink: 0;
+  }
+
+  .skeleton-nav-text {
+    flex: 1;
   }
   
   /* PrimeNG Badge Styles */

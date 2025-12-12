@@ -1,5 +1,21 @@
 <p-confirmDialog [style]="{width: '450px'}" [rtl]="true"></p-confirmDialog>
 <div id="companies" class="companies-container">
+  <!-- Header Skeleton -->
+  @if (loading()) {
+  <div class="employer-header">
+    <div class="skeleton-header-content">
+      <p-skeleton width="250px" height="2rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="400px" height="1.2rem"></p-skeleton>
+    </div>
+    <div class="skeleton-header-actions">
+      <p-skeleton width="300px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+      <p-skeleton width="150px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+    </div>
+  </div>
+  }
+
+  <!-- Actual Header -->
+  @if (!loading()) {
   <div class="employer-header">
     <div>
       <h1 class="employer-title">إدارة الشركات</h1>
@@ -26,8 +42,37 @@
       </button>
     </div>
   </div>
+  }
 
   <div class="employer-content-card">
+    <!-- Loading Skeleton -->
+    @if (loading()) {
+    <div class="table-skeleton">
+      <div class="skeleton-header">
+        <p-skeleton width="100%" height="3rem" styleClass="mb-2"></p-skeleton>
+      </div>
+      <div class="skeleton-table">
+        @for (item of [1,2,3,4,5]; track item) {
+        <div class="skeleton-row">
+          <p-skeleton width="80px" height="60px" shape="rectangle" styleClass="skeleton-logo"></p-skeleton>
+          <p-skeleton width="180px" height="1.5rem" styleClass="skeleton-cell"></p-skeleton>
+          <p-skeleton width="150px" height="1.5rem" styleClass="skeleton-cell"></p-skeleton>
+          <p-skeleton width="120px" height="1.5rem" styleClass="skeleton-cell"></p-skeleton>
+          <p-skeleton width="120px" height="1.5rem" styleClass="skeleton-cell"></p-skeleton>
+          <p-skeleton width="200px" height="1.5rem" styleClass="skeleton-cell"></p-skeleton>
+          <p-skeleton width="120px" height="1.5rem" styleClass="skeleton-cell"></p-skeleton>
+          <p-skeleton width="160px" height="2.5rem" styleClass="skeleton-cell"></p-skeleton>
+        </div>
+        }
+      </div>
+      <div class="skeleton-pagination">
+        <p-skeleton width="300px" height="2rem"></p-skeleton>
+      </div>
+    </div>
+    }
+
+    <!-- Actual Table -->
+    @if (!loading()) {
     <p-table
       #dt
       [value]="filteredCompanies()"
@@ -167,6 +212,7 @@
         </tr>
       </ng-template>
     </p-table>
+    }
   </div>
 
   <!-- Dialog overlay -->

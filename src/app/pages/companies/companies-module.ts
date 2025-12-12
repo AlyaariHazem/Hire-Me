@@ -27,6 +27,7 @@ import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { SkeletonModule } from 'primeng/skeleton';
 
 
 
@@ -54,6 +55,7 @@ const modules = [
   TextareaModule,
   TableModule,
   TooltipModule,
+  SkeletonModule,
   PostJob,
   ApplicantsForJob,
   Applicants,

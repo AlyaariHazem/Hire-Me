@@ -10,7 +10,24 @@
     </div>
   </div>
 
+  <!-- Stats Grid Skeleton -->
+  @if (loadingJobs() || loadingApplications()) {
+  <div class="employer-stats-grid">
+    @for (item of [1,2,3,4]; track item) {
+    <div class="employer-stat-card">
+      <div class="employer-stat-header">
+        <p-skeleton width="120px" height="1.2rem" styleClass="mb-0"></p-skeleton>
+        <p-skeleton width="30px" height="30px" shape="circle" styleClass="mb-0"></p-skeleton>
+      </div>
+      <p-skeleton width="80px" height="2.5rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="100px" height="1rem"></p-skeleton>
+    </div>
+    }
+  </div>
+  }
+
   <!-- Stats Grid -->
+  @if (!loadingJobs() && !loadingApplications()) {
   <div class="employer-stats-grid">
     <div class="employer-stat-card">
       <div class="employer-stat-header">
@@ -48,8 +65,23 @@
       <div class="employer-stat-change">+156 هذا الأسبوع</div>
     </div>
   </div>
+  }
+
+  <!-- Quick Actions Skeleton -->
+  @if (loadingJobs() || loadingApplications()) {
+  <div class="quick-actions-grid">
+    @for (item of [1,2,3,4]; track item) {
+    <div class="quick-action-employer skeleton-quick-action">
+      <p-skeleton width="60px" height="60px" shape="circle" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="80%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="100%" height="1rem"></p-skeleton>
+    </div>
+    }
+  </div>
+  }
 
   <!-- Quick Actions -->
+  @if (!loadingJobs() && !loadingApplications()) {
   <div class="quick-actions-grid">
     <a routerLink="/companies/post-job" class="quick-action-employer">
       <div class="quick-action-employer-icon">➕</div>
@@ -81,6 +113,7 @@
       <p class="quick-action-employer-desc">تابع أداء وظائفك وإعلاناتك</p>
     </a>
   </div>
+  }
 
   <!-- Content Grid -->
   <div class="employer-content-grid">
@@ -96,8 +129,25 @@
       </div>
 
       @if (loadingJobs()) {
-        <div class="loading-state">
-          <p>جاري التحميل...</p>
+        <div class="jobs-skeleton">
+          @for (item of [1,2,3]; track item) {
+          <div class="job-posting-item">
+            <div class="job-posting-info">
+              <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+              <div class="job-posting-meta">
+                <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+              </div>
+              <div class="job-posting-stats">
+                <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+              </div>
+            </div>
+            <p-skeleton width="80px" height="2rem" styleClass="mb-0"></p-skeleton>
+          </div>
+          }
         </div>
       } @else if (recentJobs().length === 0) {
         <div class="empty-state">
@@ -143,8 +193,24 @@
       </div>
 
       @if (loadingApplications()) {
-        <div class="loading-state">
-          <p>جاري التحميل...</p>
+        <div class="applications-skeleton">
+          @for (item of [1,2,3,4]; track item) {
+          <div class="candidate-item">
+            <p-skeleton width="50px" height="50px" shape="circle" styleClass="skeleton-avatar"></p-skeleton>
+            <div class="candidate-info">
+              <p-skeleton width="60%" height="1.3rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="50%" height="1rem" styleClass="mb-2"></p-skeleton>
+              <div class="candidate-meta">
+                <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="150px" height="1rem" styleClass="mb-0"></p-skeleton>
+              </div>
+            </div>
+            <div class="candidate-actions">
+              <p-skeleton width="80px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="100px" height="2rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </div>
+          }
         </div>
       } @else if (recentApplications().length === 0) {
         <div class="empty-state">

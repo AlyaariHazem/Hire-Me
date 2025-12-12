@@ -18,6 +18,7 @@ import { DividerModule } from 'primeng/divider';
 import { MenuModule } from 'primeng/menu';
 import { RippleModule } from 'primeng/ripple';
 import { TagModule } from 'primeng/tag';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-side-bar-company',
@@ -32,7 +33,8 @@ import { TagModule } from 'primeng/tag';
     DividerModule,
     MenuModule,
     RippleModule,
-    TagModule
+    TagModule,
+    SkeletonModule
   ],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.scss'
@@ -50,6 +52,7 @@ export class SideBarCompany implements OnInit {
   // Stats signals
   activeJobsCount = this.sidebarStore.activeJobsCount;
   newApplicantsCount = this.sidebarStore.newApplicantsCount;
+  loading = this.sidebarStore.loading;
 
   constructor(
     private http: HttpClient,
