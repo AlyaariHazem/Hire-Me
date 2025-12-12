@@ -23,7 +23,7 @@ export interface SavedJobsData {
   bookmarks: BookmarkedJobItem[];
   totalCount: number;
   currentPage: number;
-  pageSize: number;
+  page_size: number;
   totalPages: number;
 }
 
@@ -32,7 +32,7 @@ export class SavedJobsStoreService {
   private jobService = inject(JobService);
 
   // Trigger for loading saved jobs data
-  private readonly trigger$ = new Subject<{ page: number; pageSize: number }>();
+  private readonly trigger$ = new Subject<{ page: number; page_size: number }>();
 
   // Loading state
   private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -43,18 +43,18 @@ export class SavedJobsStoreService {
 
   // Default pagination
   private defaultPage = 1;
-  private defaultPageSize = 10;
+  private defaultpage_size = 10;
 
   // Current pagination state
   private _page = this.defaultPage;
-  private _pageSize = this.defaultPageSize;
+  private _page_size = this.defaultpage_size;
 
   get page(): number {
     return this._page;
   }
 
-  get pageSize(): number {
-    return this._pageSize;
+  get page_size(): number {
+    return this._page_size;
   }
 
   // Saved jobs data observable with BehaviorSubject to cache last value
@@ -62,14 +62,14 @@ export class SavedJobsStoreService {
     bookmarks: [],
     totalCount: 0,
     currentPage: 1,
-    pageSize: 10,
+    page_size: 10,
     totalPages: 0
   });
 
   readonly savedJobs$: Observable<SavedJobsData> = this.trigger$.pipe(
-    exhaustMap(({ page, pageSize }) => {
+    exhaustMap(({ page, page_size }) => {
       this.loadingSubject.next(true);
-      return this.loadSavedJobsData(page, pageSize);
+      return this.loadSavedJobsData(page, page_size);
     }),
     tap((data) => {
       this.loadingSubject.next(false);
@@ -86,7 +86,7 @@ export class SavedJobsStoreService {
       bookmarks: [],
       totalCount: 0,
       currentPage: 1,
-      pageSize: 10,
+      page_size: 10,
       totalPages: 0
     } as SavedJobsData
   });
@@ -99,29 +99,29 @@ export class SavedJobsStoreService {
   /**
    * Load saved jobs data from backend
    */
-  private loadSavedJobsData(page: number, pageSize: number): Observable<SavedJobsData> {
+  private loadSavedJobsData(page: number, page_size: number): Observable<SavedJobsData> {
     return this.jobService.getBookmarkedJobs({
       page,
-      pageSize: pageSize,
+      page_size: page_size,
     }).pipe(
       map((res: any) => {
         const data = res as BookmarkedJobsResponse;
         const bookmarks = data.results ?? [];
         const totalCount = data.count ?? 0;
-        const totalPages = pageSize > 0
-          ? Math.max(1, Math.ceil(totalCount / pageSize))
+        const totalPages = page_size > 0
+          ? Math.max(1, Math.ceil(totalCount / page_size))
           : 1;
 
         const savedJobsData: SavedJobsData = {
           bookmarks,
           totalCount,
           currentPage: page,
-          pageSize,
+          page_size,
           totalPages
         };
 
         this._page = page;
-        this._pageSize = pageSize;
+        this._page_size = page_size;
         return savedJobsData;
       }),
       catchError((err) => {
@@ -130,7 +130,7 @@ export class SavedJobsStoreService {
           bookmarks: [],
           totalCount: 0,
           currentPage: page,
-          pageSize,
+          page_size,
           totalPages: 0
         };
         return of(emptyData);
@@ -141,17 +141,17 @@ export class SavedJobsStoreService {
   /**
    * Load saved jobs with current pagination
    */
-  loadSavedJobs(page?: number, pageSize?: number): void {
+  loadSavedJobs(page?: number, page_size?: number): void {
     const targetPage = page ?? this._page;
-    const targetPageSize = pageSize ?? this._pageSize;
+    const targetpage_size = page_size ?? this._page_size;
 
     // Check if page changed or not loaded yet
     const pageChanged = targetPage !== this.snapshot.currentPage;
-    const pageSizeChanged = targetPageSize !== this.snapshot.pageSize;
+    const page_sizeChanged = targetpage_size !== this.snapshot.page_size;
 
     // Always trigger if explicitly called with different page/size or not loaded yet
-    if (!this.loaded || pageChanged || pageSizeChanged || page !== undefined || pageSize !== undefined) {
-      this.trigger$.next({ page: targetPage, pageSize: targetPageSize });
+    if (!this.loaded || pageChanged || page_sizeChanged || page !== undefined || page_size !== undefined) {
+      this.trigger$.next({ page: targetPage, page_size: targetpage_size });
     }
   }
 
@@ -203,8 +203,8 @@ export class SavedJobsStoreService {
           ...currentData,
           bookmarks: updatedBookmarks,
           totalCount: Math.max(0, currentData.totalCount - 1),
-          totalPages: this._pageSize > 0
-            ? Math.max(1, Math.ceil((currentData.totalCount - 1) / this._pageSize))
+          totalPages: this._page_size > 0
+            ? Math.max(1, Math.ceil((currentData.totalCount - 1) / this._page_size))
             : 1
         };
         this.savedJobsDataSubject.next(updatedData);
@@ -225,13 +225,13 @@ export class SavedJobsStoreService {
    */
   reset(): void {
     this._page = this.defaultPage;
-    this._pageSize = this.defaultPageSize;
+    this._page_size = this.defaultpage_size;
     this.loaded = false;
     const emptyData: SavedJobsData = {
       bookmarks: [],
       totalCount: 0,
       currentPage: 1,
-      pageSize: 10,
+      page_size: 10,
       totalPages: 0
     };
     this.savedJobsDataSubject.next(emptyData);

@@ -20,7 +20,7 @@ export class SavedJobs extends Base implements OnInit {
 
   // Paging info
   page = 1;
-  pageSize = 10;
+  page_size = 10;
   totalCount = 0;
 
   // UI state
@@ -44,7 +44,7 @@ export class SavedJobs extends Base implements OnInit {
         this.bookmarks = data.bookmarks;
         this.totalCount = data.totalCount;
         this.page = data.currentPage;
-        this.pageSize = data.pageSize;
+        this.page_size = data.page_size;
         this.errorMessage = null;
       },
       error: (err) => {

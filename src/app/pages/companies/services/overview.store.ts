@@ -55,7 +55,7 @@ export class OverviewStoreService {
     this.patchState({ loadingApplications: true });
     this.applicationService.getAllJobApplications({ 
       ordering: '-applied_at',
-      pageSize: 4 
+      page_size: 4 
     }).subscribe({
       next: (response) => {
         this.patchState({
@@ -75,7 +75,7 @@ export class OverviewStoreService {
     this.jobService.getMyJobs({
       ordering: '-created_at',
       page: 1,
-      pageSize: 3
+      page_size: 3
     }).subscribe({
       next: (response) => {
         const normalizedJobs = (response.results || []).map(job => ({

@@ -15,7 +15,7 @@ export interface ApplicantsState {
   };
   filters: {
     page: number;
-    pageSize: number;
+    page_size: number;
     status: string; // 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected'
     jobId: number | null;
   };
@@ -39,7 +39,7 @@ export class ApplicantsStoreService {
     },
     filters: {
       page: 1,
-      pageSize: 5,
+      page_size: 5,
       status: 'all',
       jobId: null
     }
@@ -57,10 +57,10 @@ export class ApplicantsStoreService {
   readonly statusCounts = computed(() => this.state().statusCounts);
   readonly hasNext = computed(() => {
     const { totalCount, filters } = this.state();
-    return filters.page * filters.pageSize < totalCount;
+    return filters.page * filters.page_size < totalCount;
   });
   readonly hasPrevious = computed(() => this.state().filters.page > 1);
-  readonly totalPages = computed(() => Math.ceil(this.state().totalCount / this.state().filters.pageSize));
+  readonly totalPages = computed(() => Math.ceil(this.state().totalCount / this.state().filters.page_size));
 
   // Triggers
   private filters$ = new Subject<ApplicantsState['filters']>();
@@ -78,7 +78,7 @@ export class ApplicantsStoreService {
         const params: any = {
           ordering: '-applied_at',
           page: filters.page,
-          pageSize: filters.pageSize
+          page_size: filters.page_size
         };
 
         if (filters.jobId) {
@@ -168,7 +168,7 @@ export class ApplicantsStoreService {
         this.applicationService.getAllJobApplications({
           ordering: '-applied_at',
           page: 1,
-          pageSize: currentState.filters.pageSize
+          page_size: currentState.filters.page_size
         }).subscribe(response => {
           if (response.status_counts) {
             const backendCounts = response.status_counts;

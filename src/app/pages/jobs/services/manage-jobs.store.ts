@@ -87,7 +87,7 @@ export class ManageJobsStoreService {
 
   loadJobs(): void {
     this.patchState({ loading: true });
-    this.jobService.getMyJobs({ page: 1, pageSize: 50, ordering: '-created_at' }).subscribe({
+    this.jobService.getMyJobs({ page: 1, page_size: 50, ordering: '-created_at' }).subscribe({
       next: res => {
         const list = (res?.results ?? []).map((j: any) => ({
           ...j,

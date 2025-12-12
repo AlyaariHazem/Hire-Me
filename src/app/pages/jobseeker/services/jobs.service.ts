@@ -32,7 +32,7 @@ export class JobsStoreService {
     experience_level: undefined,
     ordering: undefined,
     page: 1,
-    pageSize: 5
+    page_size: 5
   };
 
   // Current filters state
@@ -89,7 +89,7 @@ export class JobsStoreService {
   private loadJobsData(filters: JobFilters): Observable<JobsData> {
     const requestFilters: JobFilters = {
       ...filters,
-      pageSize: filters.pageSize || 5
+      page_size: filters.page_size || 5
     };
 
     return this.jobService.getJobs(requestFilters).pipe(
@@ -103,8 +103,8 @@ export class JobsStoreService {
         }));
 
         const totalJobs = res.count || 0;
-        const pageSize = requestFilters.pageSize || 5;
-        const totalPages = Math.ceil(totalJobs / pageSize);
+        const page_size = requestFilters.page_size || 5;
+        const totalPages = Math.ceil(totalJobs / page_size);
         const currentPage = filters.page || 1;
 
         const data: JobsData = {

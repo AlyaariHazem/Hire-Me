@@ -75,7 +75,7 @@ export class SearchForJob implements OnInit {
   loading = false;
   totalCount = 0;
   currentPage = 1;
-  pageSize = 6;
+  page_size = 6;
 
   industryFilter: any = null;
   locationFilter: any = null;
@@ -121,7 +121,7 @@ export class SearchForJob implements OnInit {
     
     const params: any = {
       page: this.currentPage,
-      pageSize: this.pageSize,
+      page_size: this.page_size,
     };
 
     if (this.searchTerm) {
@@ -154,7 +154,7 @@ export class SearchForJob implements OnInit {
   }
 
   loadFeaturedCompanies(): void {
-    this.companyDataService.getAllCompanies({ is_featured: true, pageSize: 4 }).subscribe({
+    this.companyDataService.getAllCompanies({ is_featured: true, page_size: 4 }).subscribe({
       next: (response) => {
         this.featuredCompanies = (response.results || []).map(company => this.mapToDisplay(company));
       },
@@ -222,7 +222,7 @@ export class SearchForJob implements OnInit {
 
   onPageChange(event: any): void {
     this.currentPage = event.page + 1; // PrimeNG paginator is 0-based
-    this.pageSize = event.rows;
+    this.page_size = event.rows;
     this.loadCompanies();
   }
 

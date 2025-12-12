@@ -29,7 +29,7 @@ export class Applicants implements OnInit {
   statusFilter = computed(() => this.store.filters().status as StatusFilter);
   jobFilter = computed(() => this.store.filters().jobId);
   currentPage = computed(() => this.store.filters().page);
-  pageSize = computed(() => this.store.filters().pageSize);
+  page_size = computed(() => this.store.filters().page_size);
   totalCount = this.store.totalCount;
   hasNext = this.store.hasNext;
   hasPrevious = this.store.hasPrevious;

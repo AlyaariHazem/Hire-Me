@@ -11,7 +11,7 @@ export interface SharedMessagesState {
   loadingMessages: boolean;
   loadingMore: boolean;
   page: number;
-  pageSize: number;
+  page_size: number;
   hasNext: boolean;
   nextPageUrl: string | null;
   loaded: boolean; // Initial load flag
@@ -29,7 +29,7 @@ export class SharedMessagesStoreService {
     loadingMessages: false,
     loadingMore: false,
     page: 1,
-    pageSize: 5,
+    page_size: 5,
     hasNext: false,
     nextPageUrl: null,
     loaded: false
@@ -60,7 +60,7 @@ export class SharedMessagesStoreService {
     this.applicationService.getAllJobApplications({
       ordering: '-applied_at',
       page: 1,
-      pageSize: this.state().pageSize
+      page_size: this.state().page_size
     }).subscribe({
       next: (response) => {
         this.patchState({
@@ -88,7 +88,7 @@ export class SharedMessagesStoreService {
     this.applicationService.getAllJobApplications({
       ordering: '-applied_at',
       page: nextPage,
-      pageSize: currentState.pageSize
+      page_size: currentState.page_size
     }).subscribe({
       next: (response) => {
         this.patchState({

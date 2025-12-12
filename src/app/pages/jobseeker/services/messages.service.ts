@@ -64,7 +64,7 @@ export class MessagesStoreService {
   private loadApplicationsData(): Observable<Application[]> {
     return this.applicationService.getMyApplications({
       ordering: '-applied_at',
-      pageSize: 100
+      page_size: 100
     }).pipe(
       map((response) => response.results || []),
       catchError((err) => {

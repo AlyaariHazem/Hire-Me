@@ -117,11 +117,12 @@
       overflow: hidden;
       transition: all var(--transition-fast);
       cursor: pointer;
-    }
-    
-    .company-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-color);
+      }
     }
     
     .company-header {
@@ -216,6 +217,12 @@
     .company-actions {
       display: flex;
       gap: 0.75rem;
+      
+      // Prevent card click when clicking buttons
+      button {
+        position: relative;
+        z-index: 1;
+      }
     }
     
     .btn-follow {

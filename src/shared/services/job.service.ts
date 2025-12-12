@@ -27,7 +27,7 @@ export interface JobFilters {
   job_type?: JobType;
   ordering?: string;
   page?: number;
-  pageSize?: number;
+  page_size?: number;
   search?: string;
 }
 

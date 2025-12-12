@@ -165,7 +165,11 @@
     <div class="container">
       <div class="companies-grid">
         @for (company of companiesData; track company.id || company.slug) {
-          <p-card styleClass="company-card">
+          <p-card 
+            styleClass="company-card"
+            (click)="viewCompany(company.slug || company.id)"
+            [style.cursor]="'pointer'"
+          >
             <div class="company-header">
               <div class="company-info">
                 <img 
@@ -212,7 +216,7 @@
                 }
               </div>
 
-              <div class="company-actions">
+              <div class="company-actions" (click)="$event.stopPropagation()">
                 <p-button
                   [label]="company.following ? 'متابع' : 'متابعة'"
                   [icon]="company.following ? 'pi pi-check' : 'pi pi-plus'"
@@ -236,9 +240,9 @@
       <!-- Pagination -->
       <div class="pagination-container">
         <p-paginator
-          [rows]="pageSize"
+          [rows]="page_size"
           [totalRecords]="totalCount"
-          [first]="(currentPage - 1) * pageSize"
+          [first]="(currentPage - 1) * page_size"
           (onPageChange)="onPageChange($event)"
           [rowsPerPageOptions]="[6, 12, 24, 48]"
         ></p-paginator>
