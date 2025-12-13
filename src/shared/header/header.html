@@ -55,7 +55,7 @@
           </a>
         </li>
         @if (isLoggedIn() && role() === 'jobseeker') {
-        <li role="none">
+        <li role="none" (click)="$event.stopPropagation()">
           <p-button
             label="تسجيل الخروج"
             icon="pi pi-sign-out"
