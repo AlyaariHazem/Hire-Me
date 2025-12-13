@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Subject, Observable, exhaustMap, tap, shareReplay, map, catchError, of, BehaviorSubject, startWith } from 'rxjs';
+import { Subject, Observable, exhaustMap, tap, shareReplay, map, catchError, of, BehaviorSubject, startWith, merge, distinctUntilChanged } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { JobService, JobFilters } from 'shared/services/job.service';
 import { JobItem } from '@app/companies/models';
@@ -66,7 +66,8 @@ export class SavedJobsStoreService {
     totalPages: 0
   });
 
-  readonly savedJobs$: Observable<SavedJobsData> = this.trigger$.pipe(
+  // Trigger loading jobs from API
+  private readonly loadedJobs$: Observable<SavedJobsData> = this.trigger$.pipe(
     exhaustMap(({ page, page_size }) => {
       this.loadingSubject.next(true);
       return this.loadSavedJobsData(page, page_size);
@@ -74,9 +75,17 @@ export class SavedJobsStoreService {
     tap((data) => {
       this.loadingSubject.next(false);
       this.loaded = true;
+      // Update subject, which will emit to all subscribers
       this.savedJobsDataSubject.next(data);
-    }),
-    startWith(this.savedJobsDataSubject.value),
+    })
+  );
+
+  // Subscribe to trigger pipeline (but actual emissions come from subject)
+  // This ensures the pipeline runs when triggered
+  private readonly triggerSubscription = this.loadedJobs$.subscribe();
+
+  // Public observable - directly from subject so it emits on all updates (API + manual)
+  readonly savedJobs$: Observable<SavedJobsData> = this.savedJobsDataSubject.asObservable().pipe(
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
@@ -189,25 +198,66 @@ export class SavedJobsStoreService {
   }
 
   /**
-   * Remove bookmark and update list
+   * Add a bookmark to the store (without API call)
+   * Used when bookmarking from other pages (e.g., jobs page)
+   */
+  addBookmarkToStore(job: JobItem): void {
+    const currentData = this.savedJobsDataSubject.value;
+    
+    // Check if already exists
+    const exists = currentData.bookmarks.some(b => b.job.id === job.id);
+    if (exists) {
+      return; // Already in store
+    }
+
+    // Create a new bookmark item
+    const newBookmark: BookmarkedJobItem = {
+      id: Date.now(), // Temporary ID, will be replaced when data is refreshed
+      job: job,
+      created_at: new Date().toISOString()
+    };
+
+    const updatedBookmarks = [newBookmark, ...currentData.bookmarks];
+    const newTotalCount = currentData.totalCount + 1;
+    const updatedData: SavedJobsData = {
+      ...currentData,
+      bookmarks: updatedBookmarks,
+      totalCount: newTotalCount,
+      totalPages: this._page_size > 0
+        ? Math.max(1, Math.ceil(newTotalCount / this._page_size))
+        : 1
+    };
+    this.savedJobsDataSubject.next(updatedData);
+  }
+
+  /**
+   * Remove a bookmark from the store (without API call)
+   * Used when unbookmarking from other pages (e.g., jobs page)
+   */
+  removeBookmarkFromStore(jobId: number): void {
+    const currentData = this.savedJobsDataSubject.value;
+    const updatedBookmarks = currentData.bookmarks.filter(
+      (bookmark) => bookmark.job.id !== jobId
+    );
+    const newTotalCount = Math.max(0, currentData.totalCount - 1);
+    const updatedData: SavedJobsData = {
+      ...currentData,
+      bookmarks: updatedBookmarks,
+      totalCount: newTotalCount,
+      totalPages: this._page_size > 0
+        ? Math.max(1, Math.ceil(newTotalCount / this._page_size))
+        : 1
+    };
+    this.savedJobsDataSubject.next(updatedData);
+  }
+
+  /**
+   * Remove bookmark and update list (with API call)
    */
   removeBookmark(jobId: number): Observable<any> {
     return this.jobService.bookmarkJob(jobId).pipe(
       tap(() => {
-        // Remove from current list
-        const currentData = this.savedJobsDataSubject.value;
-        const updatedBookmarks = currentData.bookmarks.filter(
-          (bookmark) => bookmark.job.id !== jobId
-        );
-        const updatedData: SavedJobsData = {
-          ...currentData,
-          bookmarks: updatedBookmarks,
-          totalCount: Math.max(0, currentData.totalCount - 1),
-          totalPages: this._page_size > 0
-            ? Math.max(1, Math.ceil((currentData.totalCount - 1) / this._page_size))
-            : 1
-        };
-        this.savedJobsDataSubject.next(updatedData);
+        this.removeBookmarkFromStore(jobId);
       })
     );
   }

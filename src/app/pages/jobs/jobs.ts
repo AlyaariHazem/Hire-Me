@@ -16,6 +16,7 @@ import { Base } from 'shared/base/base';
 import { Router } from '@angular/router';
 import { AuthStateService } from 'app/auth/auth-state.service';
 import { JobsStoreService } from 'app/pages/jobseeker/services/jobs.service';
+import { SavedJobsStoreService } from 'app/pages/jobseeker/services/saved-jobs.service';
 
 @Component({
   selector: 'app-jobs',
@@ -27,6 +28,7 @@ export class Jobs extends Base {
   router = inject(Router);
   authState = inject(AuthStateService);
   jobsStore = inject(JobsStoreService);
+  savedJobsStore = inject(SavedJobsStoreService);
   constructor(
     private loaderService: LoaderService
   ) {
@@ -384,6 +386,16 @@ export class Jobs extends Base {
         // update UI state so button text / class change immediately
         job.is_bookmarked = newValue;
         this.jobsStore.updateJob(job.id, { is_bookmarked: newValue });
+        
+        // Update saved jobs store to keep it in sync
+        if (newValue) {
+          // Job was bookmarked - add to saved jobs store
+          this.savedJobsStore.addBookmarkToStore(job);
+        } else {
+          // Job was unbookmarked - remove from saved jobs store
+          this.savedJobsStore.removeBookmarkFromStore(job.id);
+        }
+        
         this.savingJobs.delete(job.id);
 
         this.toastr.success(
