@@ -188,7 +188,7 @@ private teardownDataBindings(): void {
           this.teardownDataBindings();
           this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
           // Force a full page reload to the login page to clear all state/guards
-          window.location.href = '/login';
+          this.router.navigate(['/login']);
         });
       }
     });
