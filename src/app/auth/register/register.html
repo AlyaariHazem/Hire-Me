@@ -139,7 +139,7 @@
         }
       </div>
 
-      <button type="submit" class="auth-submit">إنشاء الحساب</button>
+      <button type="submit" [disabled]="isLoading()" class="auth-submit">إنشاء الحساب</button>
     </form>
 
     <div class="auth-divider">
