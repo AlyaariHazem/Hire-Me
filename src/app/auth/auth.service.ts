@@ -1,9 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AuthStateService } from './auth-state.service';
 import { UserRole } from 'core/types';
+import { ProfileStoreService } from 'shared/services/profile.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private profileStore = inject(ProfileStoreService);
+
   constructor(private state: AuthStateService) {}
 
   // English: convenience wrappers
@@ -19,5 +22,11 @@ export class AuthService {
     this.state.setAuth(this.state.token() ?? null, role);
   }
 
-  logout() { this.state.clear(); }
+  logout() {
+    // Clear auth state
+    this.state.clear();
+    // Clear profile store to remove stale user data
+    this.profileStore.reset();
+    window.location.reload();
+  }
 }

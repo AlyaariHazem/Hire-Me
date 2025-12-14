@@ -25,6 +25,7 @@ import { environment } from 'environments/environment';
 import { ConfirmationService } from 'primeng/api';
 import { UserType } from 'core/types';
 import { AuthStateService } from 'app/auth/auth-state.service';
+import { AuthService } from 'app/auth/auth.service';
 
 
 @Component({
@@ -101,6 +102,7 @@ export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
 
   cdr = inject(ChangeDetectorRef);
   logoutService = inject(Logout);
+  authService = inject(AuthService);
   toastr = inject(ToastrService);
   private confirmationService = inject(ConfirmationService);
 
@@ -183,11 +185,11 @@ private teardownDataBindings(): void {
       rejectLabel: 'لا',
       accept: () => {
         this.logoutService.logout().subscribe((res: any) => {
-          this.authState.clear();
-          this.profileStore.reset();
           this.teardownDataBindings();
+          this.authService.logout();
           this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
           // Force a full page reload to the login page to clear all state/guards
+          this.authService.logout();
           this.router.navigate(['/login']);
         });
       }
