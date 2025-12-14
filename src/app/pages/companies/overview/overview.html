@@ -45,8 +45,16 @@
         <span class="employer-stat-title">الوظائف النشطة</span>
         <span class="employer-stat-icon">💼</span>
       </div>
-      <div class="employer-stat-value">5</div>
-      <div class="employer-stat-change">+2 هذا الشهر</div>
+      <div class="employer-stat-value">{{ activeJobsThisMonth() }}</div>
+      <div class="employer-stat-change">
+        @if (getJobsAddedThisMonth() > 0) {
+          +{{ getJobsAddedThisMonth() }} هذا الشهر
+        } @else if (getJobsAddedThisMonth() < 0) {
+          {{ getJobsAddedThisMonth() }} هذا الشهر
+        } @else {
+          لا يوجد تغيير
+        }
+      </div>
     </div>
 
     <div class="employer-stat-card">
@@ -54,8 +62,8 @@
         <span class="employer-stat-title">إجمالي المتقدمين</span>
         <span class="employer-stat-icon">👥</span>
       </div>
-      <div class="employer-stat-value">89</div>
-      <div class="employer-stat-change">+23 هذا الأسبوع</div>
+      <div class="employer-stat-value">{{ totalApplicantsThisWeek() }}</div>
+      <div class="employer-stat-change">هذا الأسبوع</div>
     </div>
 
     <div class="employer-stat-card">
@@ -63,7 +71,7 @@
         <span class="employer-stat-title">متقدمون جدد</span>
         <span class="employer-stat-icon">🆕</span>
       </div>
-      <div class="employer-stat-value">12</div>
+      <div class="employer-stat-value">{{ newApplicantsToday() }}</div>
       <div class="employer-stat-change">اليوم</div>
     </div>
 
@@ -72,8 +80,8 @@
         <span class="employer-stat-title">مشاهدات الوظائف</span>
         <span class="employer-stat-icon">👁️</span>
       </div>
-      <div class="employer-stat-value">1,234</div>
-      <div class="employer-stat-change">+156 هذا الأسبوع</div>
+      <div class="employer-stat-value">{{ totalJobViews().toLocaleString() }}</div>
+      <div class="employer-stat-change">{{ getViewsChangeText() }}</div>
     </div>
   </div>
   }

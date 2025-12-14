@@ -21,6 +21,13 @@ export class Overview implements OnInit {
   recentJobs = this.store.recentJobs;
   loadingApplications = this.store.loadingApplications;
   loadingJobs = this.store.loadingJobs;
+  
+  // Stats from store
+  activeJobsThisMonth = this.store.activeJobsThisMonth;
+  totalApplicantsThisWeek = this.store.totalApplicantsThisWeek;
+  newApplicantsToday = this.store.newApplicantsToday;
+  totalJobViews = this.store.totalJobViews;
+  jobViewsThisWeek = this.store.jobViewsThisWeek;
 
   ngOnInit(): void {
     this.store.init();
@@ -206,5 +213,36 @@ export class Overview implements OnInit {
 
   viewAllJobs(): void {
     this.router.navigate(['/companies/manage-jobs']);
+  }
+
+  // Helper method to calculate jobs added this month
+  getJobsAddedThisMonth(): number {
+    const jobs = this.store.allJobs();
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    
+    const thisMonthJobs = jobs.filter(job => {
+      if (!job.is_active) return false;
+      const created = new Date(job.created_at);
+      return created >= startOfMonth;
+    }).length;
+    
+    const lastMonthJobs = jobs.filter(job => {
+      if (!job.is_active) return false;
+      const created = new Date(job.created_at);
+      return created >= lastMonthStart && created < startOfMonth;
+    }).length;
+    
+    return thisMonthJobs - lastMonthJobs;
+  }
+
+  // Helper method to format views change
+  getViewsChangeText(): string {
+    const change = this.jobViewsThisWeek();
+    if (change > 0) {
+      return `+${change.toLocaleString()} هذا الأسبوع`;
+    }
+    return 'لا يوجد تغيير';
   }
 }
