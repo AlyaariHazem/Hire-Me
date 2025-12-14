@@ -38,6 +38,12 @@ export class Login extends Base implements OnInit {
   phone: string = '';
   password: string = '';
   isSubmitting: boolean = false;
+  
+  // Phone verification state
+  showVerificationModal = false;
+  verificationCode = '';
+  isVerifying = false;
+  isResending = false;
 
   ngOnInit(): void {
     const token = localStorage.getItem('access');
@@ -159,7 +165,20 @@ export class Login extends Base implements OnInit {
         });
       },
       error: (err) => {
-        this.errors.error(err, { join: true });
+        // Check if error is about phone verification
+        const errorMessage = err?.error?.data?.non_field_errors?.[0] || 
+                            err?.error?.non_field_errors?.[0] ||
+                            err?.error?.message || '';
+        
+        if (errorMessage.includes('يجب التحقق من رقم الهاتف أولاً') || 
+            errorMessage.includes('يجب التحقق من رقم الهاتف')) {
+          // Show verification modal
+          this.showVerificationModal = true;
+          this.toastr.info('يجب التحقق من رقم الهاتف أولاً. تم إرسال رمز التحقق إلى رقم الهاتف الخاص بك');
+        } else {
+          // Show other errors normally
+          this.errors.error(err, { join: true });
+        }
         this.isSubmitting = false;
       },
     });
@@ -180,5 +199,66 @@ export class Login extends Base implements OnInit {
 
   navigateToRegister(): void {
     this.router.navigate(['/register']);
+  }
+
+  verifyCode(): void {
+    if (!this.verificationCode || this.verificationCode.length < 6) {
+      this.toastr.error('الرجاء إدخال رمز التحقق الكامل');
+      return;
+    }
+
+    this.isVerifying = true;
+
+    // API endpoint: POST /api/accounts/verify-phone/ (as per API docs)
+    const verifyUrl = `${environment.apiBaseUrl}/api/accounts/verify-phone/`;
+    
+    this.http.post(verifyUrl, {
+      phone: this.phone,
+      verification_code: this.verificationCode
+    }).subscribe({
+      next: (res: any) => {
+        this.isVerifying = false;
+        this.toastr.success('تم التحقق بنجاح');
+        this.showVerificationModal = false;
+        
+        // After verification, retry login
+        this.login();
+      },
+      error: (err) => {
+        this.isVerifying = false;
+        this.errors.error(err, { join: true });
+        this.toastr.error('رمز التحقق غير صحيح');
+      }
+    });
+  }
+
+  resendVerificationCode(): void {
+    if (!this.phone) {
+      this.toastr.error('رقم الهاتف غير متوفر');
+      return;
+    }
+
+    this.isResending = true;
+
+    // API endpoint: POST /api/accounts/resend-verification-code/
+    const resendUrl = `${environment.apiBaseUrl}/api/accounts/resend-verification-code/`;
+    
+    this.http.post(resendUrl, {
+      phone: this.phone
+    }).subscribe({
+      next: () => {
+        this.isResending = false;
+        this.toastr.success('تم إعادة إرسال رمز التحقق');
+      },
+      error: (err) => {
+        this.isResending = false;
+        this.errors.error(err, { join: true });
+      }
+    });
+  }
+
+  closeVerificationModal(): void {
+    this.showVerificationModal = false;
+    this.verificationCode = '';
   }
 }
