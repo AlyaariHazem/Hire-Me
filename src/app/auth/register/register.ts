@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { environment } from 'environments/environment';
 import { CompanyService } from 'app/pages/companies/core/services/company.service';
 import { Base } from 'shared/base/base';
+import { AuthService } from '../auth.service';
+import { UserRole } from 'core/types';
 
 
 @Component({
@@ -19,6 +21,7 @@ export class Register extends Base {
   user = true;      // job seeker default
   admin = false;    // employer
   companyService = inject(CompanyService);
+  auth = inject(AuthService);
 
   // Bind to template
   model = {
@@ -35,6 +38,9 @@ export class Register extends Base {
     private router: Router
   ) {
     super();
+    // Clear any stale auth data when entering register page
+    // This ensures a clean state when switching between accounts
+    this.auth.logout();
   }
 
   selectType(type: 'jobseeker' | 'employer') {
@@ -78,11 +84,30 @@ export class Register extends Base {
 
     this.http.post(environment.getUrl('register', 'accounts'), payload).subscribe({
       next: (res: any) => {
+        const access = res?.data?.token as string | undefined;
+        
+        if (!access) {
+          this.toastr.error('استجابة غير متوقعة من الخادم: لم يتم استلام رمز الدخول.');
+          return;
+        }
+
+        // Determine role based on user type selection
+        const role: UserRole = this.user ? 'jobseeker' : 'employer';
+        
+        // Clear any stale auth data first
+        this.auth.logout();
+        
+        // Set token and role using AuthService
+        this.auth.setTokens(access, res?.refresh);
+        this.auth.setRole(role);
+        
         this.toastr.success('تم إنشاء الحساب بنجاح');
-        // Option A: send user to login
-        if(this.user){
+        
+        if (this.user) {
+          // Jobseeker: navigate to jobseeker dashboard
           this.router.navigateByUrl('/jobseeker');
         } else {
+          // Employer: create company profile then navigate
           const resCompany: any = {
             name: res.data.user.username,
             description: 'Default description',
@@ -96,18 +121,23 @@ export class Register extends Base {
             website: '',
             phone: '',
             employees_count: 1
-
-          }
-          debugger;
-          localStorage.setItem('access', res.data.token);
-          this.companyService.createCompany(resCompany).subscribe();
-          this.router.navigateByUrl('/companies');
+          };
+          
+          this.companyService.createCompany(resCompany).subscribe({
+            next: () => {
+              this.router.navigateByUrl('/companies');
+            },
+            error: (err) => {
+              // Even if company creation fails, user is logged in
+              // Navigate anyway - they can create company later
+              console.error('Failed to create company:', err);
+              this.router.navigateByUrl('/companies');
+            }
+          });
         }
-        // Option B: if API returns tokens, you can store and redirect directly:
-        // localStorage.setItem('access', res.access); ...
       },
       error: (err) => {
-        this.errors.error(err, { join: true }) 
+        this.errors.error(err, { join: true });
       }
     });
   }
