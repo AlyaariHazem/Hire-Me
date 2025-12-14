@@ -40,13 +40,14 @@ export class Login extends Base implements OnInit {
   isSubmitting: boolean = false;
 
   ngOnInit(): void {
+    const token = localStorage.getItem('access');
     // Clear profile store if user is not logged in (remove stale data)
     if (!this.auth.isLoggedIn()) {
       this.profileStore.reset();
     }
     
     // If token already exists, skip login
-    if (this.auth.isLoggedIn()) {
+    if (token) {
       const role = this.auth.role ?? 'jobseeker';
       this.router.navigateByUrl(role === 'employer' ? '/companies' : '/jobseeker');
     }

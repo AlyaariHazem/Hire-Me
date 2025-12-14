@@ -23,10 +23,11 @@ export class AuthService {
   }
 
   logout() {
-    // Clear auth state
+    // Clear auth state (removes tokens and role from localStorage and signals)
     this.state.clear();
     // Clear profile store to remove stale user data
     this.profileStore.reset();
-    window.location.reload();
+    // Navigate to login page with full reload to clear all state/guards
+    window.location.href = '/login';
   }
 }

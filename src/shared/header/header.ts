@@ -184,13 +184,20 @@ private teardownDataBindings(): void {
       acceptLabel: 'نعم',
       rejectLabel: 'لا',
       accept: () => {
-        this.logoutService.logout().subscribe((res: any) => {
-          this.teardownDataBindings();
-          this.authService.logout();
-          this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
-          // Force a full page reload to the login page to clear all state/guards
-          this.authService.logout();
-          this.router.navigate(['/login']);
+        this.logoutService.logout().subscribe({
+          next: (res: any) => {
+            this.teardownDataBindings();
+            this.toastr.success(res?.data?.message ?? 'تم تسجيل الخروج');
+            // authService.logout() clears state and navigates to /login
+            this.authService.logout();
+          },
+          error: () => {
+            // Even if API call fails, clear local state
+            this.teardownDataBindings();
+            this.toastr.success('تم تسجيل الخروج');
+            // authService.logout() clears state and navigates to /login
+            this.authService.logout();
+          }
         });
       }
     });
@@ -220,9 +227,8 @@ private teardownDataBindings(): void {
       'user-edit': '/companies/user-edit',
     };
     if (action === 'logout') {
-      localStorage.removeItem('access');
-      localStorage.removeItem('role');
-      this.router.navigate(['/login']);
+      // Use authService.logout() to properly clear all state
+      this.authService.logout();
     } else if (routes[action]) {
       this.router.navigate([routes[action]]);
     }
@@ -245,9 +251,8 @@ private teardownDataBindings(): void {
     };
 
     if (action === 'logout') {
-      this.authState.clear();
-      this.mode = 'public';
-      this.router.navigate(['/login']);
+      // Use authService.logout() to properly clear all state
+      this.authService.logout();
     } else if (routes[action]) {
       this.router.navigate([routes[action]]);
     }
