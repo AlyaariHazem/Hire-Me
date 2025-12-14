@@ -185,5 +185,63 @@
   </div>
 </div>
 
+<!-- Verification Modal -->
+@if (showVerificationModal()) {
+<div class="verification-overlay" (click)="closeVerificationModal()">
+  <div class="verification-modal" (click)="$event.stopPropagation()">
+    <div class="verification-header">
+      <h2>التحقق من رقم الهاتف</h2>
+      <button class="close-btn" (click)="closeVerificationModal()">&times;</button>
+    </div>
+    <div class="verification-body">
+      <p class="verification-info">
+        تم إرسال رمز التحقق إلى رقم الهاتف: <strong>{{ registeredPhone }}</strong>
+      </p>
+      <div class="form-group">
+        <label for="verificationCode" class="form-label">رمز التحقق</label>
+        <input
+          type="text"
+          id="verificationCode"
+          class="form-input verification-code-input"
+          [(ngModel)]="verificationCode"
+          placeholder="أدخل رمز التحقق"
+          maxlength="6"
+          inputmode="numeric"
+          autofocus
+          (keyup.enter)="verifyCode()"
+        />
+      </div>
+      <button
+        type="button"
+        class="auth-submit"
+        (click)="verifyCode()"
+        [disabled]="isVerifying() || !verificationCode"
+      >
+        @if (isVerifying()) {
+          جاري التحقق...
+        } @else {
+          التحقق
+        }
+      </button>
+      <div class="resend-code">
+        <p>لم تستلم الرمز؟</p>
+        <button
+          type="button"
+          class="resend-btn"
+          (click)="resendVerificationCode()"
+          [disabled]="isResending()"
+        >
+          @if (isResending()) {
+            جاري الإرسال...
+          } @else {
+            إعادة إرسال الرمز
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
 <!-- Footer -->
 <app-footer></app-footer>

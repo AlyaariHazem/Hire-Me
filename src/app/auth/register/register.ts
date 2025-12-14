@@ -24,6 +24,11 @@ export class Register extends Base {
   auth = inject(AuthService);
 
   isLoading = signal(false);
+  showVerificationModal = signal(false);
+  verificationCode = '';
+  isVerifying = signal(false);
+  isResending = signal(false);
+  registeredPhone = '';
 
   // Bind to template
   model = {
@@ -90,60 +95,29 @@ export class Register extends Base {
 
     this.http.post(environment.getUrl('register', 'accounts'), payload).subscribe({
       next: (res: any) => {
-        const access = res?.data?.token as string | undefined;
         this.isLoading.set(false);
-
-        if (!access) {
-          this.toastr.error('استجابة غير متوقعة من الخادم: لم يتم استلام رمز الدخول.');
-          return;
+        
+        // Check if verification is required
+        const isVerified = res?.data?.user?.is_verified ?? false;
+        
+        if (isVerified) {
+          // User is already verified, proceed with login
+          const access = res?.data?.token as string | undefined;
+          if (access) {
+            const role: UserRole = this.user ? 'jobseeker' : 'employer';
+            this.auth.setTokens(access, res?.refresh);
+            this.auth.setRole(role);
+            this.toastr.success('تم إنشاء الحساب بنجاح');
+            this.completeRegistration(role);
+          }
+        } else {
+          // Show verification modal
+          this.registeredPhone = this.model.phone;
+          this.showVerificationModal.set(true);
+          this.toastr.info('تم إرسال رمز التحقق إلى رقم الهاتف الخاص بك');
         }
-
-        // Determine role based on user type selection
-        const role: UserRole = this.user ? 'jobseeker' : 'employer';
-        
-        // Clear any stale auth data first
-        // this.auth.logout();
-        
-        // Set token and role using AuthService
-        // this.auth.setTokens(access, res?.refresh);
-        // this.auth.setRole(role);
-        
-        this.toastr.success('تم إنشاء الحساب بنجاح');
         
         f.reset();
-
-        // if (this.user) {
-        //   // Jobseeker: navigate to jobseeker dashboard
-        //   this.router.navigateByUrl('/jobseeker');
-        // } else {
-        //   // Employer: create company profile then navigate
-        //   const resCompany: any = {
-        //     name: res.data.user.username,
-        //     description: 'Default description',
-        //     email: res.data.user.email,
-        //     city: 'Sana\'a',
-        //     size: 'startup',
-        //     industry: 'technology',
-        //     address: 'Default address',
-        //     country: 'Yemen',
-        //     founded_year: new Date().getFullYear(),
-        //     website: '',
-        //     phone: '',
-        //     employees_count: 1
-        //   };
-          
-        //   this.companyService.createCompany(resCompany).subscribe({
-        //     next: () => {
-        //       this.router.navigateByUrl('/companies');
-        //     },
-        //     error: (err) => {
-        //       // Even if company creation fails, user is logged in
-        //       // Navigate anyway - they can create company later
-        //       console.error('Failed to create company:', err);
-        //       this.router.navigateByUrl('/companies');
-        //     }
-        //   });
-        // }
       },
       error: (err) => {
         this.isLoading.set(false);
@@ -152,7 +126,134 @@ export class Register extends Base {
     });
   }
   isInvalidPhone(): boolean {
-  const phoneRegex = /^7[0-9]{8}$/;
-  return !phoneRegex.test(this.model.phone);
-}
+    const phoneRegex = /^7[0-9]{8}$/;
+    return !phoneRegex.test(this.model.phone);
+  }
+
+  verifyCode(): void {
+    if (!this.verificationCode || this.verificationCode.length < 4) {
+      this.toastr.error('الرجاء إدخال رمز التحقق');
+      return;
+    }
+
+    this.isVerifying.set(true);
+
+    // API endpoint: POST /api/accounts/verify-phone-code/
+    const verifyUrl = `${environment.apiBaseUrl}/api/accounts/verify-phone-code/`;
+    
+    this.http.post(verifyUrl, {
+      phone: this.registeredPhone,
+      verification_code: this.verificationCode
+    }).subscribe({
+      next: (res: any) => {
+        this.isVerifying.set(false);
+        
+        // After verification, login the user
+        const access = res?.data?.token as string | undefined;
+        if (access) {
+          const role: UserRole = this.user ? 'jobseeker' : 'employer';
+          this.auth.setTokens(access, res?.refresh);
+          this.auth.setRole(role);
+          this.toastr.success('تم التحقق بنجاح');
+          this.showVerificationModal.set(false);
+          this.completeRegistration(role);
+        } else {
+          // If no token in response, try to login
+          this.loginAfterVerification();
+        }
+      },
+      error: (err) => {
+        this.isVerifying.set(false);
+        this.errors.error(err, { join: true });
+        this.toastr.error('رمز التحقق غير صحيح');
+      }
+    });
+  }
+
+  resendVerificationCode(): void {
+    if (!this.registeredPhone) {
+      this.toastr.error('رقم الهاتف غير متوفر');
+      return;
+    }
+
+    this.isResending.set(true);
+
+    // API endpoint: POST /api/accounts/resend-verification-code/
+    const resendUrl = `${environment.apiBaseUrl}/api/accounts/resend-verification-code/`;
+    
+    this.http.post(resendUrl, {
+      phone: this.registeredPhone
+    }).subscribe({
+      next: () => {
+        this.isResending.set(false);
+        this.toastr.success('تم إعادة إرسال رمز التحقق');
+      },
+      error: (err) => {
+        this.isResending.set(false);
+        this.errors.error(err, { join: true });
+      }
+    });
+  }
+
+  private loginAfterVerification(): void {
+    // Login after verification
+    this.http.post(environment.getUrl('login'), {
+      phone: this.registeredPhone,
+      password: this.model.password
+    }).subscribe({
+      next: (res: any) => {
+        const access = res?.data?.token as string | undefined;
+        if (access) {
+          const role: UserRole = this.user ? 'jobseeker' : 'employer';
+          this.auth.setTokens(access, res?.refresh);
+          this.auth.setRole(role);
+          this.showVerificationModal.set(false);
+          this.completeRegistration(role);
+        }
+      },
+      error: (err) => {
+        this.errors.error(err, { join: true });
+        this.toastr.error('حدث خطأ أثناء تسجيل الدخول');
+      }
+    });
+  }
+
+  private completeRegistration(role: UserRole): void {
+    if (role === 'jobseeker') {
+      this.router.navigateByUrl('/jobseeker');
+    } else {
+      // Employer: create company profile then navigate
+      const resCompany: any = {
+        name: this.model.email.split('@')[0],
+        description: 'Default description',
+        email: this.model.email,
+        city: 'Sana\'a',
+        size: 'startup',
+        industry: 'technology',
+        address: 'Default address',
+        country: 'Yemen',
+        founded_year: new Date().getFullYear(),
+        website: '',
+        phone: this.model.phone,
+        employees_count: 1
+      };
+      
+      this.companyService.createCompany(resCompany).subscribe({
+        next: () => {
+          this.router.navigateByUrl('/companies');
+        },
+        error: (err) => {
+          // Even if company creation fails, user is logged in
+          // Navigate anyway - they can create company later
+          console.error('Failed to create company:', err);
+          this.router.navigateByUrl('/companies');
+        }
+      });
+    }
+  }
+
+  closeVerificationModal(): void {
+    this.showVerificationModal.set(false);
+    this.verificationCode = '';
+  }
 }
