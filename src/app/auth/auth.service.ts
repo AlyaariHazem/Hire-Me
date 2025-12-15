@@ -2,11 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { AuthStateService } from './auth-state.service';
 import { UserRole } from 'core/types';
 import { ProfileStoreService } from 'shared/services/profile.service';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private profileStore = inject(ProfileStoreService);
-
+  private router = inject(Router);
   constructor(private state: AuthStateService) {}
 
   // English: convenience wrappers
@@ -28,6 +29,7 @@ export class AuthService {
     // Clear profile store to remove stale user data
     this.profileStore.reset();
     // Navigate to login page with full reload to clear all state/guards
-    window.location.href = '/login';
+    // window.location.href = '/login';
+    this.router.navigateByUrl('/login');
   }
 }
