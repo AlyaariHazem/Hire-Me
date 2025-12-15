@@ -13,6 +13,7 @@ import { ManageJobs } from '../jobs/manage-jobs/manage-jobs';
 import { ApplicantsForJob } from './applicants-for-job/applicants-for-job';
 import { Applicants } from './applicants/applicants';
 import { Messages } from 'shared/messages/messages';
+import { Interviews } from './interviews/interviews';
 
 const routes: Routes = [
   {
@@ -87,6 +88,11 @@ const routes: Routes = [
         path: 'applicants-for-job',
         component: ApplicantsForJob,
         data: { breadcrumb: 'المتقدمون للوظيفة' }
+      },
+      {
+        path: 'interviews',
+        component: Interviews,
+        data: { breadcrumb: 'المقابلات' }
       },
     ],
   },
