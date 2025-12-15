@@ -8,10 +8,12 @@ import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Base } from 'shared/base/base';
+import { LoaderService } from 'shared/services/loader.service';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
 
@@ -28,7 +30,8 @@ type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled' | 'reschedul
     SelectModule,
     InputTextModule,
     InputNumberModule,
-    TextareaModule
+    TextareaModule,
+    ProgressSpinnerModule
   ],
   templateUrl: './interviews.html',
   styleUrls: ['./interviews.scss']
@@ -37,6 +40,7 @@ export class Interviews extends Base implements OnInit {
   private interviewService = inject(InterviewService);
   private applicationService = inject(ApplicationService);
   private fb = inject(FormBuilder);
+  private loaderService = inject(LoaderService);
 
   // Data signals
   interviews = signal<Interview[]>([]);
@@ -54,6 +58,7 @@ export class Interviews extends Base implements OnInit {
   editingInterview = signal<Interview | null>(null);
   isEditMode = signal<boolean>(false);
   loadingDetails = signal<boolean>(false);
+  loadingEditData = signal<boolean>(false);
   isSubmitting = signal<boolean>(false);
 
   // Form for scheduling interview
@@ -209,17 +214,25 @@ export class Interviews extends Base implements OnInit {
   openEditModal(interview: Interview): void {
     this.isEditMode.set(true);
     this.editingInterview.set(interview);
+    this.loadingEditData.set(true);
+    this.loaderService.start();
     
     // Load full interview details first
     this.interviewService.getInterviewById(interview.id).subscribe({
       next: (fullInterview) => {
         this.editingInterview.set(fullInterview);
         this.populateFormForEdit(fullInterview);
+        this.loadingEditData.set(false);
+        this.loaderService.stop();
         this.showScheduleModal.set(true);
       },
       error: (err) => {
         console.error('Failed to load interview for editing', err);
         this.toastr.error('فشل في تحميل بيانات المقابلة');
+        this.loadingEditData.set(false);
+        this.loaderService.stop();
+        this.isEditMode.set(false);
+        this.editingInterview.set(null);
       }
     });
   }
@@ -262,6 +275,8 @@ export class Interviews extends Base implements OnInit {
     this.showScheduleModal.set(false);
     this.isEditMode.set(false);
     this.editingInterview.set(null);
+    this.loadingEditData.set(false);
+    this.loaderService.stop(); // Ensure loader is stopped
     this.interviewForm.reset({
       interview_type: 'phone',
       duration_minutes: 30

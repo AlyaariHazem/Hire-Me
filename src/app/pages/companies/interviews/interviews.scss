@@ -413,8 +413,20 @@
 }
 
 .loading-state {
-  padding: 2rem;
+  padding: 3rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 1rem;
+
+  .loading-text {
+    margin: 0;
+    color: var(--text-secondary, #666);
+    font-size: 1rem;
+  }
 }
 
 // Form Styles

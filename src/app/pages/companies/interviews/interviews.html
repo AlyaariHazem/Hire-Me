@@ -231,6 +231,17 @@
       </div>
 
       <div class="modal-body">
+        <!-- Loading state while fetching edit data -->
+        @if (loadingEditData()) {
+          <div class="loading-state">
+            <p-progressSpinner 
+              strokeWidth="6" 
+              [style]="{ 'width': '60px', 'height': '60px' }" 
+              ariaLabel="Loading">
+            </p-progressSpinner>
+            <p class="loading-text">جاري تحميل بيانات المقابلة...</p>
+          </div>
+        } @else {
         <form [formGroup]="interviewForm" (ngSubmit)="scheduleInterview()">
           <!-- Application Selection -->
           <div class="form-group">
@@ -434,6 +445,7 @@
             </button>
           </div>
         </form>
+        }
       </div>
     </div>
   </div>
