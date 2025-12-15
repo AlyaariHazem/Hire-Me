@@ -1,0 +1,328 @@
+<div id="interviews" class="interviews-container">
+  <!-- Header Skeleton -->
+  @if (loading()) {
+  <div class="employer-header">
+    <div class="skeleton-header-content">
+      <p-skeleton width="250px" height="2rem" styleClass="mb-2"></p-skeleton>
+      <p-skeleton width="300px" height="1.2rem"></p-skeleton>
+    </div>
+  </div>
+  }
+
+  <!-- Actual Header -->
+  @if (!loading()) {
+  <div class="employer-header">
+    <div>
+      <h1 class="employer-title">مقابلاتي</h1>
+      <p class="subtitle">عرض جميع المقابلات المجدولة لطلباتي</p>
+    </div>
+  </div>
+  }
+
+  <div class="employer-content-card">
+    <!-- Filters Skeleton -->
+    @if (loading()) {
+    <div class="filters-section">
+      <div class="tab-navigation">
+        @for (item of [1,2,3,4,5]; track item) {
+        <p-skeleton width="140px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+        }
+      </div>
+      <div class="job-filter">
+        <p-skeleton width="150px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+        <p-skeleton width="200px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+      </div>
+    </div>
+    }
+
+    <!-- Filters -->
+    @if (!loading()) {
+    <div class="filters-section">
+      <div class="tab-navigation">
+        <button 
+          class="tab" 
+          [class.active]="statusFilter() === 'all'"
+          (click)="setStatusFilter('all')">
+          الكل ({{ statusCounts().all }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="statusFilter() === 'scheduled'"
+          (click)="setStatusFilter('scheduled')">
+          مجدولة ({{ statusCounts().scheduled }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="statusFilter() === 'completed'"
+          (click)="setStatusFilter('completed')">
+          مكتملة ({{ statusCounts().completed }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="statusFilter() === 'cancelled'"
+          (click)="setStatusFilter('cancelled')">
+          ملغاة ({{ statusCounts().cancelled }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="statusFilter() === 'rescheduled'"
+          (click)="setStatusFilter('rescheduled')">
+          إعادة جدولة ({{ statusCounts().rescheduled }})
+        </button>
+      </div>
+
+      <!-- Interview Type Filter -->
+      <div class="job-filter">
+        <label>تصفية حسب النوع:</label>
+        <select 
+          class="form-select"
+          [value]="interviewTypeFilter()"
+          title="تصفية حسب نوع المقابلة"
+          aria-label="تصفية حسب نوع المقابلة"
+          (change)="setInterviewTypeFilter($any($event.target).value)">
+          <option value="all">جميع الأنواع</option>
+          @for (type of interviewTypes; track type.value) {
+            <option [value]="type.value">{{ type.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    }
+
+    <!-- Loading State Skeleton -->
+    @if (loading()) {
+      <div class="tab-content">
+        @for (item of [1,2,3]; track item) {
+        <div class="interview-item">
+          <div class="interview-info">
+            <div class="candidate-header">
+              <p-skeleton width="60px" height="60px" shape="circle" styleClass="skeleton-avatar"></p-skeleton>
+              <div class="candidate-details">
+                <p-skeleton width="200px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="250px" height="1rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="60%" height="1rem" styleClass="mb-2"></p-skeleton>
+                <div class="candidate-meta">
+                  <p-skeleton width="150px" height="1rem" styleClass="mb-0"></p-skeleton>
+                  <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+                  <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="interview-actions">
+            <p-skeleton width="100px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+            <div class="action-buttons">
+              <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!loading() && filteredInterviews().length === 0) {
+      <div class="tab-content">
+        <div class="empty">
+          <p>لا توجد مقابلات</p>
+        </div>
+      </div>
+    }
+
+    <!-- Interviews List -->
+    @if (!loading() && filteredInterviews().length > 0) {
+      <div class="tab-content">
+        @for (interview of filteredInterviews(); track interview.id) {
+          @if (typeof interview.application === 'object') {
+            <div class="interview-item">
+              <div class="interview-info">
+                <div class="candidate-header">
+                  <div class="company-logo">
+                    <span>🏢</span>
+                  </div>
+                  <div class="candidate-details">
+                    <h4 class="candidate-name">{{ getApplicationInfo(interview).jobTitle }}</h4>
+                    <p class="job-applied-for">
+                      <strong>الشركة:</strong> {{ getApplicationInfo(interview).companyName }}
+                    </p>
+                    <div class="candidate-meta">
+                      <span>📅 {{ formatDate(interview.scheduled_date) }}</span>
+                      <span>🕐 {{ formatTime(interview.scheduled_date) }}</span>
+                      <span>⏱️ {{ interview.duration_minutes }} دقيقة</span>
+                      <span>📋 {{ getInterviewTypeLabel(interview.interview_type) }}</span>
+                    </div>
+                    @if (interview.location) {
+                      <p class="interview-location">📍 {{ interview.location }}</p>
+                    }
+                    @if (interview.meeting_link) {
+                      <p class="interview-link">
+                        <a [href]="interview.meeting_link" target="_blank" rel="noopener noreferrer" (click)="openMeetingLink(interview.meeting_link)">
+                          🔗 رابط الاجتماع
+                        </a>
+                      </p>
+                    }
+                    @if (interview.notes) {
+                      <div class="interview-notes">
+                        <p>{{ interview.notes }}</p>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="interview-actions">
+                <span 
+                  class="interview-status" 
+                  [ngClass]="getStatusClass(interview.status)">
+                  {{ getStatusLabel(interview.status) }}
+                </span>
+                <div class="action-buttons">
+                  <button 
+                    class="btn btn-small btn-primary"
+                    (click)="openDetailsModal(interview)">
+                    عرض التفاصيل
+                  </button>
+                </div>
+                <div class="interview-meta">
+                  <p><strong>المحاور:</strong> {{ interview.interviewer_name }}</p>
+                  <p><strong>البريد:</strong> {{ interview.interviewer_email }}</p>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Interview Details Modal -->
+@if (showDetailsModal()) {
+  <div class="modal-backdrop" (click)="closeDetailsModal()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>تفاصيل المقابلة</h2>
+        <button class="modal-close" (click)="closeDetailsModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+        @if (loadingDetails()) {
+          <div class="loading-state">
+            <p-progressSpinner 
+              strokeWidth="6" 
+              [style]="{ 'width': '60px', 'height': '60px' }" 
+              ariaLabel="Loading">
+            </p-progressSpinner>
+            <p class="loading-text">جاري تحميل التفاصيل...</p>
+          </div>
+        } @else if (selectedInterview()) {
+          @if (typeof selectedInterview()!.application === 'object') {
+            <!-- Job and Company Information -->
+            <div class="detail-section">
+              <h3>معلومات الوظيفة</h3>
+              <div class="detail-content">
+                <div class="detail-item">
+                  <span class="detail-label">الوظيفة:</span>
+                  <span class="detail-value">{{ getApplicationInfo(selectedInterview()!).jobTitle }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">الشركة:</span>
+                  <span class="detail-value">{{ getApplicationInfo(selectedInterview()!).companyName }}</span>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Interview Information -->
+          <div class="detail-section">
+            <h3>معلومات المقابلة</h3>
+            <div class="detail-content">
+              <div class="detail-item">
+                <span class="detail-label">نوع المقابلة:</span>
+                <span class="detail-value">{{ getInterviewTypeLabel(selectedInterview()!.interview_type) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">التاريخ:</span>
+                <span class="detail-value">{{ formatDateOnly(selectedInterview()!.scheduled_date) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">الوقت:</span>
+                <span class="detail-value">{{ formatTime(selectedInterview()!.scheduled_date) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">المدة:</span>
+                <span class="detail-value">{{ selectedInterview()!.duration_minutes }} دقيقة</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">الحالة:</span>
+                <span class="detail-value status-badge" [ngClass]="getStatusClass(selectedInterview()!.status)">
+                  {{ getStatusLabel(selectedInterview()!.status) }}
+                </span>
+              </div>
+              @if (selectedInterview()!.location) {
+                <div class="detail-item">
+                  <span class="detail-label">الموقع:</span>
+                  <span class="detail-value">{{ selectedInterview()!.location }}</span>
+                </div>
+              }
+              @if (selectedInterview()!.meeting_link) {
+                <div class="detail-item">
+                  <span class="detail-label">رابط الاجتماع:</span>
+                  <a [href]="selectedInterview()!.meeting_link" target="_blank" class="detail-link" rel="noopener noreferrer" (click)="openMeetingLink(selectedInterview()!.meeting_link)">
+                    {{ selectedInterview()!.meeting_link }}
+                  </a>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Interviewer Information -->
+          <div class="detail-section">
+            <h3>معلومات المحاور</h3>
+            <div class="detail-content">
+              <div class="detail-item">
+                <span class="detail-label">الاسم:</span>
+                <span class="detail-value">{{ selectedInterview()!.interviewer_name }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">البريد الإلكتروني:</span>
+                <span class="detail-value">
+                  <a [href]="'mailto:' + selectedInterview()!.interviewer_email">
+                    {{ selectedInterview()!.interviewer_email }}
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          @if (selectedInterview()!.notes) {
+            <div class="detail-section">
+              <h3>ملاحظات</h3>
+              <div class="notes-content">
+                <p>{{ selectedInterview()!.notes }}</p>
+              </div>
+            </div>
+          }
+
+          <!-- Action Buttons -->
+          <div class="modal-actions">
+            @if (selectedInterview()!.meeting_link) {
+              <button 
+                class="btn btn-primary"
+                (click)="openMeetingLink(selectedInterview()!.meeting_link)">
+                <i class="pi pi-video"></i>
+                الدخول إلى الاجتماع
+              </button>
+            }
+            <button 
+              class="btn btn-secondary"
+              (click)="closeDetailsModal()">
+              إغلاق
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
