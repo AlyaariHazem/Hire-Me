@@ -202,6 +202,12 @@
                   (click)="viewInterview(interview)">
                   عرض التفاصيل
                 </button>
+                <button 
+                  class="btn btn-small btn-secondary"
+                  (click)="openEditModal(interview)">
+                  <i class="pi pi-pencil"></i>
+                  تعديل
+                </button>
               </div>
               <div class="interview-meta">
                 <p><strong>المحاور:</strong> {{ interview.interviewer_name }}</p>
@@ -220,7 +226,7 @@
   <div class="modal-backdrop" (click)="closeScheduleModal()">
     <div class="modal-dialog modal-dialog-large" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h2>جدولة مقابلة جديدة</h2>
+        <h2>{{ isEditMode() ? 'تعديل المقابلة' : 'جدولة مقابلة جديدة' }}</h2>
         <button class="modal-close" (click)="closeScheduleModal()">×</button>
       </div>
 
@@ -239,11 +245,11 @@
               optionValue="id"
               placeholder="اختر المتقدم"
               [showClear]="true"
-              [disabled]="applications().length === 0"
+              [disabled]="isEditMode() || applications().length === 0"
               styleClass="w-full"
               [class.p-invalid]="interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched">
             </p-select>
-            @if (applications().length === 0 && !loading()) {
+            @if (applications().length === 0 && !loading() && !isEditMode()) {
               <small class="p-error block mt-1">لا توجد طلبات متقدمة متاحة</small>
             }
             @if (interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched) {
@@ -421,9 +427,9 @@
               class="btn btn-primary"
               [disabled]="interviewForm.invalid || isSubmitting()">
               @if (isSubmitting()) {
-                جاري الجدولة...
+                {{ isEditMode() ? 'جاري التحديث...' : 'جاري الجدولة...' }}
               } @else {
-                جدولة المقابلة
+                {{ isEditMode() ? 'حفظ التعديلات' : 'جدولة المقابلة' }}
               }
             </button>
           </div>
@@ -541,6 +547,16 @@
               </div>
             </div>
           }
+
+          <!-- Action Buttons -->
+          <div class="modal-actions">
+            <button 
+              class="btn btn-primary"
+              (click)="openEditModal(selectedInterview()!); closeDetailsModal();">
+              <i class="pi pi-pencil"></i>
+              تعديل المقابلة
+            </button>
+          </div>
         }
       </div>
     </div>

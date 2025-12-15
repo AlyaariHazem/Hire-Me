@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { InterviewService, Interview, CreateInterviewDto, InterviewType, InterviewStatus } from 'shared/services/interview.service';
+import { InterviewService, Interview, CreateInterviewDto, UpdateInterviewDto, InterviewType, InterviewStatus } from 'shared/services/interview.service';
 import { ApplicationService, Application } from 'shared/services/application.service';
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
@@ -51,7 +51,8 @@ export class Interviews extends Base implements OnInit {
   showScheduleModal = signal<boolean>(false);
   showDetailsModal = signal<boolean>(false);
   selectedInterview = signal<Interview | null>(null);
-  selectedApplication = signal<Application | null>(null);
+  editingInterview = signal<Interview | null>(null);
+  isEditMode = signal<boolean>(false);
   loadingDetails = signal<boolean>(false);
   isSubmitting = signal<boolean>(false);
 
@@ -194,23 +195,81 @@ export class Interviews extends Base implements OnInit {
     });
   }
 
-  openScheduleModal(application?: Application): void {
-    if (application) {
-      this.selectedApplication.set(application);
+  openScheduleModal(applicationId?: number): void {
+    this.isEditMode.set(false);
+    this.editingInterview.set(null);
+    if (applicationId) {
       this.interviewForm.patchValue({
-        application: application.id
+        application: applicationId
       });
     }
     this.showScheduleModal.set(true);
   }
 
+  openEditModal(interview: Interview): void {
+    this.isEditMode.set(true);
+    this.editingInterview.set(interview);
+    
+    // Load full interview details first
+    this.interviewService.getInterviewById(interview.id).subscribe({
+      next: (fullInterview) => {
+        this.editingInterview.set(fullInterview);
+        this.populateFormForEdit(fullInterview);
+        this.showScheduleModal.set(true);
+      },
+      error: (err) => {
+        console.error('Failed to load interview for editing', err);
+        this.toastr.error('فشل في تحميل بيانات المقابلة');
+      }
+    });
+  }
+
+  private populateFormForEdit(interview: Interview): void {
+    const scheduledDate = new Date(interview.scheduled_date);
+    const dateStr = scheduledDate.toISOString().split('T')[0];
+    const timeStr = `${scheduledDate.getHours().toString().padStart(2, '0')}:${scheduledDate.getMinutes().toString().padStart(2, '0')}`;
+    
+    const applicationId = typeof interview.application === 'object' 
+      ? interview.application.id 
+      : interview.application;
+
+    this.interviewForm.patchValue({
+      application: applicationId,
+      interview_type: interview.interview_type,
+      scheduled_date: dateStr,
+      scheduled_time: timeStr,
+      duration_minutes: interview.duration_minutes,
+      location: interview.location || '',
+      meeting_link: interview.meeting_link || '',
+      interviewer_name: interview.interviewer_name,
+      interviewer_email: interview.interviewer_email,
+      notes: interview.notes || ''
+    }, { emitEvent: false });
+    
+    // Update the current interview type signal
+    this.currentInterviewType.set(interview.interview_type);
+    
+    // Update validators based on interview type
+    if (interview.interview_type === 'video') {
+      this.interviewForm.get('meeting_link')?.setValidators([Validators.required]);
+    } else {
+      this.interviewForm.get('meeting_link')?.clearValidators();
+    }
+    this.interviewForm.get('meeting_link')?.updateValueAndValidity({ emitEvent: false });
+  }
+
   closeScheduleModal(): void {
     this.showScheduleModal.set(false);
+    this.isEditMode.set(false);
+    this.editingInterview.set(null);
     this.interviewForm.reset({
       interview_type: 'phone',
       duration_minutes: 30
     });
     this.currentInterviewType.set('phone');
+    // Reset validators
+    this.interviewForm.get('meeting_link')?.clearValidators();
+    this.interviewForm.get('meeting_link')?.updateValueAndValidity({ emitEvent: false });
   }
 
   scheduleInterview(): void {
@@ -225,32 +284,62 @@ export class Interviews extends Base implements OnInit {
     // Combine date and time
     const scheduledDateTime = new Date(`${formValue.scheduled_date}T${formValue.scheduled_time}`);
     
-    const payload: CreateInterviewDto = {
-      application: Number(formValue.application),
-      interview_type: formValue.interview_type,
-      scheduled_date: scheduledDateTime.toISOString(),
-      duration_minutes: Number(formValue.duration_minutes),
-      location: formValue.interview_type === 'in_person' ? (formValue.location || null) : null,
-      meeting_link: formValue.interview_type === 'video' ? (formValue.meeting_link || null) : null,
-      interviewer_name: formValue.interviewer_name,
-      interviewer_email: formValue.interviewer_email,
-      notes: formValue.notes || null
-    };
+    if (this.isEditMode() && this.editingInterview()) {
+      // Update existing interview
+      const updatePayload: UpdateInterviewDto = {
+        interview_type: formValue.interview_type,
+        scheduled_date: scheduledDateTime.toISOString(),
+        duration_minutes: Number(formValue.duration_minutes),
+        location: formValue.interview_type === 'in_person' ? (formValue.location || null) : null,
+        meeting_link: formValue.interview_type === 'video' ? (formValue.meeting_link || null) : null,
+        interviewer_name: formValue.interviewer_name,
+        interviewer_email: formValue.interviewer_email,
+        notes: formValue.notes || null
+      };
 
-    this.interviewService.createInterview(payload).subscribe({
-      next: (interview) => {
-        this.toastr.success('تم جدولة المقابلة بنجاح');
-        this.closeScheduleModal();
-        this.loadInterviews();
-        this.isSubmitting.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to schedule interview', err);
-        const errorMsg = err?.error?.message || err?.error?.detail || 'فشل في جدولة المقابلة';
-        this.toastr.error(errorMsg);
-        this.isSubmitting.set(false);
-      }
-    });
+      this.interviewService.patchInterview(this.editingInterview()!.id, updatePayload).subscribe({
+        next: (interview) => {
+          this.toastr.success('تم تحديث المقابلة بنجاح');
+          this.closeScheduleModal();
+          this.loadInterviews();
+          this.isSubmitting.set(false);
+        },
+        error: (err) => {
+          console.error('Failed to update interview', err);
+          const errorMsg = err?.error?.message || err?.error?.detail || 'فشل في تحديث المقابلة';
+          this.toastr.error(errorMsg);
+          this.isSubmitting.set(false);
+        }
+      });
+    } else {
+      // Create new interview
+      const payload: CreateInterviewDto = {
+        application: Number(formValue.application),
+        interview_type: formValue.interview_type,
+        scheduled_date: scheduledDateTime.toISOString(),
+        duration_minutes: Number(formValue.duration_minutes),
+        location: formValue.interview_type === 'in_person' ? (formValue.location || null) : null,
+        meeting_link: formValue.interview_type === 'video' ? (formValue.meeting_link || null) : null,
+        interviewer_name: formValue.interviewer_name,
+        interviewer_email: formValue.interviewer_email,
+        notes: formValue.notes || null
+      };
+
+      this.interviewService.createInterview(payload).subscribe({
+        next: (interview) => {
+          this.toastr.success('تم جدولة المقابلة بنجاح');
+          this.closeScheduleModal();
+          this.loadInterviews();
+          this.isSubmitting.set(false);
+        },
+        error: (err) => {
+          console.error('Failed to schedule interview', err);
+          const errorMsg = err?.error?.message || err?.error?.detail || 'فشل في جدولة المقابلة';
+          this.toastr.error(errorMsg);
+          this.isSubmitting.set(false);
+        }
+      });
+    }
   }
 
   viewInterview(interview: Interview): void {
