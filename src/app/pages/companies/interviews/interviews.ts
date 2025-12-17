@@ -14,6 +14,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DatePicker } from 'primeng/datepicker';
 
 type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
 
@@ -29,6 +30,7 @@ type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled' | 'reschedul
     RouterModule,
     SelectModule,
     InputTextModule,
+    DatePicker,
     InputNumberModule,
     TextareaModule,
     ProgressSpinnerModule
@@ -240,7 +242,12 @@ export class Interviews extends Base implements OnInit {
   private populateFormForEdit(interview: Interview): void {
     const scheduledDate = new Date(interview.scheduled_date);
     const dateStr = scheduledDate.toISOString().split('T')[0];
-    const timeStr = `${scheduledDate.getHours().toString().padStart(2, '0')}:${scheduledDate.getMinutes().toString().padStart(2, '0')}`;
+    // Create a Date object for time picker (timeOnly mode expects a Date object)
+    const timeDate = new Date();
+    timeDate.setHours(scheduledDate.getHours());
+    timeDate.setMinutes(scheduledDate.getMinutes());
+    timeDate.setSeconds(0);
+    timeDate.setMilliseconds(0);
     
     const applicationId = typeof interview.application === 'object' 
       ? interview.application.id 
@@ -250,7 +257,7 @@ export class Interviews extends Base implements OnInit {
       application: applicationId,
       interview_type: interview.interview_type,
       scheduled_date: dateStr,
-      scheduled_time: timeStr,
+      scheduled_time: timeDate,
       duration_minutes: interview.duration_minutes,
       location: interview.location || '',
       meeting_link: interview.meeting_link || '',
@@ -297,7 +304,16 @@ export class Interviews extends Base implements OnInit {
     const formValue = this.interviewForm.value;
     
     // Combine date and time
-    const scheduledDateTime = new Date(`${formValue.scheduled_date}T${formValue.scheduled_time}`);
+    // If scheduled_time is a Date object (from timeOnly DatePicker), extract time
+    let timeStr: string;
+    if (formValue.scheduled_time instanceof Date) {
+      const hours = formValue.scheduled_time.getHours().toString().padStart(2, '0');
+      const minutes = formValue.scheduled_time.getMinutes().toString().padStart(2, '0');
+      timeStr = `${hours}:${minutes}`;
+    } else {
+      timeStr = formValue.scheduled_time;
+    }
+    const scheduledDateTime = new Date(`${formValue.scheduled_date}T${timeStr}`);
     
     if (this.isEditMode() && this.editingInterview()) {
       // Update existing interview

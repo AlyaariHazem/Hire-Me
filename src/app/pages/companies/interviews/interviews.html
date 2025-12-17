@@ -243,49 +243,50 @@
           </div>
         } @else {
         <form [formGroup]="interviewForm" (ngSubmit)="scheduleInterview()">
-          <!-- Application Selection -->
-          <div class="form-group">
-            <label for="application">
-              المتقدم <span class="required">*</span>
-            </label>
-            <p-select
-              id="application"
-              formControlName="application"
-              [options]="applications()"
-              optionLabel="label"
-              optionValue="id"
-              placeholder="اختر المتقدم"
-              [showClear]="true"
-              [disabled]="isEditMode() || applications().length === 0"
-              styleClass="w-full"
-              [class.p-invalid]="interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched">
-            </p-select>
-            @if (applications().length === 0 && !loading() && !isEditMode()) {
-              <small class="p-error block mt-1">لا توجد طلبات متقدمة متاحة</small>
-            }
-            @if (interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched) {
-              <small class="p-error block mt-1">يرجى اختيار المتقدم</small>
-            }
-          </div>
+          <!-- Application Selection and Interview Type -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="application">
+                المتقدم <span class="required">*</span>
+              </label>
+              <p-select
+                id="application"
+                formControlName="application"
+                [options]="applications()"
+                optionLabel="label"
+                optionValue="id"
+                placeholder="اختر المتقدم"
+                [showClear]="true"
+                [disabled]="isEditMode() || applications().length === 0"
+                styleClass="w-full"
+                [class.p-invalid]="interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched">
+              </p-select>
+              @if (applications().length === 0 && !loading() && !isEditMode()) {
+                <small class="p-error block mt-1">لا توجد طلبات متقدمة متاحة</small>
+              }
+              @if (interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched) {
+                <small class="p-error block mt-1">يرجى اختيار المتقدم</small>
+              }
+            </div>
 
-          <!-- Interview Type -->
-          <div class="form-group">
-            <label for="interview_type">
-              نوع المقابلة <span class="required">*</span>
-            </label>
-            <p-select
-              id="interview_type"
-              formControlName="interview_type"
-              [options]="interviewTypes"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="اختر نوع المقابلة"
-              styleClass="w-full"
-              [class.p-invalid]="interviewForm.get('interview_type')?.invalid && interviewForm.get('interview_type')?.touched">
-            </p-select>
-            @if (interviewForm.get('interview_type')?.invalid && interviewForm.get('interview_type')?.touched) {
-              <small class="p-error block mt-1">يرجى اختيار نوع المقابلة</small>
-            }
+            <div class="form-group">
+              <label for="interview_type">
+                نوع المقابلة <span class="required">*</span>
+              </label>
+              <p-select
+                id="interview_type"
+                formControlName="interview_type"
+                [options]="interviewTypes"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="اختر نوع المقابلة"
+                styleClass="w-full"
+                [class.p-invalid]="interviewForm.get('interview_type')?.invalid && interviewForm.get('interview_type')?.touched">
+              </p-select>
+              @if (interviewForm.get('interview_type')?.invalid && interviewForm.get('interview_type')?.touched) {
+                <small class="p-error block mt-1">يرجى اختيار نوع المقابلة</small>
+              }
+            </div>
           </div>
 
           <!-- Date and Time -->
@@ -294,14 +295,13 @@
               <label for="scheduled_date">
                 التاريخ <span class="required">*</span>
               </label>
-              <input 
-                pInputText
-                type="date"
+              <p-datepicker 
+                showIcon iconDisplay="input"
                 id="scheduled_date"
                 formControlName="scheduled_date"
-                class="w-full"
+                styleClass="w-full"
                 [class.p-invalid]="interviewForm.get('scheduled_date')?.invalid && interviewForm.get('scheduled_date')?.touched"
-                placeholder="اختر التاريخ">
+                />
               @if (interviewForm.get('scheduled_date')?.invalid && interviewForm.get('scheduled_date')?.touched) {
                 <small class="p-error block mt-1">يرجى اختيار التاريخ</small>
               }
@@ -310,14 +310,16 @@
               <label for="scheduled_time">
                 الوقت <span class="required">*</span>
               </label>
-              <input 
-                pInputText
-                type="time"
+              <p-datepicker
                 id="scheduled_time"
                 formControlName="scheduled_time"
-                class="w-full"
+                [timeOnly]="true"
+                hourFormat="24"
+                [showSeconds]="false"
+                styleClass="w-full"
                 [class.p-invalid]="interviewForm.get('scheduled_time')?.invalid && interviewForm.get('scheduled_time')?.touched"
                 placeholder="اختر الوقت">
+              </p-datepicker>
               @if (interviewForm.get('scheduled_time')?.invalid && interviewForm.get('scheduled_time')?.touched) {
                 <small class="p-error block mt-1">يرجى اختيار الوقت</small>
               }

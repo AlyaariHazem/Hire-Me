@@ -475,15 +475,94 @@
     font-size: 0.85rem;
     margin-top: 0.25rem;
   }
-}
 
+  // PrimeNG DatePicker styling fixes
+  ::ng-deep {
+    p-datepicker {
+      width: 100%;
+      display: block;
+      
+      .p-inputtext {
+        width: 100%;
+        border: 1px solid var(--border-color, #e0e0e0) !important;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        background: white;
+        
+        &:focus {
+          outline: none !important;
+          border-color: var(--primary-color, #007bff) !important;
+          box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1) !important;
+        }
+
+        &:hover:not(:disabled):not(:focus) {
+          border-color: var(--primary-color, #007bff) !important;
+        }
+      }
+      &.p-textarea{
+        height: 5rem;
+      }
+      &.p-invalid .p-inputtext {
+        border-color: #dc3545 !important;
+        
+        &:focus {
+          border-color: #dc3545 !important;
+          box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+        }
+      }
+
+      // Time picker specific styling
+      &[timeonly] {
+        .p-inputtext {
+          padding: 0.75rem 1rem;
+        }
+      }
+
+      // Date picker icon styling
+      .p-datepicker-trigger {
+        background: transparent !important;
+        border: none !important;
+        color: var(--text-secondary, #666);
+        padding: 0.5rem;
+        margin-left: 0.5rem;
+        transition: color 0.2s;
+        border-radius: 4px;
+        
+        &:hover {
+          color: var(--primary-color, #007bff);
+          background: rgba(0, 123, 255, 0.05) !important;
+        }
+      }
+    }
+
+ 
+
+    .p-invalid {
+      input[pInputText],
+      textarea[pInputTextarea] {
+        border-color: #dc3545 !important;
+        
+        &:focus {
+          border-color: #dc3545 !important;
+          box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+        }
+      }
+    }
+  }
+}
+.p-error{
+  color: #dc3545 !important;
+}
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 1.5rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 
