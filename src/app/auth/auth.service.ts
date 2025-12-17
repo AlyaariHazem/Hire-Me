@@ -29,8 +29,6 @@ export class AuthService {
     // Clear profile store to remove stale user data
     this.profileStore.reset();
     // Navigate to login page with full reload to clear all state/guards
-    const url = this.router.serializeUrl(this.router.createUrlTree(['/login']));
-    window.location.replace(url);
+    this.router.navigateByUrl('/login', { replaceUrl: true });
   }
-  
 }
