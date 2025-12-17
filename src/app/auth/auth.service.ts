@@ -29,6 +29,7 @@ export class AuthService {
     // Clear profile store to remove stale user data
     this.profileStore.reset();
     // Navigate to login page with full reload to clear all state/guards
-    this.router.navigateByUrl('/login', { replaceUrl: true });
+    // window.location.href = '/login';
+    this.router.navigateByUrl('/Hire-Me/login');
   }
 }
