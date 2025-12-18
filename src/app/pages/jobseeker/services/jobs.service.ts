@@ -44,6 +44,9 @@ export class JobsStoreService {
   // Track if data has been loaded
   private loaded = false;
 
+  // Track whether to use recommended jobs endpoint
+  private useRecommended = false;
+
   // Jobs data observable with BehaviorSubject to cache last value
   private jobsDataSubject = new BehaviorSubject<JobsData>({
     jobs: [],
@@ -92,7 +95,11 @@ export class JobsStoreService {
       page_size: filters.page_size || 5
     };
 
-    return this.jobService.getJobs(requestFilters).pipe(
+    const jobsObservable = this.useRecommended
+      ? this.jobService.getRecommendedJobs(requestFilters)
+      : this.jobService.getJobs(requestFilters);
+
+    return jobsObservable.pipe(
       map((res: JobListResponse) => {
         // Normalize jobs to ensure company and category are never null
         const jobs = (res.results || []).map(job => ({
@@ -286,6 +293,13 @@ export class JobsStoreService {
    */
   refresh(): void {
     this.loadJobs();
+  }
+
+  /**
+   * Set whether to use recommended jobs endpoint
+   */
+  setUseRecommended(useRecommended: boolean): void {
+    this.useRecommended = useRecommended;
   }
 
   /**

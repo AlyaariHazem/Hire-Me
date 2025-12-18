@@ -117,6 +117,15 @@ export class Jobs extends Base {
     // Initialize search value from store
     this.searchValue = this.jobsStore.filters.search || '';
 
+    // Set use recommended endpoint if user is logged in jobseeker
+    const role = this.authState.role();
+    const isLoggedIn = this.authState.isLoggedIn();
+    if (role === 'jobseeker' && isLoggedIn) {
+      this.jobsStore.setUseRecommended(true);
+    } else {
+      this.jobsStore.setUseRecommended(false);
+    }
+
     // Subscribe to loading state
     this.jobsStore.loading$.subscribe(loading => {
       this.isLoading = loading;
