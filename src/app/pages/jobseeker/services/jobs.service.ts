@@ -289,6 +289,20 @@ export class JobsStoreService {
   }
 
   /**
+   * Remove a job from the current list (e.g., after applying when using recommended endpoint)
+   */
+  removeJob(jobId: number): void {
+    const currentData = this.jobsDataSubject.value;
+    const jobs = currentData.jobs.filter(j => j.id !== jobId);
+    const updatedData: JobsData = {
+      ...currentData,
+      jobs,
+      totalJobs: Math.max(0, currentData.totalJobs - 1)
+    };
+    this.jobsDataSubject.next(updatedData);
+  }
+
+  /**
    * Refresh current jobs list
    */
   refresh(): void {

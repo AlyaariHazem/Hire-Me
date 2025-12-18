@@ -147,7 +147,7 @@ export class Jobs extends Base {
         this.searchValue = data.filters.search || '';
       },
       error: (err) => {
-        this.toastr.error('حدث خطأ أثناء جلب الوظائف');
+        this.errors.error(err, { join: true });
         this.jobs = [];
         this.totalJobs = 0;
         this.totalPages = 0;
@@ -180,7 +180,7 @@ export class Jobs extends Base {
           this.filterCounts.jobType[jobType] = response.count || 0;
         },
         error: (err) => {
-          console.error(`Failed to load count for job_type:${jobType}`, err);
+          this.errors.error(err, { join: true });
         }
       });
     });
@@ -198,7 +198,7 @@ export class Jobs extends Base {
           this.filterCounts.experienceLevel[level] = response.count || 0;
         },
         error: (err) => {
-          console.error(`Failed to load count for experience_level:${level}`, err);
+          this.errors.error(err, { join: true });
         }
       });
     });
@@ -356,9 +356,16 @@ export class Jobs extends Base {
 
     this.applicationService.applyToJob(job.id).subscribe({
       next: () => {
-        // Update job state to show as applied
-        job.is_applied = true;
-        this.jobsStore.updateJob(job.id, { is_applied: true });
+        // Check if user is jobseeker - if so, remove the job from the list
+        const role = this.authState.role();
+        if (role === 'jobseeker') {
+          // Remove the job from the UI (recommended endpoint shouldn't show applied jobs)
+          this.jobsStore.removeJob(job.id);
+        } else {
+          // For non-jobseekers, just update the job state to show as applied
+          job.is_applied = true;
+          this.jobsStore.updateJob(job.id, { is_applied: true });
+        }
         this.applyingJobs.delete(job.id);
         this.toastr.success(`تم التقديم على الوظيفة "${job.title}" بنجاح`);
       },
@@ -368,8 +375,7 @@ export class Jobs extends Base {
         
         // Handle specific error cases
         if (err?.status === 400) {
-          const errorMsg = err?.error?.message || err?.error?.job?.[0] || 'لا يمكن التقديم على هذه الوظيفة';
-          this.toastr.error(errorMsg);
+          this.errors.error(err, { join: true });
         } else if (err?.status === 401 || err?.status === 403) {
           this.toastr.error('يجب تسجيل الدخول أولاً');
         } else {
@@ -413,10 +419,10 @@ export class Jobs extends Base {
             : `تم إزالة الوظيفة ${job.id} من المحفوظات`
         );
       },
-      error: () => {
+      error: (err) => {
         // keep old value because API failed
         this.savingJobs.delete(job.id);
-        this.toastr.error('تعذر حفظ الوظيفة');
+        this.errors.error(err, { join: true });
       }
     });
   }
