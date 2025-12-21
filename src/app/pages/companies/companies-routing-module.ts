@@ -14,6 +14,7 @@ import { ApplicantsForJob } from './applicants-for-job/applicants-for-job';
 import { Applicants } from './applicants/applicants';
 import { Messages } from 'shared/messages/messages';
 import { Interviews } from './interviews/interviews';
+import { Analytics } from './analytics/analytics';
 
 const routes: Routes = [
   {
@@ -93,6 +94,11 @@ const routes: Routes = [
         path: 'interviews',
         component: Interviews,
         data: { breadcrumb: 'المقابلات' }
+      },
+      {
+        path: 'analytics',
+        component: Analytics,
+        data: { breadcrumb: 'التحليلات والإحصائيات' }
       },
     ],
   },

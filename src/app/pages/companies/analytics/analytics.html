@@ -1,12 +1,249 @@
-<div id="analytics">
+<div class="analytics-container">
+  <!-- Header -->
   <div class="employer-header">
     <h1 class="employer-title">التحليلات والإحصائيات</h1>
   </div>
 
-  <div class="employer-content-card">
-    <h3>إحصائيات الوظائف</h3>
-    <div class="analytics-chart">
-      <p>مخطط بياني لإحصائيات الوظائف (سيتم تطويره لاحقاً)</p>
+  <!-- Stats Grid Skeleton -->
+  @if (loading) {
+    <div class="stats-grid">
+      @for (item of [1,2,3,4,5,6,7,8]; track item) {
+        <p-card class="stat-card">
+          <div class="stat-content">
+            <div class="stat-header">
+              <p-skeleton width="120px" height="1.2rem" styleClass="mb-0"></p-skeleton>
+              <p-skeleton width="32px" height="32px" shape="circle" styleClass="mb-0"></p-skeleton>
+            </div>
+            <p-skeleton width="80px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+          </div>
+        </p-card>
+      }
     </div>
-  </div>
+  }
+
+  <!-- Stats Grid -->
+  @if (!loading && dashboardData) {
+    <div class="stats-grid">
+      <p-card class="stat-card stat-card-primary">
+        <div class="stat-content">
+          <div class="stat-header">
+            <span class="stat-title">إجمالي الطلبات</span>
+            <div class="stat-icon-wrapper">
+              <i class="pi pi-file-edit stat-icon"></i>
+            </div>
+          </div>
+          <div class="stat-value">{{ dashboardData.overview.total_applications }}</div>
+        </div>
+      </p-card>
+
+      <p-card class="stat-card stat-card-success">
+        <div class="stat-content">
+          <div class="stat-header">
+            <span class="stat-title">الوظائف النشطة</span>
+            <div class="stat-icon-wrapper">
+              <i class="pi pi-check-circle stat-icon"></i>
+            </div>
+          </div>
+          <div class="stat-value">{{ dashboardData.overview.active_jobs }}</div>
+        </div>
+      </p-card>
+
+      <p-card class="stat-card stat-card-info">
+        <div class="stat-content">
+          <div class="stat-header">
+            <span class="stat-title">إجمالي الوظائف</span>
+            <div class="stat-icon-wrapper">
+              <i class="pi pi-briefcase stat-icon"></i>
+            </div>
+          </div>
+          <div class="stat-value">{{ dashboardData.overview.total_jobs }}</div>
+        </div>
+      </p-card>
+
+      <p-card class="stat-card stat-card-warning">
+        <div class="stat-content">
+          <div class="stat-header">
+            <span class="stat-title">إجمالي الشركات</span>
+            <div class="stat-icon-wrapper">
+              <i class="pi pi-building stat-icon"></i>
+            </div>
+          </div>
+          <div class="stat-value">{{ dashboardData.overview.total_companies }}</div>
+        </div>
+      </p-card>
+
+      <p-card class="stat-card stat-card-danger">
+        <div class="stat-content">
+          <div class="stat-header">
+            <span class="stat-title">الرسائل غير المقروءة</span>
+            <div class="stat-icon-wrapper">
+              <i class="pi pi-envelope stat-icon"></i>
+            </div>
+          </div>
+          <div class="stat-value">{{ dashboardData.overview.unread_messages }}</div>
+        </div>
+      </p-card>
+
+      <p-card class="stat-card stat-card-secondary">
+        <div class="stat-content">
+          <div class="stat-header">
+            <span class="stat-title">إجمالي الرسائل</span>
+            <div class="stat-icon-wrapper">
+              <i class="pi pi-comments stat-icon"></i>
+            </div>
+          </div>
+          <div class="stat-value">{{ dashboardData.overview.total_messages }}</div>
+        </div>
+      </p-card>
+
+      <p-card class="stat-card stat-card-purple">
+        <div class="stat-content">
+          <div class="stat-header">
+            <span class="stat-title">إجمالي المشاهدات</span>
+            <div class="stat-icon-wrapper">
+              <i class="pi pi-eye stat-icon"></i>
+            </div>
+          </div>
+          <div class="stat-value">{{ dashboardData.overview.total_views }}</div>
+        </div>
+      </p-card>
+
+      <p-card class="stat-card stat-card-teal">
+        <div class="stat-content">
+          <div class="stat-header">
+            <span class="stat-title">المتقدمون الفريدون</span>
+            <div class="stat-icon-wrapper">
+              <i class="pi pi-users stat-icon"></i>
+            </div>
+          </div>
+          <div class="stat-value">{{ dashboardData.overview.total_unique_applicants }}</div>
+        </div>
+      </p-card>
+    </div>
+  }
+
+  <!-- Charts Skeleton -->
+  @if (loading) {
+    <div class="charts-grid">
+      @for (item of [1,2,3,4,5,6,7,8]; track item) {
+        <p-card class="chart-card">
+          <div class="chart-header-skeleton">
+            <p-skeleton width="200px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          </div>
+          <div class="chart-container-skeleton">
+            <p-skeleton width="100%" height="300px" styleClass="mb-0"></p-skeleton>
+          </div>
+        </p-card>
+      }
+    </div>
+  }
+
+  <!-- Charts Grid -->
+  @if (!loading && dashboardData) {
+    <div class="charts-grid">
+      <!-- Applications Over Time -->
+      <p-card class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="pi pi-chart-line chart-title-icon"></i>
+            الطلبات مع مرور الوقت
+          </h3>
+        </div>
+        <div class="chart-container">
+          <p-chart type="line" [data]="appsOverTimeData" [options]="appsOverTimeOptions"></p-chart>
+        </div>
+      </p-card>
+
+      <!-- Jobs by City -->
+      <p-card class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="pi pi-map-marker chart-title-icon"></i>
+            الوظائف حسب المدينة
+          </h3>
+        </div>
+        <div class="chart-container">
+          <p-chart type="pie" [data]="jobsByCityData" [options]="jobsByCityOptions"></p-chart>
+        </div>
+      </p-card>
+
+      <!-- Jobs by Category -->
+      <p-card class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="pi pi-tags chart-title-icon"></i>
+            الوظائف حسب الفئة
+          </h3>
+        </div>
+        <div class="chart-container">
+          <p-chart type="pie" [data]="jobsByCategoryData" [options]="jobsByCategoryOptions"></p-chart>
+        </div>
+      </p-card>
+
+      <!-- Jobs by Type -->
+      <p-card class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="pi pi-calendar chart-title-icon"></i>
+            الوظائف حسب النوع
+          </h3>
+        </div>
+        <div class="chart-container">
+          <p-chart type="pie" [data]="jobsByTypeData" [options]="jobsByTypeOptions"></p-chart>
+        </div>
+      </p-card>
+
+      <!-- Applications by Status -->
+      <p-card class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="pi pi-info-circle chart-title-icon"></i>
+            الطلبات حسب الحالة
+          </h3>
+        </div>
+        <div class="chart-container">
+          <p-chart type="pie" [data]="applicationsByStatusData" [options]="applicationsByStatusOptions"></p-chart>
+        </div>
+      </p-card>
+
+      <!-- Applicants by City -->
+      <p-card class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="pi pi-map chart-title-icon"></i>
+            المتقدمون حسب المدينة
+          </h3>
+        </div>
+        <div class="chart-container">
+          <p-chart type="pie" [data]="applicantsByCityData" [options]="applicantsByCityOptions"></p-chart>
+        </div>
+      </p-card>
+
+      <!-- Applicants by Category -->
+      <p-card class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="pi pi-th-large chart-title-icon"></i>
+            المتقدمون حسب الفئة
+          </h3>
+        </div>
+        <div class="chart-container">
+          <p-chart type="pie" [data]="applicantsByCategoryData" [options]="applicantsByCategoryOptions"></p-chart>
+        </div>
+      </p-card>
+
+      <!-- Applicants by Job Title -->
+      <p-card class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="pi pi-bars chart-title-icon"></i>
+            المتقدمون حسب المسمى الوظيفي
+          </h3>
+        </div>
+        <div class="chart-container">
+          <p-chart type="bar" [data]="applicantsByJobTitleData" [options]="applicantsByJobTitleOptions"></p-chart>
+        </div>
+      </p-card>
+    </div>
+  }
 </div>

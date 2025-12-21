@@ -79,4 +79,57 @@ export class CompanyService {
       environment.getUrl(`${slug}/delete`, 'companies')
     );
   }
+
+  getEmployerDashboardStats() {
+    return this.http.get<EmployerDashboardStats>(
+      environment.getUrl('employer-dashboard-stats', 'companies')
+    );
+  }
+}
+
+export interface EmployerDashboardStats {
+  overview: {
+    total_companies: number;
+    total_jobs: number;
+    active_jobs: number;
+    total_applications: number;
+    total_unique_applicants: number;
+    total_views: number;
+    total_messages: number;
+    unread_messages: number;
+  };
+  charts: {
+    apps_over_time: {
+      labels: string[];
+      series: number[];
+    };
+    jobs_by_city: {
+      labels: string[];
+      series: number[];
+    };
+    jobs_by_category: {
+      labels: string[];
+      series: number[];
+    };
+    jobs_by_type: {
+      labels: string[];
+      series: number[];
+    };
+    applications_by_status: {
+      labels: string[];
+      series: number[];
+    };
+    applicants_by_city: {
+      labels: string[];
+      series: number[];
+    };
+    applicants_by_category: {
+      labels: string[];
+      series: number[];
+    };
+    applicants_by_job_title: {
+      labels: string[];
+      series: number[];
+    };
+  };
 }

@@ -28,6 +28,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ChartModule } from 'primeng/chart';
+import { CardModule } from 'primeng/card';
 
 
 
@@ -56,6 +58,8 @@ const modules = [
   TableModule,
   TooltipModule,
   SkeletonModule,
+  ChartModule,
+  CardModule,
   PostJob,
   ApplicantsForJob,
   Applicants,
