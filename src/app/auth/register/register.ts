@@ -5,10 +5,7 @@ import { SharedModule } from '../../../shared/shared-module';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from 'environments/environment';
-import { CompanyService } from 'app/pages/companies/core/services/company.service';
 import { Base } from 'shared/base/base';
-import { AuthService } from '../auth.service';
-import { UserRole } from 'core/types';
 
 
 @Component({
@@ -20,8 +17,6 @@ import { UserRole } from 'core/types';
 export class Register extends Base {
   user = true;      // job seeker default
   admin = false;    // employer
-  companyService = inject(CompanyService);
-  auth = inject(AuthService);
 
   isLoading = signal(false);
   showVerificationModal = signal(false);
@@ -101,15 +96,13 @@ export class Register extends Base {
         const isVerified = res?.data?.user?.is_verified ?? false;
         
         if (isVerified) {
-          // User is already verified, proceed with login
-          const access = res?.data?.token as string | undefined;
-          if (access) {
-            const role: UserRole = this.user ? 'jobseeker' : 'employer';
-            this.auth.setTokens(access, res?.refresh);
-            this.auth.setRole(role);
-            this.toastr.success('تم إنشاء الحساب بنجاح');
-            this.completeRegistration(role);
-          }
+          // User is already verified, show success and redirect to login
+          this.toastr.success('تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول');
+          f.reset();
+          // Redirect to login page after a short delay
+          setTimeout(() => {
+            this.router.navigateByUrl('/login');
+          }, 2000);
         } else {
           // Show verification modal
           this.registeredPhone = this.model.phone;
@@ -138,8 +131,8 @@ export class Register extends Base {
 
     this.isVerifying.set(true);
 
-    // API endpoint: POST /api/accounts/verify-phone-code/
-    const verifyUrl = `${environment.apiBaseUrl}/api/accounts/verify-phone-code/`;
+    // API endpoint: POST /api/accounts/verify-phone/
+    const verifyUrl = `${environment.apiBaseUrl}/api/accounts/verify-phone/`;
     
     this.http.post(verifyUrl, {
       phone: this.registeredPhone,
@@ -148,19 +141,15 @@ export class Register extends Base {
       next: (res: any) => {
         this.isVerifying.set(false);
         
-        // After verification, login the user
-        const access = res?.data?.token as string | undefined;
-        if (access) {
-          const role: UserRole = this.user ? 'jobseeker' : 'employer';
-          this.auth.setTokens(access, res?.refresh);
-          this.auth.setRole(role);
-          this.toastr.success('تم التحقق بنجاح');
-          this.showVerificationModal.set(false);
-          this.completeRegistration(role);
-        } else {
-          // If no token in response, try to login
-          this.loginAfterVerification();
-        }
+        // Close verification modal and show success message
+        this.showVerificationModal.set(false);
+        this.verificationCode = '';
+        this.toastr.success('تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول');
+        
+        // Redirect to login page after a short delay
+        setTimeout(() => {
+          this.router.navigateByUrl('/login');
+        }, 2000);
       },
       error: (err) => {
         this.isVerifying.set(false);
@@ -195,62 +184,6 @@ export class Register extends Base {
     });
   }
 
-  private loginAfterVerification(): void {
-    // Login after verification
-    this.http.post(environment.getUrl('login'), {
-      phone: this.registeredPhone,
-      password: this.model.password
-    }).subscribe({
-      next: (res: any) => {
-        const access = res?.data?.token as string | undefined;
-        if (access) {
-          const role: UserRole = this.user ? 'jobseeker' : 'employer';
-          this.auth.setTokens(access, res?.refresh);
-          this.auth.setRole(role);
-          this.showVerificationModal.set(false);
-          this.completeRegistration(role);
-        }
-      },
-      error: (err) => {
-        this.errors.error(err, { join: true });
-        this.toastr.error('حدث خطأ أثناء تسجيل الدخول');
-      }
-    });
-  }
-
-  private completeRegistration(role: UserRole): void {
-    if (role === 'jobseeker') {
-      this.router.navigateByUrl('/jobseeker');
-    } else {
-      // Employer: create company profile then navigate
-      const resCompany: any = {
-        name: this.model.email.split('@')[0],
-        description: 'Default description',
-        email: this.model.email,
-        city: 'Sana\'a',
-        size: 'startup',
-        industry: 'technology',
-        address: 'Default address',
-        country: 'Yemen',
-        founded_year: new Date().getFullYear(),
-        website: '',
-        phone: this.model.phone,
-        employees_count: 1
-      };
-      
-      this.companyService.createCompany(resCompany).subscribe({
-        next: () => {
-          this.router.navigateByUrl('/companies');
-        },
-        error: (err) => {
-          // Even if company creation fails, user is logged in
-          // Navigate anyway - they can create company later
-          console.error('Failed to create company:', err);
-          this.router.navigateByUrl('/companies');
-        }
-      });
-    }
-  }
 
   closeVerificationModal(): void {
     this.showVerificationModal.set(false);
