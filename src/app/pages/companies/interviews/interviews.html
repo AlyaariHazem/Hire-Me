@@ -327,7 +327,7 @@
           </div>
 
           <!-- Duration -->
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label for="duration_minutes">
               المدة (بالدقائق) <span class="required">*</span>
             </label>
@@ -344,7 +344,7 @@
             @if (interviewForm.get('duration_minutes')?.invalid && interviewForm.get('duration_minutes')?.touched) {
               <small class="p-error block mt-1">المدة يجب أن تكون بين 15 و 480 دقيقة</small>
             }
-          </div>
+          </div> -->
 
           <!-- Location (for in-person interviews only) -->
           @if (currentInterviewType() === 'in_person') {

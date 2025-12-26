@@ -241,13 +241,9 @@ export class Interviews extends Base implements OnInit {
 
   private populateFormForEdit(interview: Interview): void {
     const scheduledDate = new Date(interview.scheduled_date);
-    const dateStr = scheduledDate.toISOString().split('T')[0];
+    const localDate = this.toLocalDate(scheduledDate);
     // Create a Date object for time picker (timeOnly mode expects a Date object)
-    const timeDate = new Date();
-    timeDate.setHours(scheduledDate.getHours());
-    timeDate.setMinutes(scheduledDate.getMinutes());
-    timeDate.setSeconds(0);
-    timeDate.setMilliseconds(0);
+    const timeDate = this.buildTimeDate(scheduledDate);
     
     const applicationId = typeof interview.application === 'object' 
       ? interview.application.id 
@@ -256,7 +252,7 @@ export class Interviews extends Base implements OnInit {
     this.interviewForm.patchValue({
       application: applicationId,
       interview_type: interview.interview_type,
-      scheduled_date: dateStr,
+      scheduled_date: localDate,
       scheduled_time: timeDate,
       duration_minutes: interview.duration_minutes,
       location: interview.location || '',
@@ -305,15 +301,10 @@ export class Interviews extends Base implements OnInit {
     
     // Combine date and time
     // If scheduled_time is a Date object (from timeOnly DatePicker), extract time
-    let timeStr: string;
-    if (formValue.scheduled_time instanceof Date) {
-      const hours = formValue.scheduled_time.getHours().toString().padStart(2, '0');
-      const minutes = formValue.scheduled_time.getMinutes().toString().padStart(2, '0');
-      timeStr = `${hours}:${minutes}`;
-    } else {
-      timeStr = formValue.scheduled_time;
-    }
-    const scheduledDateTime = new Date(`${formValue.scheduled_date}T${timeStr}`);
+    const scheduledDateTime = this.combineDateAndTime(
+      this.toLocalDate(formValue.scheduled_date),
+      this.getTimeParts(formValue.scheduled_time)
+    );
     
     if (this.isEditMode() && this.editingInterview()) {
       // Update existing interview
@@ -395,6 +386,49 @@ export class Interviews extends Base implements OnInit {
     this.showDetailsModal.set(false);
     this.selectedInterview.set(null);
     this.loadingDetails.set(false);
+  }
+
+  private toLocalDate(value: Date | string | null | undefined): Date {
+    if (!value) {
+      return new Date();
+    }
+    const parsedDate = value instanceof Date ? new Date(value) : new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return new Date();
+    }
+    return new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+  }
+
+  private buildTimeDate(value: Date | string | null | undefined): Date {
+    const timeParts = this.getTimeParts(value);
+    const timeDate = new Date();
+    timeDate.setHours(timeParts.hours, timeParts.minutes, 0, 0);
+    timeDate.setSeconds(0);
+    timeDate.setMilliseconds(0);
+    return timeDate;
+  }
+
+  private getTimeParts(value: Date | string | null | undefined): { hours: number; minutes: number } {
+    if (value instanceof Date) {
+      return { hours: value.getHours(), minutes: value.getMinutes() };
+    }
+    if (typeof value === 'string' && value) {
+      const parsedDate = new Date(value);
+      if (!Number.isNaN(parsedDate.getTime())) {
+        return { hours: parsedDate.getHours(), minutes: parsedDate.getMinutes() };
+      }
+      const [hours, minutes] = value.split(':').map(part => Number(part));
+      if (!Number.isNaN(hours) && !Number.isNaN(minutes)) {
+        return { hours, minutes };
+      }
+    }
+    return { hours: 0, minutes: 0 };
+  }
+
+  private combineDateAndTime(baseDate: Date, timeParts: { hours: number; minutes: number }): Date {
+    const combined = new Date(baseDate);
+    combined.setHours(timeParts.hours, timeParts.minutes, 0, 0);
+    return combined;
   }
 
   setStatusFilter(status: StatusFilter): void {
