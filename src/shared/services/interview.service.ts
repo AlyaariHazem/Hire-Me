@@ -20,7 +20,7 @@ export interface CreateInterviewDto {
   application: number; // Application ID
   interview_type: InterviewType | string;
   scheduled_date: string; // ISO 8601 format
-  duration_minutes: number;
+  duration_minutes?: number | null; // Optional, only required for video interviews
   location?: string | null;
   meeting_link?: string | null;
   interviewer_name: string;
@@ -34,7 +34,7 @@ export interface CreateInterviewDto {
 export interface UpdateInterviewDto {
   interview_type?: InterviewType | string;
   scheduled_date?: string; // ISO 8601 format
-  duration_minutes?: number;
+  duration_minutes?: number | null;
   location?: string | null;
   meeting_link?: string | null;
   interviewer_name?: string;

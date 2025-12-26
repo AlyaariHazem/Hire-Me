@@ -15,6 +15,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DatePicker } from 'primeng/datepicker';
+import { InterviewsStoreService } from '../services/interviews.store';
 
 type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
 
@@ -43,15 +44,16 @@ export class Interviews extends Base implements OnInit {
   private applicationService = inject(ApplicationService);
   private fb = inject(FormBuilder);
   private loaderService = inject(LoaderService);
+  private store = inject(InterviewsStoreService);
 
-  // Data signals
-  interviews = signal<Interview[]>([]);
+  // Data signals from store
+  interviews = this.store.interviews;
   applications = signal<{ id: number; label: string }[]>([]);
-  loading = signal<boolean>(false);
+  loading = this.store.loading;
   
-  // Filter state
-  statusFilter = signal<StatusFilter>('all');
-  interviewTypeFilter = signal<string>('all');
+  // Filter state from store
+  statusFilter = computed(() => this.store.filters().status);
+  interviewTypeFilter = computed(() => this.store.filters().interviewType);
   
   // Modal state
   showScheduleModal = signal<boolean>(false);
@@ -79,37 +81,13 @@ export class Interviews extends Base implements OnInit {
   // Signal to track interview type for conditional display
   currentInterviewType = signal<string>('phone');
 
-  // Computed properties
-  filteredInterviews = computed(() => {
-    let filtered = this.interviews();
-    
-    // Filter by status
-    if (this.statusFilter() !== 'all') {
-      filtered = filtered.filter(i => i.status === this.statusFilter());
-    }
-    
-    // Filter by type
-    if (this.interviewTypeFilter() !== 'all') {
-      filtered = filtered.filter(i => i.interview_type === this.interviewTypeFilter());
-    }
-    
-    return filtered;
-  });
-
-  statusCounts = computed(() => {
-    const all = this.interviews();
-    return {
-      all: all.length,
-      scheduled: all.filter(i => i.status === 'scheduled').length,
-      completed: all.filter(i => i.status === 'completed').length,
-      cancelled: all.filter(i => i.status === 'cancelled').length,
-      rescheduled: all.filter(i => i.status === 'rescheduled').length
-    };
-  });
+  // Computed properties from store
+  filteredInterviews = this.interviews; // Store handles filtering via API
+  statusCounts = this.store.statusCounts;
 
   ngOnInit(): void {
     this.initForm();
-    this.loadInterviews();
+    this.store.init();
     this.loadApplications();
   }
 
@@ -119,7 +97,7 @@ export class Interviews extends Base implements OnInit {
       interview_type: ['phone', Validators.required],
       scheduled_date: ['', Validators.required],
       scheduled_time: ['', Validators.required],
-      duration_minutes: [30, [Validators.required, Validators.min(15), Validators.max(480)]],
+      duration_minutes: [30, []], // Validators will be set dynamically based on interview type
       location: [''],
       meeting_link: [''],
       interviewer_name: ['', Validators.required],
@@ -132,9 +110,25 @@ export class Interviews extends Base implements OnInit {
       this.currentInterviewType.set(type || 'phone');
       if (type !== 'video') {
         this.interviewForm.patchValue({ meeting_link: '' });
+        // Clear duration validators and value when not video
+        this.interviewForm.get('duration_minutes')?.clearValidators();
+        this.interviewForm.get('duration_minutes')?.setValue(null, { emitEvent: false });
+        this.interviewForm.get('duration_minutes')?.updateValueAndValidity({ emitEvent: false });
+        // Clear meeting_link validators
+        this.interviewForm.get('meeting_link')?.clearValidators();
+        this.interviewForm.get('meeting_link')?.updateValueAndValidity({ emitEvent: false });
+      } else {
+        // Set duration validators when video is selected
+        this.interviewForm.get('duration_minutes')?.setValidators([Validators.required, Validators.min(15), Validators.max(480)]);
+        this.interviewForm.get('duration_minutes')?.updateValueAndValidity({ emitEvent: false });
+        // Set meeting_link validators
+        this.interviewForm.get('meeting_link')?.setValidators([Validators.required]);
+        this.interviewForm.get('meeting_link')?.updateValueAndValidity({ emitEvent: false });
       }
       if (type !== 'in_person') {
         this.interviewForm.patchValue({ location: '' });
+        this.interviewForm.get('location')?.clearValidators();
+        this.interviewForm.get('location')?.updateValueAndValidity({ emitEvent: false });
       }
     });
     
@@ -142,20 +136,6 @@ export class Interviews extends Base implements OnInit {
     this.currentInterviewType.set(this.interviewForm.get('interview_type')?.value || 'phone');
   }
 
-  loadInterviews(): void {
-    this.loading.set(true);
-    this.interviewService.getInterviews().subscribe({
-      next: (response) => {
-        this.interviews.set(response.results || []);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load interviews', err);
-        this.toastr.error('فشل في تحميل المقابلات');
-        this.loading.set(false);
-      }
-    });
-  }
 
   loadApplications(): void {
     this.applicationService.getAllJobApplications().subscribe({
@@ -268,10 +248,21 @@ export class Interviews extends Base implements OnInit {
     // Update validators based on interview type
     if (interview.interview_type === 'video') {
       this.interviewForm.get('meeting_link')?.setValidators([Validators.required]);
+      this.interviewForm.get('duration_minutes')?.setValidators([Validators.required, Validators.min(15), Validators.max(480)]);
     } else {
       this.interviewForm.get('meeting_link')?.clearValidators();
+      this.interviewForm.get('meeting_link')?.setValue('', { emitEvent: false });
+      this.interviewForm.get('duration_minutes')?.clearValidators();
+      this.interviewForm.get('duration_minutes')?.setValue(null, { emitEvent: false });
     }
     this.interviewForm.get('meeting_link')?.updateValueAndValidity({ emitEvent: false });
+    this.interviewForm.get('duration_minutes')?.updateValueAndValidity({ emitEvent: false });
+    
+    // Clear application validators when editing (application shouldn't change)
+    if (this.isEditMode()) {
+      this.interviewForm.get('application')?.clearValidators();
+      this.interviewForm.get('application')?.updateValueAndValidity({ emitEvent: false });
+    }
   }
 
   closeScheduleModal(): void {
@@ -288,11 +279,51 @@ export class Interviews extends Base implements OnInit {
     // Reset validators
     this.interviewForm.get('meeting_link')?.clearValidators();
     this.interviewForm.get('meeting_link')?.updateValueAndValidity({ emitEvent: false });
+    this.interviewForm.get('duration_minutes')?.clearValidators();
+    this.interviewForm.get('duration_minutes')?.updateValueAndValidity({ emitEvent: false });
   }
 
   scheduleInterview(): void {
-    if (this.interviewForm.invalid || this.isSubmitting()) {
+    if (this.isSubmitting()) {
+      return;
+    }
+
+    // Ensure validators are correct before validation
+    const currentType = this.interviewForm.get('interview_type')?.value || 'phone';
+    
+    // Update validators based on current interview type
+    if (currentType !== 'video') {
+      // Clear validators for duration and meeting_link when not video
+      this.interviewForm.get('duration_minutes')?.clearValidators();
+      this.interviewForm.get('duration_minutes')?.updateValueAndValidity({ emitEvent: false });
+      this.interviewForm.get('meeting_link')?.clearValidators();
+      this.interviewForm.get('meeting_link')?.updateValueAndValidity({ emitEvent: false });
+    } else {
+      // Set validators for video type
+      this.interviewForm.get('duration_minutes')?.setValidators([Validators.required, Validators.min(15), Validators.max(480)]);
+      this.interviewForm.get('duration_minutes')?.updateValueAndValidity({ emitEvent: false });
+      this.interviewForm.get('meeting_link')?.setValidators([Validators.required]);
+      this.interviewForm.get('meeting_link')?.updateValueAndValidity({ emitEvent: false });
+    }
+
+    if (currentType !== 'in_person') {
+      this.interviewForm.get('location')?.clearValidators();
+      this.interviewForm.get('location')?.updateValueAndValidity({ emitEvent: false });
+    }
+
+    // Validate form after updating validators
+    if (this.interviewForm.invalid) {
       this.interviewForm.markAllAsTouched();
+      // Log form errors for debugging
+      console.log('Form is invalid:', this.interviewForm.errors);
+      Object.keys(this.interviewForm.controls).forEach(key => {
+        const control = this.interviewForm.get(key);
+        if (control?.invalid) {
+          console.log(`${key} errors:`, control.errors);
+          console.log(`${key} value:`, control.value);
+        }
+      });
+      this.toastr.error('يرجى التحقق من جميع الحقول المطلوبة');
       return;
     }
 
@@ -311,7 +342,7 @@ export class Interviews extends Base implements OnInit {
       const updatePayload: UpdateInterviewDto = {
         interview_type: formValue.interview_type,
         scheduled_date: scheduledDateTime.toISOString(),
-        duration_minutes: Number(formValue.duration_minutes),
+        duration_minutes: formValue.interview_type === 'video' ? Number(formValue.duration_minutes) : undefined,
         location: formValue.interview_type === 'in_person' ? (formValue.location || null) : null,
         meeting_link: formValue.interview_type === 'video' ? (formValue.meeting_link || null) : null,
         interviewer_name: formValue.interviewer_name,
@@ -319,16 +350,20 @@ export class Interviews extends Base implements OnInit {
         notes: formValue.notes || null
       };
 
+      console.log('Updating interview with payload:', updatePayload);
       this.interviewService.patchInterview(this.editingInterview()!.id, updatePayload).subscribe({
         next: (interview) => {
+          console.log('Interview updated successfully:', interview);
+          // Update interview in store instead of refreshing from API
+          this.store.updateInterviewInStore(interview);
           this.toastr.success('تم تحديث المقابلة بنجاح');
           this.closeScheduleModal();
-          this.loadInterviews();
           this.isSubmitting.set(false);
         },
         error: (err) => {
           console.error('Failed to update interview', err);
-          const errorMsg = err?.error?.message || err?.error?.detail || 'فشل في تحديث المقابلة';
+          console.error('Error details:', err?.error);
+          const errorMsg = err?.error?.message || err?.error?.detail || err?.error?.error || 'فشل في تحديث المقابلة';
           this.toastr.error(errorMsg);
           this.isSubmitting.set(false);
         }
@@ -339,7 +374,7 @@ export class Interviews extends Base implements OnInit {
         application: Number(formValue.application),
         interview_type: formValue.interview_type,
         scheduled_date: scheduledDateTime.toISOString(),
-        duration_minutes: Number(formValue.duration_minutes),
+        ...(formValue.interview_type === 'video' && { duration_minutes: Number(formValue.duration_minutes) }),
         location: formValue.interview_type === 'in_person' ? (formValue.location || null) : null,
         meeting_link: formValue.interview_type === 'video' ? (formValue.meeting_link || null) : null,
         interviewer_name: formValue.interviewer_name,
@@ -349,9 +384,10 @@ export class Interviews extends Base implements OnInit {
 
       this.interviewService.createInterview(payload).subscribe({
         next: (interview) => {
+          // Add interview to store instead of refreshing from API
+          this.store.addInterviewToStore(interview);
           this.toastr.success('تم جدولة المقابلة بنجاح');
           this.closeScheduleModal();
-          this.loadInterviews();
           this.isSubmitting.set(false);
         },
         error: (err) => {
@@ -432,11 +468,11 @@ export class Interviews extends Base implements OnInit {
   }
 
   setStatusFilter(status: StatusFilter): void {
-    this.statusFilter.set(status);
+    this.store.setStatusFilter(status);
   }
 
   setInterviewTypeFilter(type: string): void {
-    this.interviewTypeFilter.set(type);
+    this.store.setInterviewTypeFilter(type);
   }
 
   getStatusLabel(status?: InterviewStatus | string): string {

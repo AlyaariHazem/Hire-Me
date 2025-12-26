@@ -168,7 +168,9 @@
                   </p>
                   <div class="candidate-meta">
                     <span>📅 {{ formatDateTime(interview.scheduled_date) }}</span>
-                    <span>⏱️ {{ interview.duration_minutes }} دقيقة</span>
+                    @if (interview.duration_minutes) {
+                      <span>⏱️ {{ interview.duration_minutes }} دقيقة</span>
+                    }
                     <span>📋 {{ getInterviewTypeLabel(interview.interview_type) }}</span>
                   </div>
                   @if (interview.location) {
@@ -326,25 +328,27 @@
             </div>
           </div>
 
-          <!-- Duration -->
-          <!-- <div class="form-group">
-            <label for="duration_minutes">
-              المدة (بالدقائق) <span class="required">*</span>
-            </label>
-            <p-inputNumber
-              id="duration_minutes"
-              formControlName="duration_minutes"
-              [min]="15"
-              [max]="480"
-              [showButtons]="true"
-              placeholder="30"
-              styleClass="w-full"
-              [class.p-invalid]="interviewForm.get('duration_minutes')?.invalid && interviewForm.get('duration_minutes')?.touched">
-            </p-inputNumber>
-            @if (interviewForm.get('duration_minutes')?.invalid && interviewForm.get('duration_minutes')?.touched) {
-              <small class="p-error block mt-1">المدة يجب أن تكون بين 15 و 480 دقيقة</small>
-            }
-          </div> -->
+          <!-- Duration (only for video interviews) -->
+          @if (currentInterviewType() === 'video') {
+            <div class="form-group">
+              <label for="duration_minutes">
+                المدة (بالدقائق) <span class="required">*</span>
+              </label>
+              <p-inputNumber
+                id="duration_minutes"
+                formControlName="duration_minutes"
+                [min]="15"
+                [max]="480"
+                [showButtons]="true"
+                placeholder="30"
+                styleClass="w-full"
+                [class.p-invalid]="interviewForm.get('duration_minutes')?.invalid && interviewForm.get('duration_minutes')?.touched">
+              </p-inputNumber>
+              @if (interviewForm.get('duration_minutes')?.invalid && interviewForm.get('duration_minutes')?.touched) {
+                <small class="p-error block mt-1">المدة يجب أن تكون بين 15 و 480 دقيقة</small>
+              }
+            </div>
+          }
 
           <!-- Location (for in-person interviews only) -->
           @if (currentInterviewType() === 'in_person') {
@@ -436,9 +440,10 @@
               إلغاء
             </button>
             <button 
-              type="submit"
+              type="button"
               class="btn btn-primary"
-              [disabled]="interviewForm.invalid || isSubmitting()">
+              [disabled]="isSubmitting()"
+              (click)="scheduleInterview()">
               @if (isSubmitting()) {
                 {{ isEditMode() ? 'جاري التحديث...' : 'جاري الجدولة...' }}
               } @else {
@@ -493,10 +498,12 @@
                 <span class="detail-label">التاريخ والوقت:</span>
                 <span class="detail-value">{{ formatDateTime(selectedInterview()!.scheduled_date) }}</span>
               </div>
-              <div class="detail-item">
-                <span class="detail-label">المدة:</span>
-                <span class="detail-value">{{ selectedInterview()!.duration_minutes }} دقيقة</span>
-              </div>
+              @if (selectedInterview()!.duration_minutes) {
+                <div class="detail-item">
+                  <span class="detail-label">المدة:</span>
+                  <span class="detail-value">{{ selectedInterview()!.duration_minutes }} دقيقة</span>
+                </div>
+              }
               <div class="detail-item">
                 <span class="detail-label">الحالة:</span>
                 <span class="detail-value status-badge" [ngClass]="getStatusClass(selectedInterview()!.status)">
