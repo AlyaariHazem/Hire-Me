@@ -267,16 +267,100 @@ export class JobDetails extends Base implements OnInit {
   }
 
   onSaveJob(): void {
-    // English: here you call backend to bookmark / unbookmark
-    console.log('Save job', this.jobDetail?.id);
+    if (!this.jobDetail) return;
+
+    const jobId = this.jobDetail.id;
+    const isBookmarked = this.jobDetail.is_bookmarked;
+
+    if (isBookmarked) {
+      // Unbookmark job
+      this.jobService.unbookmarkJob(jobId).subscribe({
+        next: () => {
+          this.toastr.success('تم إزالة الوظيفة من المحفوظات');
+          // Update local state
+          if (this.jobDetail) {
+            this.jobDetail.is_bookmarked = false;
+          }
+        },
+        error: (err) => {
+          console.error('Failed to unbookmark job', err);
+          this.toastr.error('فشل في إزالة الوظيفة من المحفوظات');
+        }
+      });
+    } else {
+      // Bookmark job
+      this.jobService.bookmarkJob(jobId).subscribe({
+        next: () => {
+          this.toastr.success('تم حفظ الوظيفة بنجاح');
+          // Update local state
+          if (this.jobDetail) {
+            this.jobDetail.is_bookmarked = true;
+          }
+        },
+        error: (err) => {
+          console.error('Failed to bookmark job', err);
+          const errorMsg = err?.error?.message || err?.error?.detail || 'فشل في حفظ الوظيفة';
+          this.toastr.error(errorMsg);
+        }
+      });
+    }
   }
 
   onShareJob(): void {
-    // English: open share dialog, copy link, etc.
     if (!this.jobDetail) return;
+    
     const url = window.location.href;
-    navigator.clipboard?.writeText(url).catch(() => {});
-    console.log('Share job', url);
+    
+    // Try to use Web Share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: this.jobDetail.title,
+        text: `تحقق من هذه الوظيفة: ${this.jobDetail.title}`,
+        url: url
+      }).then(() => {
+        this.toastr.success('تم مشاركة الوظيفة بنجاح');
+      }).catch((err) => {
+        // User cancelled or error occurred, fallback to copy
+        this.copyToClipboard(url);
+      });
+    } else {
+      // Fallback to clipboard
+      this.copyToClipboard(url);
+    }
+  }
+
+  private copyToClipboard(text: string): void {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.toastr.success('تم نسخ رابط الوظيفة إلى الحافظة');
+      }).catch(() => {
+        // Fallback for older browsers
+        this.fallbackCopyToClipboard(text);
+      });
+    } else {
+      // Fallback for older browsers
+      this.fallbackCopyToClipboard(text);
+    }
+  }
+
+  private fallbackCopyToClipboard(text: string): void {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+      document.execCommand('copy');
+      this.toastr.success('تم نسخ رابط الوظيفة إلى الحافظة');
+    } catch (err) {
+      this.toastr.error('فشل في نسخ الرابط. يرجى نسخه يدوياً');
+    }
+    
+    document.body.removeChild(textArea);
   }
 
   getJobTypeLabel(type: string | null | undefined): string {
