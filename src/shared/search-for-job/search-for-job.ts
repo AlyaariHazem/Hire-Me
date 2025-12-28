@@ -154,14 +154,14 @@ export class SearchForJob implements OnInit {
   }
 
   loadFeaturedCompanies(): void {
-    this.companyDataService.getAllCompanies({ is_featured: true, page_size: 4 }).subscribe({
-      next: (response) => {
-        this.featuredCompanies = (response.results || []).map(company => this.mapToDisplay(company));
-      },
-      error: (err) => {
-        console.error('Failed to load featured companies', err);
-      }
-    });
+    // this.companyDataService.getAllCompanies({ is_featured: true, page_size: 4 }).subscribe({
+    //   next: (response) => {
+    //     this.featuredCompanies = (response.results || []).map(company => this.mapToDisplay(company));
+    //   },
+    //   error: (err) => {
+    //     console.error('Failed to load featured companies', err);
+    //   }
+    // });
   }
 
   private mapToDisplay(company: ICompanyData & { 
