@@ -44,7 +44,7 @@ export class SideBarCompany implements OnInit {
   logo = signal<string>('');
   // English: default company name until profile loads
   companyName = 'شركة التقنيات المتقدمة';
-  industry = 'IT';
+  industry = '';
 
   private profileStore = inject(ProfileStoreService);
   private sidebarStore = inject(SidebarStoreService);

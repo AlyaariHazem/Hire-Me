@@ -324,14 +324,20 @@ export class Applicants implements OnInit {
     
     // For now, let's call the API and then refresh the store.
     
+    // Optimistic update: update store immediately
+    this.store.updateApplicationStatus(applicationId, newStatus);
+    
     this.applicationService.updateApplicationStatus(applicationId, newStatus).subscribe({
       next: (updatedApp) => {
+        // Update store with the actual response from API
+        this.store.updateApplicationStatus(applicationId, newStatus, updatedApp);
         this.toastr.success('تم تحديث حالة الطلب بنجاح');
-        this.store.refresh();
         this.updatingStatus.delete(applicationId);
       },
       error: (err) => {
         console.error('Failed to update application status', err);
+        // Revert optimistic update on error
+        this.store.updateApplicationStatus(applicationId, oldStatus);
         this.toastr.error('فشل في تحديث حالة الطلب. يرجى المحاولة مرة أخرى');
         this.updatingStatus.delete(applicationId);
       }

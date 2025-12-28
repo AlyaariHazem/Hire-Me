@@ -210,6 +210,53 @@ export class ApplicantsStoreService {
     this.filters$.next(this.state().filters);
   }
 
+  // Update application status in store immediately (optimistic update)
+  updateApplicationStatus(applicationId: number, newStatus: 'pending' | 'reviewed' | 'accepted' | 'rejected', updatedApplication?: Application) {
+    const currentState = this.state();
+    const updatedApplications = currentState.applications.map(app => {
+      if (app.id === applicationId) {
+        // Use the updated application from API if provided, otherwise update status locally
+        if (updatedApplication) {
+          return updatedApplication;
+        }
+        return { ...app, status: newStatus, status_display: this.getStatusDisplay(newStatus) };
+      }
+      return app;
+    });
+
+    // Update status counts based on the change
+    const oldApplication = currentState.applications.find(app => app.id === applicationId);
+    let statusCounts = { ...currentState.statusCounts };
+    
+    if (oldApplication) {
+      // Decrease old status count
+      const oldStatus = oldApplication.status as keyof typeof statusCounts;
+      if (oldStatus in statusCounts && statusCounts[oldStatus] > 0) {
+        statusCounts[oldStatus] = Math.max(0, statusCounts[oldStatus] - 1);
+      }
+    }
+    
+    // Increase new status count
+    if (newStatus in statusCounts) {
+      statusCounts[newStatus] = (statusCounts[newStatus] || 0) + 1;
+    }
+
+    this.patchState({
+      applications: updatedApplications,
+      statusCounts: statusCounts
+    });
+  }
+
+  private getStatusDisplay(status: string): string {
+    const labels: Record<string, string> = {
+      pending: 'قيد الانتظار',
+      reviewed: 'تم المراجعة',
+      accepted: 'مقبول',
+      rejected: 'مرفوض'
+    };
+    return labels[status] || status;
+  }
+
   private updateFilters(partialFilters: Partial<ApplicantsState['filters']>) {
     const newFilters = { ...this.state().filters, ...partialFilters };
     this.filters$.next(newFilters);
