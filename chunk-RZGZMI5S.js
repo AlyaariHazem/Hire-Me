@@ -1,0 +1,1 @@
+import{a}from"./chunk-XUFAJAUZ.js";import"./chunk-XLYZ6V7U.js";import"./chunk-NDYMN2XK.js";import"./chunk-G3CTP6ZC.js";import"./chunk-OVMELZYD.js";import"./chunk-PSPAT2UB.js";import"./chunk-CGND3GXF.js";export{a as CompanyProfile};
