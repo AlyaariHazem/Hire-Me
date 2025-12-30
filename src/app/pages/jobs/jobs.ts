@@ -429,40 +429,35 @@ export class Jobs extends Base {
 
 
   shareJob(job: JobItem): void {
-    // Generate share URL
     const role = this.authState.role();
-    let baseUrl = window.location.origin;
-    let shareUrl = '';
-    
-    if (job.slug) {
-      if (role === 'jobseeker') {
-        shareUrl = `${baseUrl}/jobseeker/job-details/${job.slug}`;
-      } else if (role === 'employer') {
-        shareUrl = `${baseUrl}/companies/job-details/${job.slug}`;
-      } else {
-        shareUrl = `${baseUrl}/jobs/${job.slug}`;
-      }
-    } else {
-      shareUrl = `${baseUrl}/jobs/${job.id}`;
-    }
-
-    // Use native share API if available
+  
+    const path =
+      role === 'jobseeker'
+        ? ['/jobseeker/job-details', job.slug]
+        : role === 'employer'
+        ? ['/companies/job-details', job.slug]
+        : ['/jobs', job.slug];
+  
+    // Build URL relative to <base href="/Hire-Me/">
+    const tree = this.router.createUrlTree(path);
+    const relative = this.router.serializeUrl(tree); // e.g. /companies/job-details/slug
+    const shareUrl = new URL(relative, document.baseURI).toString(); // adds /Hire-Me/
+  
     if (navigator.share) {
-      navigator.share({
-        title: job.title,
-        text: `تحقق من هذه الوظيفة: ${job.title}`,
-        url: shareUrl
-      }).catch((error) => {
-        // User cancelled or error occurred - fallback to copy link
-        if (error.name !== 'AbortError') {
-          this.copyLink(shareUrl);
-        }
-      });
+      navigator
+        .share({
+          title: job.title,
+          text: `تحقق من هذه الوظيفة: ${job.title}`,
+          url: shareUrl
+        })
+        .catch((error) => {
+          if (error.name !== 'AbortError') this.copyLink(shareUrl);
+        });
     } else {
-      // Fallback: copy link to clipboard
       this.copyLink(shareUrl);
     }
   }
+  
 
   copyLink(url: string): void {
     if (url) {
