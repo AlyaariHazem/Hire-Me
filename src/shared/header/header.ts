@@ -27,6 +27,7 @@ import { ConfirmationService } from 'primeng/api';
 import { UserType } from 'core/types';
 import { AuthStateService } from 'app/auth/auth-state.service';
 import { AuthService } from 'app/auth/auth.service';
+import { Base } from 'shared/base/base';
 
 
 @Component({
@@ -36,7 +37,8 @@ import { AuthService } from 'app/auth/auth.service';
   styleUrl: './header.scss',
   providers: [Logout, ToastrService, ConfirmationService],
 })
-export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+export class Header extends Base implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+
   // ===== Auth / mode =====
   mode: UserType = 'public';
   private authState = inject(AuthStateService);
@@ -87,7 +89,7 @@ export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     private router: Router,
     private userService: User
   ) {
-
+    super();
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: any) => {
@@ -105,7 +107,7 @@ export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   cdr = inject(ChangeDetectorRef);
   logoutService = inject(Logout);
   authService = inject(AuthService);
-  toastr = inject(ToastrService);
+  // toastr = inject(ToastrService);
   private confirmationService = inject(ConfirmationService);
   private http = inject(HttpClient);
   
@@ -326,6 +328,7 @@ private teardownDataBindings(): void {
   }
 
   // ================== Change Password Dialog ==================
+  changingPassword = false;
 
   openChangePasswordDialog(): void {
     this.changePasswordDialogVisible = true;
@@ -334,6 +337,7 @@ private teardownDataBindings(): void {
   }
 
   closeChangePasswordDialog(): void {
+    if (this.changingPassword) return; // Prevent closing while changing password
     this.changePasswordDialogVisible = false;
     // Reset form
     this.changePasswordForm = {
@@ -344,10 +348,14 @@ private teardownDataBindings(): void {
   }
 
   changePassword(): void {
+    if (this.changingPassword) return; // Prevent multiple submissions
+    
     if (this.changePasswordForm.new_password !== this.changePasswordForm.new_password_confirm) {
       this.toastr.error('تأكيد كلمة المرور غير مطابق');
       return;
     }
+
+    this.changingPassword = true;
 
     this.http.post(environment.getUrl('change-password', 'accounts'), this.changePasswordForm)
       .subscribe({
@@ -360,12 +368,13 @@ private teardownDataBindings(): void {
           if (res?.refresh) localStorage.setItem('refresh', res.refresh);
 
           this.toastr.success('تم تغيير كلمة المرور بنجاح');
+          this.changingPassword = false;
           this.closeChangePasswordDialog();
         },
         error: (err) => {
-          const msg = err?.error ? Object.values(err.error).flat().join(' | ') : 'فشل تغيير كلمة المرور';
-          this.toastr.error(msg);
+          this.errors.error(err);
           console.error(err);
+          this.changingPassword = false;
         }
       });
   }

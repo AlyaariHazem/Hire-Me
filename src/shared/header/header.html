@@ -199,6 +199,7 @@
           [(ngModel)]="changePasswordForm.old_password"
           name="old_password"
           placeholder="أدخل كلمة المرور الحالية"
+          [disabled]="changingPassword"
         />
       </div>
 
@@ -212,6 +213,7 @@
           [(ngModel)]="changePasswordForm.new_password"
           name="new_password"
           placeholder="أدخل كلمة المرور الجديدة"
+          [disabled]="changingPassword"
         />
       </div>
 
@@ -225,6 +227,7 @@
           [(ngModel)]="changePasswordForm.new_password_confirm"
           name="new_password_confirm"
           placeholder="أعد إدخال كلمة المرور الجديدة"
+          [disabled]="changingPassword"
         />
       </div>
 
@@ -234,11 +237,14 @@
           label="إلغاء"
           styleClass="p-button-secondary"
           (onClick)="closeChangePasswordDialog()"
+          [disabled]="changingPassword"
         ></p-button>
         <p-button
           type="submit"
-          label="تحديث كلمة المرور"
+          [label]="changingPassword ? 'جاري التحديث...' : 'تحديث كلمة المرور'"
           styleClass="p-button-primary"
+          [disabled]="changingPassword"
+          [loading]="changingPassword"
         ></p-button>
       </div>
     </form>

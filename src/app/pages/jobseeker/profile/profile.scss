@@ -508,4 +508,25 @@ textarea.field__control{min-height:110px;resize:vertical}
   .p-calendar .p-inputtext {
     width: 100%;
   }
+
+  // Change Password Dialog Styles
+  .change-password-form {
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--gray-700, #374151);
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+  }
 }

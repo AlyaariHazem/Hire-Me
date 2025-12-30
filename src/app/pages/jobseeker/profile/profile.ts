@@ -4,10 +4,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { ProfileService } from '../services/profile.service';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ProfileStoreService } from 'shared/services/profile.service';
+import { Base } from 'shared/base/base';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +17,11 @@ import { ProfileStoreService } from 'shared/services/profile.service';
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss'],
 })
-export class Profile implements OnInit, OnDestroy {
+export class Profile extends Base implements OnInit, OnDestroy {
+  constructor() {
+    super();
+  }
+
   basicForm!: FormGroup;
   jobForm!: FormGroup;
 
@@ -66,9 +72,10 @@ export class Profile implements OnInit, OnDestroy {
 
   private fb = inject(FormBuilder);
   private profileApi = inject(ProfileService); // used for PUT/PATCH
-  private toastr = inject(ToastrService);
+  // private toastr = inject(ToastrService);
   private sanitizer = inject(DomSanitizer);
   private store = inject(ProfileStoreService);
+  private http = inject(HttpClient);
 
   ngOnInit(): void {
     this.basicForm = this.fb.group({
@@ -322,6 +329,61 @@ export class Profile implements OnInit, OnDestroy {
   // Toggle preview
   togglePreview(): void {
       this.showPreview = !this.showPreview;
+  }
+
+  // ================== Change Password Dialog ==================
+  changePasswordDialogVisible = false;
+  changingPassword = false;
+  changePasswordForm = {
+    old_password: '',
+    new_password: '',
+    new_password_confirm: ''
+  };
+
+  openChangePasswordDialog(): void {
+    this.changePasswordDialogVisible = true;
+  }
+
+  closeChangePasswordDialog(): void {
+    if (this.changingPassword) return; // Prevent closing while changing password
+    this.changePasswordDialogVisible = false;
+    // Reset form
+    this.changePasswordForm = {
+      old_password: '',
+      new_password: '',
+      new_password_confirm: ''
+    };
+  }
+
+  changePassword(): void {
+    if (this.changingPassword) return; // Prevent multiple submissions
+    
+    if (this.changePasswordForm.new_password !== this.changePasswordForm.new_password_confirm) {
+      this.toastr.error('تأكيد كلمة المرور غير مطابق');
+      return;
+    }
+
+    this.changingPassword = true;
+
+    this.http.post(environment.getUrl('change-password', 'accounts'), this.changePasswordForm)
+      .subscribe({
+        next: (res: any) => {
+          // per your docs: "new token returned"
+          if (res?.access) {
+            localStorage.setItem('access', res.access);
+          }
+          if (res?.refresh) localStorage.setItem('refresh', res.refresh);
+
+          this.toastr.success('تم تغيير كلمة المرور بنجاح');
+          this.changingPassword = false;
+          this.closeChangePasswordDialog();
+        },
+        error: (err) => {
+          this.errors.error(err);
+          console.error(err);
+          this.changingPassword = false;
+        }
+      });
   }
 
   private toAbsolute(path?: string | null): string | null {
