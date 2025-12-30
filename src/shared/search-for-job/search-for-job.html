@@ -90,19 +90,43 @@
   <div class="container">
     <div class="stats-grid">
       <div class="stat-item">
-        <div class="stat-number">250+</div>
+        <div class="stat-number">
+          @if (loadingStats) {
+            <p-skeleton width="60px" height="2rem"></p-skeleton>
+          } @else {
+            {{ statistics.totalCompanies }}+
+          }
+        </div>
         <div class="stat-label">شركة مسجلة</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number">1,500+</div>
+        <div class="stat-number">
+          @if (loadingStats) {
+            <p-skeleton width="80px" height="2rem"></p-skeleton>
+          } @else {
+            {{ statistics.totalJobs | number }}+
+          }
+        </div>
         <div class="stat-label">وظيفة متاحة</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number">15</div>
+        <div class="stat-number">
+          @if (loadingStats) {
+            <p-skeleton width="40px" height="2rem"></p-skeleton>
+          } @else {
+            {{ statistics.totalSectors }}
+          }
+        </div>
         <div class="stat-label">قطاع مختلف</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number">8</div>
+        <div class="stat-number">
+          @if (loadingStats) {
+            <p-skeleton width="40px" height="2rem"></p-skeleton>
+          } @else {
+            {{ statistics.totalGovernorates }}
+          }
+        </div>
         <div class="stat-label">محافظة</div>
       </div>
     </div>

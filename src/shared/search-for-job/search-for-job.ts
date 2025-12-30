@@ -2,8 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
 import { CompanyService as CompanyDataService } from 'app/pages/companies/core/services/company.service';
 import { CompanyService } from 'shared/services/company.service';
+import { JobService } from 'shared/services/job.service';
 import { ICompanyData } from 'app/pages/companies/core/models';
 import { INDUSTRY_TYPES, COMPANY_SIZES } from 'app/pages/companies/core/enums';
 import { environment } from 'environments/environment.development';
@@ -40,6 +43,13 @@ interface CompanyDisplay {
   following: boolean;
 }
 
+interface Statistics {
+  totalCompanies: number;
+  totalJobs: number;
+  totalSectors: number;
+  totalGovernorates: number;
+}
+
 @Component({
   selector: 'app-search-for-job',
   standalone: true,
@@ -65,6 +75,8 @@ interface CompanyDisplay {
 export class SearchForJob implements OnInit {
   private companyDataService = inject(CompanyDataService);
   private companyService = inject(CompanyService);
+  private jobService = inject(JobService);
+  private http = inject(HttpClient);
   private router = inject(Router);
   private toastr = inject(ToastrService);
   private errors = inject(Errors);
@@ -73,6 +85,7 @@ export class SearchForJob implements OnInit {
   featuredCompanies: CompanyDisplay[] = [];
   
   loading = false;
+  loadingStats = false;
   totalCount = 0;
   currentPage = 1;
   page_size = 6;
@@ -81,6 +94,14 @@ export class SearchForJob implements OnInit {
   locationFilter: any = null;
   sizeFilter: any = null;
   searchTerm = '';
+
+  // Statistics
+  statistics: Statistics = {
+    totalCompanies: 0,
+    totalJobs: 0,
+    totalSectors: 0,
+    totalGovernorates: 0
+  };
 
   INDUSTRY_TYPES = INDUSTRY_TYPES;
   COMPANY_SIZES = COMPANY_SIZES;
@@ -114,6 +135,7 @@ export class SearchForJob implements OnInit {
 
   ngOnInit(): void {
     this.loadCompanies();
+    this.loadStatistics();
   }
 
   loadCompanies(): void {
@@ -307,5 +329,53 @@ export class SearchForJob implements OnInit {
     if (img) {
       img.src = 'images/company-logo-1.jpg';
     }
+  }
+
+  loadStatistics(): void {
+    this.loadingStats = true;
+    
+    // Fetch companies count and all companies to calculate unique sectors and governorates
+    const companiesRequest = this.companyDataService.getAllCompanies({ page_size: 1000 });
+    
+    // Fetch jobs count
+    const jobsRequest = this.jobService.getJobs({ page_size: 1 });
+    
+    forkJoin({
+      companies: companiesRequest,
+      jobs: jobsRequest
+    }).subscribe({
+      next: (response) => {
+        // Total companies
+        this.statistics.totalCompanies = response.companies.count || 0;
+        
+        // Total jobs
+        this.statistics.totalJobs = response.jobs.count || 0;
+        
+        // Calculate unique sectors/industries
+        if (response.companies.results && response.companies.results.length > 0) {
+          const uniqueIndustries = new Set(
+            response.companies.results
+              .map(c => c.industry)
+              .filter(industry => industry != null && industry !== '')
+          );
+          this.statistics.totalSectors = uniqueIndustries.size;
+          
+          // Calculate unique governorates/cities
+          const uniqueCities = new Set(
+            response.companies.results
+              .map(c => c.city)
+              .filter(city => city != null && city !== '')
+          );
+          this.statistics.totalGovernorates = uniqueCities.size;
+        }
+        
+        this.loadingStats = false;
+      },
+      error: (err) => {
+        console.error('Failed to load statistics', err);
+        this.loadingStats = false;
+        // Keep default values (0) on error
+      }
+    });
   }
 }
