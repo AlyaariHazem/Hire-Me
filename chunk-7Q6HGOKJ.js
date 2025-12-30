@@ -1,0 +1,1 @@
+import{a}from"./chunk-SISGIS7W.js";import"./chunk-C65RFSBB.js";import"./chunk-PX2IFNJP.js";import"./chunk-AZIQYWPI.js";import"./chunk-QEHMZSAT.js";import"./chunk-OVMELZYD.js";import"./chunk-PSPAT2UB.js";import"./chunk-CGND3GXF.js";export{a as JobDetails};
