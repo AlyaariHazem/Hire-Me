@@ -1,0 +1,143 @@
+/* إعدادات عامة */
+:host {
+  display: block;
+  font-family: 'Cairo', sans-serif;
+  scroll-behavior: auto;
+}
+
+* {
+  cursor: none; /*إخفاء الماوس العادي */
+}
+
+/* استثناء للموبايل والتابلت */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    cursor: auto;
+  }
+  .cursor-dot {
+    display: none;
+  }
+}
+
+/* النقطة المركزية - تحديث للأداء العالي */
+.cursor-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #2563EB;
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin-left: -5px;
+  margin-top: -5px;
+  border-radius: 50%;
+  z-index: 9999;
+  pointer-events: none;
+  will-change: transform;
+  transition: width 0.2s, height 0.2s, margin 0.2s, background-color 0.2s;
+}
+
+/* تكبير النقطة عند المرور فوق العناصر */
+body.hovering .cursor-dot,
+:host-context(body.hovering) .cursor-dot {
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
+  background-color: rgba(37, 99, 235, 0.5);
+  mix-blend-mode: multiply;
+}
+
+/* تنسيقات الصفحة */
+p, li {
+  text-align: justify;
+  line-height: 1.6;
+}
+
+/* كود الأنميشن */
+.float-animation {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* تحسين مظهر العناوين الفرعية */
+.legal-section h3 {
+  margin-top: 2.5rem !important;
+  margin-bottom: 0.75rem;
+  color: #111827;
+  font-weight: 800;
+  font-size: 1.25rem;
+  position: relative;
+  padding-right: 1rem;
+}
+
+.legal-section h3::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 15%;
+  height: 70%;
+  width: 4px;
+  background-color: #2563EB;
+  border-radius: 2px;
+}
+
+.bg-blue-50 h3 {
+  margin-top: 0 !important;
+}
+
+/* خط تحت الروابط في الناف بار */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  right: 0;
+  background-color: #2563EB;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* تخصيص السكرول بار */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Image enhancements */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: optimizeQuality;
+}
+

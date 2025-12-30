@@ -1,0 +1,168 @@
+/* إعدادات عامة */
+:host {
+  display: block;
+  font-family: 'Cairo', sans-serif;
+  scroll-behavior: auto;
+}
+
+* {
+  cursor: none; /*إخفاء الماوس العادي */
+}
+
+/* استثناء للموبايل والتابلت */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    cursor: auto;
+  }
+  .cursor-dot {
+    display: none;
+  }
+}
+:host ::ng-deep .w-10 {
+  width: 6.3333% !important;
+}
+/* النقطة المركزية - تحديث للأداء العالي */
+.cursor-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #2563EB;
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* سنتر الدائرة باستخدام المارجن بدلاً من transform لضمان خفة الحركة */
+  margin-left: -5px;
+  margin-top: -5px;
+  border-radius: 50%;
+  z-index: 9999;
+  pointer-events: none;
+  will-change: transform; /* تحسين الأداء */
+  
+  /* التنعيم فقط للحجم واللون، وليس للموقع */
+  transition: width 0.2s, height 0.2s, margin 0.2s, background-color 0.2s;
+}
+
+/* تكبير النقطة عند المرور فوق العناصر */
+body.hovering .cursor-dot,
+:host-context(body.hovering) .cursor-dot {
+  /* نكبر الحجم يدوياً مع تعديل المارجن للحفاظ على السنتر */
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
+  background-color: rgba(37, 99, 235, 0.5); /* شفافية أكثر عند التكبير */
+}
+
+/* بقية الستايلات */
+.float-animation {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.float-subtle {
+  animation: floatSubtle 3s ease-in-out infinite;
+}
+
+@keyframes floatSubtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.delay-1 {
+  animation-delay: 0s;
+}
+
+.delay-2 {
+  animation-delay: 1s;
+}
+
+.delay-3 {
+  animation-delay: 2s;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.icon-box {
+  transition: all 0.3s ease;
+}
+
+.icon-box:hover {
+  transform: translateY(-5px);
+  color: #1E40AF;
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  right: 0;
+  background-color: #2563EB;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+#mobile-menu {
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+#mobile-menu.open {
+  max-height: 400px;
+  opacity: 1;
+}
+
+/* Image enhancements */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: optimizeQuality;
+}
+

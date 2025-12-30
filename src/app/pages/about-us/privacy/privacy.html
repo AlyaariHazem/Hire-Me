@@ -1,0 +1,172 @@
+<div class="cursor-dot" data-cursor-dot></div>
+
+<header class="pt-32 pb-32 lg:pt-40 lg:pb-40 bg-gradient-to-br from-blue-50 via-white to-blue-50 relative overflow-hidden">
+    
+    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            
+            <div class="text-center lg:text-right">
+                <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-primary text-sm font-bold mb-4 border border-blue-200">
+                    <i class="fas fa-file-contract ml-1"></i> شروط الاستخدام وسياسة الخصوصية
+                </span>
+                
+                <h1 class="text-3xl md:text-5xl font-black mb-6 text-gray-900 leading-tight">
+                    مركز المساعدة <br> <span class="text-primary">القانونية</span>
+                </h1>
+                
+                <p class="text-gray-600 text-lg leading-relaxed mb-8">
+                    نؤمن في "منصة توظيف" بأهمية الشفافية وحماية حقوق جميع الأطراف. يرجى قراءة البنود التالية بعناية لمعرفة حقوقك وواجباتك عند استخدام المنصة.
+                </p>
+                <div class="flex justify-center lg:justify-start gap-4">
+                     <a (click)="scrollToLegalTabs()" class="bg-primary text-white font-bold px-8 py-3 rounded-xl hover:bg-secondary transition shadow-md flex items-center gap-2 transform hover:-translate-y-1 cursor-pointer">
+                        <i class="fas fa-book-open"></i> قراءة البنود
+                    </a>
+                </div>
+            </div>
+             
+            <div class="relative flex justify-center lg:justify-start lg:-ml-20">
+                  <div class="relative w-full max-w-lg">
+                    <div class="absolute inset-0 bg-blue-200 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+                    
+                    <img src="https://illustrations.popsy.co/blue/shaking-hands.svg"
+                         alt="اتفاقية الاستخدام"
+                         class="w-full float-animation relative z-10 drop-shadow-2xl"
+                         loading="eager"
+                         width="600"
+                         height="500">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-12 relative z-20" id="main-content">
+    
+    <div class="flex justify-center gap-4 mb-12 mt-6" id="legalTabs">
+        <button (click)="showSection('terms')" [class]="activeSection === 'terms' ? 'bg-primary text-white px-8 py-3 rounded-xl font-bold shadow-lg transform scale-105 transition flex items-center gap-2 cursor-pointer' : 'bg-white text-gray-600 border border-gray-200 px-8 py-3 rounded-xl font-bold shadow-sm hover:bg-gray-50 transition flex items-center gap-2 cursor-pointer'">
+            <i class="fas fa-gavel"></i> شروط الاستخدام
+        </button>
+        <button (click)="showSection('privacy')" [class]="activeSection === 'privacy' ? 'bg-primary text-white px-8 py-3 rounded-xl font-bold shadow-lg transform scale-105 transition flex items-center gap-2 cursor-pointer' : 'bg-white text-gray-600 border border-gray-200 px-8 py-3 rounded-xl font-bold shadow-sm hover:bg-gray-50 transition flex items-center gap-2 cursor-pointer'">
+            <i class="fas fa-user-shield"></i> سياسة الخصوصية
+        </button>
+    </div>
+
+    <div id="terms" [class.hidden]="activeSection !== 'terms'" class="bg-white rounded-2xl shadow-xl p-8 md:p-16 border border-gray-100 legal-section">
+        <div class="border-b pb-6 mb-8">
+            <h2 class="text-3xl font-black text-gray-900 mb-2">شروط الاستخدام واتفاقية الخدمة</h2>
+            <p class="text-sm text-gray-500">آخر تحديث: ديسمبر 2025</p>
+        </div>
+
+        <div class="space-y-4 text-gray-600">
+            <p>تقدم لك "منصة توظيف" (المشار إليها بالشركة) خدماتها وفقاً للشروط التالية. بإستخدامك للموقع، تقر وتوافق على تقيدك بهذه الشروط والقيود.</p>
+
+            <h3>1. شروط استخدام المواد والموقع</h3>
+            <p>تخولك الشركة بمشاهدة وتحميل نسخة من المادة المنشورة على الموقع لإستخدامك الخاص فقط وليس للأغراض التجارية. يجب عليك المحافظة على جميع حقوق الطبع والعلامة التجارية وجميع إشعارات الملكية. لا يحق لك بيع، تعديل، إعادة إنتاج، عرض، توزيع، تحويل، نشر، ترخيص أو إنشاء أعمال مشتقة من أي مادة أو محتوى يحتويه الموقع.</p>
+
+            <h3>2. ترخيص المحتوى</h3>
+            <p>بنشرك أي محتوى بأي قسم من الموقع، ستقوم بمنح الشركة الحق الكامل والحصري لإستخدام، إعادة إنتاج، تعديل، تبني، نشر، ترجمة، وتوزيع هذا المحتوى دولياً. أنت تضمن تنازل الشخص الذي يملك أية حقوق في محتوى ما بشكل كامل وفعال عنها لصالح المنصة.</p>
+
+            <h3>3. قواعد أمن الموقع</h3>
+            <p>يمنع المستخدمين من القيام بخرق أو محاولة خرق أمن هذا الموقع والتي تشمل دون استثناء:</p>
+            <ul class="list-disc list-inside space-y-1 marker:text-primary pr-2">
+                <li>الدخول إلى معلومات غير مخصصة للمستخدم أو الدخول إلى خادم أو حساب لا يسمح للمستخدم الدخول إليه.</li>
+                <li>محاولة كشف، مسح أو اختبار ضعف النظام أو الشبكة أو لخرق النظام الأمني ومقاييس التحقق.</li>
+                <li>محاولة التدخل بالخدمة لأي مستخدم من خلال إرسال الفيروسات، أو التحميل الزائد (Overloading).</li>
+                <li>تزوير أي جزء من معلومات بروتوكول TCP/IP في أي بريد إلكتروني.</li>
+            </ul>
+
+            <h3>4. استخدامات ممنوعة</h3>
+            <p>تمنع الشركة على وجه الخصوص أي استخدام للموقع لأي من الأغراض التالية:</p>
+            <ul class="list-disc list-inside space-y-1 marker:text-primary pr-2">
+                <li>نشر أي معلومات غير كاملة، خاطئة أو غير دقيقة عن السيرة الذاتية.</li>
+                <li>انتحال شخصية أي شخص أو مؤسسة.</li>
+                <li>نشر أو بث أي محتوى ليس لديك الحق في إعادة نشره بموجب القوانين.</li>
+                <li>نشر المخططات الهرمية (Pyramid Schemes)، أو فرص العمل التي تتطلب دفعاً مقدماً.</li>
+                <li>استخدام أي أداة أو برنامج (مثل العناكب Spiders) لتصفح الموقع أو البحث فيه بشكل آلي.</li>
+            </ul>
+
+            <h3>5. معلومات المستخدم</h3>
+            <p>عند التسجيل، سيطلب منك تزويد الشركة بمعلومات معينة (الاسم، البريد الإلكتروني). توافق على قيام الشركة بمشاركة معلومات إجمالية مجهولة المصدر لأغراض إحصائية، ولكن لن نقوم بالإفصاح عن بياناتك الشخصية المحددة لطرف ثالث دون موافقتك.</p>
+
+            <h3>6. حدود المسؤولية</h3>
+            <p>يلعب الموقع دور "سوق عمل" عبر الإنترنت. لا تتدخل الشركة في العمليات الفعلية بين الباحثين عن العمل وأصحاب العمل. وبالتالي، ليس للشركة أي سيطرة على جودة، أمان، أو قانونية الوظائف أو السير الذاتية المنشورة. أنت تقر بأنك المسؤول الوحيد عن شكل ومحتوى ودقة المواد التي تضعها على الموقع. الشركة لا تضمن خلو الموقع من الأخطاء، ولن تكون مسؤولة عن أي تكاليف تنتج عن تلف البيانات أو المعدات نتيجة استخدامك للموقع.</p>
+
+            <h3>7. التسجيل وكلمة السر</h3>
+            <p>أنت مسؤول عن الحفاظ على سرية معلوماتك وكلمة سرك. وتتحمل المسؤولية الكاملة عن جميع النشاطات التي تحدث تحت حسابك.</p>
+
+            <h3>8. القانون المطبق</h3>
+            <p>في حال وقوع أي خلافات، سيتم تنفيذ القوانين السارية في الجمهورية اليمنية، ويكون الاختصاص القضائي لمحاكم العاصمة صنعاء.</p>
+        </div>
+    </div>
+
+    <div id="privacy" [class.hidden]="activeSection !== 'privacy'" class="bg-white rounded-2xl shadow-xl p-8 md:p-16 border border-gray-100 legal-section">
+        <div class="border-b pb-6 mb-8">
+            <h2 class="text-3xl font-black text-gray-900 mb-2">سياسة الخصوصية وحماية البيانات</h2>
+            <p class="text-sm text-gray-500">متوافقة مع معايير GDPR والقوانين المحلية</p>
+        </div>
+
+        <div class="space-y-4 text-gray-600">
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 mb-8">
+                <h3 class="!mt-0 !text-primary">ملخص سريع</h3>
+                <p class="mb-0">يقوم هذا الموقع بجمع بعض البيانات الشخصية من المستخدمين لغرض تقديم خدمات التوظيف، التحليلات، وتحسين تجربة المستخدم. نلتزم بأعلى معايير الأمان ولن نبيع بياناتك.</p>
+            </div>
+
+            <h3>1. مالك البيانات والمتحكم بها</h3>
+            <p>إدارة منصة توظيف - مشروع تخرج دفعة 2025، كلية الحاسوب.<br>البريد الإلكتروني للتواصل: <span class="text-primary font-bold">privacy@tawtheef.ye</span></p>
+
+            <h3>2. أنواع البيانات التي نجمعها</h3>
+            <p>نقوم بجمع البيانات التالية، سواء مباشرة منك أو عبر أطراف ثالثة:</p>
+            <ul class="list-disc list-inside space-y-1 marker:text-primary pr-2">
+                <li><strong>بيانات التعريف:</strong> الاسم الأول، اسم العائلة، البريد الإلكتروني، رقم الهاتف، العنوان، الصورة الشخصية.</li>
+                <li><strong>بيانات مهنية:</strong> السيرة الذاتية، المسمى الوظيفي، الخبرات، التعليم، مكان العمل، اسم الشركة.</li>
+                <li><strong>بيانات الاستخدام (Usage Data):</strong> ملفات تعريف الارتباط (Cookies)، عنوان IP، نوع الجهاز، المتصفح، الصفحات التي تمت زيارتها، ومدة الجلسة.</li>
+                <li><strong>بيانات التواصل:</strong> محتوى الرسائل المرسلة عبر نماذج الاتصال.</li>
+            </ul>
+
+            <h3>3. الغرض من المعالجة</h3>
+            <p>يتم جمع البيانات لتمكين المالك من تقديم خدماته، وتشمل الأغراض التالية:</p>
+            <ul class="list-disc list-inside space-y-1 marker:text-primary pr-2">
+                <li><strong>التسجيل والمصادقة:</strong> السماح للمستخدمين بإنشاء حسابات والدخول إليها.</li>
+                <li><strong>إدارة التوظيف:</strong> عرض السير الذاتية لأصحاب العمل وتمكين التقديم على الوظائف.</li>
+                <li><strong>التحليلات (Analytics):</strong> مراقبة وتحليل حركة المرور على الويب وسلوك المستخدم.</li>
+                <li><strong>الاتصال بالمستخدم:</strong> إرسال إشعارات حول الوظائف أو الرد على الاستفسارات.</li>
+                <li><strong>الاستضافة والبنية التحتية:</strong> تشغيل الموقع عبر خدمات سحابية آمنة.</li>
+            </ul>
+
+            <h3>4. تفاصيل معالجة البيانات والخدمات المستخدمة</h3>
+            <p>نستخدم مجموعة من الخدمات التقنية لمعالجة البيانات، وتشمل:</p>
+
+            <h4 class="font-bold text-gray-800 mt-4 mb-2">أ. التحليلات (Analytics)</h4>
+            <ul class="list-disc list-inside space-y-1 marker:text-primary pr-2">
+                <li><strong>Google Analytics 4:</strong> خدمة تحليل ويب تقدمها Google تتتبع حركة المرور.</li>
+                <li><strong>Google Analytics for Firebase:</strong> لتحليل استخدام التطبيقات والأجهزة المحمولة.</li>
+                <li><strong>Microsoft Clarity:</strong> لتسجيل جلسات المستخدم والخرائط الحرارية (Heatmaps) لتحسين تجربة الواجهة.</li>
+            </ul>
+
+            <h4 class="font-bold text-gray-800 mt-4 mb-2">ب. التسجيل والمصادقة (Authentication)</h4>
+            <ul class="list-disc list-inside space-y-1 marker:text-primary pr-2">
+                <li><strong>Google OAuth & Facebook Auth:</strong> خدمات تتيح التسجيل باستخدام حسابات جوجل وفيسبوك لتبسيط العملية.</li>
+                <li><strong>تسجيل مباشر:</strong> تخزين البيانات المشفرة (كلمات المرور) على خوادمنا الآمنة.</li>
+            </ul>
+
+            <h3>5. حقوق المستخدمين (GDPR)</h3>
+            <p>يحق للمستخدمين التمتع بالحقوق التالية فيما يتعلق ببياناتهم:</p>
+            <ul class="list-disc list-inside space-y-1 marker:text-primary pr-2">
+                <li><strong>سحب الموافقة:</strong> الحق في سحب الموافقة على معالجة البيانات في أي وقت.</li>
+                <li><strong>الوصول:</strong> الحق في الحصول على نسخة من البيانات التي يتم معالجتها.</li>
+                <li><strong>التصحيح:</strong> الحق في طلب تصحيح البيانات غير الدقيقة.</li>
+                <li><strong>المسح (الحق في النسيان):</strong> الحق في طلب حذف البيانات الشخصية من أنظمتنا.</li>
+            </ul>
+
+            <h3>6. الاحتفاظ بالبيانات</h3>
+            <p>يتم الاحتفاظ بالبيانات الشخصية طالما كان ذلك ضرورياً للأغراض التي جمعت من أجلها (مثل بقاء الحساب نشطاً). عند انتهاء الحاجة للبيانات أو طلب المستخدم حذفها، سيتم حذفها بشكل آمن ولا يمكن استعادتها.</p>
+        </div>
+    </div>
+
+</div>
+
+<app-footer></app-footer>

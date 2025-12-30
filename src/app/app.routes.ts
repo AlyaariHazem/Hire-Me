@@ -6,6 +6,8 @@ import { loginRedirectGuard } from './auth/login-redirect.guard';
 import { employerGuard } from './auth/employer.guard';
 import { jobseekerGuard } from './auth/jobseeker.guard';
 import { Jobs } from './pages/jobs/jobs';
+import { AboutUs } from './pages/about-us/about-us';
+import { Privacy } from './pages/about-us/privacy/privacy';
 
 export const routes: Routes = [
   // Login page at root: if logged-in → guard redirects to the app.
@@ -63,6 +65,14 @@ export const routes: Routes = [
       import('shared/search-for-job/search-for-job').then(
         (m) => m.SearchForJob
       ),
+  },
+  {
+    path: 'about-us',
+    component: AboutUs,
+  },
+  {
+    path: 'privacy',
+    component: Privacy,
   },
   // simple logout route that clears storage and returns to login
   {
