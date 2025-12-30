@@ -47,6 +47,7 @@ export class CompanyData implements OnInit, OnDestroy {
 
   form: ICompanyData = this.emptyForm();
   logoPreview: string | null = null;
+  coverPreview: string | null = null;
 
   saving = false;
   deletingId: number | null = null;
@@ -137,6 +138,9 @@ export class CompanyData implements OnInit, OnDestroy {
     this.editingCompany = null;
     this.form = this.emptyForm();
     this.logoPreview = null;
+    this.coverPreview = null;
+    this.selectedLogoFile = null;
+    this.selectedCoverFile = null;
     this.dialogVisible = true;
     document.body.style.overflow = 'hidden';
   }
@@ -147,6 +151,9 @@ export class CompanyData implements OnInit, OnDestroy {
     this.editingCompany = company;
     this.form = { ...this.emptyForm(), ...company };
     this.logoPreview = this.buildUrl(company.logo);
+    this.coverPreview = this.buildUrl(company.cover_image);
+    this.selectedLogoFile = null;
+    this.selectedCoverFile = null;
     this.dialogVisible = true;
     document.body.style.overflow = 'hidden';
   }
@@ -157,6 +164,7 @@ export class CompanyData implements OnInit, OnDestroy {
     this.editingCompany = null;
     this.form = this.emptyForm();
     this.logoPreview = null;
+    this.coverPreview = null;
     this.selectedLogoFile = null;
     this.selectedCoverFile = null;
     document.body.style.overflow = '';
@@ -180,11 +188,43 @@ export class CompanyData implements OnInit, OnDestroy {
   }
 
   onCoverSelected(evt: Event): void {
-      const input = evt.target as HTMLInputElement;
-      const file = input.files?.[0];
-      if (!file) return;
-  
-      this.selectedCoverFile = file;
+    const input = evt.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.selectedCoverFile = file;
+
+    const reader = new FileReader();
+    reader.onload = () => (this.coverPreview = reader.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  removeLogoPreview(): void {
+    this.selectedLogoFile = null;
+    // Reset file input
+    const input = document.getElementById('logo-file') as HTMLInputElement;
+    if (input) input.value = '';
+    
+    // If editing, restore original logo preview
+    if (this.dialogMode === 'edit' && this.editingCompany?.logo) {
+      this.logoPreview = this.buildUrl(this.editingCompany.logo);
+    } else {
+      this.logoPreview = null;
+    }
+  }
+
+  removeCoverPreview(): void {
+    this.selectedCoverFile = null;
+    // Reset file input
+    const input = document.getElementById('cover-file') as HTMLInputElement;
+    if (input) input.value = '';
+    
+    // If editing, restore original cover preview
+    if (this.dialogMode === 'edit' && this.editingCompany?.cover_image) {
+      this.coverPreview = this.buildUrl(this.editingCompany.cover_image);
+    } else {
+      this.coverPreview = null;
+    }
   }
 
   // ---------- CRUD via dialog ----------
@@ -222,8 +262,8 @@ export class CompanyData implements OnInit, OnDestroy {
     appendIf('city', this.form.city);
     appendIf('address', this.form.address);
     appendIf('employees_count', this.form.employees_count !== null ? String(this.form.employees_count) : '');
-
-    // Append files if selected
+    
+    // Append files if selected (don't append URL strings for images)
     if (this.selectedLogoFile) {
         formData.append('logo', this.selectedLogoFile);
     }
@@ -231,6 +271,7 @@ export class CompanyData implements OnInit, OnDestroy {
     if (this.selectedCoverFile) {
         formData.append('cover_image', this.selectedCoverFile);
     }
+    
 
 
     // CREATE

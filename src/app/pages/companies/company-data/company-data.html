@@ -489,8 +489,7 @@
           </div>
         </div>
 
-        <div class="form-row form-row-3">
-          <div class="form-group ">
+          <div class="form-group">
             <label for="address">العنوان</label>
             <input
               pInputText
@@ -508,41 +507,71 @@
             >
               الحد الأقصى 254 حرفًا
             </small>
-          </div>
-          <div class="form-group">
-            <label for="logo">رابط الشعار (Logo URL)</label>
-            <input
-              pInputText
-              id="logo"
-              name="logo"
-              [(ngModel)]="form.logo"
-              placeholder="/media/logos/company.png أو رابط كامل"
-            />
-          </div>
-          <div class="form-group">
-            <label for="cover_image">رابط صورة الغلاف</label>
-            <input
-              pInputText
-              id="cover_image"
-              name="cover_image"
-              [(ngModel)]="form.cover_image"
-              placeholder="/media/covers/cover.jpg"
-            />
-          </div>
         </div>
 
-        <!-- Logo preview upload -->
+        <!-- Logo upload -->
         <div class="form-group upload-group">
-          <label for="logo-file">تحديث الشعار (اختياري للمعاينة)</label>
+          <label for="logo-file">
+            شعار الشركة
+            @if (logoPreview) {
+              <span class="file-selected">(تم اختيار ملف)</span>
+            }
+          </label>
           <input
             id="logo-file"
             type="file"
             accept="image/*"
             (change)="onLogoSelected($event)"
+            class="file-input"
           />
-          <small>
-            هذا الاختيار فقط لمعاينة الشعار. ارفع الصورة فعلياً لمسار ثابت
-            ثم ضع الرابط في الحقل أعلاه.
+          @if (logoPreview) {
+            <div class="image-preview">
+              <img [src]="logoPreview" alt="معاينة الشعار" class="preview-image" />
+              <button 
+                type="button" 
+                class="remove-image-btn"
+                (click)="removeLogoPreview()"
+                title="إزالة الصورة"
+              >
+                <i class="pi pi-times"></i>
+              </button>
+            </div>
+          }
+          <small class="help-text">
+            اختر صورة شعار الشركة (PNG, JPG, GIF - الحد الأقصى 5MB)
+          </small>
+        </div>
+
+        <!-- Cover image upload -->
+        <div class="form-group upload-group">
+          <label for="cover-file">
+            صورة الغلاف
+            @if (coverPreview) {
+              <span class="file-selected">(تم اختيار ملف)</span>
+            }
+          </label>
+          <input
+            id="cover-file"
+            type="file"
+            accept="image/*"
+            (change)="onCoverSelected($event)"
+            class="file-input"
+          />
+          @if (coverPreview) {
+            <div class="image-preview">
+              <img [src]="coverPreview" alt="معاينة صورة الغلاف" class="preview-image" />
+              <button 
+                type="button" 
+                class="remove-image-btn"
+                (click)="removeCoverPreview()"
+                title="إزالة الصورة"
+              >
+                <i class="pi pi-times"></i>
+              </button>
+            </div>
+          }
+          <small class="help-text">
+            اختر صورة غلاف للشركة (PNG, JPG, GIF - الحد الأقصى 5MB)
           </small>
         </div>
 

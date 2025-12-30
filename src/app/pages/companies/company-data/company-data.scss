@@ -578,6 +578,16 @@
   }
 }
 
+.form-row-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
 .form-row-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
@@ -731,6 +741,89 @@
       color: #475569;
       font-weight: 500;
     }
+  }
+
+  .file-selected {
+    color: #10b981;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .file-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: #2563eb;
+      background: #f8fafc;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+  }
+
+  .image-preview {
+    position: relative;
+    margin-top: 16px;
+    display: inline-block;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e2e8f0;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .preview-image {
+      display: block;
+      max-width: 200px;
+      max-height: 200px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .remove-image-btn {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(239, 68, 68, 0.9);
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+      &:hover {
+        background: rgba(220, 38, 38, 1);
+        transform: scale(1.1);
+      }
+
+      i {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .help-text {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.5;
   }
 
   &::before {
