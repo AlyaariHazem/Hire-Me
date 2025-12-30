@@ -34,6 +34,9 @@ export class SideBar implements OnInit, OnDestroy {
   // English: job seeker title/profession
   jobSeekerTitle = '';
 
+  // English: CV/Resume status
+  hasResume = false;
+
   // English: local image selection state
   selectedFile: File | null = null;
   saving = false;
@@ -83,6 +86,9 @@ export class SideBar implements OnInit, OnDestroy {
         this.previewUrl = this.toAbsolute(logoPath);
         this.logo$.set(this.previewUrl);
         this.isBlobPreview = false; // English: backend URL, not blob
+
+        // English: check if resume/CV exists
+        this.hasResume = !!(p as any).resume || !!(p as any).job_seeker?.resume;
       });
   }
 

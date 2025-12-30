@@ -163,10 +163,19 @@
           data-tab="cv"
         >
           <i class="pi pi-file nav-icon"></i>
-          السيرة الذاتية
+          <span>السيرة الذاتية</span>
+          @if (hasResume) {
+            <span class="cv-status-badge cv-status-badge--uploaded" title="السيرة الذاتية مرفوعة">
+              <!-- <i class="pi pi-check"></i> -->
+            </span>
+          } @else {
+            <span class="cv-status-badge cv-status-badge--missing" title="لا توجد سيرة ذاتية مرفوعة">
+              <i class="pi pi-exclamation-triangle"></i>
+            </span>
+          }
         </a>
       </li>
-      <li class="sidebar-nav-item">
+      <!-- <li class="sidebar-nav-item">
         <a
           routerLink="/jobseeker/alerts"
           routerLinkActive="active"
@@ -177,8 +186,8 @@
           <i class="pi pi-bell nav-icon"></i>
           تنبيهات الوظائف
         </a>
-      </li>
-      <li class="sidebar-nav-item">
+      </li> -->
+      <!-- <li class="sidebar-nav-item">
         <a
           routerLink="/jobseeker/settings"
           routerLinkActive="active"
@@ -189,7 +198,7 @@
           <i class="pi pi-cog nav-icon"></i>
           الإعدادات
         </a>
-      </li>
+      </li> -->
     </ul>
   </nav>
   }
