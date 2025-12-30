@@ -10,7 +10,7 @@
             
             <div class="text-center lg:text-right">
                 <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-primary text-sm font-bold mb-4 border border-blue-200">
-                    <i class="fas fa-file-contract ml-1"></i> شروط الاستخدام وسياسة الخصوصية
+                    <i class="pi pi-file ml-1"></i> شروط الاستخدام وسياسة الخصوصية
                 </span>
                 
                 <h1 class="text-3xl md:text-5xl font-black mb-6 text-gray-900 leading-tight">
@@ -22,7 +22,7 @@
                 </p>
                 <div class="flex justify-center lg:justify-start gap-4">
                      <a (click)="scrollToLegalTabs()" class="bg-primary text-white font-bold px-8 py-3 rounded-xl hover:bg-secondary transition shadow-md flex items-center gap-2 transform hover:-translate-y-1 cursor-pointer">
-                        <i class="fas fa-book-open"></i> قراءة البنود
+                        <i class="pi pi-book"></i> قراءة البنود
                     </a>
                 </div>
             </div>
@@ -48,10 +48,10 @@
     
     <div class="flex justify-center gap-4 mb-12 mt-6" id="legalTabs">
         <button (click)="showSection('terms')" [class]="activeSection === 'terms' ? 'bg-primary text-white px-8 py-3 rounded-xl font-bold shadow-lg transform scale-105 transition flex items-center gap-2 cursor-pointer' : 'bg-white text-gray-600 border border-gray-200 px-8 py-3 rounded-xl font-bold shadow-sm hover:bg-gray-50 transition flex items-center gap-2 cursor-pointer'">
-            <i class="fas fa-gavel"></i> شروط الاستخدام
+            <i class="pi pi-info-circle"></i> شروط الاستخدام
         </button>
         <button (click)="showSection('privacy')" [class]="activeSection === 'privacy' ? 'bg-primary text-white px-8 py-3 rounded-xl font-bold shadow-lg transform scale-105 transition flex items-center gap-2 cursor-pointer' : 'bg-white text-gray-600 border border-gray-200 px-8 py-3 rounded-xl font-bold shadow-sm hover:bg-gray-50 transition flex items-center gap-2 cursor-pointer'">
-            <i class="fas fa-user-shield"></i> سياسة الخصوصية
+            <i class="pi pi-shield"></i> سياسة الخصوصية
         </button>
     </div>
 
