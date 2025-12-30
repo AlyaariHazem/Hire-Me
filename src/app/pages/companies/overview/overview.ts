@@ -104,7 +104,8 @@ export class Overview implements OnInit {
       pending: 'جديد',
       reviewed: 'تم المراجعة',
       accepted: 'مقبول',
-      rejected: 'مرفوض'
+      rejected: 'مرفوض',
+      interview_scheduled: 'مقابلة مجدولة'
     };
     return labels[status] || status;
   }

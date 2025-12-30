@@ -53,6 +53,11 @@
     background-color: var(--danger-color, #dc3545);
     color: white;
   }
+
+  &.status-interview_scheduled {
+    background-color: #8b5cf6;
+    color: white;
+  }
 }
 
 // Loading and Empty States
