@@ -237,14 +237,8 @@ export class Jobs extends Base {
   }
 
   navigate(slug: string) {
-    const role = this.authState.role() as UserRole || '';
-    if(role === 'jobseeker') {
-      this.router.navigate(['/jobseeker/job-details', slug]);
-    } else if(role === 'employer') {
-      this.router.navigate(['/companies/job-details', slug]);
-    } else {
-      this.router.navigate(['/jobs', slug]);
-    }
+    // Use /jobs/job-details/:slug for all users regardless of role
+    this.router.navigate(['/jobs/job-details', slug]);
   }
 
   setExperienceLevel(level: string) {
@@ -429,18 +423,12 @@ export class Jobs extends Base {
 
 
   shareJob(job: JobItem): void {
-    const role = this.authState.role();
-  
-    const path =
-      role === 'jobseeker'
-        ? ['/jobseeker/job-details', job.slug]
-        : role === 'employer'
-        ? ['/companies/job-details', job.slug]
-        : ['/jobs', job.slug];
+    // Use /jobs/job-details/:slug for all users regardless of role
+    const path = ['/Hire-Me/jobs/job-details', job.slug];
   
     // Build URL relative to <base href="/Hire-Me/">
     const tree = this.router.createUrlTree(path);
-    const relative = this.router.serializeUrl(tree); // e.g. /companies/job-details/slug
+    const relative = this.router.serializeUrl(tree); // e.g. /jobs/job-details/slug
     const shareUrl = new URL(relative, document.baseURI).toString(); // adds /Hire-Me/
   
     if (navigator.share) {

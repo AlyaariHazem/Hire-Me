@@ -205,9 +205,8 @@ export class Overview implements OnInit {
 
   viewJobDetails(job: JobItem): void {
     if (job.slug) {
-      this.router.navigate(['/companies/job-details'], {
-        queryParams: { slug: job.slug }
-      });
+      // Use /jobs/job-details/:slug for all users regardless of role
+      this.router.navigate(['/jobs/job-details', job.slug]);
     }
   }
 

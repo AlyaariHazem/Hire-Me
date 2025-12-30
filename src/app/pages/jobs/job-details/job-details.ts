@@ -420,7 +420,8 @@ export class JobDetails extends Base implements OnInit {
   }
 
   navigateToJob(slug: string): void {
-    this.router.navigate(['/jobseeker/job-details', slug]).then(() => {
+    // Use /jobs/job-details/:slug for all users regardless of role
+    this.router.navigate(['/jobs/job-details', slug]).then(() => {
       window.location.reload();
     });
   }

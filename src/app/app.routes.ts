@@ -51,6 +51,13 @@ export const routes: Routes = [
     component: Jobs,
   },
   {
+    path: 'jobs/job-details/:slug',
+    loadComponent: () =>
+      import('./pages/jobs/job-details/job-details').then(
+        (c) => c.JobDetails
+      ),
+  },
+  {
     path: 'companies-list',
     loadComponent: () =>
       import('shared/search-for-job/search-for-job').then(
