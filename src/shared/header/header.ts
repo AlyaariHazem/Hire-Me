@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, Subject, takeUntil } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import { Logout } from '../services/logout';
 import { ToastrService } from 'ngx-toastr';
@@ -53,6 +54,7 @@ export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   employerMenuOpen = false;  // employer dropdown
   mobileOpen = false;        // mobile nav
   isEmployerMenuOpen = false;
+  changePasswordDialogVisible = false;  // change password dialog
  private profileStore = inject(ProfileStoreService);
 
 
@@ -105,6 +107,14 @@ export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   authService = inject(AuthService);
   toastr = inject(ToastrService);
   private confirmationService = inject(ConfirmationService);
+  private http = inject(HttpClient);
+  
+  // Change password form
+  changePasswordForm = {
+    old_password: '',
+    new_password: '',
+    new_password_confirm: ''
+  };
 
   ngOnInit(): void {
    if (this.isLoggedIn()) this.profileStore.ensureLoaded();
@@ -313,5 +323,50 @@ private teardownDataBindings(): void {
     if (img) {
       img.src = 'images/HireMe.png';
     }
+  }
+
+  // ================== Change Password Dialog ==================
+
+  openChangePasswordDialog(): void {
+    this.changePasswordDialogVisible = true;
+    this.closeMenus();
+    this.closeMobileMenu();
+  }
+
+  closeChangePasswordDialog(): void {
+    this.changePasswordDialogVisible = false;
+    // Reset form
+    this.changePasswordForm = {
+      old_password: '',
+      new_password: '',
+      new_password_confirm: ''
+    };
+  }
+
+  changePassword(): void {
+    if (this.changePasswordForm.new_password !== this.changePasswordForm.new_password_confirm) {
+      this.toastr.error('تأكيد كلمة المرور غير مطابق');
+      return;
+    }
+
+    this.http.post(environment.getUrl('change-password', 'accounts'), this.changePasswordForm)
+      .subscribe({
+        next: (res: any) => {
+          // per your docs: "new token returned"
+          if (res?.access) {
+            localStorage.setItem('access', res.access);
+            this.authState.setAuth(res.access, this.role());
+          }
+          if (res?.refresh) localStorage.setItem('refresh', res.refresh);
+
+          this.toastr.success('تم تغيير كلمة المرور بنجاح');
+          this.closeChangePasswordDialog();
+        },
+        error: (err) => {
+          const msg = err?.error ? Object.values(err.error).flat().join(' | ') : 'فشل تغيير كلمة المرور';
+          this.toastr.error(msg);
+          console.error(err);
+        }
+      });
   }
 }

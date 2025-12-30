@@ -452,3 +452,24 @@ a:hover {
     flex-shrink: 0;
   }
 }
+
+// Change Password Dialog Styles
+::ng-deep .change-password-form {
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--gray-700, #374151);
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+}

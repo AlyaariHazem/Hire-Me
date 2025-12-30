@@ -15,6 +15,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "baseHref": "/Hire-Me/",
             "browser": "src/main.ts",
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",

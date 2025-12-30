@@ -115,6 +115,10 @@
                  <i class="pi pi-cog"></i>
                  <span>الإعدادات</span>
                </a>
+               <a class="user-menu-item" (click)="openChangePasswordDialog()">
+                 <i class="pi pi-key"></i>
+                 <span>تغيير كلمة المرور</span>
+               </a>
                <p-divider></p-divider>
                <a class="user-menu-item-logout" (click)="logout()">
                  <i class="pi pi-sign-out"></i>
@@ -172,4 +176,71 @@
        (click)="closeMobileMenu()"
      ></div>
    }
+
+  <!-- Change Password Dialog -->
+  <p-dialog
+    [(visible)]="changePasswordDialogVisible"
+    [modal]="true"
+    [style]="{ width: '90%', maxWidth: '500px' }"
+    header="تغيير كلمة المرور"
+    (onHide)="closeChangePasswordDialog()"
+    [draggable]="false"
+    [resizable]="false"
+    [rtl]="true"
+  >
+    <form (ngSubmit)="changePassword()" class="change-password-form">
+      <div class="form-group">
+        <label class="form-label">كلمة المرور الحالية</label>
+        <input
+          type="password"
+          pInputText
+          class="w-full"
+          required
+          [(ngModel)]="changePasswordForm.old_password"
+          name="old_password"
+          placeholder="أدخل كلمة المرور الحالية"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">كلمة المرور الجديدة</label>
+        <input
+          type="password"
+          pInputText
+          class="w-full"
+          required
+          [(ngModel)]="changePasswordForm.new_password"
+          name="new_password"
+          placeholder="أدخل كلمة المرور الجديدة"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">تأكيد كلمة المرور الجديدة</label>
+        <input
+          type="password"
+          pInputText
+          class="w-full"
+          required
+          [(ngModel)]="changePasswordForm.new_password_confirm"
+          name="new_password_confirm"
+          placeholder="أعد إدخال كلمة المرور الجديدة"
+        />
+      </div>
+
+      <div class="dialog-actions">
+        <p-button
+          type="button"
+          label="إلغاء"
+          styleClass="p-button-secondary"
+          (onClick)="closeChangePasswordDialog()"
+        ></p-button>
+        <p-button
+          type="submit"
+          label="تحديث كلمة المرور"
+          styleClass="p-button-primary"
+        ></p-button>
+      </div>
+    </form>
+  </p-dialog>
 </header>
