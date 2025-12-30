@@ -334,6 +334,9 @@ export class Profile extends Base implements OnInit, OnDestroy {
   // ================== Change Password Dialog ==================
   changePasswordDialogVisible = false;
   changingPassword = false;
+  showOldPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
   changePasswordForm = {
     old_password: '',
     new_password: '',
@@ -353,6 +356,22 @@ export class Profile extends Base implements OnInit, OnDestroy {
       new_password: '',
       new_password_confirm: ''
     };
+    // Reset password visibility
+    this.showOldPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
+  }
+
+  toggleOldPasswordVisibility(): void {
+    this.showOldPassword = !this.showOldPassword;
+  }
+
+  toggleNewPasswordVisibility(): void {
+    this.showNewPassword = !this.showNewPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   changePassword(): void {

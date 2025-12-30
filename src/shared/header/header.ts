@@ -27,7 +27,6 @@ import { ConfirmationService } from 'primeng/api';
 import { UserType } from 'core/types';
 import { AuthStateService } from 'app/auth/auth-state.service';
 import { AuthService } from 'app/auth/auth.service';
-import { Base } from 'shared/base/base';
 
 
 @Component({
@@ -37,8 +36,7 @@ import { Base } from 'shared/base/base';
   styleUrl: './header.scss',
   providers: [Logout, ToastrService, ConfirmationService],
 })
-export class Header extends Base implements OnInit, OnDestroy, AfterViewInit, OnChanges {
-
+export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   // ===== Auth / mode =====
   mode: UserType = 'public';
   private authState = inject(AuthStateService);
@@ -89,7 +87,7 @@ export class Header extends Base implements OnInit, OnDestroy, AfterViewInit, On
     private router: Router,
     private userService: User
   ) {
-    super();
+
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: any) => {
@@ -107,7 +105,7 @@ export class Header extends Base implements OnInit, OnDestroy, AfterViewInit, On
   cdr = inject(ChangeDetectorRef);
   logoutService = inject(Logout);
   authService = inject(AuthService);
-  // toastr = inject(ToastrService);
+  toastr = inject(ToastrService);
   private confirmationService = inject(ConfirmationService);
   private http = inject(HttpClient);
   
@@ -117,6 +115,9 @@ export class Header extends Base implements OnInit, OnDestroy, AfterViewInit, On
     new_password: '',
     new_password_confirm: ''
   };
+  showOldPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
 
   ngOnInit(): void {
    if (this.isLoggedIn()) this.profileStore.ensureLoaded();
@@ -345,6 +346,22 @@ private teardownDataBindings(): void {
       new_password: '',
       new_password_confirm: ''
     };
+    // Reset password visibility
+    this.showOldPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
+  }
+
+  toggleOldPasswordVisibility(): void {
+    this.showOldPassword = !this.showOldPassword;
+  }
+
+  toggleNewPasswordVisibility(): void {
+    this.showNewPassword = !this.showNewPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   changePassword(): void {
@@ -372,7 +389,8 @@ private teardownDataBindings(): void {
           this.closeChangePasswordDialog();
         },
         error: (err) => {
-          this.errors.error(err);
+          const msg = err?.error ? Object.values(err.error).flat().join(' | ') : 'فشل تغيير كلمة المرور';
+          this.toastr.error(msg);
           console.error(err);
           this.changingPassword = false;
         }

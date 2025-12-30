@@ -191,44 +191,83 @@
     <form (ngSubmit)="changePassword()" class="change-password-form">
       <div class="form-group">
         <label class="form-label">كلمة المرور الحالية</label>
-        <input
-          type="password"
-          pInputText
-          class="w-full"
-          required
-          [(ngModel)]="changePasswordForm.old_password"
-          name="old_password"
-          placeholder="أدخل كلمة المرور الحالية"
-          [disabled]="changingPassword"
-        />
+        <div class="password-input-wrapper">
+          <input
+            [type]="showOldPassword ? 'text' : 'password'"
+            pInputText
+            class="w-full password-input"
+            required
+            [(ngModel)]="changePasswordForm.old_password"
+            name="old_password"
+            placeholder="أدخل كلمة المرور الحالية"
+            [disabled]="changingPassword"
+          />
+          <button
+            type="button"
+            class="password-toggle-btn"
+            (click)="toggleOldPasswordVisibility()"
+            [disabled]="changingPassword"
+            [attr.aria-label]="showOldPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+            [attr.title]="showOldPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+          >
+            <i [class]="showOldPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" [attr.aria-hidden]="true"></i>
+            <span class="sr-only">{{ showOldPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور' }}</span>
+          </button>
+        </div>
       </div>
 
       <div class="form-group">
         <label class="form-label">كلمة المرور الجديدة</label>
-        <input
-          type="password"
-          pInputText
-          class="w-full"
-          required
-          [(ngModel)]="changePasswordForm.new_password"
-          name="new_password"
-          placeholder="أدخل كلمة المرور الجديدة"
-          [disabled]="changingPassword"
-        />
+        <div class="password-input-wrapper">
+          <input
+            [type]="showNewPassword ? 'text' : 'password'"
+            pInputText
+            class="w-full password-input"
+            required
+            [(ngModel)]="changePasswordForm.new_password"
+            name="new_password"
+            placeholder="أدخل كلمة المرور الجديدة"
+            [disabled]="changingPassword"
+          />
+          <button
+            type="button"
+            class="password-toggle-btn"
+            (click)="toggleNewPasswordVisibility()"
+            [disabled]="changingPassword"
+            [attr.aria-label]="showNewPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+            [attr.title]="showNewPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+          >
+            <i [class]="showNewPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" [attr.aria-hidden]="true"></i>
+            <span class="sr-only">{{ showNewPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور' }}</span>
+          </button>
+        </div>
       </div>
 
       <div class="form-group">
         <label class="form-label">تأكيد كلمة المرور الجديدة</label>
-        <input
-          type="password"
-          pInputText
-          class="w-full"
-          required
-          [(ngModel)]="changePasswordForm.new_password_confirm"
-          name="new_password_confirm"
-          placeholder="أعد إدخال كلمة المرور الجديدة"
-          [disabled]="changingPassword"
-        />
+        <div class="password-input-wrapper">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            pInputText
+            class="w-full password-input"
+            required
+            [(ngModel)]="changePasswordForm.new_password_confirm"
+            name="new_password_confirm"
+            placeholder="أعد إدخال كلمة المرور الجديدة"
+            [disabled]="changingPassword"
+          />
+          <button
+            type="button"
+            class="password-toggle-btn"
+            (click)="toggleConfirmPasswordVisibility()"
+            [disabled]="changingPassword"
+            [attr.aria-label]="showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+            [attr.title]="showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+          >
+            <i [class]="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" [attr.aria-hidden]="true"></i>
+            <span class="sr-only">{{ showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور' }}</span>
+          </button>
+        </div>
       </div>
 
       <div class="dialog-actions">
