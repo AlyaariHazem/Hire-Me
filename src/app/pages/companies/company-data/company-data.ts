@@ -258,7 +258,7 @@ export class CompanyData implements OnInit, OnDestroy {
     appendIf('founded_year', this.form.founded_year);
     appendIf('email', this.form.email);
     appendIf('phone', this.form.phone);
-    appendIf('country', this.form.country);
+    appendIf('country', 'اليمن');
     appendIf('city', this.form.city);
     appendIf('address', this.form.address);
     appendIf('employees_count', this.form.employees_count !== null ? String(this.form.employees_count) : '');
