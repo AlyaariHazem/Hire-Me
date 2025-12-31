@@ -38,12 +38,24 @@ export class Login extends Base implements OnInit {
   phone: string = '';
   password: string = '';
   isSubmitting: boolean = false;
+  showPassword: boolean = false;
   
   // Phone verification state
   showVerificationModal = false;
   verificationCode = '';
   isVerifying = false;
   isResending = false;
+
+  // Forgot password state
+  showForgotPasswordModal = false;
+  forgotPasswordStep2 = false;
+  forgotPasswordPhone = '';
+  resetVerificationCode = '';
+  newPassword = '';
+  newPasswordConfirm = '';
+  isRequestingReset = false;
+  isConfirmingReset = false;
+  isResendingReset = false;
 
   ngOnInit(): void {
     debugger;
@@ -65,6 +77,12 @@ export class Login extends Base implements OnInit {
     if (!this.phone) return false;
     const phoneRegex = /^[0-9]{9}$/;
     return !phoneRegex.test(this.phone);
+  }
+
+  isInvalidForgotPhone(): boolean {
+    if (!this.forgotPasswordPhone) return false;
+    const phoneRegex = /^7[0-9]{8}$/;
+    return !phoneRegex.test(this.forgotPasswordPhone);
   }
 
   private selectedRole(): UserType | null {
@@ -189,6 +207,10 @@ export class Login extends Base implements OnInit {
     this.toastr.info('تسجيل الدخول عبر LinkedIn قيد التطوير');
   }
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   loginWithGoogle() {
     this.toastr.info('تسجيل الدخول عبر Google قيد التطوير');
   }
@@ -261,5 +283,118 @@ export class Login extends Base implements OnInit {
   closeVerificationModal(): void {
     this.showVerificationModal = false;
     this.verificationCode = '';
+  }
+
+  // Forgot Password Methods
+  openForgotPasswordModal(): void {
+    this.showForgotPasswordModal = true;
+    this.forgotPasswordStep2 = false;
+    this.forgotPasswordPhone = '';
+    this.resetVerificationCode = '';
+    this.newPassword = '';
+    this.newPasswordConfirm = '';
+  }
+
+  closeForgotPasswordModal(): void {
+    this.showForgotPasswordModal = false;
+    this.forgotPasswordStep2 = false;
+    this.forgotPasswordPhone = '';
+    this.resetVerificationCode = '';
+    this.newPassword = '';
+    this.newPasswordConfirm = '';
+  }
+
+  requestPasswordReset(): void {
+    if (this.isInvalidForgotPhone() || !this.forgotPasswordPhone) {
+      this.toastr.error('الرجاء إدخال رقم هاتف صحيح');
+      return;
+    }
+
+    this.isRequestingReset = true;
+
+    // API endpoint: POST /api/accounts/password-reset/request/
+    const requestUrl = `${environment.apiBaseUrl}/api/accounts/password-reset/request/`;
+    
+    this.http.post(requestUrl, {
+      phone: this.forgotPasswordPhone
+    }).subscribe({
+      next: (res: any) => {
+        this.isRequestingReset = false;
+        this.toastr.success('تم إرسال رمز التحقق إلى رقم الهاتف');
+        // Move to step 2
+        this.forgotPasswordStep2 = true;
+      },
+      error: (err) => {
+        this.isRequestingReset = false;
+        this.errors.error(err, { join: true });
+      }
+    });
+  }
+
+  confirmPasswordReset(): void {
+    if (!this.resetVerificationCode || this.resetVerificationCode.length !== 6) {
+      this.toastr.error('الرجاء إدخال رمز التحقق الكامل (6 أرقام)');
+      return;
+    }
+
+    if (!this.newPassword || this.newPassword.length < 8) {
+      this.toastr.error('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+      return;
+    }
+
+    if (this.newPassword !== this.newPasswordConfirm) {
+      this.toastr.error('كلمة المرور غير متطابقة');
+      return;
+    }
+
+    this.isConfirmingReset = true;
+
+    // API endpoint: POST /api/accounts/password-reset/confirm/
+    const confirmUrl = `${environment.apiBaseUrl}/api/accounts/password-reset/confirm/`;
+    
+    this.http.post(confirmUrl, {
+      phone: this.forgotPasswordPhone,
+      verification_code: this.resetVerificationCode,
+      new_password: this.newPassword,
+      new_password_confirm: this.newPasswordConfirm
+    }).subscribe({
+      next: (res: any) => {
+        this.isConfirmingReset = false;
+        this.toastr.success('تم تغيير كلمة المرور بنجاح');
+        // Close modal and reset form
+        this.closeForgotPasswordModal();
+        // Optionally redirect to login or clear password field
+        this.password = '';
+      },
+      error: (err) => {
+        this.isConfirmingReset = false;
+        this.errors.error(err, { join: true });
+      }
+    });
+  }
+
+  resendPasswordResetCode(): void {
+    if (!this.forgotPasswordPhone) {
+      this.toastr.error('رقم الهاتف غير متوفر');
+      return;
+    }
+
+    this.isResendingReset = true;
+
+    // API endpoint: POST /api/accounts/password-reset/request/
+    const requestUrl = `${environment.apiBaseUrl}/api/accounts/password-reset/request/`;
+    
+    this.http.post(requestUrl, {
+      phone: this.forgotPasswordPhone
+    }).subscribe({
+      next: () => {
+        this.isResendingReset = false;
+        this.toastr.success('تم إعادة إرسال رمز التحقق');
+      },
+      error: (err) => {
+        this.isResendingReset = false;
+        this.errors.error(err, { join: true });
+      }
+    });
   }
 }

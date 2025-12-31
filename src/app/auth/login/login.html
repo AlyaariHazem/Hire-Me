@@ -59,25 +59,49 @@
 
       <div class="form-group">
         <label for="password" class="form-label">كلمة المرور</label>
-         <input
-      type="password"
-      id="password"
-      name="password"
-      [(ngModel)]="password"
-      required
-      minlength="6"
-      class="form-input"
-      #passwordCtrl="ngModel"
-      [class.invalid]="passwordCtrl.invalid && (passwordCtrl.touched || f.submitted)"
-      placeholder="أدخل كلمة المرور"
-      autocomplete="current-password"
-    />
-    <div class="form-error" *ngIf="passwordCtrl.errors?.['required'] && (passwordCtrl.touched || f.submitted)">
-      كلمة المرور مطلوبة
-    </div>
-    <div class="form-error" *ngIf="passwordCtrl.errors?.['minlength'] && (passwordCtrl.touched || f.submitted)">
-      الحد الأدنى لطول كلمة المرور هو 6 أحرف
-    </div>
+        <div class="password-input-wrapper">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+            minlength="6"
+            class="form-input password-input"
+            #passwordCtrl="ngModel"
+            [class.invalid]="passwordCtrl.invalid && (passwordCtrl.touched || f.submitted)"
+            placeholder="أدخل كلمة المرور"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="password-toggle-btn"
+            (click)="togglePasswordVisibility()"
+            [disabled]="isSubmitting"
+            [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+            [attr.title]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+          >
+            @if (showPassword) {
+              <!-- Eye slash icon (hide) -->
+              <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            } @else {
+              <!-- Eye icon (show) -->
+              <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            }
+          </button>
+        </div>
+        <div class="form-error" *ngIf="passwordCtrl.errors?.['required'] && (passwordCtrl.touched || f.submitted)">
+          كلمة المرور مطلوبة
+        </div>
+        <div class="form-error" *ngIf="passwordCtrl.errors?.['minlength'] && (passwordCtrl.touched || f.submitted)">
+          الحد الأدنى لطول كلمة المرور هو 6 أحرف
+        </div>
         <div class="form-error" id="passwordError"></div>
       </div>
 
@@ -86,7 +110,7 @@
           <input type="checkbox" id="remember" name="remember" />
           <label for="remember">تذكرني</label>
         </div>
-        <a [routerLink]="['/account/change-password']" class="forgot-password"
+        <a (click)="openForgotPasswordModal()" class="forgot-password"
           >نسيت كلمة المرور؟</a
         >
       </div>
@@ -213,6 +237,135 @@
           }
         </button>
       </div>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Forgot Password Modal -->
+@if (showForgotPasswordModal) {
+<div class="verification-overlay" (click)="closeForgotPasswordModal()">
+  <div class="verification-modal" (click)="$event.stopPropagation()">
+    <div class="verification-header">
+      <h2>استعادة كلمة المرور</h2>
+      <button class="close-btn" (click)="closeForgotPasswordModal()">&times;</button>
+    </div>
+    <div class="verification-body">
+      @if (!forgotPasswordStep2) {
+      <!-- Step 1: Request Verification Code -->
+      <p class="verification-info">
+        أدخل رقم الهاتف لإرسال رمز التحقق
+      </p>
+      <div class="form-group">
+        <label for="forgotPhone" class="form-label">رقم الهاتف</label>
+        <input
+          type="text"
+          id="forgotPhone"
+          class="form-input"
+          [(ngModel)]="forgotPasswordPhone"
+          placeholder="أدخل رقم الهاتف (يبدأ بـ 7)"
+          maxlength="9"
+          pattern="7[0-9]{8}"
+          inputmode="numeric"
+          autofocus
+        />
+        @if(isInvalidForgotPhone()){
+        <div class="form-error">
+          رقم الهاتف يجب أن يبدأ بـ 7 ويتكون من 9 أرقام
+        </div>
+        }
+      </div>
+      <button
+        type="button"
+        class="auth-submit"
+        (click)="requestPasswordReset()"
+        [disabled]="isRequestingReset || isInvalidForgotPhone() || !forgotPasswordPhone"
+      >
+        @if (isRequestingReset) {
+          جاري الإرسال...
+        } @else {
+          إرسال رمز التحقق
+        }
+      </button>
+      } @else {
+      <!-- Step 2: Enter Code and New Password -->
+      <p class="verification-info">
+        تم إرسال رمز التحقق إلى رقم الهاتف: <strong>{{ forgotPasswordPhone }}</strong>
+      </p>
+      <div class="form-group">
+        <label for="resetVerificationCode" class="form-label">رمز التحقق</label>
+        <input
+          type="text"
+          id="resetVerificationCode"
+          class="form-input verification-code-input"
+          [(ngModel)]="resetVerificationCode"
+          placeholder="أدخل رمز التحقق"
+          maxlength="6"
+          inputmode="numeric"
+          autofocus
+        />
+      </div>
+      <div class="form-group">
+        <label for="newPassword" class="form-label">كلمة المرور الجديدة</label>
+        <input
+          type="password"
+          id="newPassword"
+          class="form-input"
+          [(ngModel)]="newPassword"
+          placeholder="أدخل كلمة المرور الجديدة (8 أحرف على الأقل)"
+          minlength="8"
+          required
+        />
+        @if(newPassword && newPassword.length < 8){
+        <div class="form-error">
+          كلمة المرور يجب أن تكون 8 أحرف على الأقل
+        </div>
+        }
+      </div>
+      <div class="form-group">
+        <label for="newPasswordConfirm" class="form-label">تأكيد كلمة المرور</label>
+        <input
+          type="password"
+          id="newPasswordConfirm"
+          class="form-input"
+          [(ngModel)]="newPasswordConfirm"
+          placeholder="أعد إدخال كلمة المرور الجديدة"
+          required
+        />
+        @if(newPasswordConfirm && newPassword !== newPasswordConfirm){
+        <div class="form-error">
+          كلمة المرور غير متطابقة
+        </div>
+        }
+      </div>
+      <button
+        type="button"
+        class="auth-submit"
+        (click)="confirmPasswordReset()"
+        [disabled]="isConfirmingReset || !resetVerificationCode || !newPassword || !newPasswordConfirm || newPassword.length < 8 || newPassword !== newPasswordConfirm"
+      >
+        @if (isConfirmingReset) {
+          جاري تغيير كلمة المرور...
+        } @else {
+          تغيير كلمة المرور
+        }
+      </button>
+      <div class="resend-code">
+        <p>لم تستلم الرمز؟</p>
+        <button
+          type="button"
+          class="resend-btn"
+          (click)="resendPasswordResetCode()"
+          [disabled]="isResendingReset"
+        >
+          @if (isResendingReset) {
+            جاري الإرسال...
+          } @else {
+            إعادة إرسال الرمز
+          }
+        </button>
+      </div>
+      }
     </div>
   </div>
 </div>

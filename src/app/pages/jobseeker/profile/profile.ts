@@ -10,6 +10,7 @@ import { ProfileService } from '../services/profile.service';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ProfileStoreService } from 'shared/services/profile.service';
 import { Base } from 'shared/base/base';
+import { AuthService } from 'app/auth/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -76,6 +77,7 @@ export class Profile extends Base implements OnInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   private store = inject(ProfileStoreService);
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
 
   ngOnInit(): void {
     this.basicForm = this.fb.group({
@@ -387,13 +389,18 @@ export class Profile extends Base implements OnInit, OnDestroy {
     this.http.post(environment.getUrl('change-password', 'accounts'), this.changePasswordForm)
       .subscribe({
         next: (res: any) => {
-          // per your docs: "new token returned"
-          if (res?.access) {
-            localStorage.setItem('access', res.access);
+          // Extract token from response: { data: { message: "...", token: "..." } }
+          const token = res?.data?.token;
+          if (token) {
+            // Update token in localStorage and auth state
+            localStorage.setItem('access', token);
+            // Update auth state service to sync the token signal
+            this.authService.setTokens(token, null);
           }
-          if (res?.refresh) localStorage.setItem('refresh', res.refresh);
 
-          this.toastr.success('تم تغيير كلمة المرور بنجاح');
+          // Show success message from API or default message
+          const message = res?.data?.message || 'تم تغيير كلمة المرور بنجاح';
+          this.toastr.success(message);
           this.changingPassword = false;
           this.closeChangePasswordDialog();
         },
