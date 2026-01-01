@@ -211,8 +211,8 @@ export class Login extends Base implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-  loginWithGoogle() {
-    this.toastr.info('تسجيل الدخول عبر Google قيد التطوير');
+  notImplemented(message: string) {
+    this.toastr.info(`تسجيل الدخول عبر ${message} قيد التطوير`);
   }
 
   selectType(role: UserRole) {

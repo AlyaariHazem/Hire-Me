@@ -137,7 +137,7 @@
       <a 
         class="social-btn" 
         [class.disabled]="isSubmitting"
-        (click)="!isSubmitting && loginWithGoogle()"
+        (click)="!isSubmitting && notImplemented('Google')"
         [style.pointer-events]="isSubmitting ? 'none' : 'auto'"
         [style.opacity]="isSubmitting ? '0.6' : '1'"
       >
@@ -164,7 +164,7 @@
       <a 
         class="social-btn" 
         [class.disabled]="isSubmitting"
-        (click)="!isSubmitting && loginWithLinkedIn()"
+        (click)="!isSubmitting && notImplemented('LinkedIn')"
         [style.pointer-events]="isSubmitting ? 'none' : 'auto'"
         [style.opacity]="isSubmitting ? '0.6' : '1'"
       >

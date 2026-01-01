@@ -24,6 +24,8 @@ export class Register extends Base {
   isVerifying = signal(false);
   isResending = signal(false);
   registeredPhone = '';
+  showPassword = false;
+  showConfirmPassword = false;
 
   // Bind to template
   model = {
@@ -164,7 +166,9 @@ export class Register extends Base {
       }
     });
   }
-
+  notImplemented(message: string) {
+    this.toastr.info(`تسجيل الدخول عبر ${message} قيد التطوير`);
+  }
   resendVerificationCode(): void {
     if (!this.registeredPhone) {
       this.toastr.error('رقم الهاتف غير متوفر');
@@ -190,6 +194,13 @@ export class Register extends Base {
     });
   }
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
 
   closeVerificationModal(): void {
     this.showVerificationModal.set(false);
