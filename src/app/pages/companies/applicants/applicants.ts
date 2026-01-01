@@ -295,6 +295,25 @@ export class Applicants implements OnInit {
 
   updatingStatus = new Set<number>(); // Track which applications are being updated
 
+  confirmReject(applicationId: number): void {
+    const application = this.applications().find(app => app.id === applicationId) || this.selectedApplication;
+    if (!application) {
+      this.toastr.error('لم يتم العثور على الطلب');
+      return;
+    }
+
+    const applicantName = this.getApplicantName(application);
+    const confirmed = confirm(`هل أنت متأكد من رفض طلب ${applicantName}؟\n\nهذا الإجراء لا يمكن التراجع عنه.`);
+    
+    if (confirmed) {
+      this.updateApplicationStatus(applicationId, 'rejected');
+      // Close modal if it's open
+      if (this.showDetailsModal && this.selectedApplication?.id === applicationId) {
+        this.closeDetailsModal();
+      }
+    }
+  }
+
   updateApplicationStatus(
     applicationId: number,
     newStatus: 'pending' | 'reviewed' | 'accepted' | 'rejected'
