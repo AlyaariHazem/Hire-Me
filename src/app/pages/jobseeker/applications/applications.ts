@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Base } from 'shared/base/base';
 import { environment } from 'environments/environment';
 import { ApplicationsStoreService, ApplicationStatus } from '../services/applications.service';
+import { JOB_CITIES } from '@app/companies/enums';
 
 @Component({
   selector: 'app-applications',
@@ -117,14 +118,15 @@ export class Applications extends Base implements OnInit {
 
   cityLabel(city: string | null | undefined): string {
     if (!city) return 'غير محدد';
+    // Use JOB_CITIES enum to get the label
+    const cityData = JOB_CITIES.find(c => c.value === city.toLowerCase());
+    if (cityData) {
+      return cityData.label;
+    }
+    // Fallback for old values (backward compatibility)
     const cityMap: Record<string, string> = {
-      sanaa: 'صنعاء',
-      aden: 'عدن',
-      taiz: 'تعز',
-      hodeidah: 'الحديدة',
-      ibb: 'إب',
-      mukalla: 'المكلا',
-      remote: 'عمل عن بُعد',
+      hodeidah: 'الحديدة', // Old value, map to new
+      mukalla: 'المكلا', // Old value, map to new
     };
     return cityMap[city.toLowerCase()] || city;
   }

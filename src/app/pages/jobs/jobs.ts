@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 import { AuthStateService } from 'app/auth/auth-state.service';
 import { JobsStoreService } from 'app/pages/jobseeker/services/jobs.service';
 import { SavedJobsStoreService } from 'app/pages/jobseeker/services/saved-jobs.service';
+import { JOB_CITIES } from '@app/companies/enums';
 
 @Component({
   selector: 'app-jobs',
@@ -79,13 +80,7 @@ export class Jobs extends Base {
   // Options for select dropdowns
   cityOptions = [
     { label: 'جميع المواقع', value: '' },
-    { label: 'صنعاء', value: 'sanaa' },
-    { label: 'عدن', value: 'aden' },
-    { label: 'تعز', value: 'taiz' },
-    { label: 'الحديدة', value: 'hodeidah' },
-    { label: 'إب', value: 'ibb' },
-    { label: 'المكلا', value: 'mukalla' },
-    { label: 'عمل عن بُعد', value: 'remote' },
+    ...JOB_CITIES.map(city => ({ label: city.label, value: city.value }))
   ];
 
   categoryOptions = [
@@ -314,15 +309,15 @@ export class Jobs extends Base {
   }
 
   cityLabel(city: string): string {
-    // comments are in English only
+    // Use JOB_CITIES enum to get the label
+    const cityData = JOB_CITIES.find(c => c.value === city);
+    if (cityData) {
+      return cityData.label;
+    }
+    // Fallback for old values (backward compatibility)
     switch (city) {
-      case 'sanaa': return 'صنعاء';
-      case 'aden': return 'عدن';
-      case 'taiz': return 'تعز';
-      case 'hodeidah': return 'الحديدة';
-      case 'ibb': return 'إب';
-      case 'mukalla': return 'المكلا';
-      case 'remote': return 'عمل عن بُعد';
+      case 'hodeidah': return 'الحديدة'; // Old value, map to new
+      case 'mukalla': return 'المكلا'; // Old value, map to new
       default: return city;
     }
   }

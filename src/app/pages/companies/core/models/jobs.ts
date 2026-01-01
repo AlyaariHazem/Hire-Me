@@ -1,3 +1,5 @@
+import { JobCity } from '../enums';
+
 export interface CreateJobDto {
   title: string;
   description: string;
@@ -10,7 +12,7 @@ export interface CreateJobDto {
   job_type: 'full_time' | 'part_time' | 'contract' | 'freelance' | 'internship';
   experience_level: 'entry' | 'junior' | 'mid' | 'senior' | 'expert';
   education_level?: 'high_school' | 'diploma' | 'bachelor' | 'master' | 'phd' | 'any';
-  city: 'sanaa' | 'aden' | 'taiz' | 'hodeidah' | 'ibb' | 'dhamar' | 'mukalla' | 'remote';
+  city: JobCity;
   salary_min?: number;
   salary_max?: number;
   is_salary_negotiable?: boolean;

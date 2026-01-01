@@ -8,7 +8,7 @@ import { CompanyService as CompanyDataService } from 'app/pages/companies/core/s
 import { CompanyService } from 'shared/services/company.service';
 import { JobService } from 'shared/services/job.service';
 import { ICompanyData } from 'app/pages/companies/core/models';
-import { INDUSTRY_TYPES, COMPANY_SIZES } from 'app/pages/companies/core/enums';
+import { INDUSTRY_TYPES, COMPANY_SIZES, JOB_CITIES } from 'app/pages/companies/core/enums';
 import { environment } from 'environments/environment.development';
 import { ToastrService } from 'ngx-toastr';
 import { Errors } from 'shared/services/errors';
@@ -105,17 +105,7 @@ export class SearchForJob implements OnInit {
 
   INDUSTRY_TYPES = INDUSTRY_TYPES;
   COMPANY_SIZES = COMPANY_SIZES;
-
-  // Available cities (you can fetch these from API if available)
-  cities = [
-    { label: 'صنعاء', value: 'sanaa' },
-    { label: 'عدن', value: 'aden' },
-    { label: 'تعز', value: 'taiz' },
-    { label: 'الحديدة', value: 'hodeidah' },
-    { label: 'إب', value: 'ibb' },
-    { label: 'ذمار', value: 'dhamar' },
-    { label: 'المكلا', value: 'mukalla' },
-  ];
+  JOB_CITIES = JOB_CITIES;
 
   // Dropdown options for PrimeNG
   industryOptions = [
@@ -125,7 +115,7 @@ export class SearchForJob implements OnInit {
 
   cityOptions = [
     { label: 'جميع المدن', value: null },
-    ...this.cities
+    ...JOB_CITIES.map(city => ({ label: city.label, value: city.value }))
   ];
 
   sizeOptions = [
