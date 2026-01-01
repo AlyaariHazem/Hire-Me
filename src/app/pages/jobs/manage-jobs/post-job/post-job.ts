@@ -18,7 +18,6 @@ import {
   JOB_TYPES,
   JobCity,
 } from '@app/companies/enums';
-import { CompanyService } from '../../../companies/core/services/company.service';
 import { NewJob } from '../new-job/new-job';
 import { ActivatedRoute } from '@angular/router';
 import { Base } from 'shared/base/base';
@@ -38,41 +37,10 @@ export class PostJob extends Base implements OnInit {
   jobTypes = JOB_TYPES;
   experienceLevels = EXPERIENCE_LEVELS;
   educationLevels = EDUCATION_LEVELS;
-  // map your UI select values → API enums/ids
-  categories: { id: number; label: string; slug: string }[] = [];
-  companyService = inject(CompanyService);
 
-   private route = inject(ActivatedRoute);
+  private route = inject(ActivatedRoute);
   editSlug = signal<string | null>(null);
   private sub: any;
-
-  companies = [] as { id: number; name: string }[];
-
-  private loadCompanies() {
-    this.companyService.getMyCompanies().subscribe({
-      next: (list) => {
-        // map to id + name for the select
-        this.companies = (list ?? []).map((c) => ({
-          id: Number(c.id),
-          name: c.name || c.slug || 'بدون اسم',
-        }));
-
-        // if the form has no value yet, select the first one
-        if (!this.form.get('company')?.value && this.companies.length) {
-          this.form.get('company')!.setValue(this.companies[0].id);
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load companies', err);
-      },
-    });
-  }
-
-  getMyCompanies() {
-    this.companyService.getMyCompanies().subscribe((data) => {
-      console.log('My Companies:', data);
-    });
-  }
   constructor(private fb: FormBuilder, private api: JobService) {
     super();
     this.form = this.fb.group({
@@ -122,29 +90,12 @@ export class PostJob extends Base implements OnInit {
       const slug = q.get('edit');
       this.editSlug.set(slug);
     });
-    this.loadCategories();
-    this.loadCompanies();
+    // Don't load categories/companies here - new-job component handles it
+    // This prevents duplicate API calls
   }
 
   ngOnDestroy(): void {
     if (this.sub) this.sub.unsubscribe();
-  }
-
-  private loadCategories() {
-    this.api.getCategories().subscribe({
-      next: (res) => {
-        this.categories = (res.results || [])
-          .filter((c) => c.is_active)
-          .map((c) => ({
-            id: c.id,
-            label: c.name,
-            slug: c.slug,
-          }));
-      },
-      error: (err) => {
-        console.error('Failed to load categories', err);
-      },
-    });
   }
   // ---- Stepper logic ----
   nextStep() {

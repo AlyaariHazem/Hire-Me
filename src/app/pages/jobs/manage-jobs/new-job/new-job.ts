@@ -1,5 +1,5 @@
 // new-job.component.ts (مختصر مع التعديلات المهمة فقط)
-import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
@@ -29,6 +29,8 @@ export class NewJob implements OnInit, OnChanges {
   isLoading = true;
   private categoriesLoaded = false;
   private companiesLoaded = false;
+  private jobLoaded = false;
+  private jobLoading = false;
 
   jobCities = JOB_CITIES;
   jobTypes = JOB_TYPES;
@@ -43,6 +45,7 @@ export class NewJob implements OnInit, OnChanges {
   private toastr = inject(ToastrService);
   private router = inject(Router);
   private store = inject(ManageJobsStoreService);
+  private cdr = inject(ChangeDetectorRef);
 
   get isEdit() { return !!this.editSlug; }
 
@@ -80,18 +83,28 @@ export class NewJob implements OnInit, OnChanges {
   ngOnInit(): void {
     this.loadCategories();
     this.loadCompanies();
-    if (this.isEdit) this.loadJobForEdit(this.editSlug!);
+    // Load job if editSlug is set on init
+    if (this.isEdit && this.editSlug && !this.jobLoading) {
+      this.loadJobForEdit(this.editSlug);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['editSlug'] && !changes['editSlug'].firstChange) {
-      if (this.editSlug) this.loadJobForEdit(this.editSlug);
-      else this.resetForCreate();
+      if (this.editSlug && !this.jobLoading) {
+        this.loadJobForEdit(this.editSlug);
+      } else if (!this.editSlug) {
+        this.jobLoaded = false;
+        this.jobLoading = false;
+        this.resetForCreate();
+      }
     }
   }
 
   private loadJobForEdit(slug: string) {
-    this.isLoading = true;
+    if (this.jobLoading) return; // Prevent duplicate calls
+    this.jobLoading = true;
+    
     this.api.getJobBySlug(slug).subscribe({
       next: (job: JobDetails) => {
         const companyId = typeof job.company === 'number' ? job.company : job.company?.id ?? null;
@@ -123,16 +136,25 @@ export class NewJob implements OnInit, OnChanges {
         });
 
         this.step = 1;
-        this.isLoading = false;
+        this.jobLoaded = true;
+        this.jobLoading = false;
+        // Check if loading is complete (categories, companies, and job are all loaded)
+        this.checkLoadingComplete();
       },
       error: (err) => {
         console.error('Failed to load job', err);
-        this.isLoading = false;
+        this.toastr.error('فشل في تحميل بيانات الوظيفة');
+        this.jobLoaded = true; // Mark as loaded even on error to prevent retry loops
+        this.jobLoading = false;
+        // Still check loading complete so form can be shown even if job load failed
+        this.checkLoadingComplete();
       },
     });
   }
 
   private resetForCreate() {
+    this.jobLoaded = false;
+    this.jobLoading = false;
     this.form.reset({
       education_level: 'any',
       languages: { arabic: true, english: false, french: false, german: false },
@@ -183,11 +205,41 @@ export class NewJob implements OnInit, OnChanges {
   }
 
   private checkLoadingComplete() {
-    // Hide skeleton when both API calls complete (success or error)
-    if (this.categoriesLoaded && this.companiesLoaded) {
+    // Hide skeleton when all required data is loaded
+    // For edit mode: need categories, companies, AND job data
+    // For create mode: only need categories and companies
+    const allBasicDataLoaded = this.categoriesLoaded && this.companiesLoaded;
+    
+    // In create mode, we don't need job data, so jobDataReady is always true
+    // In edit mode, we need job data to be loaded
+    const jobDataReady = !this.isEdit || this.jobLoaded;
+    
+    console.log('checkLoadingComplete check:', {
+      categoriesLoaded: this.categoriesLoaded,
+      companiesLoaded: this.companiesLoaded,
+      jobLoaded: this.jobLoaded,
+      jobLoading: this.jobLoading,
+      isEdit: this.isEdit,
+      allBasicDataLoaded,
+      jobDataReady,
+      currentIsLoading: this.isLoading,
+      shouldHide: allBasicDataLoaded && jobDataReady && !this.jobLoading
+    });
+    
+    // Only hide loading if:
+    // 1. Basic data (categories & companies) is loaded
+    // 2. Job data is ready (either not needed in create mode, or loaded in edit mode)
+    // 3. Not currently loading job data
+    if (allBasicDataLoaded && jobDataReady && !this.jobLoading) {
+      console.log('Hiding loading skeleton...');
+      // Use setTimeout to ensure UI updates properly
       setTimeout(() => {
         this.isLoading = false;
+        console.log('isLoading set to false, form should be visible');
+        this.cdr.detectChanges(); // Force change detection
       }, 200);
+    } else {
+      console.log('Still loading, conditions not met');
     }
   }
 
