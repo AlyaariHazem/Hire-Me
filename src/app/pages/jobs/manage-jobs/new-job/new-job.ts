@@ -140,7 +140,9 @@ export class NewJob implements OnInit, OnChanges {
   private loadCategories() {
     this.api.getCategories().subscribe({
       next: (res) => {
-        this.categories = (res.results || [])
+        // Handle both response formats: direct array or { results: [...] }
+        const categoriesArray = Array.isArray(res) ? res : (res.results || []);
+        this.categories = categoriesArray
           .filter((c: any) => c.is_active)
           .map((c: any) => ({ id: c.id, label: c.name, slug: c.slug }));
       },
