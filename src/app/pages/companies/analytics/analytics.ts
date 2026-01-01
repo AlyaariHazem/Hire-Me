@@ -14,6 +14,7 @@ export class Analytics implements OnInit {
 
   dashboardData: EmployerDashboardStats | null = null;
   loading = true;
+  isExporting = false;
 
   // Chart data
   appsOverTimeData: any;
@@ -295,5 +296,153 @@ export class Analytics implements OnInit {
       '#06B6D4', '#EC4899', '#84CC16', '#F97316', '#6366F1'
     ];
     return colors.slice(0, count);
+  }
+
+  async exportToPDF(): Promise<void> {
+    if (this.isExporting) return;
+    
+    this.isExporting = true;
+    
+    try {
+      // Dynamic import for html2pdf
+      const html2pdf = (await import('html2pdf.js')).default;
+      
+      const container = document.querySelector('.analytics-container') as HTMLElement;
+      if (!container) {
+        this.toastr.error('لم يتم العثور على المحتوى للتصدير');
+        this.isExporting = false;
+        return;
+      }
+
+      // Hide the export button before exporting
+      const exportButton = container.querySelector('.btn-export-pdf') as HTMLElement;
+      const originalButtonDisplay = exportButton?.style.display || '';
+      const originalButtonVisibility = exportButton?.style.visibility || '';
+      if (exportButton) {
+        exportButton.style.display = 'none';
+        exportButton.style.visibility = 'hidden';
+      }
+
+      // Wait for charts to render properly
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Create header element to prepend
+      const headerHTML = `
+        <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #e5e7eb; page-break-inside: avoid;">
+          <h1 style="font-size: 20px; font-weight: 700; color: #111827; margin: 0 0 6px 0; text-align: right; line-height: 1.2;">
+            التحليلات والإحصائيات
+          </h1>
+          <p style="font-size: 12px; color: #6b7280; margin: 0 0 5px 0; text-align: right; line-height: 1.4;">
+            تقرير شامل عن إحصائيات الوظائف والطلبات والشركات. يحتوي هذا التقرير على نظرة عامة على الأداء والأنشطة في النظام.
+          </p>
+          <p style="font-size: 10px; color: #9ca3af; margin: 0; text-align: right;">
+            تاريخ التقرير: ${new Date().toLocaleDateString('ar-YE', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </p>
+        </div>
+      `;
+
+      // Create a temporary div to hold the header
+      const tempHeader = document.createElement('div');
+      tempHeader.innerHTML = headerHTML;
+      const headerElement = tempHeader.firstElementChild as HTMLElement;
+
+      // Insert header at the beginning of container
+      container.insertBefore(headerElement, container.firstChild);
+
+      // Wait a bit for the header to render
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      // Hide the original header
+      const originalHeader = container.querySelector('.employer-header') as HTMLElement;
+      const originalHeaderDisplay = originalHeader?.style.display || '';
+      if (originalHeader) {
+        originalHeader.style.display = 'none';
+      }
+      
+      // Temporarily reduce padding and spacing for PDF
+      const originalPadding = container.style.padding;
+      container.style.padding = '8px';
+      
+      // Reduce spacing in stats grid
+      const statsGrid = container.querySelector('.stats-grid') as HTMLElement;
+      const originalStatsGap = statsGrid?.style.gap;
+      const originalStatsMarginBottom = statsGrid?.style.marginBottom;
+      if (statsGrid) {
+        statsGrid.style.gap = '10px';
+        statsGrid.style.marginBottom = '12px';
+      }
+      
+      // Reduce spacing in charts grid
+      const chartsGrid = container.querySelector('.charts-grid') as HTMLElement;
+      const originalChartsGap = chartsGrid?.style.gap;
+      const originalChartsMarginBottom = chartsGrid?.style.marginBottom;
+      if (chartsGrid) {
+        chartsGrid.style.gap = '12px';
+        chartsGrid.style.marginBottom = '12px';
+      }
+
+      const opt = {
+        margin: [5, 5, 5, 5] as [number, number, number, number],
+        filename: `تحليلات_وإحصائيات_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.95 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          allowTaint: true,
+          scrollX: 0,
+          scrollY: 0
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait' as const,
+          compress: true
+        },
+        pagebreak: { 
+          mode: ['avoid-all', 'css', 'legacy'],
+          avoid: ['.stat-card', '.chart-card']
+        }
+      };
+
+      await html2pdf().set(opt).from(container).save();
+      
+      // Remove the header we added
+      if (headerElement && headerElement.parentNode) {
+        headerElement.parentNode.removeChild(headerElement);
+      }
+      
+      // Restore original styles
+      container.style.padding = originalPadding;
+      if (statsGrid) {
+        statsGrid.style.gap = originalStatsGap || '';
+        statsGrid.style.marginBottom = originalStatsMarginBottom || '';
+      }
+      if (chartsGrid) {
+        chartsGrid.style.gap = originalChartsGap || '';
+        chartsGrid.style.marginBottom = originalChartsMarginBottom || '';
+      }
+      if (originalHeader) {
+        originalHeader.style.display = originalHeaderDisplay;
+      }
+      
+      // Restore button visibility
+      if (exportButton) {
+        exportButton.style.display = originalButtonDisplay;
+        exportButton.style.visibility = originalButtonVisibility;
+      }
+      
+      this.toastr.success('تم تصدير التقرير بنجاح');
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+      this.toastr.error('فشل تصدير التقرير. حاول مرة أخرى.');
+    } finally {
+      this.isExporting = false;
+    }
   }
 }

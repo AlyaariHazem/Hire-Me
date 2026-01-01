@@ -2,6 +2,21 @@
   <!-- Header -->
   <div class="employer-header">
     <h1 class="employer-title">التحليلات والإحصائيات</h1>
+    @if (!loading && dashboardData) {
+      <button 
+        class="btn-export-pdf" 
+        (click)="exportToPDF()"
+        [disabled]="isExporting"
+        type="button"
+      >
+        <i class="pi pi-file-pdf"></i>
+        @if (isExporting) {
+          <span>جاري التصدير...</span>
+        } @else {
+          <span>تصدير PDF</span>
+        }
+      </button>
+    }
   </div>
 
   <!-- Stats Grid Skeleton -->
