@@ -5,13 +5,14 @@ import { SharedModule } from 'shared/shared-module';
 import { CommonModule } from '@angular/common';
 import { Base } from 'shared/base/base';
 import { ToastrService } from 'ngx-toastr';
-import { JobItem } from '@app/companies/models';
+import { JobItem, CompanyReview, CreateReviewPayload } from '@app/companies/models';
 import { SkeletonModule } from 'primeng/skeleton';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-company-profile',
   standalone: true,
-  imports: [SharedModule, CommonModule, RouterLink, SkeletonModule],
+  imports: [SharedModule, CommonModule, RouterLink, SkeletonModule, FormsModule],
   templateUrl: './company-profile.html',
   styleUrl: './company-profile.scss'
 })
@@ -21,10 +22,25 @@ export class CompanyProfile extends Base implements OnInit {
 
   company: Company | null = null;
   companyJobs: JobItem[] = [];
+  reviews: CompanyReview[] = [];
   isLoading = false;
   isLoadingJobs = false;
+  isLoadingReviews = false;
   isTogglingFollow = false;
   activeTab: string = 'overview';
+  
+  // Review form
+  showReviewForm = false;
+  reviewForm: CreateReviewPayload = {
+    rating: 5,
+    title: '',
+    review_text: '',
+    pros: null,
+    cons: null,
+    is_current_employee: false,
+    job_title: null
+  };
+  isSubmittingReview = false;
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
@@ -91,6 +107,10 @@ export class CompanyProfile extends Base implements OnInit {
     // Load jobs when jobs tab is selected
     if (tab === 'jobs' && this.company && this.companyJobs.length === 0) {
       this.loadCompanyJobs();
+    }
+    // Load reviews when reviews tab is selected
+    if (tab === 'reviews' && this.company && this.reviews.length === 0) {
+      this.loadCompanyReviews();
     }
   }
 
@@ -165,5 +185,100 @@ export class CompanyProfile extends Base implements OnInit {
 
   cityLabel(city: string | null | undefined): string {
     return city || 'غير محدد';
+  }
+
+  loadCompanyReviews(): void {
+    if (!this.company) return;
+
+    this.isLoadingReviews = true;
+    this.companyService.getCompanyReviews(this.company.id).subscribe({
+      next: (response) => {
+        this.reviews = response.results || [];
+        this.isLoadingReviews = false;
+      },
+      error: (err) => {
+        console.error('Error loading company reviews:', err);
+        this.errors.error(err, { join: true });
+        this.reviews = [];
+        this.isLoadingReviews = false;
+      },
+    });
+  }
+
+  toggleReviewForm(): void {
+    this.showReviewForm = !this.showReviewForm;
+    if (!this.showReviewForm) {
+      this.resetReviewForm();
+    }
+  }
+
+  resetReviewForm(): void {
+    this.reviewForm = {
+      rating: 5,
+      title: '',
+      review_text: '',
+      pros: null,
+      cons: null,
+      is_current_employee: false,
+      job_title: null
+    };
+  }
+
+  submitReview(): void {
+    if (!this.company || this.isSubmittingReview) return;
+
+    // Validation
+    if (!this.reviewForm.title || !this.reviewForm.review_text) {
+      this.toastr.error('الرجاء إدخال العنوان ونص التقييم');
+      return;
+    }
+
+    if (this.reviewForm.rating < 1 || this.reviewForm.rating > 5) {
+      this.toastr.error('الرجاء اختيار تقييم صحيح (من 1 إلى 5)');
+      return;
+    }
+
+    this.isSubmittingReview = true;
+    this.companyService.createCompanyReview(this.company.id, this.reviewForm).subscribe({
+      next: (review) => {
+        this.toastr.success('تم إضافة التقييم بنجاح');
+        this.reviews.unshift(review); // Add to beginning of list
+        this.showReviewForm = false;
+        this.resetReviewForm();
+        this.isSubmittingReview = false;
+        // Reload company to update average rating
+        const slug = this.route.snapshot.paramMap.get('slug');
+        if (slug) {
+          this.loadCompany(slug);
+        }
+      },
+      error: (err) => {
+        console.error('Error creating review:', err);
+        this.errors.error(err, { join: true });
+        this.isSubmittingReview = false;
+      },
+    });
+  }
+
+  getStarsArray(rating: number): number[] {
+    return Array.from({ length: 5 }, (_, i) => i < rating ? 1 : 0);
+  }
+
+  getRatingDistribution(): { [key: number]: number } {
+    const distribution: { [key: number]: number } = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    this.reviews.forEach(review => {
+      distribution[review.rating as keyof typeof distribution]++;
+    });
+    return distribution;
+  }
+
+  getAverageRating(): number {
+    if (this.reviews.length === 0) return this.company?.average_rating || 0;
+    const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
+    return sum / this.reviews.length;
+  }
+
+  getRoundedAverageRating(): number {
+    return Math.round(this.getAverageRating());
   }
 }

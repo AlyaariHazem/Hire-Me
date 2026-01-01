@@ -317,17 +317,226 @@
         </div>
         }
 
-        <!-- Reviews Tab (Static for now) -->
+        <!-- Reviews Tab -->
         @if (activeTab === 'reviews') {
         <div class="tab-content active">
-          <h3>تقييمات الموظفين</h3>
-          <div class="company-description">
-             <div class="rating-display">
-              <div class="rating-number">
-                {{ company.average_rating || 0 }}
+          <div class="reviews-header">
+            <h3>تقييمات الموظفين</h3>
+            <button class="btn-add-review" (click)="toggleReviewForm()">
+              {{ showReviewForm ? 'إلغاء' : 'إضافة تقييم' }}
+            </button>
+          </div>
+
+          <!-- Review Form -->
+          @if (showReviewForm) {
+          <div class="review-form-container">
+            <form (ngSubmit)="submitReview()" class="review-form">
+              <div class="form-group">
+                <label>التقييم (من 1 إلى 5 نجوم) *</label>
+                <div class="rating-input">
+                  @for (star of [1,2,3,4,5]; track star) {
+                  <button
+                    type="button"
+                    class="star-button"
+                    [class.active]="reviewForm.rating >= star"
+                    (click)="reviewForm.rating = star"
+                  >
+                    ⭐
+                  </button>
+                  }
+                  <span class="rating-value">{{ reviewForm.rating }} من 5</span>
+                </div>
               </div>
-              <div class="rating-label">من 5 نجوم</div>
+
+              <div class="form-group">
+                <label for="review-title">عنوان التقييم *</label>
+                <input
+                  type="text"
+                  id="review-title"
+                  [(ngModel)]="reviewForm.title"
+                  name="title"
+                  class="form-control"
+                  placeholder="اكتب عنواناً للتقييم"
+                  maxlength="200"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="review-text">نص التقييم *</label>
+                <textarea
+                  id="review-text"
+                  [(ngModel)]="reviewForm.review_text"
+                  name="review_text"
+                  class="form-control"
+                  rows="5"
+                  placeholder="اكتب تقييمك التفصيلي..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="review-pros">الإيجابيات</label>
+                <textarea
+                  id="review-pros"
+                  [(ngModel)]="reviewForm.pros"
+                  name="pros"
+                  class="form-control"
+                  rows="3"
+                  placeholder="ما الذي أعجبك في الشركة؟"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="review-cons">السلبيات</label>
+                <textarea
+                  id="review-cons"
+                  [(ngModel)]="reviewForm.cons"
+                  name="cons"
+                  class="form-control"
+                  rows="3"
+                  placeholder="ما الذي يمكن تحسينه؟"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="review-job-title">المسمى الوظيفي</label>
+                <input
+                  type="text"
+                  id="review-job-title"
+                  [(ngModel)]="reviewForm.job_title"
+                  name="job_title"
+                  class="form-control"
+                  placeholder="مثال: مطور برمجيات"
+                  maxlength="100"
+                />
+              </div>
+
+              <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="reviewForm.is_current_employee"
+                    name="is_current_employee"
+                  />
+                  <span>أنا موظف حالي في هذه الشركة</span>
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <button
+                  type="submit"
+                  class="btn-submit-review"
+                  [disabled]="isSubmittingReview"
+                >
+                  {{ isSubmittingReview ? 'جاري الإرسال...' : 'إرسال التقييم' }}
+                </button>
+                <button
+                  type="button"
+                  class="btn-cancel-review"
+                  (click)="toggleReviewForm()"
+                  [disabled]="isSubmittingReview"
+                >
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
+          }
+
+          <!-- Rating Summary -->
+          <div class="rating-summary">
+            <div class="rating-overview">
+              <div class="rating-number-large">
+                {{ getAverageRating().toFixed(1) || company.average_rating || 0 }}
+              </div>
+              <div class="rating-stars-large">
+                @for (star of getStarsArray(getRoundedAverageRating()); track $index) {
+                <span [class.filled]="star === 1">⭐</span>
+                }
+              </div>
+              <div class="rating-label-large">من 5 نجوم</div>
+              <div class="rating-count">{{ reviews.length }} تقييم</div>
             </div>
+
+            @if (reviews.length > 0) {
+            <div class="rating-distribution">
+              @for (rating of [5,4,3,2,1]; track rating) {
+              <div class="distribution-item">
+                <span class="distribution-label">{{ rating }} نجوم</span>
+                <div class="distribution-bar">
+                  <div
+                    class="distribution-fill"
+                    [style.width.%]="(getRatingDistribution()[rating] / reviews.length) * 100"
+                  ></div>
+                </div>
+                <span class="distribution-count">{{ getRatingDistribution()[rating] }}</span>
+              </div>
+              }
+            </div>
+            }
+          </div>
+
+          <!-- Reviews List -->
+          <div class="reviews-list">
+            @if (isLoadingReviews) {
+            <div class="reviews-loading">
+              @for (item of [1,2,3]; track item) {
+              <div class="review-card-skeleton">
+                <p-skeleton width="100%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="80%" height="1rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="3rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="60%" height="1rem"></p-skeleton>
+              </div>
+              }
+            </div>
+            } @else if (reviews.length === 0) {
+            <div class="reviews-empty">
+              <p>لا توجد تقييمات بعد. كن أول من يقيم هذه الشركة!</p>
+            </div>
+            } @else {
+            @for (review of reviews; track review.id) {
+            <div class="review-card">
+              <div class="review-header">
+                <div class="reviewer-info">
+                  <div class="reviewer-name">{{ review.reviewer_name || 'مستخدم' }}</div>
+                  @if (review.job_title) {
+                  <div class="reviewer-job">{{ review.job_title }}</div>
+                  }
+                  @if (review.is_current_employee) {
+                  <span class="current-employee-badge">موظف حالي</span>
+                  }
+                </div>
+                <div class="review-rating">
+                  @for (star of getStarsArray(review.rating); track $index) {
+                  <span [class.filled]="star === 1">⭐</span>
+                  }
+                </div>
+              </div>
+
+              <h4 class="review-title">{{ review.title }}</h4>
+              <p class="review-text">{{ review.review_text }}</p>
+
+              @if (review.pros) {
+              <div class="review-pros">
+                <strong>الإيجابيات:</strong>
+                <p>{{ review.pros }}</p>
+              </div>
+              }
+
+              @if (review.cons) {
+              <div class="review-cons">
+                <strong>السلبيات:</strong>
+                <p>{{ review.cons }}</p>
+              </div>
+              }
+
+              <div class="review-footer">
+                <span class="review-date">{{ timeAgo(review.created_at) }}</span>
+              </div>
+            </div>
+            }
+            }
           </div>
         </div>
         }

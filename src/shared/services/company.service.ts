@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
+import { CompanyReview, CreateReviewPayload, ReviewsListResponse } from '@app/companies/models';
 
 export interface Company {
   id: number;
@@ -59,5 +60,20 @@ export class CompanyService {
   getCompanyJobs(companyId: number): Observable<any> {
     const url = environment.getUrl(`${companyId}/jobs`, 'companies');
     return this.http.get<any>(url);
+  }
+
+  // Get reviews for a specific company
+  getCompanyReviews(companyId: number, params?: {
+    ordering?: string;
+    page?: number;
+  }): Observable<ReviewsListResponse> {
+    const url = environment.getUrl(`${companyId}/reviews`, 'companies');
+    return this.http.get<ReviewsListResponse>(url, { params: params as any });
+  }
+
+  // Create a review for a company
+  createCompanyReview(companyId: number, payload: CreateReviewPayload): Observable<CompanyReview> {
+    const url = environment.getUrl(`${companyId}/reviews/create`, 'companies');
+    return this.http.post<CompanyReview>(url, payload);
   }
 }
