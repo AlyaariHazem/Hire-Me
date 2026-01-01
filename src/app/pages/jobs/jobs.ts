@@ -83,11 +83,8 @@ export class Jobs extends Base {
     ...JOB_CITIES.map(city => ({ label: city.label, value: city.value }))
   ];
 
-  categoryOptions = [
+  categoryOptions: { label: string; value: number | undefined }[] = [
     { label: 'جميع الفئات', value: undefined },
-    { label: 'تقنية المعلومات', value: 1 },
-    { label: 'الهندسة', value: 2 },
-    { label: 'التسويق', value: 3 },
   ];
 
   sortOptions = [
@@ -153,8 +150,37 @@ export class Jobs extends Base {
     // The store will check internally if reload is needed
     this.jobsStore.loadJobs();
     
+    // Load categories from API
+    this.loadCategories();
+    
     // Load filter counts from backend
     this.loadFilterCounts();
+  }
+
+  /**
+   * Load job categories from API
+   */
+  loadCategories(): void {
+    this.jobService.getCategories().subscribe({
+      next: (res) => {
+        // Handle both response formats: direct array or { results: [...] }
+        const categoriesArray = Array.isArray(res) ? res : (res.results || []);
+        // Filter active categories and map to dropdown format
+        const activeCategories = categoriesArray
+          .filter((c: any) => c.is_active)
+          .map((c: any) => ({ label: c.name, value: c.id }));
+        
+        // Update categoryOptions with loaded categories
+        this.categoryOptions = [
+          { label: 'جميع الفئات', value: undefined },
+          ...activeCategories
+        ];
+      },
+      error: (err) => {
+        console.error('Failed to load categories', err);
+        // Keep default "all categories" option on error
+      }
+    });
   }
 
   /**
