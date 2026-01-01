@@ -71,8 +71,14 @@ export class Register extends Base {
       this.isLoading.set(false);
       return;
     }
+    // Generate username from first word of first_name + first word of last_name
+    // Example: "Hazem Abdullah" + "Alyaari" -> "hazemalyaari"
+    // Example: "Hazem" + "Abdullah Alyaari" -> "hazemabdullah"
+    const firstNameFirstWord = this.model.first_name.split(/\s+/)[0].toLowerCase();
+    const lastNameFirstWord = this.model.last_name.split(/\s+/)[0].toLowerCase();
+    
     const payload = {
-      username: this.model.email,
+      username: firstNameFirstWord + lastNameFirstWord,
       email: this.model.email,
       first_name: this.model.first_name,
       last_name: this.model.last_name,
