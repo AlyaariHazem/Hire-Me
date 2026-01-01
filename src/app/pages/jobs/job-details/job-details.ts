@@ -212,10 +212,10 @@ export class JobDetails extends Base implements OnInit {
       return;
     }
 
-    if (!this.cvFile) {
-      this.toastr.error('يرجى رفع السيرة الذاتية');
-      return;
-    }
+    // if (!this.cvFile) {
+    //   this.toastr.error('يرجى رفع السيرة الذاتية');
+    //   return;
+    // }
 
     this.isSubmittingApplication = true;
 
