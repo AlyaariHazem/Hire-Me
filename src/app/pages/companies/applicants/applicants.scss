@@ -1012,18 +1012,19 @@
 
 // Enhanced Modal Actions
 .modal-actions-enhanced {
-  margin-top: 2.5rem;
-  padding-top: 2rem;
-  border-top: 2px solid var(--border-color, #e0e0e0);
-  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.02));
-  padding-bottom: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.01));
+  padding-bottom: 0.5rem;
 }
 
 .action-buttons-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  max-width: 800px;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -1032,19 +1033,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem 2rem;
+  padding: 0.875rem 1.75rem;
   border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  min-height: 100px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  flex: 1;
+  max-width: 200px;
+  min-height: 48px;
 
   &:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
     transform: none !important;
   }
@@ -1053,43 +1056,38 @@
     position: relative;
     z-index: 2;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    gap: 0.625rem;
     width: 100%;
   }
 
   .btn-icon-main {
-    font-size: 2.5rem;
+    font-size: 1.25rem;
     line-height: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.25);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     transition: all 0.3s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
   }
 
   .btn-icon-spinner {
-    font-size: 2rem;
+    font-size: 1.125rem;
     animation: spin 1s linear infinite;
   }
 
   .btn-text {
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-
-  .btn-subtitle {
-    font-size: 0.85rem;
-    opacity: 0.9;
-    font-weight: 500;
-    margin-top: -0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
   }
 
   .btn-shine {
@@ -1101,68 +1099,68 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.25),
       transparent
     );
-    transition: left 0.5s;
+    transition: left 0.6s;
   }
 
   &:not(:disabled):hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 
     .btn-shine {
       left: 100%;
     }
 
     .btn-icon-main {
-      transform: scale(1.15) rotate(5deg);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
   }
 
   &:not(:disabled):active {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 }
 
 .btn-accept-modal {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 50%, #17a2b8 100%);
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 
   &:not(:disabled):hover {
-    background: linear-gradient(135deg, #218838 0%, #1aa179 50%, #138496 100%);
-    box-shadow: 0 8px 32px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+    box-shadow: 0 4px 20px rgba(40, 167, 69, 0.35);
   }
 
   &:not(:disabled):active {
-    background: linear-gradient(135deg, #1e7e34 0%, #178a6b 50%, #117a8b 100%);
+    background: linear-gradient(135deg, #1e7e34 0%, #178a6b 100%);
   }
 
   .btn-icon-main {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
     color: white;
   }
 }
 
 .btn-reject-modal {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 50%, #bd2130 100%);
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 
   &:not(:disabled):hover {
-    background: linear-gradient(135deg, #c82333 0%, #bd2130 50%, #a71e2a 100%);
-    box-shadow: 0 8px 32px rgba(220, 53, 69, 0.4);
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    box-shadow: 0 4px 20px rgba(220, 53, 69, 0.35);
   }
 
   &:not(:disabled):active {
-    background: linear-gradient(135deg, #bd2130 0%, #a71e2a 50%, #8b1a24 100%);
+    background: linear-gradient(135deg, #bd2130 0%, #a71e2a 100%);
   }
 
   .btn-icon-main {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
     color: white;
   }
 }
@@ -1444,32 +1442,31 @@
   }
 
   .modal-actions-enhanced {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
     padding-bottom: 0.5rem;
   }
 
   .action-buttons-wrapper {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 100%;
   }
 
   .btn-action-modal {
-    padding: 1.25rem 1.5rem;
-    min-height: 90px;
+    padding: 0.75rem 1.5rem;
+    min-height: 44px;
+    max-width: 100%;
+    width: 100%;
 
     .btn-icon-main {
-      font-size: 2rem;
-      width: 45px;
-      height: 45px;
+      font-size: 1.125rem;
+      width: 22px;
+      height: 22px;
     }
 
     .btn-text {
-      font-size: 1.1rem;
-    }
-
-    .btn-subtitle {
-      font-size: 0.8rem;
+      font-size: 0.95rem;
     }
   }
 }
