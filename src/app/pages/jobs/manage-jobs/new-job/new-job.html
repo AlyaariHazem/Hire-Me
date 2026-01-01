@@ -19,7 +19,56 @@
     </div>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" id="jobForm">
+  <!-- Skeleton Loading -->
+  @if (isLoading) {
+    <div class="skeleton-container">
+      <div class="skeleton-form-step">
+        <div class="skeleton-group">
+          <div class="skeleton-label"></div>
+          <div class="skeleton-input"></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="skeleton-group">
+            <div class="skeleton-label"></div>
+            <div class="skeleton-select"></div>
+          </div>
+          <div class="skeleton-group">
+            <div class="skeleton-label"></div>
+            <div class="skeleton-select"></div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="skeleton-group">
+            <div class="skeleton-label"></div>
+            <div class="skeleton-select"></div>
+          </div>
+          <div class="skeleton-group">
+            <div class="skeleton-label"></div>
+            <div class="skeleton-select"></div>
+          </div>
+        </div>
+
+        <div class="skeleton-group">
+          <div class="skeleton-label"></div>
+          <div class="skeleton-salary-range">
+            <div class="skeleton-input"></div>
+            <div class="skeleton-separator"></div>
+            <div class="skeleton-input"></div>
+          </div>
+        </div>
+
+        <div class="skeleton-group">
+          <div class="skeleton-label"></div>
+          <div class="skeleton-textarea"></div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Actual Form -->
+  <form [formGroup]="form" (ngSubmit)="submit()" id="jobForm" [class.hidden]="isLoading">
     <!-- Step 1 -->
     <div class="form-step" [class.active]="step === 1" id="formStep1">
       <div class="form-group">
@@ -354,7 +403,7 @@
       >
         السابق
       </button>
-      <div style="flex: 1"></div>
+      <div class="flex-spacer"></div>
       <button
         type="button"
         class="btn-next"

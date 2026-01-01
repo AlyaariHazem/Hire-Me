@@ -26,6 +26,9 @@ export class NewJob implements OnInit, OnChanges {
   step = 1;
   form: FormGroup;
   isSubmitting = false;
+  isLoading = true;
+  private categoriesLoaded = false;
+  private companiesLoaded = false;
 
   jobCities = JOB_CITIES;
   jobTypes = JOB_TYPES;
@@ -88,6 +91,7 @@ export class NewJob implements OnInit, OnChanges {
   }
 
   private loadJobForEdit(slug: string) {
+    this.isLoading = true;
     this.api.getJobBySlug(slug).subscribe({
       next: (job: JobDetails) => {
         const companyId = typeof job.company === 'number' ? job.company : job.company?.id ?? null;
@@ -119,8 +123,12 @@ export class NewJob implements OnInit, OnChanges {
         });
 
         this.step = 1;
+        this.isLoading = false;
       },
-      error: (err) => console.error('Failed to load job', err),
+      error: (err) => {
+        console.error('Failed to load job', err);
+        this.isLoading = false;
+      },
     });
   }
 
@@ -145,10 +153,14 @@ export class NewJob implements OnInit, OnChanges {
         this.categories = categoriesArray
           .filter((c: any) => c.is_active)
           .map((c: any) => ({ id: c.id, label: c.name, slug: c.slug }));
+        this.categoriesLoaded = true;
+        this.checkLoadingComplete();
       },
       error: (err) => {
         console.error('Failed to load categories', err);
         this.toastr.error('فشل في تحميل فئات الوظائف');
+        this.categoriesLoaded = true;
+        this.checkLoadingComplete();
       },
     });
   }
@@ -159,9 +171,24 @@ export class NewJob implements OnInit, OnChanges {
         this.companies = (list ?? []).map((c: any) => ({ id: Number(c.id), name: c.name || c.slug || 'بدون اسم' }));
         const ctrl = this.form.get('company');
         if (ctrl && !ctrl.value && this.companies.length) ctrl.setValue(this.companies[0].id);
+        this.companiesLoaded = true;
+        this.checkLoadingComplete();
       },
-      error: (err) => console.error('Failed to load companies', err),
+      error: (err) => {
+        console.error('Failed to load companies', err);
+        this.companiesLoaded = true;
+        this.checkLoadingComplete();
+      },
     });
+  }
+
+  private checkLoadingComplete() {
+    // Hide skeleton when both API calls complete (success or error)
+    if (this.categoriesLoaded && this.companiesLoaded) {
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 200);
+    }
   }
 
   nextStep() {
