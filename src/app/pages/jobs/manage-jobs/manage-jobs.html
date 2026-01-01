@@ -20,7 +20,10 @@
       <p class="subtitle">عرض وإدارة جميع الوظائف المنشورة</p>
     </div>
     <div class="employer-actions">
-      <a [routerLink]="['/companies/post-job']" class="btn btn-primary">نشر وظيفة جديدة</a>
+      <a [routerLink]="['/companies/post-job']" class="btn btn-primary btn-new-job">
+        <span class="btn-icon">➕</span>
+        <span>نشر وظيفة جديدة</span>
+      </a>
     </div>
   </div>
   }
@@ -46,28 +49,36 @@
           [class.active]="activeTab() === 'active'"
           (click)="selectTab('active')"
         >
-          الوظائف النشطة ({{ countActive() }})
+          <span class="tab-icon">✓</span>
+          <span>الوظائف النشطة</span>
+          <span class="tab-count">({{ countActive() }})</span>
         </button>
         <button
           class="tab"
           [class.active]="activeTab() === 'paused'"
           (click)="selectTab('paused')"
         >
-          متوقفة ({{ countPaused() }})
+          <span class="tab-icon">⏸</span>
+          <span>متوقفة</span>
+          <span class="tab-count">({{ countPaused() }})</span>
         </button>
         <button
           class="tab"
           [class.active]="activeTab() === 'closed'"
           (click)="selectTab('closed')"
         >
-          مغلقة ({{ countClosed() }})
+          <span class="tab-icon">✕</span>
+          <span>مغلقة</span>
+          <span class="tab-count">({{ countClosed() }})</span>
         </button>
         <button
           class="tab"
           [class.active]="activeTab() === 'draft'"
           (click)="selectTab('draft')"
         >
-          مسودات ({{ countDraft() }})
+          <span class="tab-icon">📝</span>
+          <span>مسودات</span>
+          <span class="tab-count">({{ countDraft() }})</span>
         </button>
       </div>
     </div>
@@ -122,31 +133,68 @@
         @for (j of visibleJobs(); track j.id) {
           <div class="job-posting-item">
             <div class="job-posting-info">
-              <h4 class="job-posting-title">
-                <a
-                  [routerLink]="['/companies/post-job']"
-                  [queryParams]="{ edit: j.slug }"
-                  class="job-title-link"
-                >
-                  {{ j.title }}
-                </a>
-              </h4>
+              <div class="job-header">
+                <h4 class="job-posting-title">
+                  <a
+                    [routerLink]="['/companies/post-job']"
+                    [queryParams]="{ edit: j.slug }"
+                    class="job-title-link"
+                  >
+                    {{ j.title }}
+                  </a>
+                </h4>
+                <span class="job-status-badge" [ngClass]="'status-' + getJobStatus(j)">
+                  @if (getJobStatus(j) === 'active') {
+                    <span class="badge-icon">✓</span>
+                    <span>نشطة</span>
+                  } @else if (getJobStatus(j) === 'paused') {
+                    <span class="badge-icon">⏸</span>
+                    <span>متوقفة</span>
+                  } @else {
+                    <span class="badge-icon">✕</span>
+                    <span>مغلقة</span>
+                  }
+                </span>
+              </div>
               <div class="job-posting-meta">
-                <span>نُشرت في {{ j.created_at | date:'yyyy/MM/dd' }}</span>
-                <span>{{ j.city || '—' }}</span>
-                <span>{{ salaryText(j) }}</span>
+                <span class="meta-item">
+                  <span class="meta-icon">📅</span>
+                  <span>نُشرت في {{ j.created_at | date:'yyyy/MM/dd' }}</span>
+                </span>
+                <span class="meta-item">
+                  <span class="meta-icon">📍</span>
+                  <span>{{ j.city || '—' }}</span>
+                </span>
+                <span class="meta-item">
+                  <span class="meta-icon">💰</span>
+                  <span>{{ salaryText(j) }}</span>
+                </span>
               </div>
               <div class="job-posting-stats">
-                <span>{{ j.applications_count || 0 }} متقدم</span>
-                <span>{{ j.views_count || 0 }} مشاهدة</span>
+                <span class="stat-item stat-applicants">
+                  <span class="stat-icon">👥</span>
+                  <span class="stat-value">{{ j.applications_count || 0 }}</span>
+                  <span class="stat-label">متقدم</span>
+                </span>
+                <span class="stat-item stat-views">
+                  <span class="stat-icon">👁️</span>
+                  <span class="stat-value">{{ j.views_count || 0 }}</span>
+                  <span class="stat-label">مشاهدة</span>
+                </span>
                 @if (j.category) {
-                  <span>{{ j.category.name }}</span>
+                  <span class="stat-item stat-category">
+                    <span class="stat-icon">🏷️</span>
+                    <span class="stat-label">{{ j.category.name }}</span>
+                  </span>
                 }
               </div>
             </div>
             <div class="job-posting-actions">
               <div class="status-control">
-                <label for="status-{{ j.id }}" class="status-label">الحالة:</label>
+                <label for="status-{{ j.id }}" class="status-label">
+                  <span class="label-icon">⚙️</span>
+                  الحالة:
+                </label>
                 <select
                   id="status-{{ j.id }}"
                   class="status-select"
@@ -160,23 +208,28 @@
                   <option value="closed">مغلقة</option>
                 </select>
                 @if (isUpdating(j.id)) {
-                  <span class="updating-indicator">جاري التحديث...</span>
+                  <span class="updating-indicator">
+                    <span class="spinner">⏳</span>
+                    جاري التحديث...
+                  </span>
                 }
               </div>
               <div class="action-buttons">
                 <a
                   [routerLink]="['/companies/applicants-for-job']"
                   [queryParams]="{ job: j.slug }"
-                  class="btn btn-small btn-primary"
+                  class="btn-action btn-view-applicants"
                 >
-                  عرض المتقدمين
+                  <span class="btn-icon">👥</span>
+                  <span>عرض المتقدمين</span>
                 </a>
                 <a
                   [routerLink]="['/companies/post-job']"
                   [queryParams]="{ edit: j.slug }"
-                  class="btn btn-small btn-secondary"
+                  class="btn-action btn-edit"
                 >
-                  تحرير
+                  <span class="btn-icon">✏️</span>
+                  <span>تحرير</span>
                 </a>
               </div>
             </div>
