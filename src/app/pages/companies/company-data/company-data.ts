@@ -3,6 +3,7 @@ import { ConfirmationService } from 'primeng/api';
 import { NgForm } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 import { Errors } from 'shared/services/errors';
 import { CompanyService } from '../core/services/company.service';
@@ -24,6 +25,7 @@ export class CompanyData implements OnInit, OnDestroy {
   private toastr = inject(ToastrService);
   private confirmationService = inject(ConfirmationService);
   private store = inject(CompanyDataStoreService);
+  private router = inject(Router);
 
   // Signals from store
   filteredCompanies = this.store.filteredCompanies;
@@ -336,5 +338,13 @@ export class CompanyData implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  navigateToCompanyProfile(company: ICompanyData): void {
+    if (!company.slug) {
+      this.toastr.warning('لا يمكن الوصول إلى صفحة الشركة: الرابط غير متوفر');
+      return;
+    }
+    this.router.navigate(['/companies/company-profile', company.slug]);
   }
 }

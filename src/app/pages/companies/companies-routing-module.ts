@@ -33,6 +33,11 @@ const routes: Routes = [
         data: { breadcrumb: 'ملف الشركة' }
       },
       {
+        path: 'company-profile/:slug',
+        component: CompanyProfile,
+        data: { breadcrumb: 'ملف الشركة' }
+      },
+      {
         path: 'profile',
         component: ProfileComponent,
         data: { breadcrumb: 'الملف الشخصي' }
