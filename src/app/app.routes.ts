@@ -11,7 +11,7 @@ import { Privacy } from './pages/about-us/privacy/privacy';
 
 export const routes: Routes = [
   // Login page at root: if logged-in → guard redirects to the app.
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'jobs', pathMatch: 'full' },
   {
     path: 'login',
     component: Login,
