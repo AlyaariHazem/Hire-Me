@@ -417,35 +417,16 @@
 
             <!-- Pagination -->
             @if (totalPages > 1) {
-            <nav class="pagination">
-              <button
-                class="pagination-btn"
-                (click)="previousPage()"
-                [disabled]="currentPage === 1"
-                type="button"
-              >
-                السابق
-              </button>
-              @for(p of pages; track p){
-                <button
-                  class="pagination-btn"
-                  [class.current]="p === currentPage"
-                  (click)="goToPage(p)"
-                  type="button"
-                >
-                  {{ p }}
-                </button>
-              }
-
-              <button
-                class="pagination-btn"
-                (click)="nextPage()"
-                [disabled]="currentPage === totalPages"
-                type="button"
-              >
-                التالي
-              </button>
-            </nav>
+            <div class="pagination-container">
+              <p-paginator
+                [rows]="page_size"
+                [totalRecords]="totalJobs"
+                appendTo="body"
+                [first]="(currentPage - 1) * page_size"
+                (onPageChange)="onPageChange($event)"
+                [rowsPerPageOptions]="[5, 10, 20, 50]"
+              ></p-paginator>
+            </div>
             }
 
             <!-- Load More Button (Alternative to pagination) -->

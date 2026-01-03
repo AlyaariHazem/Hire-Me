@@ -430,6 +430,31 @@
 }
 
 // Pagination
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3rem;
+  padding: 2.5rem 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  @media (max-width: 768px) {
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 8px;
+    padding: 2rem 1rem;
+    margin-top: 2rem;
+  }
+}
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -829,12 +854,143 @@
   }
 
   // Select styling
-  .p-select {
-    width: 100%;
-  }
+  // .p-select {
+  //   width: 100%;
+  // }
 
   .p-select.w-auto {
     width: auto;
+  }
+
+  // PrimeNG Paginator Enhanced Styling
+  .pagination-container {
+    .p-paginator {
+      background: transparent;
+      border: none;
+      padding: 0;
+      direction: rtl;
+      
+      .p-paginator-first,
+      .p-paginator-prev,
+      .p-paginator-next,
+      .p-paginator-last {
+        min-width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        background: #ffffff;
+        color: #475569;
+        transition: all 0.2s ease;
+        margin: 0 0.25rem;
+        
+        &:hover:not(:disabled) {
+          background: linear-gradient(135deg, #2563eb, #1d4ed8);
+          border-color: #2563eb;
+          color: #ffffff;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        
+        &:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+      }
+      
+      .p-paginator-pages {
+        .p-paginator-page {
+          min-width: 2.5rem;
+          height: 2.5rem;
+          border-radius: 8px;
+          border: 2px solid #e2e8f0;
+          background: #ffffff;
+          color: #475569;
+          font-weight: 600;
+          transition: all 0.2s ease;
+          margin: 0 0.25rem;
+          
+          &:hover:not(.p-highlight) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #2563eb;
+            transform: translateY(-2px);
+          }
+          
+          &.p-highlight {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border-color: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            
+            &:hover {
+              box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+              transform: translateY(-2px);
+            }
+          }
+        }
+      }
+      
+      .p-paginator-current {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        color: #475569;
+        font-weight: 600;
+        margin: 0 0.5rem;
+        direction: rtl;
+      }
+      
+      .p-dropdown {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        
+        &:hover {
+          border-color: #2563eb;
+        }
+        
+        .p-dropdown-trigger {
+          color: #475569;
+        }
+      }
+      
+      .p-paginator-rpp-options {
+        margin: 0 0.5rem;
+        direction: rtl;
+        
+        .p-dropdown {
+          min-width: 80px;
+        }
+      }
+    }
+    
+    // Responsive adjustments
+    @media (max-width: 768px) {
+      .p-paginator {
+        flex-direction: column;
+        gap: 1rem;
+        
+        .p-paginator-pages {
+          order: 2;
+        }
+        
+        .p-paginator-first,
+        .p-paginator-prev,
+        .p-paginator-next,
+        .p-paginator-last {
+          min-width: 2rem;
+          height: 2rem;
+          font-size: 0.875rem;
+        }
+        
+        .p-paginator-page {
+          min-width: 2rem;
+          height: 2rem;
+          font-size: 0.875rem;
+        }
+      }
+    }
   }
 }
 

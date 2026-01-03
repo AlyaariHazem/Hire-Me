@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
+import { PaginatorModule } from 'primeng/paginator';
 import { Base } from 'shared/base/base';
 import { Router } from '@angular/router';
 import { AuthStateService } from 'app/auth/auth-state.service';
@@ -21,7 +22,7 @@ import { JOB_CITIES } from '@app/companies/enums';
 
 @Component({
   selector: 'app-jobs',
-  imports: [SharedModule, InputTextModule, Select, ButtonModule, SkeletonModule],
+  imports: [SharedModule, InputTextModule, Select, ButtonModule, SkeletonModule, PaginatorModule],
   templateUrl: './jobs.html',
   styleUrl: './jobs.scss'
 })
@@ -73,6 +74,7 @@ export class Jobs extends Base {
   // pagination
   currentPage = 1;
   totalPages = 0;
+  page_size = 5;
 
   // sort state
   sortValue = 'relevance';
@@ -135,6 +137,8 @@ export class Jobs extends Base {
         this.totalJobs = data.totalJobs;
         this.totalPages = data.totalPages;
         this.currentPage = data.currentPage;
+        // Sync page_size from store
+        this.page_size = data.filters.page_size || 5;
         // Sync search value when filters change
         this.searchValue = data.filters.search || '';
       },
@@ -318,6 +322,22 @@ export class Jobs extends Base {
 
   nextPage(): void {
     this.jobsStore.nextPage();
+  }
+
+  onPageChange(event: any): void {
+    // PrimeNG paginator is 0-based for page, but our API uses 1-based
+    const newPage = event.page + 1; // Convert from 0-based to 1-based
+    const newPageSize = event.rows;
+    
+    // Update page_size if it changed
+    if (newPageSize !== this.page_size) {
+      this.page_size = newPageSize;
+      // Reload with new page_size
+      this.jobsStore.loadJobs({ page: newPage, page_size: newPageSize });
+    } else {
+      // Just change page
+      this.jobsStore.goToPage(newPage);
+    }
   }
 
   // -------- other existing stuff --------
