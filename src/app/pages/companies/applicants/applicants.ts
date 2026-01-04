@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ApplicationService, Application } from 'shared/services/application.service';
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
@@ -300,23 +300,16 @@ export class Applicants implements OnInit {
 
   loadApplicantDocuments(applicantId: number): void {
     this.loadingDocuments.set(true);
-    // Try to get documents for the applicant
-    // First try: /api/applications/{application_id}/documents/
-    // Second try: /api/applications/applicants/{applicant_id}/documents/
-    // Third try: /api/accounts/users/{user_id}/documents/ (if available)
     
-    const applicationId = this.selectedApplication?.id;
-    let url = '';
+    // Use the correct endpoint: /api/accounts/profile/documents/
+    // For employers viewing applicant documents, we may need to pass user_id as query parameter
+    // or use a different endpoint structure
+    const url = environment.getUrl('profile/documents', 'accounts');
     
-    if (applicationId) {
-      // Try application-specific documents endpoint first
-      url = `${environment.apiBaseUrl}/api/applications/${applicationId}/documents/`;
-    } else {
-      // Fallback to applicant documents endpoint
-      url = `${environment.apiBaseUrl}/api/applications/applicants/${applicantId}/documents/`;
-    }
+    // Try with user_id query parameter if the API supports it
+    const params = new HttpParams().set('user_id', applicantId.toString());
     
-    this.http.get<DocumentListResponse>(url).subscribe({
+    this.http.get<DocumentListResponse>(url, { params }).subscribe({
       next: (response) => {
         const documents = response.results || response.data || [];
         // Filter to only show public and employers_only documents
@@ -327,30 +320,25 @@ export class Applicants implements OnInit {
         this.loadingDocuments.set(false);
       },
       error: (err) => {
-        console.error('Failed to load documents', err);
-        // If the endpoint doesn't exist, try alternative endpoint
-        if (applicationId && url.includes(`/applications/${applicationId}/`)) {
-          // Try applicant-based endpoint as fallback
-          const fallbackUrl = `${environment.apiBaseUrl}/api/applications/applicants/${applicantId}/documents/`;
-          this.http.get<DocumentListResponse>(fallbackUrl).subscribe({
-            next: (response) => {
-              const documents = response.results || response.data || [];
-              const visibleDocuments = documents.filter(doc => 
-                doc.visibility === 'public' || doc.visibility === 'employers_only'
-              );
-              this.applicantDocuments.set(visibleDocuments);
-              this.loadingDocuments.set(false);
-            },
-            error: () => {
-              // If both fail, just show empty
-              this.applicantDocuments.set([]);
-              this.loadingDocuments.set(false);
-            }
-          });
-        } else {
-          this.applicantDocuments.set([]);
-          this.loadingDocuments.set(false);
-        }
+        console.warn('Failed to load documents with user_id param, trying without...', err);
+        // Fallback: Try without user_id parameter (might return all accessible documents)
+        this.http.get<DocumentListResponse>(url).subscribe({
+          next: (response) => {
+            const documents = response.results || response.data || [];
+            // Filter to only show public and employers_only documents
+            const visibleDocuments = documents.filter(doc => 
+              doc.visibility === 'public' || doc.visibility === 'employers_only'
+            );
+            this.applicantDocuments.set(visibleDocuments);
+            this.loadingDocuments.set(false);
+          },
+          error: (fallbackErr) => {
+            console.error('Failed to load documents', fallbackErr);
+            // If both fail, show empty
+            this.applicantDocuments.set([]);
+            this.loadingDocuments.set(false);
+          }
+        });
       }
     });
   }
