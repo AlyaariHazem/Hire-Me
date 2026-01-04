@@ -161,13 +161,22 @@ export class Documents extends Base implements OnInit {
     // Set preview URL to existing document file
     this.filePreviewUrl = document.file_url || this.toAbsolute(document.file) || null;
 
+    // Convert issue_date string to Date object for datepicker
+    let issueDate: Date | null = null;
+    if (document.issue_date) {
+      const date = new Date(document.issue_date);
+      if (!isNaN(date.getTime())) {
+        issueDate = date;
+      }
+    }
+
     this.documentForm.patchValue({
       document_type: document.document_type,
       title: document.title,
       description: document.description || '',
       file: document.file_name || document.file,
       issued_by: document.issued_by || '',
-      issue_date: document.issue_date || '',
+      issue_date: issueDate,
       visibility: document.visibility
     });
     
@@ -223,7 +232,29 @@ export class Documents extends Base implements OnInit {
       formData.append('issued_by', formValue.issued_by);
     }
     if (formValue.issue_date) {
-      formData.append('issue_date', formValue.issue_date.toISOString());
+      // Format date as YYYY-MM-DD
+      let dateStr = '';
+      if (formValue.issue_date instanceof Date) {
+        const year = formValue.issue_date.getFullYear();
+        const month = String(formValue.issue_date.getMonth() + 1).padStart(2, '0');
+        const day = String(formValue.issue_date.getDate()).padStart(2, '0');
+        dateStr = `${year}-${month}-${day}`;
+      } else if (typeof formValue.issue_date === 'string') {
+        // If it's already a string, try to parse and format it
+        const date = new Date(formValue.issue_date);
+        if (!isNaN(date.getTime())) {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          dateStr = `${year}-${month}-${day}`;
+        } else {
+          // If it's already in YYYY-MM-DD format, use it as is
+          dateStr = formValue.issue_date;
+        }
+      }
+      if (dateStr) {
+        formData.append('issue_date', dateStr);
+      }
     }
     formData.append('visibility', formValue.visibility);
 
