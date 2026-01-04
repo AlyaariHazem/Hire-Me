@@ -163,32 +163,102 @@ export class JobseekerInterviews extends Base implements OnInit {
     return statusClasses[status || ''] || 'status-default';
   }
 
-  formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('ar-SA', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
+  formatDateTime(dateStr: string): string {
+    if (!dateStr) return 'غير محدد';
+    
+    try {
+      const date = new Date(dateStr);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return 'غير محدد';
+      }
+
+      // Get local date components (respects timezone)
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const day = date.getDate();
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+
+      // Arabic month names
+      const arabicMonths = [
+        'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+      ];
+
+      // Format time in 12-hour format
+      let displayHours = hours;
+      let period = 'ص'; // صباح (AM)
+      
+      if (hours === 0) {
+        displayHours = 12;
+      } else if (hours === 12) {
+        period = 'م'; // مساء (PM)
+      } else if (hours > 12) {
+        displayHours = hours - 12;
+        period = 'م'; // مساء (PM)
+      }
+
+      // Format minutes with leading zero
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      const formattedHours = displayHours.toString().padStart(2, '0');
+
+      // Format date
+      const formattedDate = `${day} ${arabicMonths[month]} ${year}`;
+      const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
+
+      return `${formattedDate} في ${formattedTime}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'غير محدد';
+    }
   }
 
-  formatDateOnly(dateString: string): string {
+  formatDate(dateString: string): string {
+    if (!dateString) return 'غير محدد';
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('ar-SA', {
+    return date.toLocaleDateString('ar-YE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
-    }).format(date);
+    });
   }
 
-  formatTime(dateString: string): string {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('ar-SA', {
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
+  formatDuration(minutes: number | null | undefined): string {
+    if (!minutes || minutes <= 0) return 'غير محدد';
+    
+    // If less than 60 minutes, show as minutes only
+    if (minutes < 60) {
+      return `${minutes} دقيقة`;
+    }
+    
+    // Calculate hours and remaining minutes
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    
+    // If more than 24 hours, calculate days
+    if (hours >= 24) {
+      const days = Math.floor(hours / 24);
+      const remainingHours = hours % 24;
+      
+      if (remainingHours === 0 && remainingMinutes === 0) {
+        return `${days} ${days === 1 ? 'يوم' : 'أيام'}`;
+      } else if (remainingHours === 0) {
+        return `${days} ${days === 1 ? 'يوم' : 'أيام'} و ${remainingMinutes} دقيقة`;
+      } else if (remainingMinutes === 0) {
+        return `${days} ${days === 1 ? 'يوم' : 'أيام'} و ${remainingHours} ${remainingHours === 1 ? 'ساعة' : 'ساعات'}`;
+      } else {
+        return `${days} ${days === 1 ? 'يوم' : 'أيام'} و ${remainingHours} ${remainingHours === 1 ? 'ساعة' : 'ساعات'} و ${remainingMinutes} دقيقة`;
+      }
+    }
+    
+    // Less than 24 hours, show hours and minutes
+    if (remainingMinutes === 0) {
+      return `${hours} ${hours === 1 ? 'ساعة' : 'ساعات'}`;
+    } else {
+      return `${hours} ${hours === 1 ? 'ساعة' : 'ساعات'} و ${remainingMinutes} دقيقة`;
+    }
   }
 
   getApplicationInfo(interview: Interview): { jobTitle: string; companyName: string } {

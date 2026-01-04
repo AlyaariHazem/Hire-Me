@@ -146,9 +146,10 @@
                       <strong>الشركة:</strong> {{ getApplicationInfo(interview).companyName }}
                     </p>
                     <div class="candidate-meta">
-                      <span>📅 {{ formatDate(interview.scheduled_date) }}</span>
-                      <span>🕐 {{ formatTime(interview.scheduled_date) }}</span>
-                      <span>⏱️ {{ interview.duration_minutes }} دقيقة</span>
+                      <span>📅 {{ formatDateTime(interview.scheduled_date) }}</span>
+                      @if (interview.interview_type === 'video' && interview.duration_minutes) {
+                        <span>⏱️ {{ formatDuration(interview.duration_minutes) }}</span>
+                      }
                       <span>📋 {{ getInterviewTypeLabel(interview.interview_type) }}</span>
                     </div>
                     @if (interview.location) {
@@ -242,17 +243,15 @@
                 <span class="detail-value">{{ getInterviewTypeLabel(selectedInterview()!.interview_type) }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">التاريخ:</span>
-                <span class="detail-value">{{ formatDateOnly(selectedInterview()!.scheduled_date) }}</span>
+                <span class="detail-label">التاريخ والوقت:</span>
+                <span class="detail-value">{{ formatDateTime(selectedInterview()!.scheduled_date) }}</span>
               </div>
-              <div class="detail-item">
-                <span class="detail-label">الوقت:</span>
-                <span class="detail-value">{{ formatTime(selectedInterview()!.scheduled_date) }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">المدة:</span>
-                <span class="detail-value">{{ selectedInterview()!.duration_minutes }} دقيقة</span>
-              </div>
+              @if (selectedInterview()!.interview_type === 'video' && selectedInterview()!.duration_minutes) {
+                <div class="detail-item">
+                  <span class="detail-label">المدة:</span>
+                  <span class="detail-value">{{ formatDuration(selectedInterview()!.duration_minutes) }}</span>
+                </div>
+              }
               <div class="detail-item">
                 <span class="detail-label">الحالة:</span>
                 <span class="detail-value status-badge" [ngClass]="getStatusClass(selectedInterview()!.status)">

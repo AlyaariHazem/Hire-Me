@@ -72,9 +72,10 @@
     }
 
     &.active {
-      background: var(--primary-color, #007bff);
+      background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
       color: white;
       font-weight: 600;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
     }
   }
 }
@@ -114,13 +115,17 @@
   align-items: flex-start;
   padding: 1.5rem;
   border: 1px solid var(--border-color, #e0e0e0);
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 1rem;
-  transition: box-shadow 0.2s;
+  transition: all 0.3s ease;
   gap: 1.5rem;
+  background: white;
 
   &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    border-color: #3B82F6;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
   }
 
   @media (max-width: 768px) {
@@ -144,21 +149,23 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: var(--bg-light, #f5f5f5);
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   flex-shrink: 0;
   font-size: 2rem;
-  color: var(--primary-color, #007bff);
+  color: #2563EB;
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 }
 
 .candidate-avatar {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: var(--bg-light, #f5f5f5);
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -166,7 +173,9 @@
   flex-shrink: 0;
   font-weight: 600;
   font-size: 1.2rem;
-  color: var(--primary-color, #007bff);
+  color: #2563EB;
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 
   img {
     width: 100%;
@@ -231,9 +240,9 @@
   .interview-notes {
     margin-top: 0.75rem;
     padding: 0.75rem;
-    background: var(--bg-light, #f5f5f5);
-    border-radius: 4px;
-    border-left: 3px solid var(--primary-color, #007bff);
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border-radius: 8px;
+    border-left: 3px solid #3B82F6;
 
     p {
       margin: 0;
@@ -286,8 +295,10 @@
   display: inline-block;
 
   &.status-scheduled {
-    background: #d1ecf1;
-    color: #0c5460;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #2563EB;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
   }
 
   &.status-completed {
@@ -386,20 +397,23 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
 
   h2 {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--text-primary, #1a1a1a);
+    color: white;
   }
 
   .modal-close {
-    background: none;
-    border: none;
-    font-size: 2rem;
-    color: var(--text-secondary, #666);
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: white;
     cursor: pointer;
     line-height: 1;
     padding: 0;
@@ -408,10 +422,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
 
     &:hover {
-      color: var(--text-primary, #1a1a1a);
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+      border-color: rgba(255, 255, 255, 0.5);
     }
   }
 }
@@ -459,14 +476,21 @@
 // Detail Section Styles
 .detail-section {
   margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
 
   h3 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 600;
-    margin: 0 0 1rem 0;
-    color: var(--text-primary, #1a1a1a);
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--border-color, #e0e0e0);
+    margin: 0 0 1.5rem 0;
+    color: #2563EB;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #dbeafe;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 }
 
@@ -479,57 +503,75 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--bg-light, #f5f5f5);
+  padding: 1rem;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
 
   &:last-child {
-    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    border-color: #dbeafe;
   }
 
   .detail-label {
     font-weight: 600;
-    color: var(--text-secondary, #666);
+    color: #64748b;
     margin-left: 1rem;
+    font-size: 0.95rem;
   }
 
   .detail-value {
     color: var(--text-primary, #1a1a1a);
     text-align: right;
     flex: 1;
+    font-weight: 500;
 
     &.status-badge {
       display: inline-block;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
+      padding: 0.375rem 0.75rem;
+      border-radius: 6px;
       font-size: 0.85rem;
     }
 
     a {
-      color: var(--primary-color, #007bff);
+      color: #3B82F6;
       text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
 
       &:hover {
+        color: #2563EB;
         text-decoration: underline;
       }
     }
   }
 
   .detail-link {
-    color: var(--primary-color, #007bff);
+    color: #3B82F6;
     text-decoration: none;
     word-break: break-all;
+    font-weight: 500;
+    transition: color 0.2s ease;
 
     &:hover {
+      color: #2563EB;
       text-decoration: underline;
     }
   }
 }
 
 .notes-content {
-  padding: 1rem;
-  background: var(--bg-light, #f5f5f5);
-  border-radius: 4px;
-  border-left: 3px solid var(--primary-color, #007bff);
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-radius: 8px;
+  border-left: 3px solid #3B82F6;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
 
   p {
     margin: 0;
