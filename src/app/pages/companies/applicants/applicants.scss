@@ -1609,6 +1609,68 @@
   }
 }
 
+.pagination-wrapper {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+
+  ::ng-deep .p-paginator {
+    background: transparent;
+    border: none;
+    padding: 1rem 0;
+
+    .p-paginator-pages {
+      .p-paginator-page {
+        min-width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 6px;
+        margin: 0 0.25rem;
+        transition: all 0.3s ease;
+
+        &.p-highlight {
+          background: var(--primary-color, #007bff);
+          border-color: var(--primary-color, #007bff);
+        }
+
+        &:hover:not(.p-highlight) {
+          background: #f0f0f0;
+        }
+      }
+    }
+
+    .p-paginator-first,
+    .p-paginator-prev,
+    .p-paginator-next,
+    .p-paginator-last {
+      min-width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 6px;
+      margin: 0 0.25rem;
+      transition: all 0.3s ease;
+
+      &:hover:not(:disabled) {
+        background: #f0f0f0;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .p-paginator-current {
+      color: var(--text-secondary, #666);
+      font-weight: 500;
+      margin: 0 1rem;
+    }
+
+    .p-dropdown {
+      border-radius: 6px;
+      min-width: 80px;
+    }
+  }
+}
+
 .pagination-info {
   text-align: center;
   margin-top: 1rem;

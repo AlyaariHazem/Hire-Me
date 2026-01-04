@@ -6,6 +6,7 @@ import { ApplicationService, Application } from 'shared/services/application.ser
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
 import { SkeletonModule } from 'primeng/skeleton';
+import { PaginatorModule } from 'primeng/paginator';
 import { DocumentsService, Document, DocumentListResponse } from 'app/pages/jobseeker/services/documents.service';
 import { environment } from 'environments/environment';
 
@@ -16,7 +17,7 @@ type StatusFilter = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected';
 @Component({
   selector: 'app-all-applicants',
   standalone: true,
-  imports: [CommonModule, SharedModule, SkeletonModule],
+  imports: [CommonModule, SharedModule, SkeletonModule, PaginatorModule],
   templateUrl: './applicants.html',
   styleUrls: ['./applicants.scss']
 })
@@ -140,6 +141,12 @@ export class Applicants implements OnInit {
 
   // Expose Math to template
   Math = Math;
+
+  onPageChange(event: any): void {
+    // PrimeNG paginator uses 0-based page index, we use 1-based
+    const newPage = event.page + 1;
+    this.goToPage(newPage);
+  }
 
   getStatusLabel(app: Application): string {
     if (app.status_display) {
