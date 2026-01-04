@@ -49,3 +49,11 @@
     padding: 0.75rem;
   }
 }
+:host ::ng-deep .footer{
+    background-color: var(--gray-900);
+    color: var(--gray-300);
+    padding: var(--spacing-12) 0;
+    font-size: var(--font-size-sm);
+    width: 85%!important;
+    margin-right: 15%!important;
+}
