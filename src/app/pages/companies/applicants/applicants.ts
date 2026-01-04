@@ -1,10 +1,13 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { ApplicationService, Application } from 'shared/services/application.service';
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
 import { SkeletonModule } from 'primeng/skeleton';
+import { DocumentsService, Document, DocumentListResponse } from 'app/pages/jobseeker/services/documents.service';
+import { environment } from 'environments/environment';
 
 import { ApplicantsStoreService } from '../services/applicants.store';
 
@@ -22,6 +25,8 @@ export class Applicants implements OnInit {
   private applicationService = inject(ApplicationService);
   private toastr = inject(ToastrService);
   private store = inject(ApplicantsStoreService);
+  private documentsService = inject(DocumentsService);
+  private http = inject(HttpClient);
 
   // Signals from store
   applications = this.store.applications;
@@ -65,6 +70,10 @@ export class Applicants implements OnInit {
   showDetailsModal = false;
   selectedApplication: Application | null = null;
   loadingDetails = false;
+  
+  // Documents state
+  applicantDocuments = signal<Document[]>([]);
+  loadingDocuments = signal<boolean>(false);
 
   ngOnInit(): void {
     this.store.init();
@@ -259,18 +268,143 @@ export class Applicants implements OnInit {
     this.selectedApplication = application;
     this.showDetailsModal = true;
     this.loadingDetails = true;
+    this.applicantDocuments.set([]);
+    this.loadingDocuments.set(true);
 
     this.applicationService.getApplicationById(application.id).subscribe({
       next: (fullApplication) => {
         this.selectedApplication = fullApplication;
         this.loadingDetails = false;
+        // Load documents for this applicant
+        if (fullApplication.applicant?.id) {
+          this.loadApplicantDocuments(fullApplication.applicant.id);
+        } else {
+          this.loadingDocuments.set(false);
+        }
       },
       error: (err) => {
         console.error('Failed to load application details', err);
         this.toastr.error('فشل في تحميل تفاصيل الطلب');
         this.loadingDetails = false;
+        this.loadingDocuments.set(false);
       }
     });
+  }
+
+  loadApplicantDocuments(applicantId: number): void {
+    this.loadingDocuments.set(true);
+    // Try to get documents for the applicant
+    // First try: /api/applications/{application_id}/documents/
+    // Second try: /api/applications/applicants/{applicant_id}/documents/
+    // Third try: /api/accounts/users/{user_id}/documents/ (if available)
+    
+    const applicationId = this.selectedApplication?.id;
+    let url = '';
+    
+    if (applicationId) {
+      // Try application-specific documents endpoint first
+      url = `${environment.apiBaseUrl}/api/applications/${applicationId}/documents/`;
+    } else {
+      // Fallback to applicant documents endpoint
+      url = `${environment.apiBaseUrl}/api/applications/applicants/${applicantId}/documents/`;
+    }
+    
+    this.http.get<DocumentListResponse>(url).subscribe({
+      next: (response) => {
+        const documents = response.results || response.data || [];
+        // Filter to only show public and employers_only documents
+        const visibleDocuments = documents.filter(doc => 
+          doc.visibility === 'public' || doc.visibility === 'employers_only'
+        );
+        this.applicantDocuments.set(visibleDocuments);
+        this.loadingDocuments.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load documents', err);
+        // If the endpoint doesn't exist, try alternative endpoint
+        if (applicationId && url.includes(`/applications/${applicationId}/`)) {
+          // Try applicant-based endpoint as fallback
+          const fallbackUrl = `${environment.apiBaseUrl}/api/applications/applicants/${applicantId}/documents/`;
+          this.http.get<DocumentListResponse>(fallbackUrl).subscribe({
+            next: (response) => {
+              const documents = response.results || response.data || [];
+              const visibleDocuments = documents.filter(doc => 
+                doc.visibility === 'public' || doc.visibility === 'employers_only'
+              );
+              this.applicantDocuments.set(visibleDocuments);
+              this.loadingDocuments.set(false);
+            },
+            error: () => {
+              // If both fail, just show empty
+              this.applicantDocuments.set([]);
+              this.loadingDocuments.set(false);
+            }
+          });
+        } else {
+          this.applicantDocuments.set([]);
+          this.loadingDocuments.set(false);
+        }
+      }
+    });
+  }
+
+  viewDocument(document: Document): void {
+    // Log the document view
+    this.documentsService.logDocumentView(document.id).subscribe({
+      next: () => {
+        // Open document in new tab
+        const fileUrl = document.file_url || this.getDocumentUrl(document.file);
+        if (fileUrl) {
+          window.open(fileUrl, '_blank', 'noopener,noreferrer');
+        }
+      },
+      error: (err) => {
+        console.error('Failed to log document view', err);
+        // Still open the document even if logging fails
+        const fileUrl = document.file_url || this.getDocumentUrl(document.file);
+        if (fileUrl) {
+          window.open(fileUrl, '_blank', 'noopener,noreferrer');
+        }
+      }
+    });
+  }
+
+  getDocumentUrl(filePath: string): string {
+    if (!filePath) return '';
+    if (/^(https?:|blob:|data:)/i.test(filePath)) return filePath;
+    const base = environment.apiBaseUrl.replace(/\/+$/, '');
+    const clean = String(filePath).replace(/^\/+/, '');
+    return `${base}/${clean}`;
+  }
+
+  getDocumentTypeLabel(type: string): string {
+    const labels: Record<string, string> = {
+      certificate: 'شهادة أكاديمية',
+      training: 'شهادة دورة تدريبية',
+      project: 'مشروع',
+      recommendation: 'خطاب توصية',
+      award: 'جائزة أو تكريم',
+      other: 'أخرى'
+    };
+    return labels[type] || type;
+  }
+
+  getDocumentIconClass(document: Document): string {
+    const fileName = document.file_name?.toLowerCase() || '';
+    
+    if (fileName.endsWith('.pdf')) {
+      return 'pi-file-pdf';
+    }
+    
+    if (fileName.match(/\.(doc|docx)$/)) {
+      return 'pi-file-word';
+    }
+    
+    if (fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
+      return 'pi-image';
+    }
+    
+    return 'pi-file';
   }
 
   closeDetailsModal(): void {

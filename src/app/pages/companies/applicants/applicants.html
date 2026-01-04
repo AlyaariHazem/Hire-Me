@@ -611,6 +611,70 @@
             </div>
           }
 
+          <!-- Documents -->
+          <div class="detail-section">
+            <h3>
+              <span class="section-icon">📁</span>
+              الوثائق
+            </h3>
+            @if (loadingDocuments()) {
+              <div class="documents-loading">
+                <p-skeleton width="100%" height="80px" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="80px" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="80px"></p-skeleton>
+              </div>
+            } @else if (applicantDocuments().length > 0) {
+              <div class="documents-grid">
+                @for (document of applicantDocuments(); track document.id) {
+                  <div class="document-card-item" (click)="viewDocument(document)">
+                    <div class="document-card-header">
+                      <div class="document-icon-wrapper">
+                        <i class="pi document-icon" 
+                           [ngClass]="getDocumentIconClass(document)"></i>
+                      </div>
+                      <div class="document-info">
+                        <h4 class="document-title">{{ document.title }}</h4>
+                        <span class="document-type-badge">{{ getDocumentTypeLabel(document.document_type) }}</span>
+                      </div>
+                    </div>
+                    @if (document.description) {
+                      <p class="document-description">{{ document.description }}</p>
+                    }
+                    <div class="document-footer">
+                      @if (document.issued_by) {
+                        <span class="document-meta">
+                          <i class="pi pi-building"></i>
+                          {{ document.issued_by }}
+                        </span>
+                      }
+                      @if (document.file_size) {
+                        <span class="document-meta">
+                          <i class="pi pi-info-circle"></i>
+                          {{ document.file_size }}
+                        </span>
+                      }
+                      <span class="document-meta">
+                        <i class="pi pi-eye"></i>
+                        {{ document.views_count || 0 }} مشاهدة
+                      </span>
+                    </div>
+                    <div class="document-action-overlay">
+                      <span class="view-document-btn">
+                        <i class="pi pi-eye"></i>
+                        عرض الوثيقة
+                      </span>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="documents-empty">
+                <i class="pi pi-file-empty"></i>
+                <p>لا توجد وثائق متاحة</p>
+              </div>
+            }
+          </div>
+
           <!-- Notes -->
           @if (selectedApplication.notes) {
             <div class="detail-section">

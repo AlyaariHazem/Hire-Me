@@ -1,0 +1,339 @@
+<div class="documents-container">
+  <div class="documents-header">
+    <div class="header-content">
+      <div class="header-title-section">
+        <div class="header-icon-wrapper">
+          <i class="pi pi-folder header-icon"></i>
+        </div>
+        <div class="header-text">
+          <h2>إدارة الوثائق</h2>
+          <p class="header-subtitle">قم بإدارة وتنظيم جميع وثائقك في مكان واحد</p>
+        </div>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <i class="pi pi-file stat-icon"></i>
+          <div class="stat-content">
+            <span class="stat-value">{{ totalCount }}</span>
+            <span class="stat-label">وثيقة</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <p-button
+        label="إضافة وثيقة جديدة"
+        icon="pi pi-plus"
+        styleClass="p-button-primary header-add-btn"
+        (onClick)="openCreateDialog()"
+      ></p-button>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        pInputText
+        placeholder="البحث في الوثائق..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+      />
+    </span>
+    <p-button
+      label="بحث"
+      icon="pi pi-search"
+      styleClass="p-button-secondary"
+      (onClick)="onSearch()"
+    ></p-button>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <p-skeleton width="100%" height="100px" styleClass="mb-3"></p-skeleton>
+      <p-skeleton width="100%" height="100px" styleClass="mb-3"></p-skeleton>
+      <p-skeleton width="100%" height="100px"></p-skeleton>
+    </div>
+  }
+
+  <!-- Documents List -->
+  @if (!isLoading && documents.length > 0) {
+    <div class="documents-list">
+      @for (document of documents; track document.id) {
+        <div class="document-card">
+          <div class="document-header">
+            <div class="document-info">
+              <h3 class="document-title">{{ document.title }}</h3>
+              <div class="document-meta">
+                <span class="document-type">{{ getDocumentTypeLabel(document.document_type) }}</span>
+                <span class="document-visibility">{{ getVisibilityLabel(document.visibility) }}</span>
+                @if (document.issue_date) {
+                  <span class="document-date">{{ formatDate(document.issue_date) }}</span>
+                }
+              </div>
+            </div>
+            <div class="document-actions">
+              <p-button
+                icon="pi pi-pencil"
+                styleClass="p-button-text p-button-sm"
+                (onClick)="openEditDialog(document)"
+                [title]="'تعديل'"
+              ></p-button>
+              <p-button
+                icon="pi pi-trash"
+                styleClass="p-button-text p-button-sm p-button-danger"
+                (onClick)="deleteDocument(document.id)"
+                [title]="'حذف'"
+              ></p-button>
+            </div>
+          </div>
+
+          @if (document.description) {
+            <p class="document-description">{{ document.description }}</p>
+          }
+
+          <div class="document-footer">
+            <div class="document-details">
+              @if (document.issued_by) {
+                <span class="detail-item">
+                  <i class="pi pi-building"></i>
+                  {{ document.issued_by }}
+                </span>
+              }
+              @if (document.file_name) {
+                <span class="detail-item">
+                  <i class="pi pi-file"></i>
+                  {{ document.file_name }}
+                </span>
+              }
+              @if (document.file_size) {
+                <span class="detail-item">
+                  <i class="pi pi-info-circle"></i>
+                  {{ document.file_size }}
+                </span>
+              }
+              <span class="detail-item">
+                <i class="pi pi-eye"></i>
+                {{ document.views_count }} مشاهدة
+              </span>
+            </div>
+            <a
+              [href]="getFileUrl(document)"
+              target="_blank"
+              rel="noopener"
+              class="btn btn-primary btn-sm download-btn"
+            >
+              <i class="pi pi-download"></i>
+              عرض/تحميل
+            </a>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalCount > documents.length) {
+      <div class="pagination">
+        <p-button
+          label="السابق"
+          icon="pi pi-angle-right"
+          styleClass="p-button-secondary"
+          [disabled]="!hasPrevious"
+          (onClick)="goToPage(currentPage - 1)"
+        ></p-button>
+        <span class="page-info">
+          صفحة {{ currentPage }} من {{ Math.ceil(totalCount / 10) }}
+        </span>
+        <p-button
+          label="التالي"
+          icon="pi pi-angle-left"
+          styleClass="p-button-secondary"
+          [disabled]="!hasNext"
+          (onClick)="goToPage(currentPage + 1)"
+        ></p-button>
+      </div>
+    }
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading && documents.length === 0) {
+    <div class="empty-state">
+      <i class="pi pi-file-empty empty-icon"></i>
+      <h3>لا توجد وثائق</h3>
+      <p>ابدأ بإضافة وثيقة جديدة لعرضها هنا</p>
+      <p-button
+        label="إضافة وثيقة جديدة"
+        icon="pi pi-plus"
+        styleClass="p-button-primary"
+        (onClick)="openCreateDialog()"
+      ></p-button>
+    </div>
+  }
+
+  <!-- Create/Edit Dialog -->
+  <p-dialog
+    [(visible)]="showDialog"
+    [header]="isEditing ? 'تعديل وثيقة' : 'إضافة وثيقة جديدة'"
+    [modal]="true"
+    [style]="{ width: '90vw', maxWidth: '600px' }"
+    (onHide)="closeDialog()"
+  >
+    <form [formGroup]="documentForm" class="document-form">
+      <div class="form-row">
+        <div class="form-field">
+          <label for="document_type">نوع الوثيقة <span class="required">*</span></label>
+          <p-select
+            formControlName="document_type"
+            [options]="documentTypes"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="اختر نوع الوثيقة"
+            [style]="{ width: '100%' }"
+          ></p-select>
+          @if (documentForm.get('document_type')?.invalid && documentForm.get('document_type')?.touched) {
+            <small class="p-error">نوع الوثيقة مطلوب</small>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="visibility">مستوى الخصوصية <span class="required">*</span></label>
+          <p-select
+            formControlName="visibility"
+            [options]="visibilityOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="اختر مستوى الخصوصية"
+            [style]="{ width: '100%' }"
+          ></p-select>
+          @if (documentForm.get('visibility')?.invalid && documentForm.get('visibility')?.touched) {
+            <small class="p-error">مستوى الخصوصية مطلوب</small>
+          }
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="title">العنوان <span class="required">*</span></label>
+        <input
+          pInputText
+          type="text"
+          id="title"
+          formControlName="title"
+          placeholder="أدخل عنوان الوثيقة"
+          [maxlength]="200"
+        />
+        @if (documentForm.get('title')?.invalid && documentForm.get('title')?.touched) {
+          <small class="p-error">
+            @if (documentForm.get('title')?.errors?.['required']) {
+              العنوان مطلوب
+            }
+            @if (documentForm.get('title')?.errors?.['maxlength']) {
+              العنوان يجب ألا يتجاوز 200 حرف
+            }
+          </small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="description">الوصف</label>
+        <textarea
+          pInputTextarea
+          id="description"
+          formControlName="description"
+          placeholder="أدخل وصف الوثيقة (اختياري)"
+          [rows]="3"
+        ></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label for="issued_by">الجهة المصدرة</label>
+          <input
+            pInputText
+            type="text"
+            id="issued_by"
+            formControlName="issued_by"
+            placeholder="أدخل اسم الجهة المصدرة"
+            [maxlength]="200"
+          />
+          @if (documentForm.get('issued_by')?.errors?.['maxlength']) {
+            <small class="p-error">الجهة المصدرة يجب ألا تتجاوز 200 حرف</small>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="issue_date">تاريخ الإصدار</label>
+          <p-datepicker
+            formControlName="issue_date"
+            [showIcon]="true"
+            appendTo="body"
+            dateFormat="yy-mm-dd"
+            placeholder="اختر تاريخ الإصدار"
+          ></p-datepicker>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="file">الملف <span class="required">*</span></label>
+        <input
+          type="file"
+          id="file"
+          #fileInput
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+          (change)="onFileChange($event)"
+          class="file-input"
+        />
+        @if (filePreviewUrl) {
+          <div class="file-preview">
+            <div class="file-preview-content">
+              <div class="file-info">
+                <i class="pi pi-file" [ngClass]="getFileIconClass()"></i>
+                <div class="file-details">
+                  <span class="file-name">{{ getFileName() }}</span>
+                  @if (selectedFile) {
+                    <span class="file-size">{{ formatFileSize(selectedFile.size) }}</span>
+                  }
+                </div>
+              </div>
+              <a 
+                [href]="filePreviewUrl" 
+                target="_blank" 
+                rel="noopener"
+                class="preview-link"
+                (click)="previewFile($event)"
+              >
+                <i class="pi pi-eye"></i>
+                معاينة الملف
+              </a>
+            </div>
+          </div>
+        }
+        @if (documentForm.get('file')?.invalid && documentForm.get('file')?.touched && !isEditing) {
+          <small class="p-error">الملف مطلوب</small>
+        }
+        @if (isEditing && !selectedFile) {
+          <small class="p-info">اتركه فارغاً للاحتفاظ بالملف الحالي</small>
+        }
+      </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="إلغاء"
+        icon="pi pi-times"
+        styleClass="p-button-text"
+        (onClick)="closeDialog()"
+      ></p-button>
+      <p-button
+        [label]="isEditing ? 'تحديث' : 'إضافة'"
+        icon="pi pi-check"
+        styleClass="p-button-primary"
+        (onClick)="saveDocument()"
+        [disabled]="documentForm.invalid"
+      ></p-button>
+    </ng-template>
+  </p-dialog>
+</div>
+

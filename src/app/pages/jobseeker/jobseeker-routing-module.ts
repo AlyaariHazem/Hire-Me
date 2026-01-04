@@ -12,6 +12,7 @@ import { Applications } from './applications/applications';
 import { Jobs } from '../jobs/jobs';
 import { JobseekerMessages } from './messages/messages';
 import { JobseekerInterviews } from './interviews/interviews';
+import { Documents } from './documents/documents';
 
 const routes: Routes = [
   {
@@ -28,6 +29,7 @@ const routes: Routes = [
       { path: 'applications', component: Applications, data: { breadcrumb: 'طلباتي' } },
       { path: 'interviews', component: JobseekerInterviews, data: { breadcrumb: 'المقابلات' } },
       { path: 'messages', component: JobseekerMessages, data: { breadcrumb: 'الرسائل' } },
+      { path: 'documents', component: Documents, data: { breadcrumb: 'الوثائق' } },
       { path: 'settings', component: Settings, data: { breadcrumb: 'الإعدادات' } },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {

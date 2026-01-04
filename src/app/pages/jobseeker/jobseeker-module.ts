@@ -14,13 +14,14 @@ import { Settings } from './settings/settings';
 import { SharedModule } from '../../../shared/shared-module';
 import { CvBuilder } from './cv-builder/cv-builder';
 import { Applications } from './applications/applications';
+import { Documents } from './documents/documents';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ProfileService } from './services/profile.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
-import { Select } from 'primeng/select';
+import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -35,6 +36,7 @@ const components = [
   Settings,
   CvBuilder,
   Applications,
+  Documents,
 ];
 
 const modules = [
@@ -49,7 +51,7 @@ FormsModule,
 InputTextModule,
 InputNumberModule,
 TextareaModule,
-Select,
+SelectModule,
 ButtonModule,
 DatePickerModule,
 CheckboxModule,
