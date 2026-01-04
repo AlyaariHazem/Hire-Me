@@ -114,7 +114,8 @@ export class DocumentsService {
    * Log document view (for employers viewing documents)
    */
   logDocumentView(documentId: number): Observable<void> {
-    const url = environment.getUrl(`applications/documents/${documentId}/log-view`, 'applications');
+    // Correct endpoint: /api/applications/documents/{document_id}/log-view/
+    const url = environment.getUrl(`documents/${documentId}/log-view`, 'applications');
     return this.http.post<void>(url, {});
   }
 }

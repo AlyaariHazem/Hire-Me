@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PaginatorModule } from 'primeng/paginator';
-import { DocumentsService, Document, DocumentListResponse } from 'app/pages/jobseeker/services/documents.service';
+import { DocumentsService, Document, DocumentListResponse, DocumentType, VisibilityType } from 'app/pages/jobseeker/services/documents.service';
 import { environment } from 'environments/environment';
 
 import { ApplicantsStoreService } from '../services/applicants.store';
@@ -282,11 +282,26 @@ export class Applicants implements OnInit {
       next: (fullApplication) => {
         this.selectedApplication = fullApplication;
         this.loadingDetails = false;
-        // Load documents for this applicant
-        if (fullApplication.applicant?.id) {
-          this.loadApplicantDocuments(fullApplication.applicant.id);
-        } else {
+        
+        // Use documents from the application response if available
+        if (fullApplication.documents && fullApplication.documents.length > 0) {
+          // Filter to only show public and employers_only documents
+          const visibleDocuments = fullApplication.documents
+            .filter(doc => doc.visibility === 'public' || doc.visibility === 'employers_only')
+            .map(doc => ({
+              ...doc,
+              document_type: doc.document_type as DocumentType,
+              visibility: doc.visibility as VisibilityType
+            })) as Document[];
+          this.applicantDocuments.set(visibleDocuments);
           this.loadingDocuments.set(false);
+        } else {
+          // Fallback: Try to load documents via API if not included in response
+          if (fullApplication.applicant?.id) {
+            this.loadApplicantDocuments(fullApplication.applicant.id);
+          } else {
+            this.loadingDocuments.set(false);
+          }
         }
       },
       error: (err) => {

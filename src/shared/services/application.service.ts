@@ -4,6 +4,24 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'environments/environment';
 
+// Document interface for applications (simplified version)
+export interface ApplicationDocument {
+  id: number;
+  document_type: string;
+  title: string;
+  description?: string | null;
+  file: string;
+  file_url?: string;
+  file_size?: string;
+  file_name?: string;
+  issued_by?: string | null;
+  issue_date?: string | null;
+  visibility: string;
+  views_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Application {
   id: number;
   job: {
@@ -60,6 +78,8 @@ export interface Application {
   viewed_at: string | null;
   applied_at: string;
   updated_at: string;
+  documents_count?: number;
+  documents?: ApplicationDocument[];
 }
 
 export interface ApplicationListResponse {

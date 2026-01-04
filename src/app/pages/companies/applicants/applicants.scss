@@ -1712,8 +1712,8 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    border-color: var(--primary-color, #007bff);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+    border-color: #3B82F6;
 
     .document-action-overlay {
       opacity: 1;
@@ -1730,12 +1730,13 @@
     .document-icon-wrapper {
       width: 50px;
       height: 50px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
 
       .document-icon {
         font-size: 1.75rem;
@@ -1770,11 +1771,12 @@
       .document-type-badge {
         display: inline-block;
         padding: 0.25rem 0.75rem;
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        color: #1976d2;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #2563EB;
         border-radius: 12px;
         font-size: 0.75rem;
         font-weight: 600;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
       }
     }
   }
@@ -1806,7 +1808,7 @@
 
       i {
         font-size: 0.875rem;
-        color: #999;
+        color: #3B82F6;
       }
     }
   }
@@ -1817,7 +1819,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(102, 126, 234, 0.95);
+    background: rgba(59, 130, 246, 0.95);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1825,6 +1827,7 @@
     visibility: hidden;
     transition: all 0.3s ease;
     border-radius: 12px;
+    backdrop-filter: blur(10px);
 
     .view-document-btn {
       display: inline-flex;
@@ -1832,11 +1835,17 @@
       gap: 0.5rem;
       padding: 0.75rem 1.5rem;
       background: white;
-      color: #667eea;
+      color: #3B82F6;
       border-radius: 8px;
       font-weight: 600;
       font-size: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+      }
 
       i {
         font-size: 1.1rem;
