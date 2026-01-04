@@ -45,7 +45,8 @@ export class Jobs extends Base {
   mode: UserType = 'public';
   role: string = '';
   isSavedView = signal(false);
-  isLoading = false;
+  isLoading = false; // For initial page load
+  isLoadingJobs = signal(false); // For jobs list only
   
   // Track which jobs are being processed (to disable buttons during API calls)
   applyingJobs = new Set<number>();
@@ -122,12 +123,15 @@ export class Jobs extends Base {
 
     // Subscribe to loading state
     this.jobsStore.loading$.subscribe(loading => {
-      this.isLoading = loading;
-      if (loading) {
-        // this.loaderService.start();
-      } else {
-        // this.loaderService.stop();
+      // Only set isLoading to true on initial load (when jobs array is empty)
+      if (loading && this.jobs.length === 0) {
+        this.isLoading = true;
+      } else if (!loading) {
+        this.isLoading = false;
       }
+      
+      // Always update jobs list loading state
+      this.isLoadingJobs.set(loading);
     });
 
     // Subscribe to jobs data - this will emit immediately with cached data if available

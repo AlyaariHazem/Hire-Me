@@ -81,8 +81,8 @@
     <section class="search-results-section">
       <div class="container">
         <div class="search-results-container">
-          <!-- Filters Sidebar Skeleton -->
-          @if (isLoading) {
+          <!-- Filters Sidebar Skeleton (only on initial load) -->
+          @if (isLoading && jobs.length === 0) {
           <aside class="filters-sidebar">
             <div class="filter-section">
               <p-skeleton width="120px" height="1.5rem" styleClass="mb-2"></p-skeleton>
@@ -112,7 +112,7 @@
           }
 
           <!-- Filters Sidebar -->
-          @if (!isLoading) {
+          @if (!isLoading || jobs.length > 0) {
           <aside class="filters-sidebar">
             <div class="filter-section">
               <h3 class="filter-title">نوع الوظيفة</h3>
@@ -236,16 +236,33 @@
           </aside>
           }
 
-          <!-- Results Content Skeleton -->
-          @if (isLoading) {
+          <!-- Results Content -->
           <main class="results-content">
             <div class="results-header">
-              <p-skeleton width="200px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+              <div class="results-count">
+                <strong>{{ totalJobs }} وظيفة</strong>
+                تطابق بحثك
+              </div>
+
               <div class="sort-dropdown">
-                <p-skeleton width="150px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+                <label for="sort">ترتيب حسب:</label>
+                <p-select
+                  id="sort"
+                  name="sort"
+                  [(ngModel)]="sortValue"
+                  [options]="sortOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="onSortChange($event.value)"
+                  appendTo="body"
+                  styleClass="w-auto"
+                  [disabled]="isLoadingJobs()"
+                ></p-select>
               </div>
             </div>
 
+            <!-- Jobs List Skeleton (only when loading jobs) -->
+            @if (isLoadingJobs()) {
             <div class="job-results">
               @for (item of [1,2,3,4,5,6]; track item) {
               <article class="job-card-horizontal">
@@ -275,34 +292,10 @@
               </article>
               }
             </div>
-          </main>
-          }
+            }
 
-          <!-- Results Content -->
-          @if (!isLoading) {
-          <main class="results-content">
-            <div class="results-header">
-              <div class="results-count">
-                <strong>{{ totalJobs }} وظيفة</strong>
-                تطابق بحثك
-              </div>
-
-              <div class="sort-dropdown">
-                <label for="sort">ترتيب حسب:</label>
-                <p-select
-                  id="sort"
-                  name="sort"
-                  [(ngModel)]="sortValue"
-                  [options]="sortOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  (onChange)="onSortChange($event.value)"
-                  appendTo="body"
-                  styleClass="w-auto"
-                ></p-select>
-              </div>
-            </div>
-
+            <!-- Actual Jobs List -->
+            @if (!isLoadingJobs()) {
             <div class="job-results">
               @for(job of jobs; track job){
                 <article
@@ -414,9 +407,10 @@
                  </div>
                }
             </div>
+            }
 
             <!-- Pagination -->
-            @if (totalPages > 1) {
+            @if (!isLoadingJobs() && totalPages > 1) {
             <div class="pagination-container">
               <p-paginator
                 [rows]="page_size"
@@ -436,7 +430,6 @@
               </button>
             </div>
           </main>
-          }
         </div>
       </div>
     </section>
