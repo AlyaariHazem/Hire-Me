@@ -244,7 +244,10 @@
         } @else if (selectedApplication) {
           <!-- Job Information -->
           <div class="detail-section">
-            <h3>معلومات الوظيفة</h3>
+            <h3>
+              <span class="section-icon">💼</span>
+              معلومات الوظيفة
+            </h3>
             <div class="detail-content">
               <div class="detail-item">
                 <span class="detail-label">عنوان الوظيفة:</span>
@@ -307,54 +310,57 @@
 
           <!-- Applicant Information -->
           <div class="detail-section">
-            <h3>معلومات المتقدم</h3>
+            <h3>
+              <span class="section-icon">👤</span>
+              معلومات المتقدم
+            </h3>
             <div class="detail-content">
               <div class="detail-item">
-                <span class="detail-label">الاسم الكامل:</span>
-                <span class="detail-value">{{ getApplicantName(selectedApplication) }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">البريد الإلكتروني:</span>
+                <span class="detail-label">
+                  <span class="label-icon">📧</span>
+                  البريد الإلكتروني:
+                </span>
                 <span class="detail-value">{{ selectedApplication.applicant?.email || 'غير متوفر' }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">اسم المستخدم:</span>
-                <span class="detail-value">{{ selectedApplication.applicant?.username || 'غير متوفر' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">رقم الهاتف:</span>
+                <span class="detail-label">
+                  <span class="label-icon">📞</span>
+                  رقم الهاتف:
+                </span>
                 <span class="detail-value">{{ getApplicantPhone(selectedApplication) }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">الموقع:</span>
+                <span class="detail-label">
+                  <span class="label-icon">📍</span>
+                  الموقع:
+                </span>
                 <span class="detail-value">{{ getApplicantLocation(selectedApplication) }}</span>
               </div>
+              @if (selectedApplication.applicant?.username) {
+                <div class="detail-item">
+                  <span class="detail-label">
+                    <span class="label-icon">@</span>
+                    اسم المستخدم:
+                  </span>
+                  <span class="detail-value">{{ selectedApplication.applicant?.username }}</span>
+                </div>
+              }
               @if (selectedApplication.applicant?.date_of_birth) {
                 <div class="detail-item">
-                  <span class="detail-label">تاريخ الميلاد:</span>
+                  <span class="detail-label">
+                    <span class="label-icon">🎂</span>
+                    تاريخ الميلاد:
+                  </span>
                   <span class="detail-value">{{ formatDate(selectedApplication.applicant?.date_of_birth || null) }}</span>
                 </div>
               }
               @if (selectedApplication.applicant?.created_at) {
                 <div class="detail-item">
-                  <span class="detail-label">تاريخ إنشاء الحساب:</span>
+                  <span class="detail-label">
+                    <span class="label-icon">📅</span>
+                    تاريخ إنشاء الحساب:
+                  </span>
                   <span class="detail-value">{{ formatDate(selectedApplication.applicant?.created_at || null) }}</span>
-                </div>
-              }
-              <div class="detail-item">
-                <span class="detail-label">حالة التحقق:</span>
-                <span class="detail-value">
-                  @if (selectedApplication.applicant?.is_verified) {
-                    <span class="verified-badge">✓ موثق</span>
-                  } @else {
-                    <span class="unverified-badge">غير موثق</span>
-                  }
-                </span>
-              </div>
-              @if (selectedApplication.applicant?.bio) {
-                <div class="detail-item full-width">
-                  <span class="detail-label">نبذة شخصية:</span>
-                  <span class="detail-value">{{ selectedApplication.applicant?.bio || '' }}</span>
                 </div>
               }
             </div>
@@ -362,65 +368,101 @@
 
           <!-- Application Details -->
           <div class="detail-section">
-            <h3>معلومات الطلب</h3>
+            <h3>
+              <span class="section-icon">📋</span>
+              معلومات الطلب
+            </h3>
             <div class="detail-content">
               <div class="detail-item">
-                <span class="detail-label">تاريخ التقديم:</span>
+                <span class="detail-label">
+                  <span class="label-icon">📅</span>
+                  تاريخ التقديم:
+                </span>
                 <span class="detail-value">{{ formatDateTime(selectedApplication.applied_at) }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">آخر تحديث:</span>
+                <span class="detail-label">
+                  <span class="label-icon">🔄</span>
+                  آخر تحديث:
+                </span>
                 <span class="detail-value">{{ formatDateTime(selectedApplication.updated_at) }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">الحالة:</span>
-                <span class="detail-value status-badge" [ngClass]="getStatusClass(selectedApplication.status)">
-                  {{ getStatusLabel(selectedApplication) }}
+                <span class="detail-label">
+                  <span class="label-icon">🏷️</span>
+                  الحالة:
+                </span>
+                <span class="detail-value">
+                  <span class="status-badge-enhanced" [ngClass]="getStatusClass(selectedApplication.status)">
+                    {{ getStatusLabel(selectedApplication) }}
+                  </span>
                 </span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">تم المشاهدة:</span>
+                <span class="detail-label">
+                  <span class="label-icon">👁️</span>
+                  تم المشاهدة:
+                </span>
                 <span class="detail-value">
                   @if (selectedApplication.is_viewed) {
-                    <span class="viewed-badge">✓ تم المشاهدة</span>
-                    @if (selectedApplication.viewed_at) {
-                      <span class="viewed-date">({{ formatDateTime(selectedApplication.viewed_at) }})</span>
-                    }
+                    <span class="viewed-badge-enhanced">
+                      <span class="badge-icon">✓</span>
+                      <span>تم المشاهدة</span>
+                      @if (selectedApplication.viewed_at) {
+                        <span class="viewed-date">({{ formatDateTime(selectedApplication.viewed_at) }})</span>
+                      }
+                    </span>
                   } @else {
-                    <span class="not-viewed-badge">لم يتم المشاهدة</span>
+                    <span class="not-viewed-badge-enhanced">
+                      <span class="badge-icon">👁️</span>
+                      <span>لم يتم المشاهدة</span>
+                    </span>
                   }
                 </span>
               </div>
               @if (selectedApplication.expected_salary) {
                 <div class="detail-item">
-                  <span class="detail-label">الراتب المتوقع:</span>
-                  <span class="detail-value">{{ selectedApplication.expected_salary | number }} ريال</span>
+                  <span class="detail-label">
+                    <span class="label-icon">💰</span>
+                    الراتب المتوقع:
+                  </span>
+                  <span class="detail-value highlight-value">{{ selectedApplication.expected_salary | number }} ريال</span>
                 </div>
               }
               @if (selectedApplication.availability_date) {
                 <div class="detail-item">
-                  <span class="detail-label">تاريخ التوفر:</span>
+                  <span class="detail-label">
+                    <span class="label-icon">📆</span>
+                    تاريخ التوفر:
+                  </span>
                   <span class="detail-value">{{ formatDate(selectedApplication.availability_date) }}</span>
                 </div>
               }
               @if (selectedApplication.portfolio_url) {
                 <div class="detail-item">
-                  <span class="detail-label">رابط المحفظة:</span>
-                  <a [href]="selectedApplication.portfolio_url" target="_blank" class="detail-link" rel="noopener noreferrer">
-                    {{ selectedApplication.portfolio_url }}
+                  <span class="detail-label">
+                    <span class="label-icon">🔗</span>
+                    رابط المحفظة:
+                  </span>
+                  <a [href]="selectedApplication.portfolio_url" target="_blank" class="detail-link-enhanced" rel="noopener noreferrer">
+                    <span class="link-icon">🔗</span>
+                    <span>{{ selectedApplication.portfolio_url }}</span>
                   </a>
                 </div>
               }
               @if (selectedApplication.rating !== null && selectedApplication.rating !== undefined) {
                 <div class="detail-item">
-                  <span class="detail-label">التقييم:</span>
+                  <span class="detail-label">
+                    <span class="label-icon">⭐</span>
+                    التقييم:
+                  </span>
                   <span class="detail-value">
                     <span class="rating-stars">
                       @for (star of [1,2,3,4,5]; track star) {
                         <span [class.filled]="star <= (selectedApplication.rating || 0)">★</span>
                       }
                     </span>
-                    ({{ selectedApplication.rating }}/5)
+                    <span class="rating-value">({{ selectedApplication.rating }}/5)</span>
                   </span>
                 </div>
               }
@@ -430,7 +472,10 @@
           <!-- Cover Letter -->
           @if (selectedApplication.cover_letter) {
             <div class="detail-section">
-              <h3>رسالة التقديم</h3>
+              <h3>
+                <span class="section-icon">✉️</span>
+                رسالة التقديم
+              </h3>
               <div class="cover-letter-content">
                 <p>{{ selectedApplication.cover_letter }}</p>
               </div>
@@ -440,7 +485,10 @@
           <!-- Resume -->
           @if (selectedApplication.resume) {
             <div class="detail-section">
-              <h3>السيرة الذاتية</h3>
+              <h3>
+                <span class="section-icon">📄</span>
+                السيرة الذاتية
+              </h3>
               <button 
                 class="btn btn-primary"
                 (click)="downloadResume(selectedApplication)">
@@ -452,7 +500,10 @@
           <!-- Notes -->
           @if (selectedApplication.notes) {
             <div class="detail-section">
-              <h3>ملاحظات</h3>
+              <h3>
+                <span class="section-icon">📝</span>
+                ملاحظات
+              </h3>
               <div class="notes-content">
                 <p>{{ selectedApplication.notes }}</p>
               </div>
@@ -462,7 +513,10 @@
           <!-- Employer Notes -->
           @if (selectedApplication.employer_notes) {
             <div class="detail-section">
-              <h3>ملاحظات صاحب العمل</h3>
+              <h3>
+                <span class="section-icon">💼</span>
+                ملاحظات صاحب العمل
+              </h3>
               <div class="notes-content">
                 <p>{{ selectedApplication.employer_notes }}</p>
               </div>

@@ -427,12 +427,13 @@ span.clickable{
   max-width: 1028px;
   background: #fff;
   border-radius: 16px;
-  padding: 24px;
+  padding: 0;
   box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3);
   animation: slideUp 0.3s ease;
   margin: 20px auto;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   /* Custom Scrollbar */
   &::-webkit-scrollbar {
@@ -458,16 +459,22 @@ span.clickable{
   @media (max-width: 768px) {
     max-width: 100%;
     margin: 10px;
-    padding: 16px;
     border-radius: 12px;
+
+    .dialog-header {
+      border-radius: 12px 12px 0 0;
+    }
   }
 
   @media (max-width: 480px) {
     margin: 0;
-    padding: 12px;
     border-radius: 0;
     min-height: 100vh;
     max-height: 100vh;
+
+    .dialog-header {
+      border-radius: 0;
+    }
   }
 }
 
@@ -476,20 +483,20 @@ span.clickable{
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid #f1f5f9;
+  margin-bottom: 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
   flex-shrink: 0;
 
   @media (max-width: 768px) {
-    margin-bottom: 16px;
-    padding-bottom: 12px;
+    padding: 1.25rem;
     gap: 12px;
   }
 
   @media (max-width: 480px) {
-    margin-bottom: 12px;
-    padding-bottom: 10px;
+    padding: 1rem;
     gap: 8px;
   }
 }
@@ -503,7 +510,7 @@ span.clickable{
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-    color: #1e293b;
+    color: white;
 
     @media (max-width: 768px) {
       font-size: 18px;
@@ -534,26 +541,43 @@ span.clickable{
 }
 
 .dialog-close {
-  border: none;
-  background: #f1f5f9;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  font-size: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white !important;
   cursor: pointer;
-  color: #64748b;
-  transition: all 0.2s ease;
-  
+  line-height: 1;
+  padding: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  opacity: 1;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
   &:hover {
-    background: #e2e8f0;
-    color: #334155;
+    background: rgba(255, 255, 255, 0.3) !important;
     transform: rotate(90deg);
+    opacity: 1;
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
   }
 
   @media (max-width: 480px) {
-    width: 28px;
-    height: 28px;
-    font-size: 18px;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.1rem;
   }
 }
 
@@ -563,6 +587,15 @@ span.clickable{
   gap: 16px;
   flex: 1;
   min-height: 0;
+  padding: 24px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
 }
 
 .form-row {

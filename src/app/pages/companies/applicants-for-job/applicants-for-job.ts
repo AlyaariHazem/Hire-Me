@@ -14,7 +14,9 @@ type StatusFilter = 'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected';
   standalone: true,
   imports: [CommonModule, SharedModule, SkeletonModule],
   templateUrl: './applicants-for-job.html',
-  styleUrls: ['./applicants-for-job.scss']
+  styleUrls: ['./applicants-for-job.scss',
+    '../applicants/applicants.scss'
+  ]
 })
 export class ApplicantsForJob implements OnInit {
   private route = inject(ActivatedRoute);
