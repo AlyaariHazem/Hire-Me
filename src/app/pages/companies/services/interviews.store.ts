@@ -27,7 +27,7 @@ export class InterviewsStoreService {
     loading: false,
     filters: {
       page: 1,
-      page_size: 10,
+      page_size: 5,
       status: 'all',
       interviewType: 'all'
     }

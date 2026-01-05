@@ -92,6 +92,7 @@ export class NewJob implements OnInit, OnChanges {
       application_email: [''],
       is_featured: [false],
       is_urgent: [false],
+      is_ai_summary_enabled: [false],
       publishPlan: ['basic', Validators.required],
       terms: [false],
     });
@@ -198,6 +199,7 @@ export class NewJob implements OnInit, OnChanges {
           application_email: (job as any).application_email ?? '',
           is_featured: !!job.is_featured,
           is_urgent: !!job.is_urgent,
+          is_ai_summary_enabled: !!(job as any).is_ai_summary_enabled,
           publishPlan: 'basic',
           terms: true,
         });
@@ -235,6 +237,7 @@ export class NewJob implements OnInit, OnChanges {
       is_salary_negotiable: false,
       is_featured: false,
       is_urgent: false,
+      is_ai_summary_enabled: false,
       terms: false,
     });
     this.step = 1;
@@ -440,6 +443,7 @@ export class NewJob implements OnInit, OnChanges {
       application_method: v.application_method || 'platform',
       is_featured: !!v.is_featured,
       is_urgent: !!v.is_urgent,
+      is_ai_summary_enabled: !!v.is_ai_summary_enabled,
     };
 
     // Only add conditional application method fields if they have valid values

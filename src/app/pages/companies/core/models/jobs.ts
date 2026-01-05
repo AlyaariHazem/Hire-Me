@@ -27,4 +27,5 @@ export interface CreateJobDto {
   is_featured?: boolean;
   is_urgent?: boolean;
   is_active?: boolean; // For updating job status
+  is_ai_summary_enabled?: boolean;
 }
