@@ -19,6 +19,11 @@ export interface CreateJobDto {
   application_deadline?: string;  // ISO string
   contact_email?: string;
   contact_phone?: string;
+  application_method?: 'platform' | 'custom_form' | 'template_file' | 'external_link' | 'email';
+  custom_form?: number | null;
+  application_template?: string | null;  // URI
+  external_application_url?: string | null;  // URI
+  application_email?: string | null;  // email
   is_featured?: boolean;
   is_urgent?: boolean;
   is_active?: boolean; // For updating job status

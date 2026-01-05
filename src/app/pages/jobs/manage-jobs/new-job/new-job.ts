@@ -11,6 +11,7 @@ import { SharedModule } from 'shared/shared-module';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { ManageJobsStoreService } from '../../services/manage-jobs.store';
+import { JobFormService, JobForm } from 'shared/services/job-form.service';
 
 @Component({
   selector: 'app-new-job',
@@ -39,15 +40,26 @@ export class NewJob implements OnInit, OnChanges {
 
   categories: { id: number; label: string; slug: string }[] = [];
   companies: { id: number; name: string }[] = [];
+  customForms: { id: number; name: string }[] = [];
+
+  applicationMethods = [
+    { value: 'platform', label: 'النظام الافتراضي للمنصة' },
+    { value: 'custom_form', label: 'استبيان مخصص' },
+    { value: 'template_file', label: 'قالب ملف' },
+    { value: 'external_link', label: 'رابط خارجي' },
+    { value: 'email', label: 'بريد الشركة' }
+  ];
 
   private api = inject(JobService);
   private companyService = inject(CompanyService);
+  private jobFormService = inject(JobFormService);
   private toastr = inject(ToastrService);
   private router = inject(Router);
   private store = inject(ManageJobsStoreService);
   private cdr = inject(ChangeDetectorRef);
 
   get isEdit() { return !!this.editSlug; }
+  get selectedApplicationMethod() { return this.form.get('application_method')?.value; }
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -73,16 +85,66 @@ export class NewJob implements OnInit, OnChanges {
       contact_email: [''],
       contact_phone: [''],
       application_deadline: [''],
+      application_method: ['platform', Validators.required],
+      custom_form: [null],
+      application_template: [''],
+      external_application_url: [''],
+      application_email: [''],
       is_featured: [false],
       is_urgent: [false],
       publishPlan: ['basic', Validators.required],
       terms: [false],
     });
+
+    // Watch for application_method changes to update validators
+    this.form.get('application_method')?.valueChanges.subscribe(method => {
+      this.updateApplicationMethodValidators(method);
+    });
+
+    // Watch for company changes to reload custom forms
+    this.form.get('company')?.valueChanges.subscribe(companyId => {
+      if (companyId) {
+        this.loadCustomForms(companyId);
+      } else {
+        this.customForms = [];
+      }
+    });
+  }
+
+  private updateApplicationMethodValidators(method: string) {
+    const customFormCtrl = this.form.get('custom_form');
+    const templateCtrl = this.form.get('application_template');
+    const externalUrlCtrl = this.form.get('external_application_url');
+    const emailCtrl = this.form.get('application_email');
+
+    // Reset all validators
+    customFormCtrl?.clearValidators();
+    templateCtrl?.clearValidators();
+    externalUrlCtrl?.clearValidators();
+    emailCtrl?.clearValidators();
+
+    // Set validators based on method
+    if (method === 'custom_form') {
+      customFormCtrl?.setValidators(Validators.required);
+    } else if (method === 'template_file') {
+      templateCtrl?.setValidators([Validators.required, Validators.pattern(/^https?:\/\/.+/i)]);
+    } else if (method === 'external_link') {
+      externalUrlCtrl?.setValidators([Validators.required, Validators.pattern(/^https?:\/\/.+/i)]);
+    } else if (method === 'email') {
+      emailCtrl?.setValidators([Validators.required, Validators.email]);
+    }
+
+    // Update validity
+    customFormCtrl?.updateValueAndValidity();
+    templateCtrl?.updateValueAndValidity();
+    externalUrlCtrl?.updateValueAndValidity();
+    emailCtrl?.updateValueAndValidity();
   }
 
   ngOnInit(): void {
     this.loadCategories();
     this.loadCompanies();
+    // Load custom forms after company is selected (handled by valueChanges)
     // Load job if editSlug is set on init
     if (this.isEdit && this.editSlug && !this.jobLoading) {
       this.loadJobForEdit(this.editSlug);
@@ -129,11 +191,21 @@ export class NewJob implements OnInit, OnChanges {
           contact_email: (job as any).contact_email ?? '',
           contact_phone: (job as any).contact_phone ?? '',
           application_deadline: job.application_deadline ? job.application_deadline.substring(0, 10) : '',
+          application_method: (job as any).application_method ?? 'platform',
+          custom_form: (job as any).custom_form ?? null,
+          application_template: (job as any).application_template ?? '',
+          external_application_url: (job as any).external_application_url ?? '',
+          application_email: (job as any).application_email ?? '',
           is_featured: !!job.is_featured,
           is_urgent: !!job.is_urgent,
           publishPlan: 'basic',
           terms: true,
         });
+
+        // Load custom forms for the selected company
+        if (companyId) {
+          this.loadCustomForms(companyId);
+        }
 
         this.step = 1;
         this.jobLoaded = true;
@@ -159,6 +231,7 @@ export class NewJob implements OnInit, OnChanges {
       education_level: 'any',
       languages: { arabic: true, english: false, french: false, german: false },
       publishPlan: 'basic',
+      application_method: 'platform',
       is_salary_negotiable: false,
       is_featured: false,
       is_urgent: false,
@@ -200,6 +273,23 @@ export class NewJob implements OnInit, OnChanges {
         console.error('Failed to load companies', err);
         this.companiesLoaded = true;
         this.checkLoadingComplete();
+      },
+    });
+  }
+
+  private loadCustomForms(companyId?: number) {
+    const filters: any = { is_active: true };
+    if (companyId) {
+      filters.company = companyId;
+    }
+    
+    this.jobFormService.getJobForms(filters).subscribe({
+      next: (res) => {
+        this.customForms = (res.results || []).map((f: JobForm) => ({ id: f.id, name: f.name }));
+      },
+      error: (err) => {
+        console.error('Failed to load custom forms', err);
+        this.customForms = [];
       },
     });
   }
@@ -259,10 +349,25 @@ export class NewJob implements OnInit, OnChanges {
     const controlsByStep: Record<number, string[]> = {
       1: ['title','category','job_type','city','experience_level','description'],
       2: ['requirements'],
-      3: ['company'],
+      3: ['company', 'application_method'],
       4: ['publishPlan','terms'],
     };
     const names = controlsByStep[this.step] || [];
+    const method = this.selectedApplicationMethod;
+    
+    // Add conditional validators for step 3
+    if (this.step === 3) {
+      if (method === 'custom_form') {
+        names.push('custom_form');
+      } else if (method === 'template_file') {
+        names.push('application_template');
+      } else if (method === 'external_link') {
+        names.push('external_application_url');
+      } else if (method === 'email') {
+        names.push('application_email');
+      }
+    }
+    
     return names.every(n => {
       const c = this.form.get(n);
       if (!c) return true;
@@ -276,10 +381,26 @@ export class NewJob implements OnInit, OnChanges {
     const groups: Record<number, string[]> = {
       1: ['title','category','job_type','city','experience_level','description'],
       2: ['requirements'],
-      3: ['company'],
+      3: ['company', 'application_method'],
       4: ['publishPlan','terms'],
     };
-    (groups[this.step] || []).forEach(n => this.form.get(n)?.markAsTouched());
+    const names = groups[this.step] || [];
+    const method = this.selectedApplicationMethod;
+    
+    // Add conditional fields for step 3
+    if (this.step === 3) {
+      if (method === 'custom_form') {
+        names.push('custom_form');
+      } else if (method === 'template_file') {
+        names.push('application_template');
+      } else if (method === 'external_link') {
+        names.push('external_application_url');
+      } else if (method === 'email') {
+        names.push('application_email');
+      }
+    }
+    
+    names.forEach(n => this.form.get(n)?.markAsTouched());
   }
 
   submit() {
@@ -316,6 +437,11 @@ export class NewJob implements OnInit, OnChanges {
       application_deadline: v.application_deadline ? new Date(v.application_deadline).toISOString() : undefined,
       contact_email: v.contact_email || undefined,
       contact_phone: v.contact_phone || undefined,
+      application_method: v.application_method || 'platform',
+      custom_form: v.application_method === 'custom_form' && v.custom_form ? Number(v.custom_form) : undefined,
+      application_template: v.application_method === 'template_file' && v.application_template ? v.application_template : undefined,
+      external_application_url: v.application_method === 'external_link' && v.external_application_url ? v.external_application_url : undefined,
+      application_email: v.application_method === 'email' && v.application_email ? v.application_email : undefined,
       is_featured: !!v.is_featured,
       is_urgent: !!v.is_urgent,
     };
