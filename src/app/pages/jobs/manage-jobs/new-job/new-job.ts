@@ -438,13 +438,23 @@ export class NewJob implements OnInit, OnChanges {
       contact_email: v.contact_email || undefined,
       contact_phone: v.contact_phone || undefined,
       application_method: v.application_method || 'platform',
-      custom_form: v.application_method === 'custom_form' && v.custom_form ? Number(v.custom_form) : undefined,
-      application_template: v.application_method === 'template_file' && v.application_template ? v.application_template : undefined,
-      external_application_url: v.application_method === 'external_link' && v.external_application_url ? v.external_application_url : undefined,
-      application_email: v.application_method === 'email' && v.application_email ? v.application_email : undefined,
       is_featured: !!v.is_featured,
       is_urgent: !!v.is_urgent,
     };
+
+    // Only add conditional application method fields if they have valid values
+    if (v.application_method === 'custom_form' && v.custom_form) {
+      payload.custom_form = Number(v.custom_form);
+    }
+    if (v.application_method === 'template_file' && v.application_template?.trim()) {
+      payload.application_template = v.application_template.trim();
+    }
+    if (v.application_method === 'external_link' && v.external_application_url?.trim()) {
+      payload.external_application_url = v.external_application_url.trim();
+    }
+    if (v.application_method === 'email' && v.application_email?.trim()) {
+      payload.application_email = v.application_email.trim();
+    }
 
     if (!this.isEdit) {
       this.api.createJob(payload).subscribe({
