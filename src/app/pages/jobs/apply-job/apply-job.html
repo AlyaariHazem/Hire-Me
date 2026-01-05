@@ -1,0 +1,245 @@
+<div class="apply-job-container">
+  <div class="apply-job-header">
+    <h2 class="apply-job-title">التقديم لوظيفة</h2>
+    @if (jobTitle) {
+    <p class="apply-job-subtitle">الوظيفة: {{ jobTitle }}</p>
+    }
+  </div>
+
+  <form (ngSubmit)="onSubmit()" #applicationFormRef="ngForm" class="apply-job-form">
+    <!-- Cover Letter -->
+    <div class="form-group">
+      <label for="cover_letter" class="form-label">
+        خطاب التقديم
+        <span class="optional-badge">(اختياري)</span>
+      </label>
+      <textarea
+        pTextarea
+        id="cover_letter"
+        name="cover_letter"
+        [(ngModel)]="applicationForm.cover_letter"
+        rows="6"
+        placeholder="اكتب خطاب تقديم يوضح سبب اهتمامك بهذه الوظيفة ومؤهلاتك..."
+        class="form-control"
+      ></textarea>
+    </div>
+
+    <!-- Resume Upload -->
+    <div class="form-group">
+      <label for="resume" class="form-label">
+        السيرة الذاتية
+        <span class="optional-badge">(اختياري)</span>
+      </label>
+      @if (!resumeFile) {
+      <div class="file-upload-area" (click)="resumeFileInput.click()">
+        <div class="file-upload-content">
+          <span class="file-upload-icon">📄</span>
+          <p class="file-upload-text">انقر هنا لرفع السيرة الذاتية</p>
+          <p class="file-upload-hint">PDF, DOC, DOCX (حد أقصى 5MB)</p>
+        </div>
+        <input
+          #resumeFileInput
+          type="file"
+          id="resume"
+          accept=".pdf,.doc,.docx"
+          style="display: none"
+          (change)="onResumeSelected($event)"
+        />
+      </div>
+      } @else {
+      <div class="file-selected">
+        <div class="file-info">
+          <span class="file-icon">📄</span>
+          <span class="file-name">{{ resumeFileName }}</span>
+        </div>
+        <button
+          type="button"
+          class="btn-remove-file"
+          (click)="removeResume()"
+          title="إزالة الملف"
+        >
+          ✕
+        </button>
+      </div>
+      }
+    </div>
+
+    <!-- Portfolio URL -->
+    <div class="form-group">
+      <label for="portfolio_url" class="form-label">
+        رابط الأعمال
+        <span class="optional-badge">(اختياري)</span>
+      </label>
+      <input
+        pInputText
+        type="url"
+        id="portfolio_url"
+        name="portfolio_url"
+        [(ngModel)]="applicationForm.portfolio_url"
+        placeholder="https://example.com/portfolio"
+        maxlength="200"
+        class="form-control"
+      />
+      <small class="form-hint">حد أقصى 200 حرف</small>
+    </div>
+
+    <!-- Expected Salary -->
+    <div class="form-group">
+      <label for="expected_salary" class="form-label">
+        الراتب المتوقع
+        <span class="optional-badge">(اختياري)</span>
+      </label>
+      <p-inputNumber
+        id="expected_salary"
+        name="expected_salary"
+        [(ngModel)]="applicationForm.expected_salary"
+        [min]="0"
+        [max]="2147483647"
+        [showButtons]="true"
+        [useGrouping]="true"
+        placeholder="0"
+        styleClass="w-full"
+        [inputStyleClass]="'form-control'"
+      ></p-inputNumber>
+      <small class="form-hint">بالريال السعودي</small>
+    </div>
+
+    <!-- Availability Date -->
+    <div class="form-group">
+      <label for="availability_date" class="form-label">
+        تاريخ التوفر
+        <span class="optional-badge">(اختياري)</span>
+      </label>
+      <p-datepicker
+        id="availability_date"
+        name="availability_date"
+        [(ngModel)]="applicationForm.availability_date"
+        [showIcon]="true"
+        dateFormat="yy-mm-dd"
+        placeholder="اختر تاريخ التوفر"
+        appendTo="body"
+      ></p-datepicker>
+    </div>
+
+    <!-- Notes -->
+    <div class="form-group">
+      <label for="notes" class="form-label">
+        ملاحظات
+        <span class="optional-badge">(اختياري)</span>
+      </label>
+      <textarea
+        pTextarea
+        id="notes"
+        name="notes"
+        [(ngModel)]="applicationForm.notes"
+        rows="4"
+        placeholder="أي ملاحظات إضافية تود إضافتها..."
+        class="form-control"
+      ></textarea>
+    </div>
+
+    <!-- Filled Template -->
+    <div class="form-group">
+      <label for="filled_template" class="form-label">
+        الملف المعبأ
+        <span class="optional-badge">(اختياري)</span>
+      </label>
+      @if (!filledTemplateFile) {
+      <div class="file-upload-area" (click)="filledTemplateFileInput.click()">
+        <div class="file-upload-content">
+          <span class="file-upload-icon">📎</span>
+          <p class="file-upload-text">انقر هنا لرفع الملف المعبأ</p>
+          <p class="file-upload-hint">PDF, DOC, DOCX (حد أقصى 5MB)</p>
+        </div>
+        <input
+          #filledTemplateFileInput
+          type="file"
+          id="filled_template"
+          accept=".pdf,.doc,.docx"
+          style="display: none"
+          (change)="onFilledTemplateSelected($event)"
+        />
+      </div>
+      } @else {
+      <div class="file-selected">
+        <div class="file-info">
+          <span class="file-icon">📎</span>
+          <span class="file-name">{{ filledTemplateFileName }}</span>
+        </div>
+        <button
+          type="button"
+          class="btn-remove-file"
+          (click)="removeFilledTemplate()"
+          title="إزالة الملف"
+        >
+          ✕
+        </button>
+      </div>
+      }
+    </div>
+
+    <!-- Job Questions Responses (if any) -->
+    @if (jobQuestions.length > 0) {
+    <div class="form-group">
+      <h3 class="section-subtitle">أسئلة الوظيفة</h3>
+      @for (question of jobQuestions; track question.id) {
+      <div class="question-response">
+        <label class="question-label">{{ question.text }}</label>
+        <textarea
+          pTextarea
+          [ngModel]="getResponseText(question.id)"
+          [name]="'response_' + question.id"
+          rows="3"
+          placeholder="اكتب إجابتك هنا..."
+          class="form-control"
+          (ngModelChange)="updateResponseText(question.id, $event)"
+        ></textarea>
+        <div class="response-file-upload">
+          <label class="file-upload-label">
+            <input
+              type="file"
+              [id]="'response_file_' + question.id"
+              accept=".pdf,.doc,.docx"
+              style="display: none"
+              (change)="onResponseFileSelected(question.id, $event)"
+            />
+            <span class="file-upload-link">📎 إرفاق ملف (اختياري)</span>
+          </label>
+          @if (responseFiles.has(question.id)) {
+          <span class="file-name-small">
+            {{ responseFiles.get(question.id)?.name }}
+            <button
+              type="button"
+              class="btn-remove-small"
+              (click)="removeResponseFile(question.id)"
+            >
+              ✕
+            </button>
+          </span>
+          }
+        </div>
+      </div>
+      }
+    </div>
+    }
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <p-button
+        type="button"
+        label="إلغاء"
+        styleClass="p-button-secondary"
+        (onClick)="onCancel()"
+        [disabled]="isSubmitting"
+      ></p-button>
+      <p-button
+        type="submit"
+        [label]="isSubmitting ? 'جاري الإرسال...' : 'إرسال الطلب'"
+        styleClass="p-button-primary"
+        [disabled]="isSubmitting"
+        [loading]="isSubmitting"
+      ></p-button>
+    </div>
+  </form>
+</div>
+

@@ -11,6 +11,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ApplyJobComponent } from '../apply-job/apply-job';
 
 interface Company {
   id: number;
@@ -93,6 +94,7 @@ interface JobDetail extends Base {
     Select,
     ButtonModule,
     SkeletonModule,
+    ApplyJobComponent,
   ],
   templateUrl: './job-details.html',
   styleUrl: './job-details.scss',

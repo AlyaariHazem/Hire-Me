@@ -15,6 +15,8 @@ import { Applicants } from './applicants/applicants';
 import { Messages } from 'shared/messages/messages';
 import { Interviews } from './interviews/interviews';
 import { Analytics } from './analytics/analytics';
+import { JobFormsListComponent } from './job-forms/job-forms-list/job-forms-list';
+import { JobFormEditComponent } from './job-forms/job-form-edit/job-form-edit';
 
 const routes: Routes = [
   {
@@ -104,6 +106,21 @@ const routes: Routes = [
         path: 'analytics',
         component: Analytics,
         data: { breadcrumb: 'التحليلات والإحصائيات' }
+      },
+      {
+        path: 'job-forms',
+        component: JobFormsListComponent,
+        data: { breadcrumb: 'نماذج التقديم' }
+      },
+      {
+        path: 'job-forms/create',
+        component: JobFormEditComponent,
+        data: { breadcrumb: 'إنشاء نموذج جديد' }
+      },
+      {
+        path: 'job-forms/:id/edit',
+        component: JobFormEditComponent,
+        data: { breadcrumb: 'تعديل النموذج' }
       },
     ],
   },

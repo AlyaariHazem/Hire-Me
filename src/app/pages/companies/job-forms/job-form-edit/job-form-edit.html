@@ -1,0 +1,237 @@
+<div class="job-form-edit-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ isEditMode ? 'تعديل النموذج' : 'إنشاء نموذج جديد' }}
+    </h1>
+    <button class="btn btn-secondary" (click)="cancel()">إلغاء</button>
+  </div>
+
+  <!-- Loading Skeleton -->
+  @if (loading) {
+  <div class="skeleton-form">
+    <p-skeleton width="100%" height="3rem" styleClass="mb-3"></p-skeleton>
+    <p-skeleton width="100%" height="10rem" styleClass="mb-3"></p-skeleton>
+    <p-skeleton width="100%" height="3rem" styleClass="mb-3"></p-skeleton>
+  </div>
+  }
+
+  <!-- Form -->
+  @if (!loading) {
+  <form (ngSubmit)="onSubmit()" class="job-form-edit-form">
+    <!-- Basic Information -->
+    <div class="form-section">
+      <h2 class="section-title">المعلومات الأساسية</h2>
+
+      <div class="form-group">
+        <label for="name" class="form-label required">
+          اسم النموذج
+        </label>
+        <input
+          pInputText
+          type="text"
+          id="name"
+          name="name"
+          [(ngModel)]="formData.name"
+          required
+          maxlength="200"
+          placeholder="مثال: نموذج التقديم للمطورين"
+          class="form-control"
+        />
+        <small class="form-hint">حد أقصى 200 حرف</small>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="form-label">
+          وصف النموذج
+        </label>
+        <textarea
+          pTextarea
+          id="description"
+          name="description"
+          [(ngModel)]="formData.description"
+          rows="4"
+          placeholder="وصف مختصر عن النموذج..."
+          class="form-control"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <p-checkbox
+            [(ngModel)]="formData.is_active"
+            [binary]="true"
+            inputId="is_active"
+            name="is_active"
+          ></p-checkbox>
+          <label for="is_active" class="checkbox-label">
+            النموذج نشط
+          </label>
+        </div>
+        <small class="form-hint">النماذج النشطة فقط ستظهر للمتقدمين</small>
+      </div>
+    </div>
+
+    <!-- Questions Section -->
+    <div class="form-section">
+      <div class="section-header">
+        <h2 class="section-title">الأسئلة</h2>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          (click)="addQuestion()"
+        >
+          <span>+</span> إضافة سؤال
+        </button>
+      </div>
+
+      @if (questions.length === 0) {
+      <div class="empty-questions">
+        <p>لا توجد أسئلة. انقر على "إضافة سؤال" لبدء إضافة الأسئلة.</p>
+      </div>
+      }
+
+      @for (question of questions; track $index) {
+      <div class="question-card">
+        <div class="question-header">
+          <span class="question-number">سؤال {{ $index + 1 }}</span>
+          <div class="question-actions">
+            <button
+              type="button"
+              class="action-icon-btn"
+              (click)="moveQuestionUp($index)"
+              [disabled]="$index === 0"
+              title="نقل لأعلى"
+            >
+              ⬆️
+            </button>
+            <button
+              type="button"
+              class="action-icon-btn"
+              (click)="moveQuestionDown($index)"
+              [disabled]="$index === questions.length - 1"
+              title="نقل لأسفل"
+            >
+              ⬇️
+            </button>
+            <button
+              type="button"
+              class="action-icon-btn delete-btn"
+              (click)="removeQuestion($index)"
+              title="حذف"
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <div class="question-body">
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label [for]="'label_' + $index" class="form-label required">
+                نص السؤال
+              </label>
+              <input
+                pInputText
+                type="text"
+                [id]="'label_' + $index"
+                [name]="'label_' + $index"
+                [(ngModel)]="question.label"
+                required
+                placeholder="مثال: ما هي خبرتك في البرمجة؟"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label [for]="'question_type_' + $index" class="form-label required">
+                نوع السؤال
+              </label>
+              <p-select
+                [id]="'question_type_' + $index"
+                [name]="'question_type_' + $index"
+                [(ngModel)]="question.question_type"
+                [options]="questionTypes"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="اختر نوع السؤال"
+                styleClass="w-full"
+              ></p-select>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox-group">
+                <p-checkbox
+                  [(ngModel)]="question.required"
+                  [binary]="true"
+                  [inputId]="'required_' + $index"
+                  [name]="'required_' + $index"
+                ></p-checkbox>
+                <label [for]="'required_' + $index" class="checkbox-label">
+                  إجباري
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label [for]="'help_text_' + $index" class="form-label">
+              نص مساعد (اختياري)
+            </label>
+            <input
+              pInputText
+              type="text"
+              [id]="'help_text_' + $index"
+              [name]="'help_text_' + $index"
+              [(ngModel)]="question.help_text"
+              placeholder="نص توضيحي للمساعدة في الإجابة"
+              class="form-control"
+            />
+          </div>
+
+          @if (needsOptions(question.question_type)) {
+          <div class="form-group">
+            <label [for]="'options_' + $index" class="form-label required">
+              الخيارات
+            </label>
+            <input
+              pInputText
+              type="text"
+              [id]="'options_' + $index"
+              [name]="'options_' + $index"
+              [(ngModel)]="question.options"
+              required
+              placeholder="مثال: خيار 1, خيار 2, خيار 3"
+              class="form-control"
+            />
+            <small class="form-hint">افصل بين الخيارات بفواصل (،)</small>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <p-button
+        type="button"
+        label="إلغاء"
+        styleClass="p-button-secondary"
+        (onClick)="cancel()"
+        [disabled]="saving"
+      ></p-button>
+      <p-button
+        type="submit"
+        [label]="saving ? 'جاري الحفظ...' : (isEditMode ? 'تحديث' : 'إنشاء')"
+        styleClass="p-button-primary"
+        [disabled]="saving"
+        [loading]="saving"
+      ></p-button>
+    </div>
+  </form>
+  }
+</div>
+

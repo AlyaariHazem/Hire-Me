@@ -1,0 +1,144 @@
+<div class="job-forms-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">نماذج التقديم</h1>
+      <p class="page-subtitle">إدارة نماذج التقديم المخصصة للوظائف</p>
+    </div>
+    <button class="btn btn-primary" (click)="createNewForm()">
+      <span>+</span> إنشاء نموذج جديد
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input
+        pInputText
+        type="text"
+        placeholder="البحث في النماذج..."
+        [(ngModel)]="filters.search"
+        (keyup.enter)="onSearch(filters.search || '')"
+        class="search-input"
+      />
+      <p-button
+        icon="pi pi-search"
+        styleClass="p-button-secondary"
+        (onClick)="onSearch(filters.search || '')"
+        [title]="'بحث'"
+      ></p-button>
+    </div>
+
+    <div class="filter-buttons">
+      <button
+        class="filter-btn"
+        [class.active]="filters.is_active !== undefined"
+        (click)="toggleActiveFilter()"
+      >
+        {{ getActiveFilterLabel() }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Skeleton -->
+  @if (loading) {
+  <div class="skeleton-list">
+    @for (item of [1,2,3,4,5]; track item) {
+    <div class="skeleton-card">
+      <p-skeleton width="100%" height="120px"></p-skeleton>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- Job Forms List -->
+  @if (!loading && jobForms.length > 0) {
+  <div class="job-forms-grid">
+    @for (form of jobForms; track form.id) {
+    <div class="job-form-card">
+      <div class="card-header">
+        <div class="form-title-section">
+          <h3 class="form-title">{{ form.name }}</h3>
+          <span
+            class="status-badge"
+            [class.active]="form.is_active"
+            [class.inactive]="!form.is_active"
+          >
+            {{ form.is_active ? 'نشط' : 'غير نشط' }}
+          </span>
+        </div>
+        <div class="card-actions">
+          <button
+            class="action-btn edit-btn"
+            (click)="editJobForm(form.id)"
+            title="تعديل"
+          >
+            ✏️
+          </button>
+          <button
+            class="action-btn delete-btn"
+            (click)="deleteJobForm(form.id, form.name)"
+            title="حذف"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        @if (form.description) {
+        <p class="form-description">{{ form.description }}</p>
+        }
+
+        <div class="form-meta">
+          <div class="meta-item">
+            <span class="meta-icon">❓</span>
+            <span class="meta-text">{{ form.questions_count || form.questions.length || 0 }} سؤال</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">📅</span>
+            <span class="meta-text">{{ formatDate(form.created_at) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Pagination -->
+  @if (totalCount > pageSize) {
+  <div class="pagination">
+    <button
+      class="pagination-btn"
+      [disabled]="!hasPrevious"
+      (click)="goToPage(currentPage - 1)"
+    >
+      السابق
+    </button>
+    <span class="pagination-info">
+      صفحة {{ currentPage }} من {{ getTotalPages() }} ({{ totalCount }} نموذج)
+    </span>
+    <button
+      class="pagination-btn"
+      [disabled]="!hasNext"
+      (click)="goToPage(currentPage + 1)"
+    >
+      التالي
+    </button>
+  </div>
+  }
+  }
+
+  <!-- Empty State -->
+  @if (!loading && jobForms.length === 0) {
+  <div class="empty-state">
+    <div class="empty-icon">📋</div>
+    <h3 class="empty-title">لا توجد نماذج</h3>
+    <p class="empty-message">ابدأ بإنشاء نموذج تقديم مخصص للوظائف</p>
+    <button class="btn btn-primary" (click)="createNewForm()">
+      إنشاء نموذج جديد
+    </button>
+  </div>
+  }
+</div>
+
