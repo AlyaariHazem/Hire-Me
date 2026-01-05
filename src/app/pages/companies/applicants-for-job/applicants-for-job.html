@@ -189,23 +189,31 @@
                 @if (app.status === 'pending') {
                   <div class="status-actions">
                     <button 
-                      class="btn btn-small btn-success"
+                      class="btn-action btn-accept"
                       [disabled]="updatingStatus.has(app.id)"
-                      (click)="updateApplicationStatus(app.id, 'accepted')">
+                      (click)="updateApplicationStatus(app.id, 'accepted')"
+                      title="قبول المتقدم"
+                      type="button">
                       @if (updatingStatus.has(app.id)) {
-                        جاري التحديث...
+                        <span class="btn-icon">⏳</span>
+                        <span>جاري التحديث...</span>
                       } @else {
-                        قبول
+                        <span class="btn-icon">✓</span>
+                        <span>قبول</span>
                       }
                     </button>
                     <button 
-                      class="btn btn-small btn-danger"
+                      class="btn-action btn-reject"
                       [disabled]="updatingStatus.has(app.id)"
-                      (click)="updateApplicationStatus(app.id, 'rejected')">
+                      (click)="confirmReject(app.id)"
+                      title="رفض المتقدم"
+                      type="button">
                       @if (updatingStatus.has(app.id)) {
-                        جاري التحديث...
+                        <span class="btn-icon">⏳</span>
+                        <span>جاري التحديث...</span>
                       } @else {
-                        رفض
+                        <span class="btn-icon">✕</span>
+                        <span>رفض</span>
                       }
                     </button>
                   </div>
@@ -213,6 +221,25 @@
               </div>
             </div>
         }
+      </div>
+    }
+
+    <!-- Pagination -->
+    @if (!loading && totalPages > 1) {
+      <div class="pagination-wrapper">
+        <p-paginator
+          [rows]="page_size"
+          [totalRecords]="totalCount"
+          [first]="(currentPage - 1) * page_size"
+          [rowsPerPageOptions]="[5, 10, 20, 50]"
+          (onPageChange)="onPageChange($event)"
+          [showFirstLastIcon]="true"
+          [showPageLinks]="true"
+          [alwaysShow]="true">
+        </p-paginator>
+        <div class="pagination-info">
+          <p>عرض {{ ((currentPage - 1) * page_size) + 1 }} - {{ Math.min(currentPage * page_size, totalCount) }} من {{ totalCount }} متقدم</p>
+        </div>
       </div>
     }
   </div>
@@ -242,6 +269,40 @@
             </div>
           </div>
         } @else if (selectedApplication) {
+          <!-- Applicant Profile Header -->
+          <div class="applicant-profile-header">
+            <div class="profile-avatar-large">
+              @if (selectedApplication.applicant?.profile_picture) {
+                <img 
+                  [src]="selectedApplication.applicant?.profile_picture || ''" 
+                  [alt]="getApplicantName(selectedApplication)"
+                  [title]="getApplicantName(selectedApplication)"
+                  title="صورة المتقدم"
+                  (error)="handleImageError($event)">
+              }
+              <span [style.display]="selectedApplication.applicant?.profile_picture ? 'none' : 'flex'">
+                {{ getApplicantInitials(selectedApplication) }}
+              </span>
+            </div>
+            <div class="profile-info">
+              <h2 class="profile-name">{{ getApplicantName(selectedApplication) }}</h2>
+              @if (selectedApplication.applicant?.bio) {
+                <p class="profile-bio">{{ selectedApplication.applicant?.bio }}</p>
+              }
+              <div class="profile-badges">
+                <span class="status-badge" [ngClass]="getStatusClass(selectedApplication.status)">
+                  {{ getStatusLabel(selectedApplication) }}
+                </span>
+                @if (selectedApplication.applicant?.is_verified) {
+                  <span class="verified-badge-large">
+                    <span class="badge-icon">✓</span>
+                    <span>موثق</span>
+                  </span>
+                }
+              </div>
+            </div>
+          </div>
+
           <!-- Job Information -->
           <div class="detail-section">
             <h3>
@@ -456,8 +517,8 @@
                     <span class="label-icon">⭐</span>
                     التقييم:
                   </span>
-                  <span class="detail-value">
-                    <span class="rating-stars">
+                    <span class="detail-value">
+                    <span class="rating-stars-enhanced">
                       @for (star of [1,2,3,4,5]; track star) {
                         <span [class.filled]="star <= (selectedApplication.rating || 0)">★</span>
                       }
@@ -490,12 +551,182 @@
                 السيرة الذاتية
               </h3>
               <button 
-                class="btn btn-primary"
-                (click)="downloadResume(selectedApplication)">
-                تحميل السيرة الذاتية
+                class="btn-resume-download"
+                (click)="downloadResume(selectedApplication)"
+                type="button">
+                <span class="btn-icon">📥</span>
+                <span>تحميل السيرة الذاتية</span>
               </button>
             </div>
           }
+
+          <!-- Questionnaire (Custom Form Responses) -->
+          @if (selectedApplication.job.application_method === 'custom_form' && selectedApplication.responses && selectedApplication.responses.length > 0) {
+            <div class="detail-section">
+              <h3>
+                <span class="section-icon">📋</span>
+                الاستبيان
+              </h3>
+              <div class="questionnaire-content">
+                @if (selectedApplication.custom_form) {
+                  <div class="questionnaire-header">
+                    <h4>{{ selectedApplication.custom_form.name }}</h4>
+                    @if (selectedApplication.custom_form.questions && selectedApplication.custom_form.questions.length > 0) {
+                      <div class="questionnaire-questions">
+                        @for (response of selectedApplication.responses; track response.question) {
+                          @if (response.answer_text || response.answer_file) {
+                            <div class="questionnaire-item">
+                              <div class="question-label">
+                                <span class="question-number">{{ $index + 1 }}.</span>
+                                <span class="question-text">{{ getQuestionLabel(selectedApplication.custom_form.questions || [], response.question) }}</span>
+                                @if (getQuestionRequired(selectedApplication.custom_form.questions || [], response.question)) {
+                                  <span class="required-badge">*</span>
+                                }
+                              </div>
+                              <div class="question-answer">
+                                @if (response.answer_text) {
+                                  <p class="answer-text">{{ response.answer_text }}</p>
+                                }
+                                @if (response.answer_file) {
+                                  <a 
+                                    [href]="getDocumentUrl(response.answer_file)" 
+                                    target="_blank" 
+                                    class="answer-file-link"
+                                    rel="noopener noreferrer">
+                                    <i class="pi pi-file"></i>
+                                    <span>تحميل الملف المرفق</span>
+                                  </a>
+                                }
+                                @if (!response.answer_text && !response.answer_file) {
+                                  <span class="no-answer">لم يتم الإجابة</span>
+                                }
+                              </div>
+                            </div>
+                          }
+                        }
+                      </div>
+                    } @else {
+                      <div class="questionnaire-questions">
+                        @for (response of selectedApplication.responses; track response.question) {
+                          @if (response.answer_text || response.answer_file) {
+                            <div class="questionnaire-item">
+                              <div class="question-label">
+                                <span class="question-number">{{ $index + 1 }}.</span>
+                                <span class="question-text">سؤال رقم {{ response.question }}</span>
+                              </div>
+                              <div class="question-answer">
+                                @if (response.answer_text) {
+                                  <p class="answer-text">{{ response.answer_text }}</p>
+                                }
+                                @if (response.answer_file) {
+                                  <a 
+                                    [href]="getDocumentUrl(response.answer_file)" 
+                                    target="_blank" 
+                                    class="answer-file-link"
+                                    rel="noopener noreferrer">
+                                    <i class="pi pi-file"></i>
+                                    <span>تحميل الملف المرفق</span>
+                                  </a>
+                                }
+                              </div>
+                            </div>
+                          }
+                        }
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <div class="questionnaire-questions">
+                    @for (response of selectedApplication.responses; track response.question) {
+                      @if (response.answer_text || response.answer_file) {
+                        <div class="questionnaire-item">
+                          <div class="question-label">
+                            <span class="question-number">{{ $index + 1 }}.</span>
+                            <span class="question-text">سؤال رقم {{ response.question }}</span>
+                          </div>
+                          <div class="question-answer">
+                            @if (response.answer_text) {
+                              <p class="answer-text">{{ response.answer_text }}</p>
+                            }
+                            @if (response.answer_file) {
+                              <a 
+                                [href]="getDocumentUrl(response.answer_file)" 
+                                target="_blank" 
+                                class="answer-file-link"
+                                rel="noopener noreferrer">
+                                <i class="pi pi-file"></i>
+                                <span>تحميل الملف المرفق</span>
+                              </a>
+                            }
+                          </div>
+                        </div>
+                      }
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Documents -->
+          <div class="detail-section">
+            <h3>
+              <span class="section-icon">📁</span>
+              الوثائق
+            </h3>
+            @if (loadingDocuments()) {
+              <div class="documents-loading">
+                <p-skeleton width="100%" height="80px" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="80px" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="80px"></p-skeleton>
+              </div>
+            } @else if (applicantDocuments().length > 0) {
+              <div class="documents-grid">
+                @for (document of applicantDocuments(); track document.id) {
+                  <div class="document-card-item" (click)="viewDocument(document)">
+                    <div class="document-card-header">
+                      <div class="document-icon-wrapper">
+                        <i class="pi document-icon" 
+                           [ngClass]="getDocumentIconClass(document)"></i>
+                      </div>
+                      <div class="document-info">
+                        <h4 class="document-title">{{ document.title }}</h4>
+                        <span class="document-type-badge">{{ getDocumentTypeLabel(document.document_type) }}</span>
+                      </div>
+                    </div>
+                    @if (document.description) {
+                      <p class="document-description">{{ document.description }}</p>
+                    }
+                    <div class="document-footer">
+                      @if (document.issued_by) {
+                        <span class="document-meta">
+                          <i class="pi pi-building"></i>
+                          {{ document.issued_by }}
+                        </span>
+                      }
+                      @if (document.file_size) {
+                        <span class="document-meta">
+                          <i class="pi pi-info-circle"></i>
+                          {{ document.file_size }}
+                        </span>
+                      }
+                    </div>
+                    <div class="document-action-overlay">
+                      <span class="view-document-btn">
+                        <i class="pi pi-eye"></i>
+                        عرض الوثيقة
+                      </span>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="documents-empty">
+                <i class="pi pi-file-empty"></i>
+                <p>لا توجد وثائق متاحة</p>
+              </div>
+            }
+          </div>
 
           <!-- Notes -->
           @if (selectedApplication.notes) {
@@ -525,27 +756,43 @@
 
           <!-- Action Buttons -->
           @if (selectedApplication.status === 'pending') {
-            <div class="modal-actions">
-              <button 
-                class="btn btn-success"
-                [disabled]="updatingStatus.has(selectedApplication.id)"
-                (click)="updateApplicationStatus(selectedApplication.id, 'accepted'); closeDetailsModal();">
-                @if (updatingStatus.has(selectedApplication.id)) {
-                  جاري التحديث...
-                } @else {
-                  قبول الطلب
-                }
-              </button>
-              <button 
-                class="btn btn-danger"
-                [disabled]="updatingStatus.has(selectedApplication.id)"
-                (click)="updateApplicationStatus(selectedApplication.id, 'rejected'); closeDetailsModal();">
-                @if (updatingStatus.has(selectedApplication.id)) {
-                  جاري التحديث...
-                } @else {
-                  رفض الطلب
-                }
-              </button>
+            <div class="modal-actions-enhanced">
+              <div class="action-buttons-wrapper">
+                <button 
+                  class="btn-action-modal btn-accept-modal"
+                  [disabled]="updatingStatus.has(selectedApplication.id)"
+                  (click)="updateApplicationStatus(selectedApplication.id, 'accepted'); closeDetailsModal();"
+                  title="قبول المتقدم"
+                  type="button">
+                  <div class="btn-content">
+                    @if (updatingStatus.has(selectedApplication.id)) {
+                      <span class="btn-icon-spinner">⏳</span>
+                      <span class="btn-text">جاري التحديث...</span>
+                    } @else {
+                      <span class="btn-icon-main">✓</span>
+                      <span class="btn-text">قبول الطلب</span>
+                    }
+                  </div>
+                  <div class="btn-shine"></div>
+                </button>
+                <button 
+                  class="btn-action-modal btn-reject-modal"
+                  [disabled]="updatingStatus.has(selectedApplication.id)"
+                  (click)="confirmReject(selectedApplication.id)"
+                  title="رفض المتقدم"
+                  type="button">
+                  <div class="btn-content">
+                    @if (updatingStatus.has(selectedApplication.id)) {
+                      <span class="btn-icon-spinner">⏳</span>
+                      <span class="btn-text">جاري التحديث...</span>
+                    } @else {
+                      <span class="btn-icon-main">✕</span>
+                      <span class="btn-text">رفض الطلب</span>
+                    }
+                  </div>
+                  <div class="btn-shine"></div>
+                </button>
+              </div>
             </div>
           }
         }

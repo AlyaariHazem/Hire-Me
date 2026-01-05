@@ -31,6 +31,9 @@ export interface ManageJobsState {
   loading: boolean;
   activeTab: TabKey;
   loaded: boolean;
+  page: number;
+  page_size: number;
+  totalCount: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -42,7 +45,10 @@ export class ManageJobsStoreService {
     jobs: [],
     loading: false,
     activeTab: 'active',
-    loaded: false
+    loaded: false,
+    page: 1,
+    page_size: 5,
+    totalCount: 0
   };
 
   // State signal
@@ -52,6 +58,10 @@ export class ManageJobsStoreService {
   readonly jobs = computed(() => this.state().jobs);
   readonly loading = computed(() => this.state().loading);
   readonly activeTab = computed(() => this.state().activeTab);
+  readonly page = computed(() => this.state().page);
+  readonly page_size = computed(() => this.state().page_size);
+  readonly totalCount = computed(() => this.state().totalCount);
+  readonly totalPages = computed(() => Math.ceil(this.state().totalCount / this.state().page_size));
   
   // Computed groups
   readonly jobsActive = computed(() => this.jobs().filter(j => j.is_active === true));
@@ -86,8 +96,13 @@ export class ManageJobsStoreService {
   }
 
   loadJobs(): void {
+    const currentState = this.state();
     this.patchState({ loading: true });
-    this.jobService.getMyJobs({ page: 1, page_size: 5, ordering: '-created_at' }).subscribe({
+    this.jobService.getMyJobs({ 
+      page: currentState.page, 
+      page_size: currentState.page_size, 
+      ordering: '-created_at' 
+    }).subscribe({
       next: res => {
         const list = (res?.results ?? []).map((j: any) => ({
           ...j,
@@ -97,21 +112,33 @@ export class ManageJobsStoreService {
         this.patchState({
           jobs: list,
           loading: false,
-          loaded: true
+          loaded: true,
+          totalCount: res?.count || 0
         });
       },
       error: err => {
         console.error('Failed to load jobs', err);
         this.patchState({ 
           jobs: [],
-          loading: false 
+          loading: false,
+          totalCount: 0
         });
       }
     });
   }
 
   setTab(tab: TabKey): void {
-    this.patchState({ activeTab: tab });
+    this.patchState({ activeTab: tab, page: 1 });
+  }
+
+  setPage(page: number): void {
+    this.patchState({ page });
+    this.loadJobs();
+  }
+
+  setPageSize(pageSize: number): void {
+    this.patchState({ page_size: pageSize, page: 1 });
+    this.loadJobs();
   }
   
   refresh(): void {

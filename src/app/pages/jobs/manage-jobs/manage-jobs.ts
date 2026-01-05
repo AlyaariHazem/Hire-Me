@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { JobService } from 'shared/services/job.service';
 import { ToastrService } from 'ngx-toastr';
 import { SkeletonModule } from 'primeng/skeleton';
+import { PaginatorModule } from 'primeng/paginator';
 
 // JobItem interface is now in store, or we can just import the specific parts we need or keep it here if it's not exported. 
 // Ideally we import from store or usage.
@@ -12,7 +13,7 @@ import { ManageJobsStoreService, TabKey, JobItem } from '../services/manage-jobs
 @Component({
   selector: 'app-manage-jobs',
   standalone: true,
-  imports: [CommonModule, RouterModule, SkeletonModule],
+  imports: [CommonModule, RouterModule, SkeletonModule, PaginatorModule],
   templateUrl: './manage-jobs.html',
   styleUrls: ['./manage-jobs.scss'],
 })
@@ -30,6 +31,15 @@ export class ManageJobs implements OnInit {
   countClosed = this.store.countClosed;
   countPaused = this.store.countPaused;
   countDraft = this.store.countDraft;
+
+  // Pagination
+  totalCount = this.store.totalCount;
+  totalPages = this.store.totalPages;
+  currentPage = this.store.page;
+  page_size = this.store.page_size;
+
+  // Expose Math to template
+  Math = Math;
 
   updatingStatus: Record<number, boolean> = {}; // Track which job is being updated
 
@@ -103,5 +113,21 @@ export class ManageJobs implements OnInit {
 
   isUpdating(jobId: number): boolean {
     return this.updatingStatus[jobId] || false;
+  }
+
+  onPageChange(event: any): void {
+    // PrimeNG paginator uses 0-based page index, we use 1-based
+    const newPage = event.page + 1;
+    const newPageSize = event.rows;
+    
+    // Update page size if changed
+    if (newPageSize !== this.page_size()) {
+      this.store.setPageSize(newPageSize);
+    } else {
+      this.store.setPage(newPage);
+    }
+    
+    // Scroll to top of the list
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
