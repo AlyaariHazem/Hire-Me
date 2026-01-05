@@ -5,9 +5,12 @@
       <h1 class="page-title">نماذج التقديم</h1>
       <p class="page-subtitle">إدارة نماذج التقديم المخصصة للوظائف</p>
     </div>
-    <button class="btn btn-primary" (click)="createNewForm()">
-      <span>+</span> إنشاء نموذج جديد
-    </button>
+    <p-button
+      label="إنشاء نموذج جديد"
+      icon="pi pi-plus"
+      styleClass="p-button-primary"
+      (onClick)="createNewForm()"
+    ></p-button>
   </div>
 
   <!-- Filters -->
@@ -69,18 +72,20 @@
         </div>
         <div class="card-actions">
           <button
+            type="button"
             class="action-btn edit-btn"
             (click)="editJobForm(form.id)"
             title="تعديل"
           >
-            ✏️
+            <i class="pi pi-pencil"></i>
           </button>
           <button
+            type="button"
             class="action-btn delete-btn"
             (click)="deleteJobForm(form.id, form.name)"
             title="حذف"
           >
-            🗑️
+            <i class="pi pi-trash"></i>
           </button>
         </div>
       </div>
@@ -92,11 +97,11 @@
 
         <div class="form-meta">
           <div class="meta-item">
-            <span class="meta-icon">❓</span>
+            <i class="pi pi-question-circle meta-icon"></i>
             <span class="meta-text">{{ form.questions_count || form.questions.length || 0 }} سؤال</span>
           </div>
           <div class="meta-item">
-            <span class="meta-icon">📅</span>
+            <i class="pi pi-calendar meta-icon"></i>
             <span class="meta-text">{{ formatDate(form.created_at) }}</span>
           </div>
         </div>
@@ -132,12 +137,17 @@
   <!-- Empty State -->
   @if (!loading && jobForms.length === 0) {
   <div class="empty-state">
-    <div class="empty-icon">📋</div>
+    <div class="empty-icon">
+      <i class="pi pi-file-edit"></i>
+    </div>
     <h3 class="empty-title">لا توجد نماذج</h3>
     <p class="empty-message">ابدأ بإنشاء نموذج تقديم مخصص للوظائف</p>
-    <button class="btn btn-primary" (click)="createNewForm()">
-      إنشاء نموذج جديد
-    </button>
+    <p-button
+      label="إنشاء نموذج جديد"
+      icon="pi pi-plus"
+      styleClass="p-button-primary"
+      (onClick)="createNewForm()"
+    ></p-button>
   </div>
   }
 </div>
