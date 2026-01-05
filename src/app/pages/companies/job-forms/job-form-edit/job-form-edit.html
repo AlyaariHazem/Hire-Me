@@ -4,7 +4,11 @@
     <h1 class="page-title">
       {{ isEditMode ? 'تعديل النموذج' : 'إنشاء نموذج جديد' }}
     </h1>
-    <button class="btn btn-secondary" (click)="cancel()">إلغاء</button>
+    <p-button
+      label="إلغاء"
+      styleClass="p-button-secondary"
+      (onClick)="cancel()"
+    ></p-button>
   </div>
 
   <!-- Loading Skeleton -->
@@ -76,13 +80,13 @@
     <div class="form-section">
       <div class="section-header">
         <h2 class="section-title">الأسئلة</h2>
-        <button
+        <p-button
           type="button"
-          class="btn btn-primary btn-sm"
-          (click)="addQuestion()"
-        >
-          <span>+</span> إضافة سؤال
-        </button>
+          label="إضافة سؤال"
+          icon="pi pi-plus"
+          styleClass="p-button-sm p-button-primary"
+          (onClick)="addQuestion()"
+        ></p-button>
       </div>
 
       @if (questions.length === 0) {
@@ -96,32 +100,32 @@
         <div class="question-header">
           <span class="question-number">سؤال {{ questionIndex + 1 }}</span>
           <div class="question-actions">
-            <button
-              type="button"
-              class="action-icon-btn"
-              (click)="moveQuestionUp(questionIndex)"
-              [disabled]="questionIndex === 0"
-              title="نقل لأعلى"
-            >
-              ⬆️
-            </button>
-            <button
-              type="button"
-              class="action-icon-btn"
-              (click)="moveQuestionDown(questionIndex)"
-              [disabled]="questionIndex === questions.length - 1"
-              title="نقل لأسفل"
-            >
-              ⬇️
-            </button>
-            <button
-              type="button"
-              class="action-icon-btn delete-btn"
-              (click)="removeQuestion(questionIndex)"
-              title="حذف"
-            >
-              🗑️
-            </button>
+        <button
+          type="button"
+          class="action-icon-btn"
+          (click)="moveQuestionUp(questionIndex)"
+          [disabled]="questionIndex === 0"
+          title="نقل لأعلى"
+        >
+          <i class="pi pi-arrow-up"></i>
+        </button>
+        <button
+          type="button"
+          class="action-icon-btn"
+          (click)="moveQuestionDown(questionIndex)"
+          [disabled]="questionIndex === questions.length - 1"
+          title="نقل لأسفل"
+        >
+          <i class="pi pi-arrow-down"></i>
+        </button>
+        <button
+          type="button"
+          class="action-icon-btn delete-btn"
+          (click)="removeQuestion(questionIndex)"
+          title="حذف"
+        >
+          <i class="pi pi-trash"></i>
+        </button>
           </div>
         </div>
 
@@ -196,13 +200,13 @@
           <div class="form-group">
             <div class="options-header">
               <label class="form-label required">الخيارات</label>
-              <button
+              <p-button
                 type="button"
-                class="btn btn-primary btn-sm"
-                (click)="addOption(questionIndex)"
-              >
-                <span>+</span> إضافة خيار
-              </button>
+                label="إضافة خيار"
+                icon="pi pi-plus"
+                styleClass="p-button-sm p-button-primary"
+                (onClick)="addOption(questionIndex)"
+              ></p-button>
             </div>
             
             @if (!question.optionsArray || question.optionsArray.length === 0) {
@@ -233,7 +237,7 @@
                   (click)="removeOption(questionIndex, $index)"
                   title="حذف الخيار"
                 >
-                  🗑️
+                  <i class="pi pi-trash"></i>
                 </button>
               </div>
               }
