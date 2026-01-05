@@ -220,6 +220,26 @@
         }
       </div>
     }
+
+    <!-- Pagination -->
+    @if (!loading() && totalPages() > 1) {
+      <div class="pagination-wrapper">
+        <p-paginator
+          [rows]="page_size()"
+          [totalRecords]="totalCount()"
+          [first]="(currentPage() - 1) * page_size()"
+          [rowsPerPageOptions]="[5, 10, 20, 50]"
+          (onPageChange)="onPageChange($event)"
+          [showFirstLastIcon]="true"
+          [showPageLinks]="true"
+          appendTo="body"
+          [alwaysShow]="true">
+        </p-paginator>
+        <div class="pagination-info">
+          <p>عرض {{ ((currentPage() - 1) * page_size()) + 1 }} - {{ Math.min(currentPage() * page_size(), totalCount()) }} من {{ totalCount() }} مقابلة</p>
+        </div>
+      </div>
+    }
   </div>
 </div>
 

@@ -48,6 +48,7 @@ export interface Application {
     salary_max?: number | null;
     is_salary_negotiable?: boolean;
     application_deadline?: string | null;
+    application_method?: 'platform' | 'custom_form' | 'template_file' | 'external_link' | 'email';
   };
   applicant?: {
     id: number;
@@ -80,6 +81,26 @@ export interface Application {
   updated_at: string;
   documents_count?: number;
   documents?: ApplicationDocument[];
+  // Custom form responses
+  responses?: ApplicationResponse[];
+  custom_form?: {
+    id: number;
+    name: string;
+    questions?: Array<{
+      id: number;
+      label: string;
+      question_type: string;
+      required: boolean;
+      options?: string | null;
+    }>;
+  } | null;
+}
+
+export interface ApplicationResponse {
+  id?: number;
+  question: number;
+  answer_text: string | null;
+  answer_file: string | null;
 }
 
 export interface ApplicationListResponse {

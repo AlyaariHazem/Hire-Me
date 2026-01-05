@@ -127,6 +127,11 @@ export class InterviewsStoreService {
     this.updateFilters({ interviewType, page: 1 });
   }
 
+  updateFilters(partialFilters: Partial<InterviewsState['filters']>) {
+    const newFilters = { ...this.state().filters, ...partialFilters };
+    this.filters$.next(newFilters);
+  }
+
   refresh() {
     this.filters$.next(this.state().filters);
   }
@@ -159,11 +164,6 @@ export class InterviewsStoreService {
       interviews: updatedInterviews,
       totalCount: Math.max(0, currentState.totalCount - 1)
     });
-  }
-
-  private updateFilters(partialFilters: Partial<InterviewsState['filters']>) {
-    const newFilters = { ...this.state().filters, ...partialFilters };
-    this.filters$.next(newFilters);
   }
 
   private patchState(partialState: Partial<InterviewsState>) {

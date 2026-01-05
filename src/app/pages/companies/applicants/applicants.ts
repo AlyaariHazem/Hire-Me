@@ -417,6 +417,20 @@ export class Applicants implements OnInit {
     return 'pi-file';
   }
 
+  getQuestionById(questions: Array<{id: number; label: string; question_type: string; required: boolean; options?: string | null}>, questionId: number): {id: number; label: string; question_type: string; required: boolean; options?: string | null} | null {
+    return questions.find(q => q.id === questionId) || null;
+  }
+
+  getQuestionLabel(questions: Array<{id: number; label: string; question_type: string; required: boolean; options?: string | null}>, questionId: number): string {
+    const question = this.getQuestionById(questions, questionId);
+    return question?.label || `سؤال رقم ${questionId}`;
+  }
+
+  getQuestionRequired(questions: Array<{id: number; label: string; question_type: string; required: boolean; options?: string | null}>, questionId: number): boolean {
+    const question = this.getQuestionById(questions, questionId);
+    return question?.required || false;
+  }
+
   closeDetailsModal(): void {
     this.showDetailsModal = false;
     this.selectedApplication = null;

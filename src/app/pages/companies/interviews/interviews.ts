@@ -15,6 +15,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DatePicker } from 'primeng/datepicker';
+import { PaginatorModule } from 'primeng/paginator';
 import { InterviewsStoreService } from '../services/interviews.store';
 
 type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
@@ -34,7 +35,8 @@ type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled' | 'reschedul
     DatePicker,
     InputNumberModule,
     TextareaModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    PaginatorModule
   ],
   templateUrl: './interviews.html',
   styleUrls: ['./interviews.scss']
@@ -84,6 +86,13 @@ export class Interviews extends Base implements OnInit {
   // Computed properties from store
   filteredInterviews = this.interviews; // Store handles filtering via API
   statusCounts = this.store.statusCounts;
+  totalCount = this.store.totalCount;
+  totalPages = this.store.totalPages;
+  currentPage = computed(() => this.store.filters().page);
+  page_size = computed(() => this.store.filters().page_size);
+  
+  // Expose Math to template
+  Math = Math;
 
   ngOnInit(): void {
     this.initForm();
@@ -615,8 +624,21 @@ export class Interviews extends Base implements OnInit {
     return app?.applicant?.phone || 'غير متوفر';
   }
 
-  // Expose Math to template
-  Math = Math;
+  onPageChange(event: any): void {
+    // PrimeNG paginator uses 0-based page index, we use 1-based
+    const newPage = event.page + 1;
+    const newPageSize = event.rows;
+    
+    // Update page size if changed
+    if (newPageSize !== this.page_size()) {
+      this.store.updateFilters({ page_size: newPageSize, page: 1 });
+    } else {
+      this.store.setPage(newPage);
+    }
+    
+    // Scroll to top of the list
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   handleImageError(event: Event): void {
     const img = event.target as HTMLImageElement;

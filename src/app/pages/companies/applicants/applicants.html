@@ -594,6 +594,114 @@
             </div>
           }
 
+          <!-- Questionnaire (Custom Form Responses) -->
+          @if (selectedApplication.job.application_method === 'custom_form' && selectedApplication.responses && selectedApplication.responses.length > 0) {
+            <div class="detail-section">
+              <h3>
+                <span class="section-icon">📋</span>
+                الاستبيان
+              </h3>
+              <div class="questionnaire-content">
+                @if (selectedApplication.custom_form) {
+                  <div class="questionnaire-header">
+                    <h4>{{ selectedApplication.custom_form.name }}</h4>
+                    @if (selectedApplication.custom_form.questions && selectedApplication.custom_form.questions.length > 0) {
+                      <div class="questionnaire-questions">
+                        @for (response of selectedApplication.responses; track response.question) {
+                          @if (response.answer_text || response.answer_file) {
+                            <div class="questionnaire-item">
+                              <div class="question-label">
+                                <span class="question-number">{{ $index + 1 }}.</span>
+                                <span class="question-text">{{ getQuestionLabel(selectedApplication.custom_form.questions || [], response.question) }}</span>
+                                @if (getQuestionRequired(selectedApplication.custom_form.questions || [], response.question)) {
+                                  <span class="required-badge">*</span>
+                                }
+                              </div>
+                              <div class="question-answer">
+                                @if (response.answer_text) {
+                                  <p class="answer-text">{{ response.answer_text }}</p>
+                                }
+                                @if (response.answer_file) {
+                                  <a 
+                                    [href]="getDocumentUrl(response.answer_file)" 
+                                    target="_blank" 
+                                    class="answer-file-link"
+                                    rel="noopener noreferrer">
+                                    <i class="pi pi-file"></i>
+                                    <span>تحميل الملف المرفق</span>
+                                  </a>
+                                }
+                                @if (!response.answer_text && !response.answer_file) {
+                                  <span class="no-answer">لم يتم الإجابة</span>
+                                }
+                              </div>
+                            </div>
+                          }
+                        }
+                      </div>
+                    } @else {
+                      <div class="questionnaire-questions">
+                        @for (response of selectedApplication.responses; track response.question) {
+                          @if (response.answer_text || response.answer_file) {
+                            <div class="questionnaire-item">
+                              <div class="question-label">
+                                <span class="question-number">{{ $index + 1 }}.</span>
+                                <span class="question-text">سؤال رقم {{ response.question }}</span>
+                              </div>
+                              <div class="question-answer">
+                                @if (response.answer_text) {
+                                  <p class="answer-text">{{ response.answer_text }}</p>
+                                }
+                                @if (response.answer_file) {
+                                  <a 
+                                    [href]="getDocumentUrl(response.answer_file)" 
+                                    target="_blank" 
+                                    class="answer-file-link"
+                                    rel="noopener noreferrer">
+                                    <i class="pi pi-file"></i>
+                                    <span>تحميل الملف المرفق</span>
+                                  </a>
+                                }
+                              </div>
+                            </div>
+                          }
+                        }
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <div class="questionnaire-questions">
+                    @for (response of selectedApplication.responses; track response.question) {
+                      @if (response.answer_text || response.answer_file) {
+                        <div class="questionnaire-item">
+                          <div class="question-label">
+                            <span class="question-number">{{ $index + 1 }}.</span>
+                            <span class="question-text">سؤال رقم {{ response.question }}</span>
+                          </div>
+                          <div class="question-answer">
+                            @if (response.answer_text) {
+                              <p class="answer-text">{{ response.answer_text }}</p>
+                            }
+                            @if (response.answer_file) {
+                              <a 
+                                [href]="getDocumentUrl(response.answer_file)" 
+                                target="_blank" 
+                                class="answer-file-link"
+                                rel="noopener noreferrer">
+                                <i class="pi pi-file"></i>
+                                <span>تحميل الملف المرفق</span>
+                              </a>
+                            }
+                          </div>
+                        </div>
+                      }
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
           <!-- Documents -->
           <div class="detail-section">
             <h3>
