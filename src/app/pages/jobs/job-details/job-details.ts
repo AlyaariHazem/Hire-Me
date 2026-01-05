@@ -91,7 +91,6 @@ interface JobDetail extends Base {
     RouterLink,
     InputTextModule,
     TextareaModule,
-    Select,
     ButtonModule,
     SkeletonModule,
     ApplyJobComponent,

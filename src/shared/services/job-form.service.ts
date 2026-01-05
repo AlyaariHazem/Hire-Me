@@ -7,7 +7,7 @@ export interface JobFormQuestion {
   id?: number;
   label: string;
   help_text?: string | null;
-  question_type: 'text' | 'textarea' | 'select' | 'choice' | 'multiple_choice' | 'file' | 'date' | 'number';
+  question_type: 'text' | 'textarea' | 'select' | 'checkbox' | 'file' | 'date' | 'number';
   required: boolean;
   options?: string | null; // Comma-separated options for select/radio/checkbox
   order: number;

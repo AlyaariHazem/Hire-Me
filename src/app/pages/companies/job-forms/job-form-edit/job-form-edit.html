@@ -91,16 +91,16 @@
       </div>
       }
 
-      @for (question of questions; track $index) {
+      @for (question of questions; track questionIndex; let questionIndex = $index) {
       <div class="question-card">
         <div class="question-header">
-          <span class="question-number">سؤال {{ $index + 1 }}</span>
+          <span class="question-number">سؤال {{ questionIndex + 1 }}</span>
           <div class="question-actions">
             <button
               type="button"
               class="action-icon-btn"
-              (click)="moveQuestionUp($index)"
-              [disabled]="$index === 0"
+              (click)="moveQuestionUp(questionIndex)"
+              [disabled]="questionIndex === 0"
               title="نقل لأعلى"
             >
               ⬆️
@@ -108,8 +108,8 @@
             <button
               type="button"
               class="action-icon-btn"
-              (click)="moveQuestionDown($index)"
-              [disabled]="$index === questions.length - 1"
+              (click)="moveQuestionDown(questionIndex)"
+              [disabled]="questionIndex === questions.length - 1"
               title="نقل لأسفل"
             >
               ⬇️
@@ -117,7 +117,7 @@
             <button
               type="button"
               class="action-icon-btn delete-btn"
-              (click)="removeQuestion($index)"
+              (click)="removeQuestion(questionIndex)"
               title="حذف"
             >
               🗑️
@@ -128,14 +128,14 @@
         <div class="question-body">
           <div class="form-row">
             <div class="form-group full-width">
-              <label [for]="'label_' + $index" class="form-label required">
+              <label [for]="'label_' + questionIndex" class="form-label required">
                 نص السؤال
               </label>
               <input
                 pInputText
                 type="text"
-                [id]="'label_' + $index"
-                [name]="'label_' + $index"
+                [id]="'label_' + questionIndex"
+                [name]="'label_' + questionIndex"
                 [(ngModel)]="question.label"
                 required
                 placeholder="مثال: ما هي خبرتك في البرمجة؟"
@@ -146,18 +146,19 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label [for]="'question_type_' + $index" class="form-label required">
+              <label [for]="'question_type_' + questionIndex" class="form-label required">
                 نوع السؤال
               </label>
               <p-select
-                [id]="'question_type_' + $index"
-                [name]="'question_type_' + $index"
+                [id]="'question_type_' + questionIndex"
+                [name]="'question_type_' + questionIndex"
                 [(ngModel)]="question.question_type"
                 [options]="questionTypes"
                 optionLabel="label"
                 optionValue="value"
                 placeholder="اختر نوع السؤال"
                 styleClass="w-full"
+                (ngModelChange)="onQuestionTypeChange(questionIndex)"
               ></p-select>
             </div>
 
@@ -166,10 +167,10 @@
                 <p-checkbox
                   [(ngModel)]="question.required"
                   [binary]="true"
-                  [inputId]="'required_' + $index"
-                  [name]="'required_' + $index"
+                  [inputId]="'required_' + questionIndex"
+                  [name]="'required_' + questionIndex"
                 ></p-checkbox>
-                <label [for]="'required_' + $index" class="checkbox-label">
+                <label [for]="'required_' + questionIndex" class="checkbox-label">
                   إجباري
                 </label>
               </div>
@@ -177,14 +178,14 @@
           </div>
 
           <div class="form-group">
-            <label [for]="'help_text_' + $index" class="form-label">
+            <label [for]="'help_text_' + questionIndex" class="form-label">
               نص مساعد (اختياري)
             </label>
             <input
               pInputText
               type="text"
-              [id]="'help_text_' + $index"
-              [name]="'help_text_' + $index"
+              [id]="'help_text_' + questionIndex"
+              [name]="'help_text_' + questionIndex"
               [(ngModel)]="question.help_text"
               placeholder="نص توضيحي للمساعدة في الإجابة"
               class="form-control"
@@ -193,20 +194,51 @@
 
           @if (needsOptions(question.question_type)) {
           <div class="form-group">
-            <label [for]="'options_' + $index" class="form-label required">
-              الخيارات
-            </label>
-            <input
-              pInputText
-              type="text"
-              [id]="'options_' + $index"
-              [name]="'options_' + $index"
-              [(ngModel)]="question.options"
-              required
-              placeholder="مثال: خيار 1, خيار 2, خيار 3"
-              class="form-control"
-            />
-            <small class="form-hint">افصل بين الخيارات بفواصل (،)</small>
+            <div class="options-header">
+              <label class="form-label required">الخيارات</label>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                (click)="addOption(questionIndex)"
+              >
+                <span>+</span> إضافة خيار
+              </button>
+            </div>
+            
+            @if (!question.optionsArray || question.optionsArray.length === 0) {
+            <div class="empty-options">
+              <p>لا توجد خيارات. انقر على "إضافة خيار" لإضافة خيارات.</p>
+            </div>
+            }
+            
+            @if (question.optionsArray && question.optionsArray.length > 0) {
+            <div class="options-list">
+              @for (option of question.optionsArray; track $index) {
+              <div class="option-item">
+                <label [for]="'option_' + questionIndex + '_' + $index" class="sr-only">
+                  {{ 'خيار ' + ($index + 1) }}
+                </label>
+                <input
+                  pInputText
+                  type="text"
+                  [id]="'option_' + questionIndex + '_' + $index"
+                  [name]="'option_' + questionIndex + '_' + $index"
+                  [(ngModel)]="question.optionsArray[$index]"
+                  [placeholder]="'خيار ' + ($index + 1)"
+                  class="form-control option-input"
+                />
+                <button
+                  type="button"
+                  class="action-icon-btn delete-btn"
+                  (click)="removeOption(questionIndex, $index)"
+                  title="حذف الخيار"
+                >
+                  🗑️
+                </button>
+              </div>
+              }
+            </div>
+            }
           </div>
           }
         </div>

@@ -52,16 +52,15 @@ export class JobFormEditComponent extends Base implements OnInit {
     is_active: true,
   };
 
-  questions: JobFormQuestion[] = [];
+  questions: (JobFormQuestion & { optionsArray?: string[] })[] = [];
   companyId: number | null = null;
 
   // Question type options
   questionTypes = [
     { label: 'نص قصير', value: 'text' },
     { label: 'نص طويل', value: 'textarea' },
-    { label: 'قائمة منسدلة', value: 'select' },
-    { label: 'اختيار واحد', value: 'choice' },
-    { label: 'اختيار متعدد', value: 'multiple_choice' },
+    { label: 'اختيار واحد', value: 'checkbox' },
+    { label: 'اختيار متعدد', value: 'select' },
     { label: 'ملف', value: 'file' },
     { label: 'تاريخ', value: 'date' },
     { label: 'رقم', value: 'number' },
@@ -106,7 +105,12 @@ export class JobFormEditComponent extends Base implements OnInit {
         };
         this.companyId = form.company;
         this.questions = form.questions
-          ? [...form.questions].sort((a, b) => (a.order || 0) - (b.order || 0))
+          ? [...form.questions].sort((a, b) => (a.order || 0) - (b.order || 0)).map(q => ({
+              ...q,
+              optionsArray: q.options && this.needsOptions(q.question_type) 
+                ? q.options.split(',').map(opt => opt.trim()).filter(opt => opt.length > 0)
+                : []
+            }))
           : [];
         this.loading = false;
       },
@@ -121,12 +125,13 @@ export class JobFormEditComponent extends Base implements OnInit {
   }
 
   addQuestion(): void {
-    const newQuestion: JobFormQuestion = {
+    const newQuestion: JobFormQuestion & { optionsArray?: string[] } = {
       label: '',
       help_text: '',
       question_type: 'text',
       required: false,
       options: null,
+      optionsArray: [],
       order: this.questions.length + 1,
     };
     this.questions.push(newQuestion);
@@ -168,6 +173,35 @@ export class JobFormEditComponent extends Base implements OnInit {
     return ['select', 'choice', 'multiple_choice'].includes(questionType);
   }
 
+  addOption(questionIndex: number): void {
+    if (!this.questions[questionIndex].optionsArray) {
+      this.questions[questionIndex].optionsArray = [];
+    }
+    this.questions[questionIndex].optionsArray!.push('');
+  }
+
+  removeOption(questionIndex: number, optionIndex: number): void {
+    if (this.questions[questionIndex].optionsArray) {
+      this.questions[questionIndex].optionsArray!.splice(optionIndex, 1);
+    }
+  }
+
+  onQuestionTypeChange(questionIndex: number): void {
+    const question = this.questions[questionIndex];
+    if (this.needsOptions(question.question_type)) {
+      // Initialize optionsArray if it doesn't exist
+      if (!question.optionsArray) {
+        question.optionsArray = question.options 
+          ? question.options.split(',').map(opt => opt.trim()).filter(opt => opt.length > 0)
+          : [];
+      }
+    } else {
+      // Clear optionsArray for non-option questions
+      question.optionsArray = [];
+      question.options = null;
+    }
+  }
+
   onSubmit(): void {
     if (this.saving) return;
 
@@ -190,9 +224,13 @@ export class JobFormEditComponent extends Base implements OnInit {
         return;
       }
 
-      if (this.needsOptions(q.question_type) && (!q.options || q.options.trim().length === 0)) {
-        this.toastr.error(`يرجى إدخال الخيارات للسؤال رقم ${i + 1}`);
-        return;
+      if (this.needsOptions(q.question_type)) {
+        const optionsArray = q.optionsArray || [];
+        const validOptions = optionsArray.filter(opt => opt && opt.trim().length > 0);
+        if (validOptions.length === 0) {
+          this.toastr.error(`يرجى إدخال على الأقل خيار واحد للسؤال رقم ${i + 1}`);
+          return;
+        }
       }
     }
 
@@ -210,7 +248,9 @@ export class JobFormEditComponent extends Base implements OnInit {
       
       // Only include options if the question type needs them
       if (this.needsOptions(q.question_type)) {
-        questionData.options = q.options && q.options.trim() ? q.options.trim() : null;
+        const optionsArray = q.optionsArray || [];
+        const validOptions = optionsArray.filter(opt => opt && opt.trim().length > 0);
+        questionData.options = validOptions.length > 0 ? validOptions.join(',') : null;
       } else {
         questionData.options = null;
       }
