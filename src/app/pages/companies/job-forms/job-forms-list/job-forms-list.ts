@@ -5,13 +5,14 @@ import { JobFormService, JobForm, JobFormFilters } from 'shared/services/job-for
 import { ToastrService } from 'ngx-toastr';
 import { SharedModule } from 'shared/shared-module';
 import { SkeletonModule } from 'primeng/skeleton';
+import { Select } from 'primeng/select';
 import { Base } from 'shared/base/base';
 import { CompanyService } from 'app/pages/companies/core/services/company.service';
 
 @Component({
   selector: 'app-job-forms-list',
   standalone: true,
-  imports: [CommonModule, SharedModule, SkeletonModule],
+  imports: [CommonModule, SharedModule, SkeletonModule, Select],
   templateUrl: './job-forms-list.html',
   styleUrls: ['./job-forms-list.scss'],
 })
@@ -40,6 +41,16 @@ export class JobFormsListComponent extends Base implements OnInit {
   // Company info
   companyId: number | null = null;
   companyName = '';
+
+  // Sorting options
+  sortOptions = [
+    { label: 'الأحدث أولاً', value: '-created_at' },
+    { label: 'الأقدم أولاً', value: 'created_at' },
+    { label: 'الاسم (أ-ي)', value: 'name' },
+    { label: 'الاسم (ي-أ)', value: '-name' },
+    { label: 'عدد الأسئلة (الأكثر)', value: '-questions_count' },
+    { label: 'عدد الأسئلة (الأقل)', value: 'questions_count' },
+  ];
 
   ngOnInit(): void {
     this.loadCompanyInfo();
@@ -159,6 +170,12 @@ export class JobFormsListComponent extends Base implements OnInit {
 
   getTotalPages(): number {
     return Math.ceil(this.totalCount / this.pageSize);
+  }
+
+  onSortChange(sortValue: string): void {
+    this.filters.ordering = sortValue;
+    this.currentPage = 1;
+    this.loadJobForms();
   }
 }
 

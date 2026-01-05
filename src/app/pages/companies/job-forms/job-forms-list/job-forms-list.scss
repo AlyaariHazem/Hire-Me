@@ -49,16 +49,18 @@
 
 // Filters
 .filters-section {
-  display: flex;
-  gap: var(--spacing-4);
   margin-bottom: var(--spacing-6);
-  flex-wrap: wrap;
-  align-items: center;
   padding: var(--spacing-4);
   background: var(--surface-card, var(--white));
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--surface-border, var(--gray-200));
+}
+
+.filters-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
 }
 
 .search-box {
@@ -70,6 +72,26 @@
 
 .search-input {
   flex: 1;
+}
+
+.filter-controls {
+  display: flex;
+  gap: var(--spacing-4);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.filter-label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-color, var(--gray-700));
+  white-space: nowrap;
 }
 
 .filter-buttons {
@@ -87,6 +109,13 @@
   transition: all var(--transition-fast);
   font-size: var(--font-size-sm);
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  
+  i {
+    font-size: var(--font-size-base);
+  }
   
   &:hover {
     background: var(--surface-hover, var(--gray-50));
@@ -104,6 +133,32 @@
       background: var(--primary-dark);
       border-color: var(--primary-dark);
     }
+  }
+}
+
+// Results Summary
+.results-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  background: var(--surface-card, var(--white));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--surface-border, var(--gray-200));
+  margin-bottom: var(--spacing-4);
+}
+
+.results-count {
+  font-size: var(--font-size-sm);
+  color: var(--text-color-secondary, var(--gray-600));
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  
+  i {
+    color: var(--primary-color);
   }
 }
 
@@ -425,6 +480,14 @@
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       }
     }
+
+    .p-select {
+      min-width: 200px;
+      
+      .p-select-label {
+        padding: var(--spacing-3) var(--spacing-4);
+      }
+    }
   }
 }
 
@@ -445,8 +508,23 @@
   }
 
   .filters-section {
-    flex-direction: column;
     padding: var(--spacing-4);
+  }
+
+  .filters-row {
+    gap: var(--spacing-3);
+  }
+
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-3);
+  }
+
+  .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
   }
 
   .search-box {
@@ -458,6 +536,13 @@
     flex-direction: column;
     gap: var(--spacing-3);
     padding: var(--spacing-4);
+  }
+  
+  ::ng-deep .job-forms-container {
+    .p-select {
+      width: 100%;
+      min-width: unset;
+    }
   }
 }
 
