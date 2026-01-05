@@ -50,10 +50,30 @@ interface Category {
   jobs_count: number;
 }
 
+interface CustomForm {
+  id: number;
+  company: number;
+  name: string;
+  description: string | null;
+  is_active: boolean;
+  questions: Array<{
+    id: number;
+    label: string;
+    help_text: string | null;
+    question_type: 'text' | 'textarea' | 'select' | 'checkbox' | 'file' | 'date' | 'number';
+    required: boolean;
+    options: string | null;
+    order: number;
+  }>;
+  questions_count?: number;
+  created_at: string;
+}
+
 interface JobDetail extends Base {
   id: number;
   company: Company;
   category: Category;
+  custom_form?: CustomForm | null;
   is_bookmarked: boolean;
   applications_count: number;
   is_applied: boolean;
@@ -74,6 +94,10 @@ interface JobDetail extends Base {
   application_deadline: string | null;
   contact_email: string | null;
   contact_phone: string | null;
+  application_method?: 'platform' | 'custom_form' | 'template_file' | 'external_link' | 'email';
+  application_template?: string | null;
+  external_application_url?: string | null;
+  application_email?: string | null;
   is_active: boolean;
   is_featured: boolean;
   is_urgent: boolean;

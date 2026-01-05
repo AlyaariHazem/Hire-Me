@@ -11,12 +11,33 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
+import { SelectModule } from 'primeng/select';
 import { Base } from 'shared/base/base';
 
 export interface ApplicationResponse {
   question: number;
   answer_text: string | null;
   answer_file: string | null;
+}
+
+interface JobData {
+  id: number;
+  application_method?: 'platform' | 'custom_form' | 'template_file' | 'external_link' | 'email';
+  custom_form?: {
+    id: number;
+    questions: Array<{
+      id: number;
+      label: string;
+      help_text: string | null;
+      question_type: 'text' | 'textarea' | 'select' | 'checkbox' | 'file' | 'date' | 'number';
+      required: boolean;
+      options: string | null;
+      order: number;
+    }>;
+  } | null;
+  application_template?: string | null;
+  external_application_url?: string | null;
+  application_email?: string | null;
 }
 
 @Component({
@@ -32,6 +53,7 @@ export interface ApplicationResponse {
     DatePickerModule,
     ButtonModule,
     FileUploadModule,
+    SelectModule,
   ],
   templateUrl: './apply-job.html',
   styleUrls: ['./apply-job.scss'],
@@ -39,12 +61,29 @@ export interface ApplicationResponse {
 export class ApplyJobComponent extends Base implements OnInit {
   @Input() jobId!: number;
   @Input() jobTitle?: string;
+  @Input() job?: JobData;
   @Input() onClose?: () => void;
 
   private applicationService = inject(ApplicationService);
   private router = inject(Router);
 
   isSubmitting = false;
+  
+  get applicationMethod(): string {
+    return this.job?.application_method || 'platform';
+  }
+  
+  get customFormQuestions(): Array<{
+    id: number;
+    label: string;
+    help_text: string | null;
+    question_type: 'text' | 'textarea' | 'select' | 'checkbox' | 'file' | 'date' | 'number';
+    required: boolean;
+    options: string | null;
+    order: number;
+  }> {
+    return this.job?.custom_form?.questions || [];
+  }
 
   // Form model
   applicationForm = {
@@ -66,13 +105,20 @@ export class ApplyJobComponent extends Base implements OnInit {
   // Dynamic responses (for job questions)
   jobQuestions: Array<{ id: number; text: string }> = [];
   responseFiles: Map<number, File> = new Map();
+  customFormResponses: Map<number, any> = new Map();
 
   ngOnInit(): void {
     if (this.jobId) {
       this.applicationForm.job = this.jobId;
     }
-    // TODO: Load job questions if available from API
-    // this.loadJobQuestions();
+    
+    // Load custom form questions if application method is custom_form
+    if (this.applicationMethod === 'custom_form' && this.customFormQuestions.length > 0) {
+      this.jobQuestions = this.customFormQuestions.map(q => ({
+        id: q.id,
+        text: q.label
+      }));
+    }
   }
 
   onResumeSelected(event: Event): void {
@@ -165,10 +211,46 @@ export class ApplyJobComponent extends Base implements OnInit {
       return;
     }
 
+    // Handle different application methods
+    if (this.applicationMethod === 'external_link') {
+      if (this.job?.external_application_url) {
+        window.open(this.job.external_application_url, '_blank');
+        if (this.onClose) {
+          this.onClose();
+        }
+      }
+      return;
+    }
+
+    if (this.applicationMethod === 'email') {
+      if (this.job?.application_email) {
+        const subject = encodeURIComponent(`طلب توظيف: ${this.jobTitle || ''}`);
+        const body = encodeURIComponent(`أرغب في التقديم على الوظيفة: ${this.jobTitle || ''}`);
+        window.location.href = `mailto:${this.job.application_email}?subject=${subject}&body=${body}`;
+        if (this.onClose) {
+          this.onClose();
+        }
+      }
+      return;
+    }
+
     // Validate portfolio URL if provided
     if (this.applicationForm.portfolio_url && this.applicationForm.portfolio_url.length > 200) {
       this.toastr.error('رابط الأعمال يجب أن يكون أقل من 200 حرف');
       return;
+    }
+
+    // Validate custom form required fields
+    if (this.applicationMethod === 'custom_form') {
+      for (const question of this.customFormQuestions) {
+        if (question.required) {
+          const response = this.customFormResponses.get(question.id);
+          if (!response || !response.answer_text?.trim()) {
+            this.toastr.error(`يرجى الإجابة على السؤال: ${question.label}`);
+            return;
+          }
+        }
+      }
     }
 
     this.isSubmitting = true;
@@ -205,16 +287,35 @@ export class ApplyJobComponent extends Base implements OnInit {
       formData.append('filled_template', this.filledTemplateFile);
     }
 
-    // Add responses - send as JSON string (common pattern for nested arrays in FormData)
-    if (this.applicationForm.responses.length > 0) {
+    // Add custom form ID and responses if application method is custom_form
+    if (this.applicationMethod === 'custom_form') {
+      // Add custom_form ID
+      if (this.job?.custom_form?.id) {
+        formData.append('custom_form', String(this.job.custom_form.id));
+      }
+      
+      // Add responses
+      if (this.customFormResponses.size > 0) {
+        const responsesData: any[] = [];
+        this.customFormResponses.forEach((response, questionId) => {
+          responsesData.push({
+            question: questionId,
+            answer_text: response.answer_text || null,
+            answer_file: null,
+          });
+        });
+        if (responsesData.length > 0) {
+          formData.append('responses', JSON.stringify(responsesData));
+        }
+      }
+    } else if (this.applicationForm.responses.length > 0) {
+      // Add regular responses
       const responsesData = this.applicationForm.responses.map((response) => {
         const responseData: any = {
           question: response.question,
           answer_text: response.answer_text || null,
-          answer_file: null, // Files are handled separately if API supports it
+          answer_file: null,
         };
-        // If there's a file for this response, it should be uploaded separately
-        // or the API might expect the file URL after upload
         return responseData;
       });
       formData.append('responses', JSON.stringify(responsesData));
@@ -286,12 +387,68 @@ export class ApplyJobComponent extends Base implements OnInit {
   }
 
   updateResponseText(questionId: number, answerText: string): void {
-    this.addResponse(questionId, answerText);
+    if (this.applicationMethod === 'custom_form') {
+      const currentResponse = this.customFormResponses.get(questionId) || {};
+      this.customFormResponses.set(questionId, {
+        ...currentResponse,
+        answer_text: answerText
+      });
+    } else {
+      this.addResponse(questionId, answerText);
+    }
   }
 
   getResponseText(questionId: number): string {
-    const response = this.applicationForm.responses.find((r) => r.question === questionId);
-    return response?.answer_text || '';
+    if (this.applicationMethod === 'custom_form') {
+      const response = this.customFormResponses.get(questionId);
+      return response?.answer_text || '';
+    } else {
+      const response = this.applicationForm.responses.find((r) => r.question === questionId);
+      return response?.answer_text || '';
+    }
+  }
+
+  updateCustomFormResponse(questionId: number, value: any, questionType: string): void {
+    const currentResponse = this.customFormResponses.get(questionId) || {};
+    
+    if (questionType === 'checkbox') {
+      // For checkboxes, store as array
+      const currentValue = currentResponse.answer_text ? JSON.parse(currentResponse.answer_text) : [];
+      const index = currentValue.indexOf(value);
+      if (index > -1) {
+        currentValue.splice(index, 1);
+      } else {
+        currentValue.push(value);
+      }
+      this.customFormResponses.set(questionId, {
+        ...currentResponse,
+        answer_text: JSON.stringify(currentValue)
+      });
+    } else {
+      this.customFormResponses.set(questionId, {
+        ...currentResponse,
+        answer_text: value
+      });
+    }
+  }
+
+  getCustomFormResponse(questionId: number, questionType: string): any {
+    const response = this.customFormResponses.get(questionId);
+    if (!response) return questionType === 'checkbox' ? [] : '';
+    
+    if (questionType === 'checkbox') {
+      try {
+        return response.answer_text ? JSON.parse(response.answer_text) : [];
+      } catch {
+        return [];
+      }
+    }
+    return response.answer_text || '';
+  }
+
+  getSelectOptions(options: string | null): Array<{label: string; value: string}> {
+    if (!options) return [];
+    return options.split(',').map(o => ({label: o.trim(), value: o.trim()}));
   }
 }
 

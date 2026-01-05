@@ -6,7 +6,295 @@
     }
   </div>
 
-  <form (ngSubmit)="onSubmit()" #applicationFormRef="ngForm" class="apply-job-form">
+  <!-- External Link Application -->
+  @if (applicationMethod === 'external_link') {
+    <div class="application-method-card">
+      <p class="method-description">سيتم توجيهك إلى موقع خارجي لإكمال التقديم</p>
+      <p-button
+        type="button"
+        label="التقديم عبر الرابط الخارجي"
+        styleClass="p-button-primary"
+        (onClick)="onSubmit()"
+      ></p-button>
+    </div>
+  }
+
+  <!-- Email Application -->
+  @else if (applicationMethod === 'email') {
+    <div class="application-method-card">
+      <p class="method-description">سيتم فتح بريدك الإلكتروني لإرسال طلب التقديم</p>
+      <p-button
+        type="button"
+        label="التقديم عبر البريد الإلكتروني"
+        styleClass="p-button-primary"
+        (onClick)="onSubmit()"
+      ></p-button>
+      @if (job && job.application_email) {
+        <p class="email-address">البريد الإلكتروني: {{ job.application_email }}</p>
+      }
+    </div>
+  }
+
+  <!-- Template File Application -->
+  @else if (applicationMethod === 'template_file') {
+    <div class="application-method-card">
+      @if (job && job.application_template) {
+        <p class="method-description">يرجى تحميل القالب وتعبئته ثم رفعه</p>
+        <div class="template-actions">
+          <a
+            [href]="job!.application_template!"
+            target="_blank"
+            class="btn-download-template"
+          >
+            📥 تحميل القالب
+          </a>
+        </div>
+      }
+    </div>
+    <form (ngSubmit)="onSubmit()" #applicationFormRef="ngForm" class="apply-job-form">
+      <!-- Filled Template Upload -->
+      <div class="form-group">
+        <label for="filled_template" class="form-label required">
+          الملف المعبأ
+        </label>
+        @if (!filledTemplateFile) {
+        <div class="file-upload-area" (click)="filledTemplateFileInput.click()">
+          <div class="file-upload-content">
+            <span class="file-upload-icon">📎</span>
+            <p class="file-upload-text">انقر هنا لرفع الملف المعبأ</p>
+            <p class="file-upload-hint">PDF, DOC, DOCX (حد أقصى 5MB)</p>
+          </div>
+          <input
+            #filledTemplateFileInput
+            type="file"
+            id="filled_template"
+            accept=".pdf,.doc,.docx"
+            style="display: none"
+            (change)="onFilledTemplateSelected($event)"
+          />
+        </div>
+        } @else {
+        <div class="file-selected">
+          <div class="file-info">
+            <span class="file-icon">📎</span>
+            <span class="file-name">{{ filledTemplateFileName }}</span>
+          </div>
+          <button
+            type="button"
+            class="btn-remove-file"
+            (click)="removeFilledTemplate()"
+            title="إزالة الملف"
+          >
+            ✕
+          </button>
+        </div>
+        }
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <p-button
+          type="button"
+          label="إلغاء"
+          styleClass="p-button-secondary"
+          (onClick)="onCancel()"
+          [disabled]="isSubmitting"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="isSubmitting ? 'جاري الإرسال...' : 'إرسال الطلب'"
+          styleClass="p-button-primary"
+          [disabled]="isSubmitting"
+          [loading]="isSubmitting"
+        ></p-button>
+      </div>
+    </form>
+  }
+
+  <!-- Custom Form Application -->
+  @else if (applicationMethod === 'custom_form') {
+    <form (ngSubmit)="onSubmit()" #applicationFormRef="ngForm" class="apply-job-form">
+      @if (customFormQuestions.length > 0) {
+        <div class="form-group">
+          <h3 class="section-subtitle">استبيان التقديم</h3>
+          @for (question of customFormQuestions; track question.id) {
+            <div class="question-response">
+              <label class="question-label">
+                {{ question.label }}
+                @if (question.required) {
+                  <span class="required-badge">*</span>
+                }
+              </label>
+              @if (question.help_text) {
+                <p class="question-help">{{ question.help_text }}</p>
+              }
+
+              <!-- Text Input -->
+              @if (question.question_type === 'text') {
+                <input
+                  pInputText
+                  type="text"
+                  [name]="'question_' + question.id"
+                  [value]="getCustomFormResponse(question.id, question.question_type)"
+                  (input)="updateCustomFormResponse(question.id, $any($event.target).value, question.question_type)"
+                  [required]="question.required"
+                  class="form-control"
+                />
+              }
+
+              <!-- Textarea -->
+              @else if (question.question_type === 'textarea') {
+                <textarea
+                  pTextarea
+                  [name]="'question_' + question.id"
+                  [value]="getCustomFormResponse(question.id, question.question_type)"
+                  (input)="updateCustomFormResponse(question.id, $any($event.target).value, question.question_type)"
+                  [required]="question.required"
+                  rows="4"
+                  class="form-control"
+                ></textarea>
+              }
+
+              <!-- Select -->
+              @else if (question.question_type === 'select') {
+                <p-select
+                  [options]="getSelectOptions(question.options)"
+                  [name]="'question_' + question.id"
+                  [ngModel]="getCustomFormResponse(question.id, question.question_type)"
+                  (onChange)="updateCustomFormResponse(question.id, $event.value, question.question_type)"
+                  [required]="question.required"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="اختر..."
+                  styleClass="w-full"
+                ></p-select>
+              }
+
+              <!-- Checkbox -->
+              @else if (question.question_type === 'checkbox') {
+                @if (question.options) {
+                  @for (option of question.options.split(','); track option) {
+                    <label class="checkbox-option">
+                      <input
+                        type="checkbox"
+                        [value]="option.trim()"
+                        [checked]="getCustomFormResponse(question.id, question.question_type).includes(option.trim())"
+                        (change)="updateCustomFormResponse(question.id, option.trim(), question.question_type)"
+                      />
+                      {{ option.trim() }}
+                    </label>
+                  }
+                } @else {
+                  <label class="checkbox-option">
+                    <input
+                      type="checkbox"
+                      [checked]="!!getCustomFormResponse(question.id, question.question_type)"
+                      (change)="updateCustomFormResponse(question.id, $any($event.target).checked, question.question_type)"
+                    />
+                    نعم
+                  </label>
+                }
+              }
+
+              <!-- Number -->
+              @else if (question.question_type === 'number') {
+                @if (customFormResponses.get(question.id); as response) {
+                  <p-inputNumber
+                    [name]="'question_' + question.id"
+                    [(ngModel)]="response.answer_text"
+                    (onInput)="updateCustomFormResponse(question.id, $event.value, question.question_type)"
+                    [required]="question.required"
+                    styleClass="w-full"
+                    [inputStyleClass]="'form-control'"
+                  ></p-inputNumber>
+                } @else {
+                  <p-inputNumber
+                    [name]="'question_' + question.id"
+                    (onInput)="updateCustomFormResponse(question.id, $event.value, question.question_type)"
+                    [required]="question.required"
+                    styleClass="w-full"
+                    [inputStyleClass]="'form-control'"
+                  ></p-inputNumber>
+                }
+              }
+
+              <!-- Date -->
+              @else if (question.question_type === 'date') {
+                @if (customFormResponses.get(question.id); as response) {
+                  <p-datepicker
+                    [name]="'question_' + question.id"
+                    [(ngModel)]="response.answer_text"
+                    (onSelect)="updateCustomFormResponse(question.id, $event, question.question_type)"
+                    [required]="question.required"
+                    [showIcon]="true"
+                    dateFormat="yy-mm-dd"
+                    placeholder="اختر التاريخ"
+                    appendTo="body"
+                  ></p-datepicker>
+                } @else {
+                  <p-datepicker
+                    [name]="'question_' + question.id"
+                    (onSelect)="updateCustomFormResponse(question.id, $event, question.question_type)"
+                    [required]="question.required"
+                    [showIcon]="true"
+                    dateFormat="yy-mm-dd"
+                    placeholder="اختر التاريخ"
+                    appendTo="body"
+                  ></p-datepicker>
+                }
+              }
+
+              <!-- File -->
+              @else if (question.question_type === 'file') {
+                <input
+                  type="file"
+                  [name]="'question_' + question.id"
+                  accept=".pdf,.doc,.docx"
+                  (change)="onResponseFileSelected(question.id, $event)"
+                  [required]="question.required"
+                  class="form-control"
+                />
+                @if (responseFiles.has(question.id)) {
+                  <span class="file-name-small">
+                    {{ responseFiles.get(question.id)?.name }}
+                    <button
+                      type="button"
+                      class="btn-remove-small"
+                      (click)="removeResponseFile(question.id)"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <p-button
+          type="button"
+          label="إلغاء"
+          styleClass="p-button-secondary"
+          (onClick)="onCancel()"
+          [disabled]="isSubmitting"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="isSubmitting ? 'جاري الإرسال...' : 'إرسال الطلب'"
+          styleClass="p-button-primary"
+          [disabled]="isSubmitting"
+          [loading]="isSubmitting"
+        ></p-button>
+      </div>
+    </form>
+  }
+
+  <!-- Platform (Default) Application -->
+  @else {
+    <form (ngSubmit)="onSubmit()" #applicationFormRef="ngForm" class="apply-job-form">
     <!-- Cover Letter -->
     <div class="form-group">
       <label for="cover_letter" class="form-label">
@@ -241,5 +529,6 @@
       ></p-button>
     </div>
   </form>
+  }
 </div>
 
