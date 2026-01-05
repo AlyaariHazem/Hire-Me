@@ -174,10 +174,10 @@ export class ApplicationService {
     return this.http.post(url, { job: jobId });
   }
 
-  // Apply to a job with full application data (including CV and cover letter)
-  applyToJobWithData(formData: FormData): Observable<any> {
+  // Apply to a job with full application data (JSON payload)
+  applyToJobWithData(payload: any): Observable<any> {
     const url = environment.getUrl('apply', 'applications');
-    return this.http.post(url, formData);
+    return this.http.post(url, payload);
   }
 
   // Get application statistics

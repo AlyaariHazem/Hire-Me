@@ -386,6 +386,12 @@ export class Jobs extends Base {
       return;
     }
 
+    // If job requires custom form, template file, external link, or email, navigate to job details
+    if (job.application_method && job.application_method !== 'platform') {
+      this.router.navigate(['/jobs/job-details', job.slug]);
+      return;
+    }
+
     // Prevent duplicate clicks
     if (this.applyingJobs.has(job.id)) {
       return;
@@ -414,7 +420,15 @@ export class Jobs extends Base {
         
         // Handle specific error cases
         if (err?.status === 400) {
-          this.errors.error(err, { join: true });
+          const errorMessage = err?.error?.responses || err?.error?.message || '';
+          // Check if error is about custom form requirement
+          if (typeof errorMessage === 'string' && errorMessage.includes('استبيان التقديم')) {
+            // Navigate to job details page where user can fill the custom form
+            this.toastr.info('يرجى التقديم من صفحة تفاصيل الوظيفة لإكمال الاستبيان');
+            this.router.navigate(['/jobs/job-details', job.slug]);
+          } else {
+            this.errors.error(err, { join: true });
+          }
         } else if (err?.status === 401 || err?.status === 403) {
           this.toastr.error('يجب تسجيل الدخول أولاً');
         } else {

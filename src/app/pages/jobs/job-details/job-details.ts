@@ -343,7 +343,7 @@ export class JobDetails extends Base implements OnInit {
         text: `تحقق من هذه الوظيفة: ${this.jobDetail.title}`,
         url: url
       }).then(() => {
-        this.toastr.success('تم مشاركة الوظيفة بنجاح');
+        // this.toastr.success('تم مشاركة الوظيفة بنجاح');
       }).catch((err) => {
         // User cancelled or error occurred, fallback to copy
         this.copyToClipboard(url);

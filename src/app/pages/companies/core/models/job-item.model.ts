@@ -34,6 +34,10 @@ export interface JobItem {
 
   // English: optional short description if backend ever sends it
   description?: string | null;
+  application_method?: 'platform' | 'custom_form' | 'template_file' | 'external_link' | 'email';
+  custom_form?: {
+    id: number;
+  } | null;
 }
 
 

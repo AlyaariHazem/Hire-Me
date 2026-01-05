@@ -255,74 +255,90 @@ export class ApplyJobComponent extends Base implements OnInit {
 
     this.isSubmitting = true;
 
-    // Build FormData
-    const formData = new FormData();
-    formData.append('job', String(this.applicationForm.job));
+    // Build JSON payload (not FormData)
+    const payload: any = {
+      job: this.applicationForm.job,
+    };
 
-    if (this.applicationForm.cover_letter) {
-      formData.append('cover_letter', this.applicationForm.cover_letter);
+    // Add optional fields only if they have values
+    if (this.applicationForm.cover_letter?.trim()) {
+      payload.cover_letter = this.applicationForm.cover_letter.trim();
     }
 
-    if (this.resumeFile) {
-      formData.append('resume', this.resumeFile);
-    }
-
-    if (this.applicationForm.portfolio_url) {
-      formData.append('portfolio_url', this.applicationForm.portfolio_url);
+    if (this.applicationForm.portfolio_url?.trim()) {
+      payload.portfolio_url = this.applicationForm.portfolio_url.trim();
     }
 
     if (this.applicationForm.expected_salary !== null && this.applicationForm.expected_salary !== undefined) {
-      formData.append('expected_salary', String(this.applicationForm.expected_salary));
+      payload.expected_salary = this.applicationForm.expected_salary;
     }
 
-    if (this.applicationForm.availability_date) {
-      formData.append('availability_date', this.applicationForm.availability_date);
+    if (this.applicationForm.availability_date?.trim()) {
+      payload.availability_date = this.applicationForm.availability_date.trim();
     }
 
-    if (this.applicationForm.notes) {
-      formData.append('notes', this.applicationForm.notes);
-    }
-
-    if (this.filledTemplateFile) {
-      formData.append('filled_template', this.filledTemplateFile);
+    if (this.applicationForm.notes?.trim()) {
+      payload.notes = this.applicationForm.notes.trim();
     }
 
     // Add custom form ID and responses if application method is custom_form
     if (this.applicationMethod === 'custom_form') {
       // Add custom_form ID
       if (this.job?.custom_form?.id) {
-        formData.append('custom_form', String(this.job.custom_form.id));
+        payload.custom_form = this.job.custom_form.id;
       }
       
-      // Add responses
+      // Add responses - only include non-null fields
       if (this.customFormResponses.size > 0) {
         const responsesData: any[] = [];
         this.customFormResponses.forEach((response, questionId) => {
-          responsesData.push({
+          const responseObj: any = {
             question: questionId,
-            answer_text: response.answer_text || null,
-            answer_file: null,
-          });
+          };
+          
+          // Only add answer_text if it has a value (not null/empty)
+          if (response.answer_text && response.answer_text.trim()) {
+            responseObj.answer_text = response.answer_text.trim();
+          }
+          
+          // Only add the response if it has at least answer_text
+          if (responseObj.answer_text) {
+            responsesData.push(responseObj);
+          }
         });
         if (responsesData.length > 0) {
-          formData.append('responses', JSON.stringify(responsesData));
+          payload.responses = responsesData;
         }
       }
     } else if (this.applicationForm.responses.length > 0) {
-      // Add regular responses
-      const responsesData = this.applicationForm.responses.map((response) => {
-        const responseData: any = {
-          question: response.question,
-          answer_text: response.answer_text || null,
-          answer_file: null,
-        };
-        return responseData;
-      });
-      formData.append('responses', JSON.stringify(responsesData));
+      // Add regular responses - only include non-null fields
+      const responsesData = this.applicationForm.responses
+        .map((response) => {
+          const responseObj: any = {
+            question: response.question,
+          };
+          
+          // Only add answer_text if it has a value
+          if (response.answer_text && response.answer_text.trim()) {
+            responseObj.answer_text = response.answer_text.trim();
+          }
+          
+          // Only include response if it has answer_text
+          return responseObj.answer_text ? responseObj : null;
+        })
+        .filter(r => r !== null); // Remove null entries
+      
+      if (responsesData.length > 0) {
+        payload.responses = responsesData;
+      }
     }
 
+    // Note: Files (resume, filled_template, response files) need to be handled separately
+    // If files are required, they should be uploaded first and URLs added to payload,
+    // or sent in a separate multipart request
+
     // Submit application
-    this.applicationService.applyToJobWithData(formData).subscribe({
+    this.applicationService.applyToJobWithData(payload).subscribe({
       next: () => {
         this.toastr.success('تم إرسال طلبك بنجاح!');
         this.isSubmitting = false;
@@ -334,7 +350,7 @@ export class ApplyJobComponent extends Base implements OnInit {
         // Navigate back or emit event
         if (this.router.url.includes('/job-details')) {
           // Reload the page to update application status
-          window.location.reload();
+          // window.location.reload();
         }
       },
       error: (err) => {
