@@ -210,6 +210,10 @@ export class Applicants implements OnInit {
     return app.applicant?.location || 'غير محدد';
   }
 
+  getFilledTemplate(app: Application): string | null {
+    return (app as any).filled_template || null;
+  }
+
   getJobTypeLabel(jobType: string): string {
     const labels: Record<string, string> = {
       full_time: 'دوام كامل',

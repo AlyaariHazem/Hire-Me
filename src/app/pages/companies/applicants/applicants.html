@@ -219,6 +219,16 @@
                     تحميل السيرة الذاتية
                   </button>
                 }
+                @if (app.job.application_method === 'template_file' && getFilledTemplate(app)) {
+                  <a 
+                    [href]="getFilledTemplate(app)" 
+                    target="_blank" 
+                    class="btn btn-small btn-secondary"
+                    rel="noopener noreferrer"
+                    download>
+                    تحميل القالب المملوء
+                  </a>
+                }
               </div>
               @if (app.status === 'pending') {
                 <div class="status-actions">
@@ -493,6 +503,25 @@
                   </span>
                 </span>
               </div>
+              @if (selectedApplication.job.application_method === 'template_file' && getFilledTemplate(selectedApplication)) {
+                <div class="detail-item">
+                  <span class="detail-label">
+                    <span class="label-icon">📄</span>
+                    قالب الطلب المملوء:
+                  </span>
+                  <span class="detail-value">
+                    <a 
+                      [href]="getFilledTemplate(selectedApplication)" 
+                      target="_blank" 
+                      class="btn-resume-download"
+                      rel="noopener noreferrer"
+                      download>
+                      <span class="btn-icon">📥</span>
+                      <span>تحميل القالب المملوء</span>
+                    </a>
+                  </span>
+                </div>
+              }
               <div class="detail-item">
                 <span class="detail-label">
                   <span class="label-icon">👁️</span>
