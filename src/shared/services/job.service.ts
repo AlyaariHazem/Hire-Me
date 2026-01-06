@@ -79,6 +79,11 @@ export class JobService {
     return this.http.post<JobItem>(url, body);
   }
 
+  createJobFormData(formData: FormData): Observable<JobItem> {
+    const url = environment.getUrl('create', 'jobs'); // /api/jobs/create/
+    return this.http.post<JobItem>(url, formData);
+  }
+
   getJobs(filters: JobFilters = {}): Observable<JobListResponse> {
     const url = environment.getUrl('', 'jobs'); // /api/jobs/
 
@@ -123,6 +128,11 @@ export class JobService {
   updateJob(slug: string, body: Partial<CreateJobDto>): Observable<JobItem> {
     const url = environment.getUrl(`${slug}/update`, 'jobs'); // /api/jobs/{slug}/update/
     return this.http.put<JobItem>(url, body);
+  }
+
+  updateJobFormData(slug: string, formData: FormData): Observable<JobItem> {
+    const url = environment.getUrl(`${slug}/update`, 'jobs'); // /api/jobs/{slug}/update/
+    return this.http.put<JobItem>(url, formData);
   }
 
   patchJob(slug: string, body: Partial<CreateJobDto>): Observable<JobItem> {

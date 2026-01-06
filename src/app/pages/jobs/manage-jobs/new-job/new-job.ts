@@ -41,6 +41,8 @@ export class NewJob implements OnInit, OnChanges {
   categories: { id: number; label: string; slug: string }[] = [];
   companies: { id: number; name: string }[] = [];
   customForms: { id: number; name: string }[] = [];
+  templateFile: File | null = null;
+  templateFileName: string | null = null;
 
   applicationMethods = [
     { value: 'platform', label: 'النظام الافتراضي للمنصة' },
@@ -100,6 +102,13 @@ export class NewJob implements OnInit, OnChanges {
     // Watch for application_method changes to update validators
     this.form.get('application_method')?.valueChanges.subscribe(method => {
       this.updateApplicationMethodValidators(method);
+      // Clear template file if method changes away from template_file
+      if (method !== 'template_file') {
+        this.templateFile = null;
+        this.templateFileName = null;
+        const templateCtrl = this.form.get('application_template');
+        templateCtrl?.setValue(null);
+      }
     });
 
     // Watch for is_ai_summary_enabled changes to update description validators
@@ -133,7 +142,7 @@ export class NewJob implements OnInit, OnChanges {
     if (method === 'custom_form') {
       customFormCtrl?.setValidators(Validators.required);
     } else if (method === 'template_file') {
-      templateCtrl?.setValidators([Validators.required, Validators.pattern(/^https?:\/\/.+/i)]);
+      templateCtrl?.setValidators(Validators.required);
     } else if (method === 'external_link') {
       externalUrlCtrl?.setValidators([Validators.required, Validators.pattern(/^https?:\/\/.+/i)]);
     } else if (method === 'email') {
@@ -159,6 +168,27 @@ export class NewJob implements OnInit, OnChanges {
       descriptionCtrl.setValidators(Validators.required);
     }
     descriptionCtrl.updateValueAndValidity();
+  }
+
+  onTemplateFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    
+    if (file) {
+      this.templateFile = file;
+      this.templateFileName = file.name;
+      // Mark the control as touched and set value to indicate file is selected
+      const templateCtrl = this.form.get('application_template');
+      templateCtrl?.setValue(file.name);
+      templateCtrl?.markAsTouched();
+      templateCtrl?.updateValueAndValidity();
+    } else {
+      this.templateFile = null;
+      this.templateFileName = null;
+      const templateCtrl = this.form.get('application_template');
+      templateCtrl?.setValue(null);
+      templateCtrl?.updateValueAndValidity();
+    }
   }
 
   ngOnInit(): void {
@@ -251,6 +281,8 @@ export class NewJob implements OnInit, OnChanges {
   private resetForCreate() {
     this.jobLoaded = false;
     this.jobLoading = false;
+    this.templateFile = null;
+    this.templateFileName = null;
     this.form.reset({
       education_level: 'any',
       languages: { arabic: true, english: false, french: false, german: false },
@@ -484,7 +516,9 @@ export class NewJob implements OnInit, OnChanges {
     if (v.application_method === 'custom_form' && v.custom_form) {
       payload.custom_form = Number(v.custom_form);
     }
-    if (v.application_method === 'template_file' && v.application_template?.trim()) {
+    if (v.application_method === 'template_file' && this.templateFile) {
+      // File will be sent via FormData
+    } else if (v.application_method === 'template_file' && v.application_template?.trim()) {
       payload.application_template = v.application_template.trim();
     }
     if (v.application_method === 'external_link' && v.external_application_url?.trim()) {
@@ -492,6 +526,73 @@ export class NewJob implements OnInit, OnChanges {
     }
     if (v.application_method === 'email' && v.application_email?.trim()) {
       payload.application_email = v.application_email.trim();
+    }
+
+    // If there's a template file, send as FormData
+    if (v.application_method === 'template_file' && this.templateFile) {
+      const formData = new FormData();
+      // Append all payload fields to FormData
+      formData.append('title', payload.title);
+      formData.append('description', payload.description);
+      formData.append('requirements', payload.requirements);
+      if (payload.responsibilities) formData.append('responsibilities', payload.responsibilities);
+      if (payload.benefits) formData.append('benefits', payload.benefits);
+      if (payload.skills) formData.append('skills', payload.skills);
+      formData.append('company', String(payload.company));
+      formData.append('category', String(payload.category));
+      formData.append('job_type', payload.job_type);
+      formData.append('experience_level', payload.experience_level);
+      if (payload.education_level) formData.append('education_level', payload.education_level);
+      formData.append('city', payload.city);
+      if (payload.salary_min !== undefined) formData.append('salary_min', String(payload.salary_min));
+      if (payload.salary_max !== undefined) formData.append('salary_max', String(payload.salary_max));
+      formData.append('is_salary_negotiable', String(payload.is_salary_negotiable));
+      if (payload.application_deadline) formData.append('application_deadline', payload.application_deadline);
+      if (payload.contact_email) formData.append('contact_email', payload.contact_email);
+      if (payload.contact_phone) formData.append('contact_phone', payload.contact_phone);
+      formData.append('application_method', payload.application_method || 'platform');
+      if (payload.custom_form) formData.append('custom_form', String(payload.custom_form));
+      if (payload.external_application_url) formData.append('external_application_url', payload.external_application_url);
+      if (payload.application_email) formData.append('application_email', payload.application_email);
+      formData.append('is_featured', String(payload.is_featured));
+      formData.append('is_urgent', String(payload.is_urgent));
+      formData.append('is_ai_summary_enabled', String(payload.is_ai_summary_enabled));
+      // Append the file
+      formData.append('application_template_file', this.templateFile);
+
+      if (!this.isEdit) {
+        this.api.createJobFormData(formData).subscribe({
+          next: (created) => {
+            this.toastr.success('تم نشر الوظيفة بنجاح ✅');
+            this.store.refresh();
+            this.router.navigate(['/companies/manage-jobs']);
+            this.saved.emit(created); 
+            this.resetForCreate();
+            this.isSubmitting = false;
+          },
+          error: (err) => { 
+            console.error(err); 
+            this.toastr.error(err?.error?.message || 'تعذر نشر الوظيفة');
+            this.isSubmitting = false;
+          },
+        });
+      } else {
+        this.api.updateJobFormData(this.editSlug!, formData).subscribe({
+          next: (updated) => { 
+            this.toastr.success('تم تحديث الوظيفة بنجاح ✅'); 
+            this.store.refresh();
+            this.router.navigate(['/companies/manage-jobs']);
+            this.saved.emit(updated);
+            this.isSubmitting = false;
+          },
+          error: (err) => { 
+            console.error(err); 
+            this.toastr.error(err?.error?.message || 'تعذر تحديث الوظيفة');
+            this.isSubmitting = false;
+          },
+        });
+      }
+      return;
     }
 
     if (!this.isEdit) {

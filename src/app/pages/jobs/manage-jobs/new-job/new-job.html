@@ -394,7 +394,7 @@
         </div>
       }
 
-      <!-- Template File URL -->
+      <!-- Template File Upload -->
       @if (selectedApplicationMethod === 'template_file') {
         <div class="form-group">
           <label class="form-label required" for="applicationTemplate">
@@ -402,18 +402,19 @@
           </label>
           <input
             id="applicationTemplate"
-            type="url"
+            type="file"
             class="form-input"
-            formControlName="application_template"
-            placeholder="https://example.com/template.pdf"
+            accept=".pdf,.doc,.docx"
+            (change)="onTemplateFileChange($event)"
           />
+          @if (templateFileName) {
+            <div class="mt-2 text-sm text-gray-600">
+              الملف المحدد: {{ templateFileName }}
+            </div>
+          }
           @if (form.get('application_template')?.invalid && form.get('application_template')?.touched) {
             <small class="p-error block mt-1 text-red-500">
-              @if (form.get('application_template')?.errors?.['required']) {
-                يرجى إدخال رابط قالب طلب التوظيف
-              } @else if (form.get('application_template')?.errors?.['pattern']) {
-                يرجى إدخال رابط صحيح
-              }
+              يرجى رفع ملف قالب طلب التوظيف
             </small>
           }
         </div>
