@@ -102,6 +102,11 @@ export class NewJob implements OnInit, OnChanges {
       this.updateApplicationMethodValidators(method);
     });
 
+    // Watch for is_ai_summary_enabled changes to update description validators
+    this.form.get('is_ai_summary_enabled')?.valueChanges.subscribe(enabled => {
+      this.updateDescriptionValidators(enabled);
+    });
+
     // Watch for company changes to reload custom forms
     this.form.get('company')?.valueChanges.subscribe(companyId => {
       if (companyId) {
@@ -140,6 +145,20 @@ export class NewJob implements OnInit, OnChanges {
     templateCtrl?.updateValueAndValidity();
     externalUrlCtrl?.updateValueAndValidity();
     emailCtrl?.updateValueAndValidity();
+  }
+
+  private updateDescriptionValidators(aiSummaryEnabled: boolean) {
+    const descriptionCtrl = this.form.get('description');
+    if (!descriptionCtrl) return;
+
+    if (aiSummaryEnabled) {
+      // Remove required validator when AI summary is enabled
+      descriptionCtrl.clearValidators();
+    } else {
+      // Add required validator when AI summary is disabled
+      descriptionCtrl.setValidators(Validators.required);
+    }
+    descriptionCtrl.updateValueAndValidity();
   }
 
   ngOnInit(): void {
@@ -208,6 +227,9 @@ export class NewJob implements OnInit, OnChanges {
         if (companyId) {
           this.loadCustomForms(companyId);
         }
+
+        // Update description validators based on AI summary enabled state
+        this.updateDescriptionValidators(!!(job as any).is_ai_summary_enabled);
 
         this.step = 1;
         this.jobLoaded = true;
@@ -350,13 +372,19 @@ export class NewJob implements OnInit, OnChanges {
 
   private currentStepGroupValid(): boolean {
     const controlsByStep: Record<number, string[]> = {
-      1: ['title','category','job_type','city','experience_level','description'],
+      1: ['title','category','job_type','city','experience_level'],
       2: ['requirements'],
       3: ['company', 'application_method'],
       4: ['publishPlan','terms'],
     };
     const names = controlsByStep[this.step] || [];
     const method = this.selectedApplicationMethod;
+    const aiSummaryEnabled = this.form.get('is_ai_summary_enabled')?.value;
+    
+    // Add description to step 1 only if AI summary is not enabled
+    if (this.step === 1 && !aiSummaryEnabled) {
+      names.push('description');
+    }
     
     // Add conditional validators for step 3
     if (this.step === 3) {
@@ -382,13 +410,19 @@ export class NewJob implements OnInit, OnChanges {
 
   private markStepAsTouched() {
     const groups: Record<number, string[]> = {
-      1: ['title','category','job_type','city','experience_level','description'],
+      1: ['title','category','job_type','city','experience_level'],
       2: ['requirements'],
       3: ['company', 'application_method'],
       4: ['publishPlan','terms'],
     };
     const names = groups[this.step] || [];
     const method = this.selectedApplicationMethod;
+    const aiSummaryEnabled = this.form.get('is_ai_summary_enabled')?.value;
+    
+    // Add description to step 1 only if AI summary is not enabled
+    if (this.step === 1 && !aiSummaryEnabled) {
+      names.push('description');
+    }
     
     // Add conditional fields for step 3
     if (this.step === 3) {
