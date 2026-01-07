@@ -211,29 +211,6 @@ export class ApplyJobComponent extends Base implements OnInit {
       return;
     }
 
-    // Handle different application methods
-    if (this.applicationMethod === 'external_link') {
-      if (this.job?.external_application_url) {
-        window.open(this.job.external_application_url, '_blank');
-        if (this.onClose) {
-          this.onClose();
-        }
-      }
-      return;
-    }
-
-    if (this.applicationMethod === 'email') {
-      if (this.job?.application_email) {
-        const subject = encodeURIComponent(`طلب توظيف: ${this.jobTitle || ''}`);
-        const body = encodeURIComponent(`أرغب في التقديم على الوظيفة: ${this.jobTitle || ''}`);
-        window.location.href = `mailto:${this.job.application_email}?subject=${subject}&body=${body}`;
-        if (this.onClose) {
-          this.onClose();
-        }
-      }
-      return;
-    }
-
     // Validate portfolio URL if provided
     if (this.applicationForm.portfolio_url && this.applicationForm.portfolio_url.length > 200) {
       this.toastr.error('رابط الأعمال يجب أن يكون أقل من 200 حرف');
@@ -255,7 +232,7 @@ export class ApplyJobComponent extends Base implements OnInit {
 
     this.isSubmitting = true;
 
-    // Build JSON payload (not FormData)
+    // Build JSON payload (not FormData) - ALWAYS include job ID
     const payload: any = {
       job: this.applicationForm.job,
     };
@@ -333,16 +310,107 @@ export class ApplyJobComponent extends Base implements OnInit {
       }
     }
 
-    // Note: Files (resume, filled_template, response files) need to be handled separately
-    // If files are required, they should be uploaded first and URLs added to payload,
-    // or sent in a separate multipart request
+    // Check if we need to send files - if yes, use FormData, otherwise use JSON
+    const hasFiles = this.resumeFile || this.filledTemplateFile || this.responseFiles.size > 0;
+    
+    let requestData: FormData | any;
+    
+    if (hasFiles) {
+      // Use FormData when files are present
+      requestData = new FormData();
+      requestData.append('job', String(payload.job));
+      
+      // Add text fields
+      if (payload.cover_letter) requestData.append('cover_letter', payload.cover_letter);
+      if (payload.portfolio_url) requestData.append('portfolio_url', payload.portfolio_url);
+      if (payload.expected_salary !== null && payload.expected_salary !== undefined) {
+        requestData.append('expected_salary', String(payload.expected_salary));
+      }
+      if (payload.availability_date) requestData.append('availability_date', payload.availability_date);
+      if (payload.notes) requestData.append('notes', payload.notes);
+      if (payload.custom_form) requestData.append('custom_form', String(payload.custom_form));
+      
+      // Add files
+      if (this.resumeFile) {
+        requestData.append('resume', this.resumeFile);
+      }
+      if (this.filledTemplateFile) {
+        requestData.append('filled_template', this.filledTemplateFile);
+      }
+      
+      // Add response files - need to handle them in responses array
+      // For custom form responses with files
+      if (this.applicationMethod === 'custom_form') {
+        const responsesData: any[] = [];
+        this.customFormResponses.forEach((response, questionId) => {
+          const responseObj: any = {
+            question: questionId,
+          };
+          
+          if (response.answer_text && response.answer_text.trim()) {
+            responseObj.answer_text = response.answer_text.trim();
+          }
+          
+          // Add file if exists for this question
+          if (this.responseFiles.has(questionId)) {
+            const file = this.responseFiles.get(questionId);
+            if (file) {
+              requestData.append(`response_file_${questionId}`, file);
+              responseObj.answer_file = `response_file_${questionId}`; // Reference to the file
+            }
+          }
+          
+          if (responseObj.answer_text || responseObj.answer_file) {
+            responsesData.push(responseObj);
+          }
+        });
+        if (responsesData.length > 0) {
+          requestData.append('responses', JSON.stringify(responsesData));
+        }
+      } else if (payload.responses && payload.responses.length > 0) {
+        // For regular responses with files
+        const responsesWithFiles = payload.responses.map((response: any) => {
+          const responseObj: any = { question: response.question };
+          if (response.answer_text) responseObj.answer_text = response.answer_text;
+          
+          // Add file if exists
+          if (this.responseFiles.has(response.question)) {
+            const file = this.responseFiles.get(response.question);
+            if (file) {
+              requestData.append(`response_file_${response.question}`, file);
+              responseObj.answer_file = `response_file_${response.question}`;
+            }
+          }
+          
+          return responseObj;
+        });
+        requestData.append('responses', JSON.stringify(responsesWithFiles));
+      }
+    } else {
+      // Use JSON payload when no files
+      requestData = payload;
+    }
 
-    // Submit application
-    this.applicationService.applyToJobWithData(payload).subscribe({
+    // Submit application - ALWAYS call API for ALL scenarios
+    this.applicationService.applyToJobWithData(requestData).subscribe({
       next: () => {
         this.toastr.success('تم إرسال طلبك بنجاح!');
         this.isSubmitting = false;
         this.resetForm();
+        
+        // Handle different application methods after successful submission
+        if (this.applicationMethod === 'external_link') {
+          if (this.job?.external_application_url) {
+            window.open(this.job.external_application_url, '_blank');
+          }
+        } else if (this.applicationMethod === 'email') {
+          if (this.job?.application_email) {
+            const subject = encodeURIComponent(`طلب توظيف: ${this.jobTitle || ''}`);
+            const body = encodeURIComponent(`أرغب في التقديم على الوظيفة: ${this.jobTitle || ''}`);
+            window.location.href = `mailto:${this.job.application_email}?subject=${subject}&body=${body}`;
+          }
+        }
+        
         // Call onClose callback if provided
         if (this.onClose) {
           this.onClose();
