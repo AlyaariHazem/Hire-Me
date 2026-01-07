@@ -1,5 +1,27 @@
-<div class="employer-dashboard-container">
-  <app-side-bar-company/>
+<div class="employer-dashboard-container" [class.sidebar-open]="sidebarOpen">
+  <!-- Mobile Menu Toggle Button -->
+  <button 
+    class="mobile-menu-toggle" 
+    (click)="toggleSidebar()"
+    [title]="sidebarOpen ? 'إغلاق القائمة' : 'فتح القائمة'"
+    [attr.aria-label]="sidebarOpen ? 'إغلاق القائمة' : 'فتح القائمة'"
+    [attr.aria-expanded]="sidebarOpen"
+  >
+    <i class="pi" [ngClass]="sidebarOpen ? 'pi-times' : 'pi-bars'"></i>
+    <span class="sr-only">{{ sidebarOpen ? 'إغلاق القائمة' : 'فتح القائمة' }}</span>
+  </button>
+
+  <!-- Mobile Overlay -->
+  @if (sidebarOpen) {
+  <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+  }
+
+  <!-- Sidebar -->
+  <aside class="employer-sidebar-wrapper" [class.open]="sidebarOpen">
+    <app-side-bar-company/>
+  </aside>
+
+  <!-- Main Content -->
   <main class="employer-main">
     <app-breadcrumb/>
     <router-outlet class="scroll-content"></router-outlet>

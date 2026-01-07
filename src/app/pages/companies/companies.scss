@@ -5,6 +5,62 @@
   gap: 0;
   width: 100%;
   transition: all 0.3s ease;
+  position: relative;
+
+  // Mobile menu toggle button
+  .mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 90px;
+    right: 1rem;
+    z-index: 1001;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    font-size: 1.25rem;
+
+    &:hover {
+      background-color: var(--primary-dark, #1d4ed8);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  // Sidebar wrapper
+  .employer-sidebar-wrapper {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  // Sidebar overlay for mobile
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 .employer-main {
@@ -12,6 +68,7 @@
   background-color: var(--gray-50);
   overflow-x: hidden;
   min-width: 0; /* Prevents grid overflow */
+  width: 100%;
 }
 
 .scroll-content {
@@ -19,7 +76,20 @@
   height: 100%;
 }
 
-/* Responsive Enhancements */
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Tablet Responsive */
 @media (max-width: 1024px) {
   .employer-dashboard-container {
     grid-template-columns: 240px 1fr;
@@ -30,30 +100,111 @@
   }
 }
 
+/* Mobile Responsive */
 @media (max-width: 768px) {
   .employer-dashboard-container {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 0;
+    grid-template-rows: 1fr;
+    
+    // Show mobile menu toggle
+    .mobile-menu-toggle {
+      display: block;
+    }
+
+    // Show overlay when sidebar is open
+    &.sidebar-open .sidebar-overlay {
+      display: block;
+    }
+
+    // Sidebar wrapper - hidden by default on mobile
+    .employer-sidebar-wrapper {
+      position: fixed;
+      top: 80px;
+      right: 0;
+      width: 280px;
+      max-width: 85vw;
+      height: calc(100vh - 80px);
+      z-index: 1000;
+      background-color: var(--white);
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      &.open {
+        transform: translateX(0);
+      }
+
+      // Ensure sidebar content takes full width
+      ::ng-deep app-side-bar-company {
+        display: block;
+        width: 100%;
+        height: 100%;
+
+        .employer-sidebar {
+          width: 100% !important;
+          height: 100%;
+          border-left: none;
+          border-right: 1px solid var(--gray-200);
+          position: relative;
+          top: 0;
+        }
+      }
+    }
   }
 
   .employer-main {
     padding: 1rem;
     width: 100%;
     overflow-x: auto;
+    margin-top: 0;
   }
 }
 
+/* Small Mobile Responsive */
 @media (max-width: 480px) {
+  .employer-dashboard-container {
+    .mobile-menu-toggle {
+      top: 85px;
+      right: 0.75rem;
+      padding: 0.625rem 0.875rem;
+      font-size: 1.1rem;
+    }
+
+    .employer-sidebar-wrapper {
+      width: 100%;
+      max-width: 100vw;
+    }
+  }
+
   .employer-main {
     padding: 0.75rem;
   }
 }
-:host ::ng-deep .footer{
-    background-color: var(--gray-900);
-    color: var(--gray-300);
-    padding: var(--spacing-12) 0;
-    font-size: var(--font-size-sm);
-    width: 85%!important;
-    margin-right: 15%!important;
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+  .employer-dashboard-container {
+    grid-template-columns: 300px 1fr;
+  }
+
+  .employer-main {
+    padding: 2.5rem;
+  }
+}
+
+/* Footer Responsive Styles */
+:host ::ng-deep .footer {
+  background-color: var(--gray-900);
+  color: var(--gray-300);
+  padding: var(--spacing-12) 0;
+  font-size: var(--font-size-sm);
+  width: 85% !important;
+  margin-right: 15% !important;
+
+  @media (max-width: 768px) {
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
 }

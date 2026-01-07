@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subject, takeUntil } from 'rxjs';
 
@@ -8,11 +8,12 @@ import { filter, Subject, takeUntil } from 'rxjs';
   templateUrl: './companies.html',
   styleUrl: './companies.scss'
 })
-export class Companies {
+export class Companies implements OnInit, OnDestroy {
   private router = inject(Router);
   private destroy$ = new Subject<void>();
 
   lastSegment: string | null = null;
+  sidebarOpen = false;
 
   ngOnInit() {
     this.updateLastSegment(this.router.url);
@@ -24,7 +25,32 @@ export class Companies {
       )
       .subscribe((e: any) => {
         this.updateLastSegment(e.urlAfterRedirects ?? e.url);
+        // Close sidebar on navigation in mobile view
+        if (window.innerWidth <= 768) {
+          this.sidebarOpen = false;
+        }
       });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar() {
+    this.sidebarOpen = false;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    // Auto-close sidebar when resizing to desktop
+    if (event.target.innerWidth > 768 && this.sidebarOpen) {
+      this.sidebarOpen = false;
+    }
   }
 
   private updateLastSegment(url: string) {
