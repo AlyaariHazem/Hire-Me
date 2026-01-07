@@ -28,6 +28,24 @@
       <h2 class="section-title">المعلومات الأساسية</h2>
 
       <div class="form-group">
+        <label for="company" class="form-label required">
+          الشركة
+        </label>
+        <p-select
+          id="company"
+          name="company"
+          [(ngModel)]="formData.company"
+          [options]="companies"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="اختر الشركة"
+          styleClass="w-full"
+          required
+        ></p-select>
+        <small class="form-hint">يجب توثيق الشركة لتستطيع نشر وظائف</small>
+      </div>
+
+      <div class="form-group">
         <label for="name" class="form-label required">
           اسم النموذج
         </label>
@@ -229,6 +247,7 @@
                   [name]="'option_' + questionIndex + '_' + $index"
                   [(ngModel)]="question.optionsArray[$index]"
                   [placeholder]="'خيار ' + ($index + 1)"
+                  [title]="'خيار ' + ($index + 1)"
                   class="form-control option-input"
                 />
                 <button

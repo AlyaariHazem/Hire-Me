@@ -54,6 +54,7 @@ export class JobFormEditComponent extends Base implements OnInit {
 
   questions: (JobFormQuestion & { optionsArray?: string[] })[] = [];
   companyId: number | null = null;
+  companies: { id: number; name: string }[] = [];
 
   // Question type options
   questionTypes = [
@@ -68,6 +69,9 @@ export class JobFormEditComponent extends Base implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    // Load companies first (needed for both create and edit modes)
+    this.loadCompanies();
+    
     if (id && id !== 'create') {
       this.isEditMode = true;
       this.formId = +id;
@@ -77,20 +81,28 @@ export class JobFormEditComponent extends Base implements OnInit {
     }
   }
 
-  private loadCompanyInfo(): void {
+  private loadCompanies(): void {
     this.companyService.getMyCompanies().subscribe({
       next: (companies: any[]) => {
-        if (companies && companies.length > 0) {
-          const company = companies[0];
-          this.companyId = company.id;
-          this.formData.company = company.id;
-        }
+        this.companies = (companies ?? []).map((c: any) => ({ 
+          id: Number(c.id), 
+          name: c.name || c.slug || 'بدون اسم' 
+        }));
       },
       error: (err: any) => {
-        console.error('Failed to load company info', err);
-        this.toastr.error('فشل في تحميل معلومات الشركة');
+        console.error('Failed to load companies', err);
+        this.toastr.error('فشل في تحميل قائمة الشركات');
       },
     });
+  }
+
+  private loadCompanyInfo(): void {
+    // Set default company if available
+    if (this.companies && this.companies.length > 0) {
+      const company = this.companies[0];
+      this.companyId = company.id;
+      this.formData.company = company.id;
+    }
   }
 
   private loadJobForm(id: number): void {
@@ -206,6 +218,11 @@ export class JobFormEditComponent extends Base implements OnInit {
     if (this.saving) return;
 
     // Validation
+    if (!this.formData.company || this.formData.company === 0) {
+      this.toastr.error('يجب اختيار الشركة');
+      return;
+    }
+
     if (!this.formData.name || this.formData.name.trim().length === 0) {
       this.toastr.error('اسم النموذج مطلوب');
       return;
@@ -280,8 +297,13 @@ export class JobFormEditComponent extends Base implements OnInit {
         },
         error: (err) => {
           console.error('Failed to update job form', err);
-          this.toastr.error('فشل في تحديث النموذج');
           this.saving = false;
+          // Check if error is about company verification
+          if (err?.error?.company) {
+            this.toastr.error('يجب توثيق الشركة لتستطيع نشر وظائف');
+          } else {
+            this.toastr.error('فشل في تحديث النموذج');
+          }
           this.errors.error(err, { join: true });
         },
       });
@@ -295,8 +317,13 @@ export class JobFormEditComponent extends Base implements OnInit {
         },
         error: (err) => {
           console.error('Failed to create job form', err);
-          this.toastr.error('فشل في إنشاء النموذج');
           this.saving = false;
+          // Check if error is about company verification
+          if (err?.error?.company) {
+            this.toastr.error('يجب توثيق الشركة لتستطيع نشر وظائف');
+          } else {
+            this.toastr.error('فشل في إنشاء النموذج');
+          }
           this.errors.error(err, { join: true });
         },
       });
