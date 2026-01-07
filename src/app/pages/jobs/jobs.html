@@ -330,22 +330,34 @@
                       <span>📅 {{ timeAgo(job.created_at) }}</span>
                     </div>
   
-                    <!-- description (if API sends it) -->
-                     @if(job.description){
+                    <!-- AI Summary (if enabled) -->
+                     @if(job.is_ai_summary_enabled && job.ai_summary){
                        <p
-                         class="job-description"
+                         class="job-description ai-summary"
                        >
-                         {{ job.description }}
+                         <span class="ai-icon">✨</span>
+                         {{ job.ai_summary }}
                        </p>
                      }
-  
-                    <!-- fallback short line if no description -->
-                     @if(!job.description){
-                       <p
-                         class="job-description"
-                       >
-                         {{ job.category.name || '-' }} • {{ job.company.city || '-' }}
-                       </p>
+                     
+                    <!-- description (if API sends it and AI summary is not enabled) -->
+                     @else {
+                       @if(job.description){
+                         <p
+                           class="job-description"
+                         >
+                           {{ job.description }}
+                         </p>
+                       }
+       
+                       <!-- fallback short line if no description -->
+                       @else {
+                         <p
+                           class="job-description"
+                         >
+                           {{ job.category.name || '-' }} • {{ job.company.city || '-' }}
+                         </p>
+                       }
                      }
   
                     <!-- tags row -->

@@ -38,6 +38,8 @@ export interface JobItem {
   custom_form?: {
     id: number;
   } | null;
+  is_ai_summary_enabled?: boolean;
+  ai_summary?: string | null;
 }
 
 
