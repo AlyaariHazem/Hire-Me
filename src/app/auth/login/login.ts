@@ -132,16 +132,16 @@ export class Login extends Base implements OnInit {
 
     this.http.post(environment.getUrl('login'), payload).subscribe({
       next: (res: any) => {
-        // Expect: { data: { token: string }, refresh?: string }
+        // Expect: { data: { token: string, refresh: string } }
         const access = res?.data?.token as string | undefined;
-        const refresh = res?.refresh as string | undefined;
+        const refresh = res?.data?.refresh as string | undefined;
 
         if (!access) {
           this.toastr.error('استجابة غير متوقعة من الخادم: لم يتم استلام رمز الدخول.');
           return;
         }
 
-        // Temporarily set tokens to call /profile
+        // Set both access and refresh tokens
         this.auth.setTokens(access, refresh);
         
         // Reset and load profile via store
