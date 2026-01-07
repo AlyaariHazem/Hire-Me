@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, filter, Subject } from 'rxjs';
 import { MenuItem } from 'primeng/api';
+import { AuthStateService } from 'app/auth/auth-state.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,15 +15,11 @@ export class BreadcrumbService {
   private refreshSubject = new Subject<void>();
   public refresh$ = this.refreshSubject.asObservable();
 
+  private authState = inject(AuthStateService);
+
   triggerRefresh(): void {
     this.refreshSubject.next();
   }
-
-  private homeItem: MenuItem = {
-    icon: 'pi pi-home',
-    routerLink: '/',
-    label: 'الرئيسية',
-  };
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
     this.router.events
@@ -34,11 +31,25 @@ export class BreadcrumbService {
   }
 
   setHomeItem(item: MenuItem): void {
-    this.homeItem = item;
+    // This method can still be used to override the default behavior
   }
 
   getHomeItem(): MenuItem {
-    return this.homeItem;
+    // Determine dashboard route based on user role
+    const role = this.authState.role();
+    let dashboardRoute = '/';
+    
+    if (role === 'employer') {
+      dashboardRoute = '/companies/dashboard';
+    } else if (role === 'jobseeker') {
+      dashboardRoute = '/jobseeker/dashboard';
+    }
+    
+    return {
+      icon: 'pi pi-home',
+      routerLink: dashboardRoute,
+      label: 'الرئيسية',
+    };
   }
 
   /**

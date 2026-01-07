@@ -158,16 +158,7 @@ export class NewJob implements OnInit, OnChanges {
 
   private updateDescriptionValidators(aiSummaryEnabled: boolean) {
     const descriptionCtrl = this.form.get('description');
-    if (!descriptionCtrl) return;
-
-    if (aiSummaryEnabled) {
-      // Remove required validator when AI summary is enabled
-      descriptionCtrl.clearValidators();
-    } else {
-      // Add required validator when AI summary is disabled
-      descriptionCtrl.setValidators(Validators.required);
-    }
-    descriptionCtrl.updateValueAndValidity();
+   
   }
 
   onTemplateFileChange(event: Event) {
@@ -413,7 +404,8 @@ export class NewJob implements OnInit, OnChanges {
     const method = this.selectedApplicationMethod;
     const aiSummaryEnabled = this.form.get('is_ai_summary_enabled')?.value;
     
-    // Add description to step 1 only if AI summary is not enabled
+    // Add description to step 1 validation only if AI summary is not enabled (description is required)
+    // When AI summary is enabled, description is optional so we don't need to validate it
     if (this.step === 1 && !aiSummaryEnabled) {
       names.push('description');
     }
@@ -451,7 +443,8 @@ export class NewJob implements OnInit, OnChanges {
     const method = this.selectedApplicationMethod;
     const aiSummaryEnabled = this.form.get('is_ai_summary_enabled')?.value;
     
-    // Add description to step 1 only if AI summary is not enabled
+    // Add description to step 1 only if AI summary is not enabled (description is required)
+    // When AI summary is enabled, description is optional so we don't need to mark it as touched
     if (this.step === 1 && !aiSummaryEnabled) {
       names.push('description');
     }

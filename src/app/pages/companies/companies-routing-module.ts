@@ -122,6 +122,11 @@ const routes: Routes = [
         component: JobFormEditComponent,
         data: { breadcrumb: 'تعديل النموذج' }
       },
+      {
+        path: '**',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
     ],
   },
 ];
