@@ -8,12 +8,8 @@
         <!-- Job Header -->
         <div class="job-header">
           <div class="job-header-top">
-            <img
-              class="company-logo-large"
-              [src]="job.company.logo || 'images/company-logo-1.jpg'"
-              [alt]="job.company.name || 'شعار الشركة'"
-              title="شعار الشركة"
-            />
+            <img class="company-logo-large" [src]="job.company.logo || 'images/company-logo-1.jpg'"
+              [alt]="job.company.name || 'شعار الشركة'" title="شعار الشركة" />
 
             <div style="flex-grow: 1">
               <h1 class="job-title-large">{{ job.title }}</h1>
@@ -21,7 +17,7 @@
 
               <div class="job-meta-large">
                 <div class="meta-item">
-                  <span class="meta-icon">📍</span>
+                  <span class="meta-icon"><i class="pi pi-map-marker"></i></span>
                   <span>
                     {{ job.city || job.company.city || 'غير محدد' }}،
                     {{ job.company.country || 'غير محدد' }}
@@ -29,31 +25,31 @@
                 </div>
 
                 <div class="meta-item">
-                  <span class="meta-icon">💰</span>
+                  <span class="meta-icon"><i class="pi pi-money-bill"></i></span>
                   <span>
                     {{ formatSalary(job.salary_min, job.salary_max) }}
                   </span>
                 </div>
 
                 <div class="meta-item">
-                  <span class="meta-icon">⏰</span>
+                  <span class="meta-icon"><i class="pi pi-clock"></i></span>
                   <span>{{ getJobTypeLabel(job.job_type) }}</span>
                 </div>
 
                 <div class="meta-item">
-                  <span class="meta-icon">📅</span>
+                  <span class="meta-icon"><i class="pi pi-calendar"></i></span>
                   <span>
                     نُشرت في {{ job.created_at | date: 'mediumDate' }}
                   </span>
                 </div>
 
                 <div class="meta-item">
-                  <span class="meta-icon">👥</span>
+                  <span class="meta-icon"><i class="pi pi-users"></i></span>
                   <span>{{ job.applications_count || 0 }} متقدم</span>
                 </div>
 
                 <div class="meta-item">
-                  <span class="meta-icon">👁️</span>
+                  <span class="meta-icon"><i class="pi pi-eye"></i></span>
                   <span>{{ job.views_count || 0 }} مشاهدة</span>
                 </div>
               </div>
@@ -61,28 +57,17 @@
           </div>
 
           <div class="job-actions-large">
-            <button
-              type="button"
-              class="btn btn-large btn-primary"
+            <button type="button" class="btn btn-large btn-primary"
               [ngClass]="{ 'btn-primary': showApplicationForm, 'btn-secondary': !showApplicationForm }"
-              (click)="toggleApplicationForm()"
-            >
+              (click)="toggleApplicationForm()">
               تقديم الآن
             </button>
 
-            <button
-              type="button"
-              class="btn btn-large btn-secondary save-btn"
-              (click)="onSaveJob()"
-            >
+            <button type="button" class="btn btn-large btn-secondary save-btn" (click)="onSaveJob()">
               {{ job.is_bookmarked ? 'إزالة من المحفوظات' : 'حفظ الوظيفة' }}
             </button>
 
-            <button
-              type="button"
-              class="btn btn-large btn-secondary"
-              (click)="onShareJob()"
-            >
+            <button type="button" class="btn btn-large btn-secondary" (click)="onShareJob()">
               مشاركة
             </button>
           </div>
@@ -90,11 +75,7 @@
 
         <!-- Application Form -->
         @if (showApplicationForm) {
-        <app-apply-job 
-          [jobId]="job.id" 
-          [jobTitle]="job.title"
-          [job]="job"
-          [onClose]="toggleApplicationForm.bind(this)">
+        <app-apply-job [jobId]="job.id" [jobTitle]="job.title" [job]="job" [onClose]="toggleApplicationForm.bind(this)">
         </app-apply-job>
         }
 
@@ -218,17 +199,17 @@
           <div class="skills-list">
             <!-- English: Attempt to split by comma first, fallback to whitespace -->
             @if (skills.includes(',')) {
-              @for (s of skills.split(','); track s) {
-              <span class="skill-tag">
-                {{ s.trim() }}
-              </span>
-              }
+            @for (s of skills.split(','); track s) {
+            <span class="skill-tag">
+              {{ s.trim() }}
+            </span>
+            }
             } @else {
-              @for (s of skills.split(' '); track s) {
-              <span class="skill-tag">
-                {{ s.trim() }}
-              </span>
-              }
+            @for (s of skills.split(' '); track s) {
+            <span class="skill-tag">
+              {{ s.trim() }}
+            </span>
+            }
             }
           </div>
         </div>
@@ -238,12 +219,9 @@
         <div class="sidebar-card">
           <h3 class="sidebar-title">معلومات الشركة</h3>
           <div style="text-align: center; margin-bottom: 1rem">
-            <img
-              [src]="job.company.logo || 'images/company-logo-1.jpg'"
-              [alt]="job.company.name || 'شعار الشركة'"
+            <img [src]="job.company.logo || 'images/company-logo-1.jpg'" [alt]="job.company.name || 'شعار الشركة'"
               title="شعار الشركة"
-              style="width: 80px; height: 80px; border-radius: var(--radius-lg); object-fit: cover;"
-            />
+              style="width: 80px; height: 80px; border-radius: var(--radius-lg); object-fit: cover;" />
           </div>
 
           <ul class="job-details-list">
@@ -272,11 +250,7 @@
           </ul>
 
           <div style="margin-top: 1rem">
-            <a
-              [routerLink]="['/company', job.company.slug]"
-              class="btn btn-secondary"
-              style="width: 100%"
-            >
+            <a [routerLink]="['/company', job.company.slug]" class="btn btn-secondary" style="width: 100%">
               عرض ملف الشركة
             </a>
           </div>
@@ -288,17 +262,10 @@
           <h3 class="sidebar-title">وظائف مشابهة</h3>
           <div class="similar-jobs">
             @for (job of similarJobs; track job.id) {
-            <a
-              (click)="navigateToJob(job.slug)"
-              class="similar-job-card"
-              style="text-decoration: none; color: inherit; display: block;"
-            >
-              <img
-                [src]="job.company.logo || 'assets/images/company-placeholder.png'"
-                [alt]="job.company.name || 'شعار الشركة'"
-                title="شعار الشركة"
-                class="similar-job-logo"
-              />
+            <a (click)="navigateToJob(job.slug)" class="similar-job-card"
+              style="text-decoration: none; color: inherit; display: block;">
+              <img [src]="job.company.logo || 'assets/images/company-placeholder.png'"
+                [alt]="job.company.name || 'شعار الشركة'" title="شعار الشركة" class="similar-job-logo" />
               <div class="similar-job-info">
                 <h4>{{ job.title }}</h4>
                 <p>{{ job.company.name }}</p>

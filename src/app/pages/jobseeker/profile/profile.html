@@ -1,6 +1,5 @@
-
 <form [formGroup]="basicForm" class="form-section">
-  <h3 class="section-title"><span>👤</span>المعلومات الشخصية</h3>
+  <h3 class="section-title"><span><i class="pi pi-user"></i></span>المعلومات الشخصية</h3>
   <!-- السيرة الذاتية -->
   <div class="resume-wrap">
     @if(resumeUrl){
@@ -15,36 +14,15 @@
       </div>
 
       <div class="resume-actions">
-        <p-button
-          label="تغيير الملف"
-          styleClass="p-button-secondary"
-          [style]="{ margin: 0 }"
-          (onClick)="resumeFileInput.click()"
-        ></p-button>
-        <input
-          #resumeFileInput
-          type="file"
-          class="d-none"
-          accept=".pdf,.doc,.docx"
-          (change)="onResumeChange($event)"
-          title="تغيير ملف السيرة الذاتية"
-          aria-label="تغيير ملف السيرة الذاتية"
-        />
+        <p-button label="تغيير الملف" styleClass="p-button-secondary" [style]="{ margin: 0 }"
+          (onClick)="resumeFileInput.click()"></p-button>
+        <input #resumeFileInput type="file" class="d-none" accept=".pdf,.doc,.docx" (change)="onResumeChange($event)"
+          title="تغيير ملف السيرة الذاتية" aria-label="تغيير ملف السيرة الذاتية" />
 
-        <p-button
-          type="button"
-          [label]="showPreview ? 'إخفاء المعاينة' : 'معاينة'"
-          styleClass="p-button-secondary"
-          (onClick)="togglePreview()"
-        ></p-button>
+        <p-button type="button" [label]="showPreview ? 'إخفاء المعاينة' : 'معاينة'" styleClass="p-button-secondary"
+          (onClick)="togglePreview()"></p-button>
 
-        <a
-          class="btn btn-primary"
-          [href]="resumeUrl"
-          target="_blank"
-          rel="noopener"
-          download
-        >
+        <a class="btn btn-primary" [href]="resumeUrl" target="_blank" rel="noopener" download>
           تنزيل
         </a>
       </div>
@@ -53,44 +31,30 @@
     <ng-container>
       <div class="resume-empty">
         لا توجد سيرة ذاتية مرفوعة
-        <p-button
-          label="رفع ملف"
-          styleClass="p-button-primary"
-          [style]="{ marginLeft: '0.5rem' }"
-          (onClick)="resumeFileInputEmpty.click()"
-        ></p-button>
-        <input
-          #resumeFileInputEmpty
-          type="file"
-          class="d-none"
-          accept=".pdf,.doc,.docx"
-          (change)="onResumeChange($event)"
-          title="رفع ملف السيرة الذاتية"
-          aria-label="رفع ملف السيرة الذاتية"
-        />
+        <p-button label="رفع ملف" styleClass="p-button-primary" [style]="{ marginLeft: '0.5rem' }"
+          (onClick)="resumeFileInputEmpty.click()"></p-button>
+        <input #resumeFileInputEmpty type="file" class="d-none" accept=".pdf,.doc,.docx"
+          (change)="onResumeChange($event)" title="رفع ملف السيرة الذاتية" aria-label="رفع ملف السيرة الذاتية" />
       </div>
     </ng-container>
     }
 
     <!-- معاينة PDF فقط -->
     @if (showPreview && isPdf && resumeSafeUrl && !isResumeFromApi) {
-      <!-- For local/blob files, use iframe -->
-      <div class="resume-preview">
-        <iframe [src]="resumeSafeUrl" title="معاينة السيرة الذاتية"></iframe>
-      </div>
+    <!-- For local/blob files, use iframe -->
+    <div class="resume-preview">
+      <iframe [src]="resumeSafeUrl" title="معاينة السيرة الذاتية"></iframe>
+    </div>
     }
     @if (showPreview && isPdf && isResumeFromApi) {
-      <!-- For API files, show message (file already opened in new window) -->
-      <div class="resume-preview-api">
-        <div class="resume-preview-message">
-          <p>لا يمكن عرض الملف داخل الصفحة بسبب إعدادات الأمان. انقر على الزر أدناه لفتح الملف في نافذة جديدة.</p>
-          <p-button
-            label="فتح الملف في نافذة جديدة"
-            styleClass="p-button-primary"
-            (onClick)="openResumeInNewWindow()"
-          ></p-button>
-        </div>
+    <!-- For API files, show message (file already opened in new window) -->
+    <div class="resume-preview-api">
+      <div class="resume-preview-message">
+        <p>لا يمكن عرض الملف داخل الصفحة بسبب إعدادات الأمان. انقر على الزر أدناه لفتح الملف في نافذة جديدة.</p>
+        <p-button label="فتح الملف في نافذة جديدة" styleClass="p-button-primary"
+          (onClick)="openResumeInNewWindow()"></p-button>
       </div>
+    </div>
     }
     @if (showPreview && !isPdf && resumeUrl) {
     <div class="resume-note">
@@ -101,205 +65,103 @@
 
   <!-- المعلومات الشخصية -->
   <section class="form-card" dir="rtl">
-    <h3 class="form-card__title">👤 المعلومات الشخصية</h3>
+    <h3 class="form-card__title"><i class="pi pi-user ml-1"></i> المعلومات الشخصية</h3>
 
     <div class="form-grid form-grid-3">
       <div class="field">
         <label class="field__label" for="first_name">الاسم الأول</label>
-        <input
-          pInputText
-          id="first_name"
-          class="field__control"
-          formControlName="first_name"
-        />
+        <input pInputText id="first_name" class="field__control" formControlName="first_name" />
       </div>
 
       <div class="field">
         <label class="field__label" for="last_name">الاسم الأخير</label>
-        <input
-          pInputText
-          id="last_name"
-          class="field__control"
-          formControlName="last_name"
-        />
+        <input pInputText id="last_name" class="field__control" formControlName="last_name" />
       </div>
 
       <div class="field">
         <label class="field__label" for="email">البريد الإلكتروني</label>
-        <input
-          pInputText
-          type="email"
-          id="email"
-          class="field__control"
-          formControlName="email"
-        />
+        <input pInputText type="email" id="email" class="field__control" formControlName="email" />
       </div>
 
       <div class="field">
         <label class="field__label" for="phone">رقم الهاتف</label>
-        <input
-          pInputText
-          id="phone"
-          class="field__control"
-          formControlName="phone"
-        />
+        <input pInputText id="phone" class="field__control" formControlName="phone" />
       </div>
 
       <div class="field">
         <label class="field__label" for="date_of_birth">تاريخ الميلاد</label>
-        <p-datepicker
-          id="date_of_birth"
-          [(ngModel)]="dateOfBirthDate"
-          [ngModelOptions]="{standalone: true}"
-          (onSelect)="onDateOfBirthSelect($event)"
-          dateFormat="yy-mm-dd"
-          placeholder="اختر تاريخ الميلاد"
-          appendTo="body"
-          styleClass="w-full"
-          inputStyleClass="field__control"
-        />
+        <p-datepicker id="date_of_birth" [(ngModel)]="dateOfBirthDate" [ngModelOptions]="{standalone: true}"
+          (onSelect)="onDateOfBirthSelect($event)" dateFormat="yy-mm-dd" placeholder="اختر تاريخ الميلاد"
+          appendTo="body" styleClass="w-full" inputStyleClass="field__control" />
       </div>
 
       <div class="field">
         <label class="field__label" for="location">العنوان</label>
-        <input
-          pInputText
-          id="location"
-          class="field__control"
-          formControlName="location"
-        />
+        <input pInputText id="location" class="field__control" formControlName="location" />
       </div>
 
       <div class="field field--full">
         <label class="field__label" for="bio">نبذة مختصرة</label>
-        <textarea
-          pTextarea
-          id="bio"
-          rows="4"
-          class="field__control"
-          formControlName="bio"
-        ></textarea>
+        <textarea pTextarea id="bio" rows="4" class="field__control" formControlName="bio"></textarea>
       </div>
     </div>
   </section>
 
   <!-- المعلومات المهنية -->
   <section class="form-card" dir="rtl" [formGroup]="jobForm">
-    <h3 class="form-card__title">💼 المعلومات المهنية</h3>
+    <h3 class="form-card__title"><i class="pi pi-briefcase ml-1"></i> المعلومات المهنية</h3>
 
     <div class="form-grid form-grid-3">
       <div class="field">
         <label class="field__label" for="experience_level">سنوات الخبرة</label>
-        <p-select
-        [showClear]="true"
-          id="experience_level"
-          class="field__control"
-          formControlName="experience_level"
-          [options]="experienceLevelOptions"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="اختر مستوى الخبرة"
-          appendTo="body"
-          styleClass="w-full"
-        ></p-select>
+        <p-select [showClear]="true" id="experience_level" class="field__control" formControlName="experience_level"
+          [options]="experienceLevelOptions" optionLabel="label" optionValue="value" placeholder="اختر مستوى الخبرة"
+          appendTo="body" styleClass="w-full"></p-select>
       </div>
 
       <div class="field">
         <label class="field__label" for="education_level">المستوى التعليمي</label>
-        <p-select
-        [showClear]="true"
-          id="education_level"
-          class="field__control"
-          formControlName="education_level"
-          [options]="educationLevelOptions"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="اختر المستوى التعليمي"
-          appendTo="body"
-          styleClass="w-full"
-        ></p-select>
+        <p-select [showClear]="true" id="education_level" class="field__control" formControlName="education_level"
+          [options]="educationLevelOptions" optionLabel="label" optionValue="value" placeholder="اختر المستوى التعليمي"
+          appendTo="body" styleClass="w-full"></p-select>
       </div>
 
       <div class="field">
         <label class="field__label" for="preferred_job_type">نوع العمل المفضل</label>
-        <p-select
-        [showClear]="true"
-          id="preferred_job_type"
-          class="field__control"
-          formControlName="preferred_job_type"
-          [options]="jobTypeOptions"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="اختر نوع العمل"
-          appendTo="body"
-          styleClass="w-full"
-        ></p-select>
+        <p-select [showClear]="true" id="preferred_job_type" class="field__control" formControlName="preferred_job_type"
+          [options]="jobTypeOptions" optionLabel="label" optionValue="value" placeholder="اختر نوع العمل"
+          appendTo="body" styleClass="w-full"></p-select>
       </div>
 
       <div class="field">
         <label class="field__label" for="expected_salary_min">الراتب الأدنى</label>
-        <p-inputNumber
-          id="expected_salary_min"
-          class="field__control"
-          formControlName="expected_salary_min"
-          [showButtons]="false"
-          [min]="0"
-          [useGrouping]="true"
-          placeholder="0"
-          styleClass="w-full"
-        ></p-inputNumber>
+        <p-inputNumber id="expected_salary_min" class="field__control" formControlName="expected_salary_min"
+          [showButtons]="false" [min]="0" [useGrouping]="true" placeholder="0" styleClass="w-full"></p-inputNumber>
       </div>
 
       <div class="field">
         <label class="field__label" for="expected_salary_max">الراتب الأعلى</label>
-        <p-inputNumber
-          id="expected_salary_max"
-          class="field__control"
-          formControlName="expected_salary_max"
-          [showButtons]="false"
-          [min]="0"
-          [useGrouping]="true"
-          placeholder="0"
-          styleClass="w-full"
-        ></p-inputNumber>
+        <p-inputNumber id="expected_salary_max" class="field__control" formControlName="expected_salary_max"
+          [showButtons]="false" [min]="0" [useGrouping]="true" placeholder="0" styleClass="w-full"></p-inputNumber>
       </div>
 
       <div class="field">
         <label class="field__label" for="availability">متاح للعمل</label>
         <!-- show the clear -->
-        <p-select
-        [showClear]="true"
-          id="availability"
-          class="field__control"
-          formControlName="availability"
-          [options]="availabilityOptions"
-          optionLabel="label"
-          optionValue="value"
-          appendTo="body"
-          styleClass="w-full"
-        ></p-select>
+        <p-select [showClear]="true" id="availability" class="field__control" formControlName="availability"
+          [options]="availabilityOptions" optionLabel="label" optionValue="value" appendTo="body"
+          styleClass="w-full"></p-select>
       </div>
 
       <div class="field">
         <label class="field__label" for="skills">المهارات (افصل بفواصل)</label>
-        <input
-          pInputText
-          id="skills"
-          class="field__control"
-          formControlName="skills"
-          placeholder="JS, React, Node"
-        />
+        <input pInputText id="skills" class="field__control" formControlName="skills" placeholder="JS, React, Node" />
       </div>
 
       <div class="field">
         <label class="field__label" for="languages">اللغات (افصل بفواصل)</label>
-        <input
-          pInputText
-          id="languages"
-          class="field__control"
-          formControlName="languages"
-          placeholder="Arabic, English"
-        />
+        <input pInputText id="languages" class="field__control" formControlName="languages"
+          placeholder="Arabic, English" />
       </div>
     </div>
   </section>
@@ -311,56 +173,27 @@
       styleClass="p-button-secondary"
       (onClick)="basicForm.reset(); jobForm.reset();"
     ></p-button> -->
-    <p-button
-      type="button"
-      label="تغيير كلمة المرور"
-      icon="pi pi-key"
-      styleClass="p-button-outlined"
-      (onClick)="openChangePasswordDialog()"
-    ></p-button>
-    <p-button
-      type="button"
-      [label]="isSaving ? 'جاري الحفظ...' : 'حفظ التغييرات'"
-      styleClass="p-button-primary"
-      (onClick)="saveChanges()"
-      [disabled]="isSaving"
-    ></p-button>
+    <p-button type="button" label="تغيير كلمة المرور" icon="pi pi-key" styleClass="p-button-outlined"
+      (onClick)="openChangePasswordDialog()"></p-button>
+    <p-button type="button" [label]="isSaving ? 'جاري الحفظ...' : 'حفظ التغييرات'" styleClass="p-button-primary"
+      (onClick)="saveChanges()" [disabled]="isSaving"></p-button>
   </div>
 </form>
 
 <!-- Change Password Dialog -->
-<p-dialog
-  [(visible)]="changePasswordDialogVisible"
-  [modal]="true"
-  [style]="{ width: '90%', maxWidth: '500px' }"
-  header="تغيير كلمة المرور"
-  (onHide)="closeChangePasswordDialog()"
-  [draggable]="false"
-  [resizable]="false"
-  [rtl]="true"
->
+<p-dialog [(visible)]="changePasswordDialogVisible" [modal]="true" [style]="{ width: '90%', maxWidth: '500px' }"
+  header="تغيير كلمة المرور" (onHide)="closeChangePasswordDialog()" [draggable]="false" [resizable]="false"
+  [rtl]="true">
   <form (ngSubmit)="changePassword()" class="change-password-form">
     <div class="form-group">
       <label class="form-label">كلمة المرور الحالية</label>
       <div class="password-input-wrapper">
-        <input
-          [type]="showOldPassword ? 'text' : 'password'"
-          pInputText
-          class="w-full password-input"
-          required
-          [(ngModel)]="changePasswordForm.old_password"
-          name="old_password"
-          placeholder="أدخل كلمة المرور الحالية"
-          [disabled]="changingPassword"
-        />
-        <button
-          type="button"
-          class="password-toggle-btn"
-          (click)="toggleOldPasswordVisibility()"
-          [disabled]="changingPassword"
-          [attr.aria-label]="showOldPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-          [attr.title]="showOldPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-        >
+        <input [type]="showOldPassword ? 'text' : 'password'" pInputText class="w-full password-input" required
+          [(ngModel)]="changePasswordForm.old_password" name="old_password" placeholder="أدخل كلمة المرور الحالية"
+          [disabled]="changingPassword" />
+        <button type="button" class="password-toggle-btn" (click)="toggleOldPasswordVisibility()"
+          [disabled]="changingPassword" [attr.aria-label]="showOldPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+          [attr.title]="showOldPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
           <i [class]="showOldPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" [attr.aria-hidden]="true"></i>
           <span class="sr-only">{{ showOldPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور' }}</span>
         </button>
@@ -370,24 +203,12 @@
     <div class="form-group">
       <label class="form-label">كلمة المرور الجديدة</label>
       <div class="password-input-wrapper">
-        <input
-          [type]="showNewPassword ? 'text' : 'password'"
-          pInputText
-          class="w-full password-input"
-          required
-          [(ngModel)]="changePasswordForm.new_password"
-          name="new_password"
-          placeholder="أدخل كلمة المرور الجديدة"
-          [disabled]="changingPassword"
-        />
-        <button
-          type="button"
-          class="password-toggle-btn"
-          (click)="toggleNewPasswordVisibility()"
-          [disabled]="changingPassword"
-          [attr.aria-label]="showNewPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-          [attr.title]="showNewPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-        >
+        <input [type]="showNewPassword ? 'text' : 'password'" pInputText class="w-full password-input" required
+          [(ngModel)]="changePasswordForm.new_password" name="new_password" placeholder="أدخل كلمة المرور الجديدة"
+          [disabled]="changingPassword" />
+        <button type="button" class="password-toggle-btn" (click)="toggleNewPasswordVisibility()"
+          [disabled]="changingPassword" [attr.aria-label]="showNewPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+          [attr.title]="showNewPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
           <i [class]="showNewPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" [attr.aria-hidden]="true"></i>
           <span class="sr-only">{{ showNewPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور' }}</span>
         </button>
@@ -397,24 +218,13 @@
     <div class="form-group">
       <label class="form-label">تأكيد كلمة المرور الجديدة</label>
       <div class="password-input-wrapper">
-        <input
-          [type]="showConfirmPassword ? 'text' : 'password'"
-          pInputText
-          class="w-full password-input"
-          required
-          [(ngModel)]="changePasswordForm.new_password_confirm"
-          name="new_password_confirm"
-          placeholder="أعد إدخال كلمة المرور الجديدة"
-          [disabled]="changingPassword"
-        />
-        <button
-          type="button"
-          class="password-toggle-btn"
-          (click)="toggleConfirmPasswordVisibility()"
+        <input [type]="showConfirmPassword ? 'text' : 'password'" pInputText class="w-full password-input" required
+          [(ngModel)]="changePasswordForm.new_password_confirm" name="new_password_confirm"
+          placeholder="أعد إدخال كلمة المرور الجديدة" [disabled]="changingPassword" />
+        <button type="button" class="password-toggle-btn" (click)="toggleConfirmPasswordVisibility()"
           [disabled]="changingPassword"
           [attr.aria-label]="showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-          [attr.title]="showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-        >
+          [attr.title]="showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
           <i [class]="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" [attr.aria-hidden]="true"></i>
           <span class="sr-only">{{ showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور' }}</span>
         </button>
@@ -422,20 +232,10 @@
     </div>
 
     <div class="dialog-actions">
-      <p-button
-        type="button"
-        label="إلغاء"
-        styleClass="p-button-secondary"
-        (onClick)="closeChangePasswordDialog()"
-        [disabled]="changingPassword"
-      ></p-button>
-      <p-button
-        type="submit"
-        [label]="changingPassword ? 'جاري التحديث...' : 'تحديث كلمة المرور'"
-        styleClass="p-button-primary"
-        [disabled]="changingPassword"
-        [loading]="changingPassword"
-      ></p-button>
+      <p-button type="button" label="إلغاء" styleClass="p-button-secondary" (onClick)="closeChangePasswordDialog()"
+        [disabled]="changingPassword"></p-button>
+      <p-button type="submit" [label]="changingPassword ? 'جاري التحديث...' : 'تحديث كلمة المرور'"
+        styleClass="p-button-primary" [disabled]="changingPassword" [loading]="changingPassword"></p-button>
     </div>
   </form>
 </p-dialog>

@@ -9,23 +9,23 @@
 .search-form {
   max-width: 100%;
   margin: 0;
-  
+
   .search-fields {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
     gap: 1rem;
     margin-bottom: 1rem;
-    
+
     @media (max-width: 992px) {
       grid-template-columns: 1fr;
     }
   }
-  
+
   .field-group {
     position: relative;
     display: flex;
     align-items: stretch;
-    
+
     .p-inputtext {
       width: 100%;
       height: 48px;
@@ -35,19 +35,19 @@
       font-size: 0.95rem;
       transition: all 0.2s ease;
       box-sizing: border-box;
-      
+
       &:focus {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         outline: none;
       }
-      
+
       &::placeholder {
         color: var(--gray-400);
       }
     }
   }
-  
+
   .search-btn {
     width: 100%;
     height: 48px;
@@ -60,35 +60,35 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     &:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
     }
   }
-  
+
   // PrimeNG Select styling to match input height
   ::ng-deep {
     .p-select {
       width: 100%;
       height: 48px;
-      
+
       .p-select-trigger {
         height: 48px;
         border: 2px solid var(--gray-300);
         border-radius: var(--radius-md);
         transition: all 0.2s ease;
-        
+
         &:hover {
           border-color: var(--gray-400);
         }
       }
-      
+
       &.p-focus .p-select-trigger {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       }
-      
+
       .p-select-label {
         padding: 0.875rem 1rem;
         font-size: 0.95rem;
@@ -97,7 +97,7 @@
         display: flex;
         align-items: center;
       }
-      
+
       .p-select-trigger-icon {
         margin-left: 0.5rem;
         margin-right: 0.75rem;
@@ -112,7 +112,7 @@
   grid-template-columns: 320px 1fr;
   gap: 2.5rem;
   padding: 2.5rem 0;
-  
+
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -129,7 +129,7 @@
   position: sticky;
   top: 120px;
   border: 1px solid var(--gray-200);
-  
+
   @media (max-width: 992px) {
     position: static;
     order: 2;
@@ -140,7 +140,7 @@
   margin-bottom: 2.5rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid var(--gray-200);
-  
+
   &:last-of-type {
     border-bottom: none;
     margin-bottom: 0;
@@ -156,7 +156,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
+
   &::before {
     content: '';
     width: 4px;
@@ -182,30 +182,30 @@
   transition: all 0.2s ease;
   border: 2px solid transparent;
   background: var(--gray-50);
-  
+
   .filter-count {
     margin-right: auto;
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--gray-600);
   }
-  
+
   &:hover {
     background: var(--gray-100);
     border-color: var(--gray-300);
     transform: translateX(-4px);
   }
-  
+
   &.active {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     color: var(--white);
     border-color: var(--primary-color);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-    
+
     .filter-count {
       color: rgba(255, 255, 255, 0.9);
     }
-    
+
     &:hover {
       transform: translateX(-2px);
       box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
@@ -227,7 +227,7 @@
 .filter-option.active .filter-checkbox {
   background-color: var(--white);
   border-color: var(--white);
-  
+
   &::after {
     content: "✓";
     position: absolute;
@@ -262,7 +262,7 @@
 .results-count {
   color: var(--gray-700);
   font-size: 1.1rem;
-  
+
   strong {
     color: var(--gray-900);
     font-size: 1.25rem;
@@ -274,7 +274,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  
+
   label {
     font-weight: 600;
     color: var(--gray-700);
@@ -302,7 +302,7 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -314,17 +314,17 @@
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-  
+
   &:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     transform: translateY(-4px);
     border-color: var(--primary-color);
-    
+
     &::before {
       opacity: 1;
     }
   }
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -340,7 +340,7 @@
   border: 2px solid var(--gray-200);
   background: var(--gray-100);
   transition: all 0.3s ease;
-  
+
   .job-card-horizontal:hover & {
     border-color: var(--primary-color);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
@@ -360,14 +360,14 @@
   font-weight: 700;
   color: var(--gray-900);
   line-height: 1.4;
-  
+
   .job-title-link {
     color: inherit;
     text-decoration: none;
     cursor: pointer;
     transition: color 0.2s ease;
     display: block;
-    
+
     &:hover {
       color: var(--primary-color);
     }
@@ -387,7 +387,7 @@
   gap: 1rem;
   font-size: 0.9rem;
   color: var(--gray-600);
-  
+
   span {
     display: flex;
     align-items: center;
@@ -420,7 +420,7 @@
   background: var(--gray-50);
   color: var(--gray-700);
   transition: all 0.2s ease;
-  
+
   &:hover {
     background: var(--primary-color);
     color: var(--white);
@@ -441,11 +441,11 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(226, 232, 240, 0.8);
   transition: all 0.3s ease;
-  
+
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
-  
+
   @media (max-width: 768px) {
     margin-left: 0;
     margin-right: 0;
@@ -478,7 +478,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &:hover:not(:disabled) {
     background-color: var(--primary-color);
     color: var(--white);
@@ -486,7 +486,7 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -499,7 +499,7 @@
   color: var(--white);
   border-color: var(--primary-color);
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
@@ -520,7 +520,7 @@
 .load-more-container {
   text-align: center;
   margin-top: 2rem;
-  
+
   &.hidden {
     display: none;
   }
@@ -533,24 +533,24 @@
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid var(--gray-200);
-  
+
   .filter-apply-btn {
     flex: 1;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    
+
     &:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
     }
   }
-  
+
   .filter-clear-btn {
     flex: 1;
     background: var(--white);
     border: 2px solid var(--gray-300);
     color: var(--gray-700);
-    
+
     &:hover {
       background: var(--gray-50);
       border-color: var(--gray-400);
@@ -564,17 +564,17 @@
   .search-form .search-fields {
     grid-template-columns: 1fr;
   }
-  
+
   .search-results-container {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .filters-sidebar {
     position: static;
     order: 2;
   }
-  
+
   .results-header {
     flex-direction: column;
     align-items: stretch;
@@ -586,41 +586,52 @@
   .search-page-header {
     padding: 2rem 0;
   }
-  
+
   .job-card-horizontal {
     grid-template-columns: 1fr;
     padding: 1.5rem;
-    
+
     .company-logo {
       width: 60px;
       height: 60px;
       margin: 0 auto;
     }
-    
+
     .job-info {
       text-align: center;
     }
   }
-  
+
   .job-actions {
     flex-direction: row;
     flex-wrap: wrap;
-    
+
     .btn-small {
       flex: 1;
       min-width: calc(50% - 0.375rem);
     }
   }
-  
+
   .filter-section {
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
   }
 }
+
 .active {
   background-color: var(--primary-color);
   color: var(--white);
 }
+
+.ai-icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  float: right;
+  margin-left: 0.5rem;
+  margin-top: 0.2rem;
+}
+
 .job-description {
   color: var(--gray-700);
   margin: 0.5rem 0;
@@ -647,7 +658,7 @@
   gap: 0.75rem;
   min-width: 160px;
   align-items: stretch;
-  
+
   @media (max-width: 768px) {
     min-width: 100%;
     flex-direction: row;
@@ -662,27 +673,27 @@
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
-  
+
   // Active state - solid blue
   &:not(:disabled):not(.btn-disabled) {
     background-color: var(--primary-color, #2563EB);
     color: var(--white, #FFFFFF);
     border: 1px solid var(--primary-color, #2563EB);
     box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
-    
+
     &:hover {
       background-color: var(--primary-dark, #1E40AF);
       border-color: var(--primary-dark, #1E40AF);
       transform: translateY(-1px);
       box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
     }
-    
+
     &:active {
       transform: translateY(0);
       box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     }
   }
-  
+
   // Applied state - solid gray (disabled)
   &.btn-disabled,
   &:disabled {
@@ -694,12 +705,12 @@
     pointer-events: none;
     box-shadow: none;
   }
-  
+
   // Loading state
   &.loading {
     position: relative;
     color: transparent;
-    
+
     &::after {
       content: '';
       position: absolute;
@@ -722,13 +733,13 @@
   border-radius: 8px;
   font-weight: 600;
   transition: all 0.2s ease;
-  
+
   // Not saved state - outlined
   &:not(.active) {
     background-color: var(--white, #FFFFFF);
     color: var(--primary-color, #2563EB);
     border: 1.5px solid var(--primary-color, #2563EB);
-    
+
     &:hover {
       background-color: var(--primary-color, #2563EB);
       color: var(--white, #FFFFFF);
@@ -736,14 +747,14 @@
       box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     }
   }
-  
+
   // Saved state - solid blue
   &.active {
     background-color: var(--primary-color, #2563EB);
     color: var(--white, #FFFFFF);
     border: 1px solid var(--primary-color, #2563EB);
     box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
-    
+
     &:hover {
       background-color: var(--primary-dark, #1E40AF);
       border-color: var(--primary-dark, #1E40AF);
@@ -761,13 +772,13 @@
   color: var(--primary-color, #2563EB);
   border: 1.5px solid var(--primary-color, #2563EB);
   transition: all 0.2s ease;
-  
+
   &:hover {
     background-color: var(--gray-50, #F9FAFB);
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(37, 99, 235, 0.15);
   }
-  
+
   &:active {
     transform: translateY(0);
   }
@@ -782,7 +793,7 @@
   font-weight: 600;
   border-radius: var(--radius-md);
   transition: all 0.2s ease;
-  
+
   @media (max-width: 768px) {
     flex: 1;
     min-width: 120px;
@@ -802,7 +813,7 @@
     min-width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
-    
+
     .btn-small {
       flex: 1;
       min-width: 100px;
@@ -816,14 +827,14 @@
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     border-color: #2563eb;
     box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
-    
+
     &:hover:not(:disabled) {
       background: linear-gradient(135deg, #1d4ed8, #1e40af);
       border-color: #1d4ed8;
       box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
       transform: translateY(-1px);
     }
-    
+
     &:disabled {
       opacity: 0.7;
       cursor: default;
@@ -834,7 +845,7 @@
   .p-button-secondary {
     border-color: #2563eb;
     color: #2563eb;
-    
+
     &:hover:not(:disabled) {
       background: #2563eb;
       color: #ffffff;
@@ -869,7 +880,7 @@
       border: none;
       padding: 0;
       direction: rtl;
-      
+
       .p-paginator-first,
       .p-paginator-prev,
       .p-paginator-next,
@@ -882,7 +893,7 @@
         color: #475569;
         transition: all 0.2s ease;
         margin: 0 0.25rem;
-        
+
         &:hover:not(:disabled) {
           background: linear-gradient(135deg, #2563eb, #1d4ed8);
           border-color: #2563eb;
@@ -890,13 +901,13 @@
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         }
-        
+
         &:disabled {
           opacity: 0.4;
           cursor: not-allowed;
         }
       }
-      
+
       .p-paginator-pages {
         .p-paginator-page {
           min-width: 2.5rem;
@@ -908,20 +919,20 @@
           font-weight: 600;
           transition: all 0.2s ease;
           margin: 0 0.25rem;
-          
+
           &:hover:not(.p-highlight) {
             background: #f1f5f9;
             border-color: #cbd5e1;
             color: #2563eb;
             transform: translateY(-2px);
           }
-          
+
           &.p-highlight {
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
             border-color: #2563eb;
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-            
+
             &:hover {
               box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
               transform: translateY(-2px);
@@ -929,7 +940,7 @@
           }
         }
       }
-      
+
       .p-paginator-current {
         background: #f8fafc;
         border: 2px solid #e2e8f0;
@@ -940,41 +951,41 @@
         margin: 0 0.5rem;
         direction: rtl;
       }
-      
+
       .p-dropdown {
         border: 2px solid #e2e8f0;
         border-radius: 8px;
         background: #ffffff;
-        
+
         &:hover {
           border-color: #2563eb;
         }
-        
+
         .p-dropdown-trigger {
           color: #475569;
         }
       }
-      
+
       .p-paginator-rpp-options {
         margin: 0 0.5rem;
         direction: rtl;
-        
+
         .p-dropdown {
           min-width: 80px;
         }
       }
     }
-    
+
     // Responsive adjustments
     @media (max-width: 768px) {
       .p-paginator {
         flex-direction: column;
         gap: 1rem;
-        
+
         .p-paginator-pages {
           order: 2;
         }
-        
+
         .p-paginator-first,
         .p-paginator-prev,
         .p-paginator-next,
@@ -983,7 +994,7 @@
           height: 2rem;
           font-size: 0.875rem;
         }
-        
+
         .p-paginator-page {
           min-width: 2rem;
           height: 2rem;

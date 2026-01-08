@@ -10,224 +10,157 @@
 
   <div class="content-card">
     @if (loading) {
-      <div class="loading-indicator">
-        <p>جاري تحميل التنبيهات...</p>
-      </div>
+    <div class="loading-indicator">
+      <p>جاري تحميل التنبيهات...</p>
+    </div>
     } @else if (alerts.length === 0) {
-      <div class="empty-state">
-        <div class="empty-state-icon">🔔</div>
-        <h3>لا توجد تنبيهات وظائف</h3>
-        <p>أنشئ تنبيهات للحصول على إشعارات عند نشر وظائف تناسب اهتماماتك</p>
-        <button class="btn btn-primary" (click)="openCreateDialog()">
-          إنشاء تنبيه الآن
-        </button>
-      </div>
+    <div class="empty-state">
+      <div class="empty-state-icon">🔔</div>
+      <h3>لا توجد تنبيهات وظائف</h3>
+      <p>أنشئ تنبيهات للحصول على إشعارات عند نشر وظائف تناسب اهتماماتك</p>
+      <button class="btn btn-primary" (click)="openCreateDialog()">
+        إنشاء تنبيه الآن
+      </button>
+    </div>
     } @else {
-      <div class="alerts-list">
-        @for (alert of alerts; track alert.id) {
-          <div class="alert-item" [class.inactive]="!alert.is_active">
-            <div class="alert-header">
-              <div class="alert-title-section">
-                <h3 class="alert-title">{{ alert.title }}</h3>
-                <span class="alert-status" [class.active]="alert.is_active" [class.inactive]="!alert.is_active">
-                  {{ alert.is_active ? 'نشط' : 'معطل' }}
-                </span>
-              </div>
-              <div class="alert-actions">
-                <button class="btn-icon" (click)="toggleAlertStatus(alert)" [title]="alert.is_active ? 'تعطيل' : 'تفعيل'">
-                  {{ alert.is_active ? '⏸️' : '▶️' }}
-                </button>
-                <button class="btn-icon" (click)="openEditDialog(alert)" title="تعديل">
-                  ✏️
-                </button>
-                <button class="btn-icon btn-danger" (click)="deleteAlert(alert)" title="حذف">
-                  🗑️
-                </button>
-              </div>
-            </div>
-            <div class="alert-details">
-              @if (alert.keywords) {
-                <div class="alert-detail">
-                  <span class="detail-label">الكلمات المفتاحية:</span>
-                  <span class="detail-value">{{ alert.keywords }}</span>
-                </div>
-              }
-              @if (alert.city) {
-                <div class="alert-detail">
-                  <span class="detail-label">المدينة:</span>
-                  <span class="detail-value">{{ getCityLabel(alert.city) }}</span>
-                </div>
-              }
-              @if (alert.job_type) {
-                <div class="alert-detail">
-                  <span class="detail-label">نوع الوظيفة:</span>
-                  <span class="detail-value">{{ getJobTypeLabel(alert.job_type) }}</span>
-                </div>
-              }
-              @if (alert.experience_level) {
-                <div class="alert-detail">
-                  <span class="detail-label">مستوى الخبرة:</span>
-                  <span class="detail-value">{{ getExperienceLevelLabel(alert.experience_level) }}</span>
-                </div>
-              }
-              @if (alert.salary_min) {
-                <div class="alert-detail">
-                  <span class="detail-label">الحد الأدنى للراتب:</span>
-                  <span class="detail-value">{{ alert.salary_min | number }} ريال</span>
-                </div>
-              }
-              @if (alert.category) {
-                <div class="alert-detail">
-                  <span class="detail-label">الفئة:</span>
-                  <span class="detail-value">{{ getCategoryName(alert.category) }}</span>
-                </div>
-              }
-              <div class="alert-detail">
-                <span class="detail-label">الإشعارات عبر البريد:</span>
-                <span class="detail-value">{{ alert.email_notifications ? 'مفعل' : 'معطل' }}</span>
-              </div>
-            </div>
+    <div class="alerts-list">
+      @for (alert of alerts; track alert.id) {
+      <div class="alert-item" [class.inactive]="!alert.is_active">
+        <div class="alert-header">
+          <div class="alert-title-section">
+            <h3 class="alert-title">{{ alert.title }}</h3>
+            <span class="alert-status" [class.active]="alert.is_active" [class.inactive]="!alert.is_active">
+              {{ alert.is_active ? 'نشط' : 'معطل' }}
+            </span>
           </div>
-        }
+          <div class="alert-actions">
+            <button class="btn-icon" (click)="toggleAlertStatus(alert)" [title]="alert.is_active ? 'تعطيل' : 'تفعيل'">
+              {{ alert.is_active ? '⏸️' : '▶️' }}
+            </button>
+            <button class="btn-icon" (click)="openEditDialog(alert)" title="تعديل">
+              <i class="pi pi-pencil"></i>
+            </button>
+            <button class="btn-icon btn-danger" (click)="deleteAlert(alert)" title="حذف">
+              🗑️
+            </button>
+          </div>
+        </div>
+        <div class="alert-details">
+          @if (alert.keywords) {
+          <div class="alert-detail">
+            <span class="detail-label">الكلمات المفتاحية:</span>
+            <span class="detail-value">{{ alert.keywords }}</span>
+          </div>
+          }
+          @if (alert.city) {
+          <div class="alert-detail">
+            <span class="detail-label">المدينة:</span>
+            <span class="detail-value">{{ getCityLabel(alert.city) }}</span>
+          </div>
+          }
+          @if (alert.job_type) {
+          <div class="alert-detail">
+            <span class="detail-label">نوع الوظيفة:</span>
+            <span class="detail-value">{{ getJobTypeLabel(alert.job_type) }}</span>
+          </div>
+          }
+          @if (alert.experience_level) {
+          <div class="alert-detail">
+            <span class="detail-label">مستوى الخبرة:</span>
+            <span class="detail-value">{{ getExperienceLevelLabel(alert.experience_level) }}</span>
+          </div>
+          }
+          @if (alert.salary_min) {
+          <div class="alert-detail">
+            <span class="detail-label">الحد الأدنى للراتب:</span>
+            <span class="detail-value">{{ alert.salary_min | number }} ريال</span>
+          </div>
+          }
+          @if (alert.category) {
+          <div class="alert-detail">
+            <span class="detail-label">الفئة:</span>
+            <span class="detail-value">{{ getCategoryName(alert.category) }}</span>
+          </div>
+          }
+          <div class="alert-detail">
+            <span class="detail-label">الإشعارات عبر البريد:</span>
+            <span class="detail-value">{{ alert.email_notifications ? 'مفعل' : 'معطل' }}</span>
+          </div>
+        </div>
       </div>
+      }
+    </div>
     }
   </div>
 </div>
 
 <!-- Create/Edit Alert Dialog -->
-<p-dialog
-  [(visible)]="showDialog"
-  [modal]="true"
-  [style]="{ width: '90%', maxWidth: '600px' }"
-  [header]="editingAlert ? 'تعديل التنبيه' : 'إنشاء تنبيه جديد'"
-  (onHide)="closeDialog()"
-  [draggable]="false"
-  [resizable]="false"
->
+<p-dialog [(visible)]="showDialog" [modal]="true" [style]="{ width: '90%', maxWidth: '600px' }"
+  [header]="editingAlert ? 'تعديل التنبيه' : 'إنشاء تنبيه جديد'" (onHide)="closeDialog()" [draggable]="false"
+  [resizable]="false">
   <form [formGroup]="alertForm" (ngSubmit)="saveAlert()">
     <div class="form-group">
       <label class="form-label" for="title">عنوان التنبيه *</label>
-      <input
-        pInputText
-        id="title"
-        formControlName="title"
-        placeholder="مثال: مطور تطبيقات الويب"
-        [class.p-invalid]="alertForm.get('title')?.invalid && alertForm.get('title')?.touched"
-      />
+      <input pInputText id="title" formControlName="title" placeholder="مثال: مطور تطبيقات الويب"
+        [class.p-invalid]="alertForm.get('title')?.invalid && alertForm.get('title')?.touched" />
       @if (alertForm.get('title')?.invalid && alertForm.get('title')?.touched) {
-        <small class="p-error">عنوان التنبيه مطلوب</small>
+      <small class="p-error">عنوان التنبيه مطلوب</small>
       }
     </div>
 
     <div class="form-group">
       <label class="form-label" for="keywords">الكلمات المفتاحية</label>
-      <input
-        pInputText
-        id="keywords"
-        formControlName="keywords"
-        placeholder="مثال: Angular, React, Node.js"
-      />
+      <input pInputText id="keywords" formControlName="keywords" placeholder="مثال: Angular, React, Node.js" />
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label class="form-label" for="city">المدينة</label>
-        <p-select
-          id="city"
-          formControlName="city"
-          [options]="jobCities"
-          optionLabel="label"
-          optionValue="value"
-          [showClear]="true"
-          placeholder="اختر المدينة"
-        ></p-select>
+        <p-select id="city" formControlName="city" [options]="jobCities" optionLabel="label" optionValue="value"
+          [showClear]="true" placeholder="اختر المدينة"></p-select>
       </div>
 
       <div class="form-group">
         <label class="form-label" for="job_type">نوع الوظيفة</label>
-        <p-select
-          id="job_type"
-          formControlName="job_type"
-          [options]="jobTypes"
-          optionLabel="label"
-          optionValue="value"
-          [showClear]="true"
-          placeholder="اختر نوع الوظيفة"
-        ></p-select>
+        <p-select id="job_type" formControlName="job_type" [options]="jobTypes" optionLabel="label" optionValue="value"
+          [showClear]="true" placeholder="اختر نوع الوظيفة"></p-select>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label class="form-label" for="experience_level">مستوى الخبرة</label>
-        <p-select
-          id="experience_level"
-          formControlName="experience_level"
-          [options]="experienceLevels"
-          optionLabel="label"
-          optionValue="value"
-          [showClear]="true"
-          placeholder="اختر مستوى الخبرة"
-        ></p-select>
+        <p-select id="experience_level" formControlName="experience_level" [options]="experienceLevels"
+          optionLabel="label" optionValue="value" [showClear]="true" placeholder="اختر مستوى الخبرة"></p-select>
       </div>
 
       <div class="form-group">
         <label class="form-label" for="category">الفئة</label>
-        <p-select
-          id="category"
-          formControlName="category"
-          [options]="categories"
-          optionLabel="name"
-          optionValue="id"
-          [showClear]="true"
-          placeholder="اختر الفئة"
-        ></p-select>
+        <p-select id="category" formControlName="category" [options]="categories" optionLabel="name" optionValue="id"
+          [showClear]="true" placeholder="اختر الفئة"></p-select>
       </div>
     </div>
 
     <div class="form-group">
       <label class="form-label" for="salary_min">الحد الأدنى للراتب (ريال)</label>
-      <p-inputNumber
-        id="salary_min"
-        formControlName="salary_min"
-        [min]="0"
-        [useGrouping]="true"
-        placeholder="مثال: 5000"
-        styleClass="w-full"
-      ></p-inputNumber>
+      <p-inputNumber id="salary_min" formControlName="salary_min" [min]="0" [useGrouping]="true"
+        placeholder="مثال: 5000" styleClass="w-full"></p-inputNumber>
     </div>
 
     <div class="form-group checkbox-group">
-      <p-checkbox
-        formControlName="is_active"
-        inputId="is_active"
-        [binary]="true"
-      ></p-checkbox>
+      <p-checkbox formControlName="is_active" inputId="is_active" [binary]="true"></p-checkbox>
       <label for="is_active" class="checkbox-label">التنبيه نشط</label>
     </div>
 
     <div class="form-group checkbox-group">
-      <p-checkbox
-        formControlName="email_notifications"
-        inputId="email_notifications"
-        [binary]="true"
-      ></p-checkbox>
+      <p-checkbox formControlName="email_notifications" inputId="email_notifications" [binary]="true"></p-checkbox>
       <label for="email_notifications" class="checkbox-label">الإشعارات عبر البريد الإلكتروني</label>
     </div>
 
     <div class="dialog-actions">
-      <p-button
-        type="button"
-        label="إلغاء"
-        styleClass="p-button-secondary"
-        (onClick)="closeDialog()"
-      ></p-button>
-      <p-button
-        type="submit"
-        label="{{ editingAlert ? 'تحديث' : 'إنشاء' }}"
-        styleClass="p-button-primary"
-        [disabled]="alertForm.invalid"
-      ></p-button>
+      <p-button type="button" label="إلغاء" styleClass="p-button-secondary" (onClick)="closeDialog()"></p-button>
+      <p-button type="submit" label="{{ editingAlert ? 'تحديث' : 'إنشاء' }}" styleClass="p-button-primary"
+        [disabled]="alertForm.invalid"></p-button>
     </div>
   </form>
 </p-dialog>

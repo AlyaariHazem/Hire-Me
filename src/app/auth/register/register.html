@@ -9,23 +9,13 @@
 
     <!-- User Type Selector -->
     <div class="user-type-selector">
-      <div
-        id="user"
-        class="user-type-option"
-        [class.active]="user"
-        (click)="selectType('jobseeker')"
-      >
-        <div class="user-type-icon">👤</div>
+      <div id="user" class="user-type-option" [class.active]="user" (click)="selectType('jobseeker')">
+        <div class="user-type-icon"><i class="pi pi-user"></i></div>
         <div class="user-type-title">باحث عن عمل</div>
         <div class="user-type-desc">ابحث عن الوظائف وتقدم إليها</div>
       </div>
 
-      <div
-        id="aoner"
-        class="user-type-option"
-        [class.active]="admin"
-        (click)="selectType('employer')"
-      >
+      <div id="aoner" class="user-type-option" [class.active]="admin" (click)="selectType('employer')">
         <div class="user-type-icon">🏢</div>
         <div class="user-type-title">صاحب عمل</div>
         <div class="user-type-desc">انشر الوظائف وابحث عن المواهب</div>
@@ -36,45 +26,26 @@
       <div class="form-row">
         <div class="form-group">
           <label for="firstName" class="form-label">الاسم الأول</label>
-          <input
-            id="firstName"
-            class="form-input"
-            required
-            [(ngModel)]="model.first_name"
-           #firstName="ngModel"
-            name="first_name"
-          />
+          <input id="firstName" class="form-input" required [(ngModel)]="model.first_name" #firstName="ngModel"
+            name="first_name" />
           <!-- show this only when the user click and pure if it empty  -->
           @if (firstName.touched && firstName.errors?.['required']) {
-            <div class="form-error">الاسم الأول مطلوب</div>
+          <div class="form-error">الاسم الأول مطلوب</div>
           }
         </div>
         <div class="form-group">
           <label for="lastName" class="form-label">الاسم الأخير</label>
-          <input
-            id="lastName"
-            class="form-input"
-            required
-            [(ngModel)]="model.last_name"
-            #lastName="ngModel"
-            name="last_name"
-          />
+          <input id="lastName" class="form-input" required [(ngModel)]="model.last_name" #lastName="ngModel"
+            name="last_name" />
           @if (lastName.touched && lastName.errors?.['required']) {
-            <div class="form-error">الاسم الأخير مطلوب</div>
+          <div class="form-error">الاسم الأخير مطلوب</div>
           }
         </div>
       </div>
 
       <div class="form-group">
         <label for="email" class="form-label">البريد الإلكتروني</label>
-        <input
-          id="email"
-          type="email"
-          class="form-input"
-          [(ngModel)]="model.email"
-          #email="ngModel"
-          name="email"
-        />
+        <input id="email" type="email" class="form-input" [(ngModel)]="model.email" #email="ngModel" name="email" />
         <!-- @if (email.touched && email.errors?.['required']) {
           <div class="form-error">البريد الإلكتروني مطلوب</div>
         } -->
@@ -82,19 +53,8 @@
 
       <div class="form-group">
         <label for="phone" class="form-label">رقم الهاتف</label>
-        <input
-          type="text"
-          id="phone"
-          name="phone"
-          [(ngModel)]="model.phone"
-          maxlength="9"
-          pattern="7[0-9]{8}"
-          inputmode="numeric"
-          class="form-input"
-          #phone="ngModel"
-          placeholder="أدخل رقم الهاتف (يبدأ بـ 7)"
-          required
-        />
+        <input type="text" id="phone" name="phone" [(ngModel)]="model.phone" maxlength="9" pattern="7[0-9]{8}"
+          inputmode="numeric" class="form-input" #phone="ngModel" placeholder="أدخل رقم الهاتف (يبدأ بـ 7)" required />
         @if(isInvalidPhone() && phone.touched&& phone.dirty){
         <div class="form-error">
           رقم الهاتف يجب أن يبدأ بـ 7 ويتكون من 9 أرقام
@@ -107,86 +67,62 @@
       <div class="form-group">
         <label for="password" class="form-label">كلمة المرور</label>
         <div class="password-input-wrapper">
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            id="password"
-            class="form-input password-input"
-            required
-            [(ngModel)]="model.password"
-            #password="ngModel"
-            name="password"
-            placeholder="أدخل كلمة المرور"
-            autocomplete="new-password"
-          />
-          <button
-            type="button"
-            class="password-toggle-btn"
-            (click)="togglePasswordVisibility()"
-            [disabled]="isLoading()"
-            [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-            [attr.title]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-          >
+          <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-input password-input" required
+            [(ngModel)]="model.password" #password="ngModel" name="password" placeholder="أدخل كلمة المرور"
+            autocomplete="new-password" />
+          <button type="button" class="password-toggle-btn" (click)="togglePasswordVisibility()"
+            [disabled]="isLoading()" [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+            [attr.title]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
             @if (showPassword) {
-              <!-- Eye slash icon (hide) -->
-              <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                <line x1="1" y1="1" x2="23" y2="23"></line>
-              </svg>
+            <!-- Eye slash icon (hide) -->
+            <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+              </path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
             } @else {
-              <!-- Eye icon (show) -->
-              <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
+            <!-- Eye icon (show) -->
+            <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
             }
           </button>
         </div>
         @if (password.touched && password.errors?.['required']) {
-          <div class="form-error">كلمة المرور مطلوبة</div>
+        <div class="form-error">كلمة المرور مطلوبة</div>
         }
       </div>
 
       <div class="form-group">
-        <label for="confirmPassword" class="form-label"
-          >تأكيد كلمة المرور</label
-        >
+        <label for="confirmPassword" class="form-label">تأكيد كلمة المرور</label>
         <div class="password-input-wrapper">
-          <input
-            [type]="showConfirmPassword ? 'text' : 'password'"
-            id="confirmPassword"
-            class="form-input password-input"
-            required
-            [(ngModel)]="model.password_confirm"
-            name="password_confirm"
-            #confirmPassword="ngModel"
-            placeholder="أعد إدخال كلمة المرور"
-            autocomplete="new-password"
-          />
-          <button
-            type="button"
-            class="password-toggle-btn"
-            (click)="toggleConfirmPasswordVisibility()"
-            [disabled]="isLoading()"
-            [attr.aria-label]="showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-            [attr.title]="showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-          >
+          <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword"
+            class="form-input password-input" required [(ngModel)]="model.password_confirm" name="password_confirm"
+            #confirmPassword="ngModel" placeholder="أعد إدخال كلمة المرور" autocomplete="new-password" />
+          <button type="button" class="password-toggle-btn" (click)="toggleConfirmPasswordVisibility()"
+            [disabled]="isLoading()" [attr.aria-label]="showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+            [attr.title]="showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
             @if (showConfirmPassword) {
-              <!-- Eye slash icon (hide) -->
-              <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                <line x1="1" y1="1" x2="23" y2="23"></line>
-              </svg>
+            <!-- Eye slash icon (hide) -->
+            <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+              </path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
             } @else {
-              <!-- Eye icon (show) -->
-              <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
+            <!-- Eye icon (show) -->
+            <svg class="password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
             }
           </button>
         </div>
         @if (confirmPassword.touched && confirmPassword.errors?.['required']) {
-          <div class="form-error">تأكيد كلمة المرور مطلوب</div>
+        <div class="form-error">تأكيد كلمة المرور مطلوب</div>
         }
       </div>
 
@@ -250,42 +186,24 @@
       </p>
       <div class="form-group">
         <label for="verificationCode" class="form-label">رمز التحقق</label>
-        <input
-          type="text"
-          id="verificationCode"
-          class="form-input verification-code-input"
-          [(ngModel)]="verificationCode"
-          placeholder="أدخل رمز التحقق"
-          maxlength="6"
-          inputmode="numeric"
-          autofocus
-          (keyup.enter)="verifyCode()"
-        />
+        <input type="text" id="verificationCode" class="form-input verification-code-input"
+          [(ngModel)]="verificationCode" placeholder="أدخل رمز التحقق" maxlength="6" inputmode="numeric" autofocus
+          (keyup.enter)="verifyCode()" />
       </div>
-      <button
-        type="button"
-        class="auth-submit"
-        (click)="verifyCode()"
-        [disabled]="isVerifying() || !verificationCode"
-      >
+      <button type="button" class="auth-submit" (click)="verifyCode()" [disabled]="isVerifying() || !verificationCode">
         @if (isVerifying()) {
-          جاري التحقق...
+        جاري التحقق...
         } @else {
-          التحقق
+        التحقق
         }
       </button>
       <div class="resend-code">
         <p>لم تستلم الرمز؟</p>
-        <button
-          type="button"
-          class="resend-btn"
-          (click)="resendVerificationCode()"
-          [disabled]="isResending()"
-        >
+        <button type="button" class="resend-btn" (click)="resendVerificationCode()" [disabled]="isResending()">
           @if (isResending()) {
-            جاري الإرسال...
+          جاري الإرسال...
           } @else {
-            إعادة إرسال الرمز
+          إعادة إرسال الرمز
           }
         </button>
       </div>

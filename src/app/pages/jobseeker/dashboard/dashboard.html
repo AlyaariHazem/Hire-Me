@@ -17,9 +17,7 @@
     <h1 class="dashboard-title">مرحباً، {{ userData.user.first_name || 'المستخدم' }}!</h1>
     <div class="dashboard-actions">
       <a routerLink="/jobs" class="btn btn-primary">البحث عن وظائف</a>
-      <a routerLink="/jobseeker/cv-builder" class="btn btn-secondary"
-        >تحديث السيرة الذاتية</a
-      >
+      <a routerLink="/jobseeker/cv-builder" class="btn btn-secondary">تحديث السيرة الذاتية</a>
     </div>
   </div>
   }
@@ -46,7 +44,7 @@
     <div class="stat-card">
       <div class="stat-header">
         <span class="stat-title">إجمالي الوظائف</span>
-        <span class="stat-icon">📝</span>
+        <span class="stat-icon"><i class="pi pi-file-edit"></i></span>
       </div>
       <div class="stat-value">{{ stats.total_jobs || 0 }}</div>
       <div class="stat-change">متاحة الآن</div>
@@ -151,37 +149,21 @@
     <div class="content-card">
       <div class="card-header">
         <h2 class="card-title">آخر الطلبات</h2>
-        <a
-          href="#applications"
-          class="card-action"
-          onclick="switchTab('applications')"
-          >عرض الكل</a
-        >
+        <a href="#applications" class="card-action" onclick="switchTab('applications')">عرض الكل</a>
       </div>
 
       <div class="application-item" *ngFor="let app of recentApplications">
-        <img
-          [src]="app.job.company.logo || 'images/company-logo-1.jpg'"
-          [alt]="app.job.company.name"
-          [title]="app.job.company.name"
-          title="Company logo"
-          class="application-logo"
-        />
+        <img [src]="app.job.company.logo || 'images/company-logo-1.jpg'" [alt]="app.job.company.name"
+          [title]="app.job.company.name" title="Company logo" class="application-logo" />
         <div class="application-info">
           <h4 class="application-title">
-            <a 
-              [routerLink]="['/jobs/job-details', app.job.slug]"
-              class="application-title-link"
-              (click)="$event.stopPropagation()"
-            >
+            <a [routerLink]="['/jobs/job-details', app.job.slug]" class="application-title-link"
+              (click)="$event.stopPropagation()">
               {{ app.job.title }}
             </a>
           </h4>
-          <a 
-            [routerLink]="['/company', app.job.company.slug]"
-            class="application-company"
-            (click)="$event.stopPropagation()"
-          >
+          <a [routerLink]="['/company', app.job.company.slug]" class="application-company"
+            (click)="$event.stopPropagation()">
             {{ app.job.company.name }}
           </a>
           <div class="application-meta">
@@ -189,16 +171,15 @@
             <span *ngIf="app.job.city">{{ app.job.city }}</span>
           </div>
         </div>
-        <span class="application-status" 
-              [ngClass]="{
+        <span class="application-status" [ngClass]="{
                 'status-pending': app.status === 'pending',
                 'status-reviewed': app.status === 'reviewed',
                 'status-accepted': app.status === 'accepted',
                 'status-rejected': app.status === 'rejected'
               }">
-          {{ app.status === 'pending' ? 'قيد المراجعة' : 
-             app.status === 'reviewed' ? 'تمت المراجعة' :
-             app.status === 'accepted' ? 'مقبول' : 'مرفوض' }}
+          {{ app.status === 'pending' ? 'قيد المراجعة' :
+          app.status === 'reviewed' ? 'تمت المراجعة' :
+          app.status === 'accepted' ? 'مقبول' : 'مرفوض' }}
         </span>
       </div>
 
@@ -231,37 +212,20 @@
     <div class="content-card">
       <div class="card-header">
         <h2 class="card-title">الوظائف المحفوظة</h2>
-        <a
-          href="#saved-jobs"
-          class="card-action"
-          onclick="switchTab('saved-jobs')"
-          >عرض الكل</a
-        >
+        <a href="#saved-jobs" class="card-action" onclick="switchTab('saved-jobs')">عرض الكل</a>
       </div>
 
       <div class="saved-job-item" *ngFor="let job of savedJobs">
-        <img
-          [src]="job.company.logo || 'images/company-logo-1.jpg'"
-          [alt]="job.company.name"
-          [title]="job.company.name"
-          title="Company logo"
-          class="saved-job-logo"
-        />
+        <img [src]="job.company.logo || 'images/company-logo-1.jpg'" [alt]="job.company.name" [title]="job.company.name"
+          title="Company logo" class="saved-job-logo" />
         <div class="saved-job-info">
           <h4 class="saved-job-title">
-            <a 
-              [routerLink]="['/jobs/job-details', job.slug]"
-              class="saved-job-title-link"
-              (click)="$event.stopPropagation()"
-            >
+            <a [routerLink]="['/jobs/job-details', job.slug]" class="saved-job-title-link"
+              (click)="$event.stopPropagation()">
               {{ job.title }}
             </a>
           </h4>
-          <a 
-            [routerLink]="getCompanyRoute(job.company)"
-            class="saved-job-company"
-            (click)="$event.stopPropagation()"
-          >
+          <a [routerLink]="getCompanyRoute(job.company)" class="saved-job-company" (click)="$event.stopPropagation()">
             {{ job.company.name }}
           </a>
           <p class="saved-job-meta">

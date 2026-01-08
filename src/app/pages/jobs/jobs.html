@@ -17,199 +17,130 @@
 <!-- Search Header -->
 @if (!isLoading) {
 <section class="search-page-header">
-      <div class="container">
-        <form
-          class="search-form"
-          (ngSubmit)="onSearchSubmit()"
-        >
-          <div class="search-fields">
-            <div class="field-group">
-              <input
-                pInputText
-                type="text"
-                id="job-title"
-                placeholder="عنوان الوظيفة أو الكلمات المفتاحية"
-                name="search"
-                [(ngModel)]="searchValue"
-              />
+  <div class="container">
+    <form class="search-form" (ngSubmit)="onSearchSubmit()">
+      <div class="search-fields">
+        <div class="field-group">
+          <input pInputText type="text" id="job-title" placeholder="عنوان الوظيفة أو الكلمات المفتاحية" name="search"
+            [(ngModel)]="searchValue" />
+        </div>
+
+        <div class="field-group">
+          <p-select id="location" name="city" [(ngModel)]="filters.city" [options]="cityOptions" optionLabel="label"
+            optionValue="value" placeholder="جميع المواقع" [showClear]="true"
+            (onChange)="onCityChange($event.value || '')" appendTo="body" styleClass="w-full"></p-select>
+        </div>
+
+        <div class="field-group">
+          <p-select id="category" name="category" [(ngModel)]="filters.category" [options]="categoryOptions"
+            optionLabel="label" optionValue="value" placeholder="جميع الفئات" [showClear]="true"
+            (onChange)="onCategoryChange($event.value)" appendTo="body" styleClass="w-full"></p-select>
+        </div>
+      </div>
+
+      <p-button type="submit" [label]="isSearching ? 'جاري البحث...' : 'بحث'" icon="pi pi-search"
+        styleClass="p-button-primary search-btn" [disabled]="isSearching || isLoading"></p-button>
+    </form>
+  </div>
+</section>
+}
+<section class="search-results-section">
+  <div class="container">
+    <div class="search-results-container">
+      <!-- Filters Sidebar Skeleton (only on initial load) -->
+      @if (isLoading && jobs.length === 0) {
+      <aside class="filters-sidebar">
+        <div class="filter-section">
+          <p-skeleton width="120px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          @for (item of [1,2,3,4]; track item) {
+          <div class="filter-option skeleton-filter-option">
+            <p-skeleton width="20px" height="20px" shape="rectangle" styleClass="skeleton-checkbox"></p-skeleton>
+            <p-skeleton width="100px" height="1rem" styleClass="skeleton-filter-text"></p-skeleton>
+            <p-skeleton width="30px" height="1rem" styleClass="skeleton-filter-count"></p-skeleton>
+          </div>
+          }
+        </div>
+        <div class="filter-section">
+          <p-skeleton width="120px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          @for (item of [1,2,3]; track item) {
+          <div class="filter-option skeleton-filter-option">
+            <p-skeleton width="20px" height="20px" shape="rectangle" styleClass="skeleton-checkbox"></p-skeleton>
+            <p-skeleton width="120px" height="1rem" styleClass="skeleton-filter-text"></p-skeleton>
+            <p-skeleton width="30px" height="1rem" styleClass="skeleton-filter-count"></p-skeleton>
+          </div>
+          }
+        </div>
+        <div class="filter-actions">
+          <p-skeleton width="100%" height="2.5rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
+        </div>
+      </aside>
+      }
+
+      <!-- Filters Sidebar -->
+      @if (!isLoading || jobs.length > 0) {
+      <aside class="filters-sidebar">
+        <div class="filter-section">
+          <h3 class="filter-title">نوع الوظيفة</h3>
+          <div class="filter-options">
+            <div class="filter-option" (click)="setJobType('full_time')"
+              [class.active]="filters.job_type === 'full_time'">
+              <div class="filter-checkbox"></div>
+              <span>دوام كامل</span>
+              <span class="filter-count">({{ filterCounts.jobType.full_time }})</span>
             </div>
 
-            <div class="field-group">
-              <p-select
-                id="location"
-                name="city"
-                [(ngModel)]="filters.city"
-                [options]="cityOptions"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="جميع المواقع"
-                [showClear]="true"
-                (onChange)="onCityChange($event.value || '')"
-                appendTo="body"
-                styleClass="w-full"
-              ></p-select>
+            <div class="filter-option" (click)="setJobType('part_time')"
+              [class.active]="filters.job_type === 'part_time'">
+              <div class="filter-checkbox"></div>
+              <span>دوام جزئي</span>
+              <span class="filter-count">({{ filterCounts.jobType.part_time }})</span>
             </div>
 
-            <div class="field-group">
-              <p-select
-                id="category"
-                name="category"
-                [(ngModel)]="filters.category"
-                [options]="categoryOptions"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="جميع الفئات"
-                [showClear]="true"
-                (onChange)="onCategoryChange($event.value)"
-                appendTo="body"
-                styleClass="w-full"
-              ></p-select>
+            <div class="filter-option" (click)="setJobType('contract')"
+              [class.active]="filters.job_type === 'contract'">
+              <div class="filter-checkbox"></div>
+              <span>عقد مؤقت</span>
+              <span class="filter-count">({{ filterCounts.jobType.contract }})</span>
+            </div>
+
+            <div class="filter-option" (click)="setJobType('freelance')"
+              [class.active]="filters.job_type === 'freelance'">
+              <div class="filter-checkbox"></div>
+              <span>عمل عن بُعد</span>
+              <span class="filter-count">({{ filterCounts.jobType.freelance }})</span>
             </div>
           </div>
+        </div>
 
-          <p-button
-            type="submit"
-            [label]="isSearching ? 'جاري البحث...' : 'بحث'"
-            icon="pi pi-search"
-            styleClass="p-button-primary search-btn"
-            [disabled]="isSearching || isLoading"
-          ></p-button>
-        </form>
-      </div>
-    </section>
-}
-    <section class="search-results-section">
-      <div class="container">
-        <div class="search-results-container">
-          <!-- Filters Sidebar Skeleton (only on initial load) -->
-          @if (isLoading && jobs.length === 0) {
-          <aside class="filters-sidebar">
-            <div class="filter-section">
-              <p-skeleton width="120px" height="1.5rem" styleClass="mb-2"></p-skeleton>
-              @for (item of [1,2,3,4]; track item) {
-              <div class="filter-option skeleton-filter-option">
-                <p-skeleton width="20px" height="20px" shape="rectangle" styleClass="skeleton-checkbox"></p-skeleton>
-                <p-skeleton width="100px" height="1rem" styleClass="skeleton-filter-text"></p-skeleton>
-                <p-skeleton width="30px" height="1rem" styleClass="skeleton-filter-count"></p-skeleton>
-              </div>
-              }
-            </div>
-            <div class="filter-section">
-              <p-skeleton width="120px" height="1.5rem" styleClass="mb-2"></p-skeleton>
-              @for (item of [1,2,3]; track item) {
-              <div class="filter-option skeleton-filter-option">
-                <p-skeleton width="20px" height="20px" shape="rectangle" styleClass="skeleton-checkbox"></p-skeleton>
-                <p-skeleton width="120px" height="1rem" styleClass="skeleton-filter-text"></p-skeleton>
-                <p-skeleton width="30px" height="1rem" styleClass="skeleton-filter-count"></p-skeleton>
-              </div>
-              }
-            </div>
-            <div class="filter-actions">
-              <p-skeleton width="100%" height="2.5rem" styleClass="mb-2"></p-skeleton>
-              <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
-            </div>
-          </aside>
-          }
-
-          <!-- Filters Sidebar -->
-          @if (!isLoading || jobs.length > 0) {
-          <aside class="filters-sidebar">
-            <div class="filter-section">
-              <h3 class="filter-title">نوع الوظيفة</h3>
-              <div class="filter-options">
-                <div
-                  class="filter-option"
-                  (click)="setJobType('full_time')"
-                  [class.active]="filters.job_type === 'full_time'"
-                >
-                  <div class="filter-checkbox"></div>
-                  <span>دوام كامل</span>
-                  <span class="filter-count"
-                    >({{ filterCounts.jobType.full_time }})</span
-                  >
-                </div>
-
-                <div
-                  class="filter-option"
-                  (click)="setJobType('part_time')"
-                  [class.active]="filters.job_type === 'part_time'"
-                >
-                  <div class="filter-checkbox"></div>
-                  <span>دوام جزئي</span>
-                  <span class="filter-count"
-                    >({{ filterCounts.jobType.part_time }})</span
-                  >
-                </div>
-
-                <div
-                  class="filter-option"
-                  (click)="setJobType('contract')"
-                  [class.active]="filters.job_type === 'contract'"
-                >
-                  <div class="filter-checkbox"></div>
-                  <span>عقد مؤقت</span>
-                  <span class="filter-count"
-                    >({{ filterCounts.jobType.contract }})</span
-                  >
-                </div>
-
-                <div
-                  class="filter-option"
-                  (click)="setJobType('freelance')"
-                  [class.active]="filters.job_type === 'freelance'"
-                >
-                  <div class="filter-checkbox"></div>
-                  <span>عمل عن بُعد</span>
-                  <span class="filter-count"
-                    >({{ filterCounts.jobType.freelance }})</span
-                  >
-                </div>
-              </div>
+        <!-- مستوى الخبرة -->
+        <div class="filter-section">
+          <h3 class="filter-title">مستوى الخبرة</h3>
+          <div class="filter-options">
+            <div class="filter-option" (click)="setExperienceLevel('entry')"
+              [class.active]="filters.experience_level === 'entry'">
+              <div class="filter-checkbox"></div>
+              <span>مبتدئ (0-2 سنة)</span>
+              <span class="filter-count">({{ filterCounts.experienceLevel.entry }})</span>
             </div>
 
-            <!-- مستوى الخبرة -->
-            <div class="filter-section">
-              <h3 class="filter-title">مستوى الخبرة</h3>
-              <div class="filter-options">
-                <div
-                  class="filter-option"
-                  (click)="setExperienceLevel('entry')"
-                  [class.active]="filters.experience_level === 'entry'"
-                >
-                  <div class="filter-checkbox"></div>
-                  <span>مبتدئ (0-2 سنة)</span>
-                  <span class="filter-count"
-                    >({{ filterCounts.experienceLevel.entry }})</span
-                  >
-                </div>
-
-                <div
-                  class="filter-option"
-                  (click)="setExperienceLevel('mid')"
-                  [class.active]="filters.experience_level === 'mid'"
-                >
-                  <div class="filter-checkbox"></div>
-                  <span>متوسط (3-5 سنوات)</span>
-                  <span class="filter-count"
-                    >({{ filterCounts.experienceLevel.mid }})</span
-                  >
-                </div>
-
-                <div
-                  class="filter-option"
-                  (click)="setExperienceLevel('senior')"
-                  [class.active]="filters.experience_level === 'senior'"
-                >
-                  <div class="filter-checkbox"></div>
-                  <span>خبير (6+ سنوات)</span>
-                  <span class="filter-count"
-                    >({{ filterCounts.experienceLevel.senior }})</span
-                  >
-                </div>
-              </div>
+            <div class="filter-option" (click)="setExperienceLevel('mid')"
+              [class.active]="filters.experience_level === 'mid'">
+              <div class="filter-checkbox"></div>
+              <span>متوسط (3-5 سنوات)</span>
+              <span class="filter-count">({{ filterCounts.experienceLevel.mid }})</span>
             </div>
 
-            <!-- <div class="filter-actions">
+            <div class="filter-option" (click)="setExperienceLevel('senior')"
+              [class.active]="filters.experience_level === 'senior'">
+              <div class="filter-checkbox"></div>
+              <span>خبير (6+ سنوات)</span>
+              <span class="filter-count">({{ filterCounts.experienceLevel.senior }})</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="filter-actions">
               <button
                 class="btn btn-small btn-primary filter-apply-btn"
                 (click)="applyFilters()"
@@ -233,215 +164,175 @@
                 }
               </button>
             </div> -->
-          </aside>
+      </aside>
+      }
+
+      <!-- Results Content -->
+      <main class="results-content">
+        <div class="results-header">
+          <div class="results-count">
+            <strong>{{ totalJobs }} وظيفة</strong>
+            تطابق بحثك
+          </div>
+
+          <div class="sort-dropdown">
+            <label for="sort">ترتيب حسب:</label>
+            <p-select id="sort" name="sort" [(ngModel)]="sortValue" [options]="sortOptions" optionLabel="label"
+              optionValue="value" (onChange)="onSortChange($event.value)" appendTo="body" styleClass="w-auto"
+              [disabled]="isLoadingJobs()"></p-select>
+          </div>
+        </div>
+
+        <!-- Jobs List Skeleton (only when loading jobs) -->
+        @if (isLoadingJobs()) {
+        <div class="job-results">
+          @for (item of [1,2,3,4,5,6]; track item) {
+          <article class="job-card-horizontal">
+            <p-skeleton width="80px" height="80px" shape="rectangle" styleClass="skeleton-company-logo"></p-skeleton>
+            <div class="job-info">
+              <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="40%" height="1rem" styleClass="mb-2"></p-skeleton>
+              <div class="job-meta">
+                <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
+              </div>
+              <p-skeleton width="100%" height="1rem" styleClass="mb-1"></p-skeleton>
+              <p-skeleton width="90%" height="1rem" styleClass="mb-2"></p-skeleton>
+              <div class="job-tags">
+                <p-skeleton width="80px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="60px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="100px" height="1.5rem" styleClass="mb-0"></p-skeleton>
+              </div>
+            </div>
+            <div class="job-actions">
+              <p-skeleton width="100px" height="2.5rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="80px" height="2.5rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="80px" height="2.5rem" styleClass="mb-0"></p-skeleton>
+            </div>
+          </article>
           }
+        </div>
+        }
 
-          <!-- Results Content -->
-          <main class="results-content">
-            <div class="results-header">
-              <div class="results-count">
-                <strong>{{ totalJobs }} وظيفة</strong>
-                تطابق بحثك
+        <!-- Actual Jobs List -->
+        @if (!isLoadingJobs()) {
+        <div class="job-results">
+          @for(job of jobs; track job){
+          <article class="job-card-horizontal" [attr.data-job-id]="job.id">
+            <img [src]="job.company.logo || 'assets/images/company-placeholder.png'"
+              [alt]="job.company.name || 'شعار الشركة'" [title]="job.company.name || 'شعار الشركة'" title="Company logo"
+              class="company-logo" />
+
+            <div class="job-info">
+              <h3 class="job-title">
+                <a (click)="navigate(job.slug)" class="job-title-link">
+                  {{ job.title }}
+                </a>
+              </h3>
+
+              <p class="company-name">{{ job.company.name || '-' }}</p>
+
+              <!-- meta row like your screenshot -->
+              <div class="job-meta">
+                <span><i class="pi pi-map-marker ml-1"></i> {{ cityLabel(job.city) }}</span>
+                <span><i class="pi pi-money-bill ml-1"></i> {{ formatSalary(job) }}</span>
+                <span><i class="pi pi-clock ml-1"></i> {{ jobTypeLabel(job.job_type) }}</span>
+                <span><i class="pi pi-calendar ml-1"></i> {{ timeAgo(job.created_at) }}</span>
               </div>
 
-              <div class="sort-dropdown">
-                <label for="sort">ترتيب حسب:</label>
-                <p-select
-                  id="sort"
-                  name="sort"
-                  [(ngModel)]="sortValue"
-                  [options]="sortOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  (onChange)="onSortChange($event.value)"
-                  appendTo="body"
-                  styleClass="w-auto"
-                  [disabled]="isLoadingJobs()"
-                ></p-select>
+              <!-- AI Summary (if enabled) -->
+              @if(job.is_ai_summary_enabled && job.ai_summary){
+              <p class="job-description ai-summary">
+                <img src="https://static.cdnlogo.com/logos/g/15/google-gemini_800.png" class="ai-icon-img"
+                  alt="AI Summary" />
+                {{ job.ai_summary }}
+              </p>
+              }
+
+              <!-- description (if API sends it and AI summary is not enabled) -->
+              @else {
+              @if(job.description){
+              <p class="job-description">
+                {{ job.description }}
+              </p>
+              }
+
+              <!-- fallback short line if no description -->
+              @else {
+              <p class="job-description">
+                {{ job.category.name || '-' }} • {{ job.company.city || '-' }}
+              </p>
+              }
+              }
+
+              <!-- tags row -->
+              <div class="job-tags">
+                <span class="job-tag">{{ jobTypeLabel(job.job_type) }}</span>
+                <span class="job-tag">{{ job.experience_level }}</span>
+                <span class="job-tag">{{ job.category.name || '-' }}</span>
+                <span class="job-tag">{{ cityLabel(job.city) }}</span>
               </div>
             </div>
 
-            <!-- Jobs List Skeleton (only when loading jobs) -->
-            @if (isLoadingJobs()) {
-            <div class="job-results">
-              @for (item of [1,2,3,4,5,6]; track item) {
-              <article class="job-card-horizontal">
-                <p-skeleton width="80px" height="80px" shape="rectangle" styleClass="skeleton-company-logo"></p-skeleton>
-                <div class="job-info">
-                  <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
-                  <p-skeleton width="40%" height="1rem" styleClass="mb-2"></p-skeleton>
-                  <div class="job-meta">
-                    <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
-                    <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
-                    <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
-                    <p-skeleton width="80px" height="1rem" styleClass="mb-0"></p-skeleton>
-                  </div>
-                  <p-skeleton width="100%" height="1rem" styleClass="mb-1"></p-skeleton>
-                  <p-skeleton width="90%" height="1rem" styleClass="mb-2"></p-skeleton>
-                  <div class="job-tags">
-                    <p-skeleton width="80px" height="1.5rem" styleClass="mb-0"></p-skeleton>
-                    <p-skeleton width="60px" height="1.5rem" styleClass="mb-0"></p-skeleton>
-                    <p-skeleton width="100px" height="1.5rem" styleClass="mb-0"></p-skeleton>
-                  </div>
-                </div>
-                <div class="job-actions">
-                  <p-skeleton width="100px" height="2.5rem" styleClass="mb-2"></p-skeleton>
-                  <p-skeleton width="80px" height="2.5rem" styleClass="mb-2"></p-skeleton>
-                  <p-skeleton width="80px" height="2.5rem" styleClass="mb-0"></p-skeleton>
-                </div>
-              </article>
-              }
-            </div>
-            }
+            <div class="job-actions">
+              <button class="btn btn-small btn-secondary save-btn" [class.active]="job.is_applied"
+                [class.loading]="applyingJobs.has(job.id)" [disabled]="job.is_applied || applyingJobs.has(job.id)"
+                (click)="applyToJob(job)">
+                @if (applyingJobs.has(job.id)) {
+                جاري التقديم...
+                } @else if (job.is_applied) {
+                تم التقديم
+                } @else {
+                تقديم الآن
+                }
+              </button>
 
-            <!-- Actual Jobs List -->
-            @if (!isLoadingJobs()) {
-            <div class="job-results">
-              @for(job of jobs; track job){
-                <article
-                  class="job-card-horizontal"
-                  [attr.data-job-id]="job.id"
-                >
-                  <img
-                    [src]="job.company.logo || 'assets/images/company-placeholder.png'"
-                    [alt]="job.company.name || 'شعار الشركة'"
-                    [title]="job.company.name || 'شعار الشركة'"
-                    title="Company logo"
-                    class="company-logo"
-                  />
-  
-                  <div class="job-info">
-                    <h3 class="job-title">
-                      <a
-                        (click)="navigate(job.slug)"
-                        class="job-title-link"
-                      >
-                        {{ job.title }}
-                      </a>
-                    </h3>
-  
-                    <p class="company-name">{{ job.company.name || '-' }}</p>
-  
-                    <!-- meta row like your screenshot -->
-                    <div class="job-meta">
-                      <span>📍 {{ cityLabel(job.city) }}</span>
-                      <span>🔥 {{ formatSalary(job) }}</span>
-                      <span>⏰ {{ jobTypeLabel(job.job_type) }}</span>
-                      <span>📅 {{ timeAgo(job.created_at) }}</span>
-                    </div>
-  
-                    <!-- AI Summary (if enabled) -->
-                     @if(job.is_ai_summary_enabled && job.ai_summary){
-                       <p
-                         class="job-description ai-summary"
-                       >
-                         <span class="ai-icon">✨</span>
-                         {{ job.ai_summary }}
-                       </p>
-                     }
-                     
-                    <!-- description (if API sends it and AI summary is not enabled) -->
-                     @else {
-                       @if(job.description){
-                         <p
-                           class="job-description"
-                         >
-                           {{ job.description }}
-                         </p>
-                       }
-       
-                       <!-- fallback short line if no description -->
-                       @else {
-                         <p
-                           class="job-description"
-                         >
-                           {{ job.category.name || '-' }} • {{ job.company.city || '-' }}
-                         </p>
-                       }
-                     }
-  
-                    <!-- tags row -->
-                    <div class="job-tags">
-                      <span class="job-tag">{{ jobTypeLabel(job.job_type) }}</span>
-                      <span class="job-tag">{{ job.experience_level }}</span>
-                      <span class="job-tag">{{ job.category.name || '-' }}</span>
-                      <span class="job-tag">{{ cityLabel(job.city) }}</span>
-                    </div>
-                  </div>
-  
-                  <div class="job-actions">
-                    <button
-                      class="btn btn-small btn-secondary save-btn"
-                      [class.active]="job.is_applied"
-                      [class.loading]="applyingJobs.has(job.id)"
-                      [disabled]="job.is_applied || applyingJobs.has(job.id)"
-                      (click)="applyToJob(job)"
-                    >
-                      @if (applyingJobs.has(job.id)) {
-                        جاري التقديم...
-                      } @else if (job.is_applied) {
-                        تم التقديم
-                      } @else {
-                        تقديم الآن
-                      }
-                    </button>
-  
-                    <button
-                      class="btn btn-small btn-secondary save-btn"
-                      [ngClass]="job.is_bookmarked ? 'active' : ''"
-                      [disabled]="savingJobs.has(job.id)"
-                      (click)="saveJob(job)"
-                    >
-                      @if (savingJobs.has(job.id)) {
-                        جاري الحفظ...
-                      } @else if (job.is_bookmarked) {
-                        محفوظ
-                      } @else {
-                        حفظ
-                      }
-                    </button>
-  
-                    <button
-                      class="btn btn-small btn-secondary"
-                      (click)="shareJob(job)"
-                    >
-                      مشاركة
-                    </button>
-                  </div>
-                </article>
-              }
+              <button class="btn btn-small btn-secondary save-btn" [ngClass]="job.is_bookmarked ? 'active' : ''"
+                [disabled]="savingJobs.has(job.id)" (click)="saveJob(job)">
+                @if (savingJobs.has(job.id)) {
+                جاري الحفظ...
+                } @else if (job.is_bookmarked) {
+                محفوظ
+                } @else {
+                حفظ
+                }
+              </button>
 
-
-              <!-- في حالة ما في وظائف -->
-               @if(jobs.length === 0){
-                 <div class="no-jobs-message">
-                   لا توجد وظائف مطابقة حالياً.
-                 </div>
-               }
-            </div>
-            }
-
-            <!-- Pagination -->
-            @if (!isLoadingJobs() && totalPages > 1) {
-            <div class="pagination-container">
-              <p-paginator
-                [rows]="page_size"
-                [totalRecords]="totalJobs"
-                appendTo="body"
-                [first]="(currentPage - 1) * page_size"
-                (onPageChange)="onPageChange($event)"
-                [rowsPerPageOptions]="[5, 10, 20, 50]"
-              ></p-paginator>
-            </div>
-            }
-
-            <!-- Load More Button (Alternative to pagination) -->
-            <div class="load-more-container hidden">
-              <button class="btn btn-secondary load-more-btn">
-                تحميل المزيد من الوظائف
+              <button class="btn btn-small btn-secondary" (click)="shareJob(job)">
+                مشاركة
               </button>
             </div>
-          </main>
+          </article>
+          }
+
+
+          <!-- في حالة ما في وظائف -->
+          @if(jobs.length === 0){
+          <div class="no-jobs-message">
+            لا توجد وظائف مطابقة حالياً.
+          </div>
+          }
         </div>
-      </div>
-    </section>
+        }
+
+        <!-- Pagination -->
+        @if (!isLoadingJobs() && totalPages > 1) {
+        <div class="pagination-container">
+          <p-paginator [rows]="page_size" [totalRecords]="totalJobs" appendTo="body"
+            [first]="(currentPage - 1) * page_size" (onPageChange)="onPageChange($event)"
+            [rowsPerPageOptions]="[5, 10, 20, 50]"></p-paginator>
+        </div>
+        }
+
+        <!-- Load More Button (Alternative to pagination) -->
+        <div class="load-more-container hidden">
+          <button class="btn btn-secondary load-more-btn">
+            تحميل المزيد من الوظائف
+          </button>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>

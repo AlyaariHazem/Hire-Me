@@ -43,7 +43,7 @@
           <p-skeleton width="100%" height="1rem" styleClass="mb-1"></p-skeleton>
           <p-skeleton width="90%" height="1rem" styleClass="mb-1"></p-skeleton>
           <p-skeleton width="95%" height="1rem" styleClass="mb-3"></p-skeleton>
-          
+
           <p-skeleton width="100%" height="1.5rem" styleClass="mb-2"></p-skeleton>
           <div class="values-grid">
             @for (item of [1,2,3,4]; track item) {
@@ -80,14 +80,8 @@
 <section class="company-profile-hero">
   <div class="container">
     <div class="company-header">
-      <img
-        [src]="company.logo || 'images/company-logo-1.jpg'"
-        [alt]="company.name"
-        [title]="company.name"
-        title="شعار الشركة"
-        class="company-logo-large"
-        id="companyLogo"
-      />
+      <img [src]="company.logo || 'images/company-logo-1.jpg'" [alt]="company.name" [title]="company.name"
+        title="شعار الشركة" class="company-logo-large" id="companyLogo" />
       <div class="company-main-info">
         <h1 id="companyName">{{ company.name }}</h1>
         @if (company.industry) {
@@ -95,8 +89,9 @@
         }
         @if (company.city || company.country) {
         <div class="company-location">
-          <span>📍</span>
-          <span id="companyLocation">{{ company.city }}@if (company.city && company.country) {<span>، </span>}{{ company.country }}</span>
+          <span><i class="pi pi-map-marker"></i></span>
+          <span id="companyLocation">{{ company.city }}@if (company.city && company.country) {<span>، </span>}{{
+            company.country }}</span>
         </div>
         }
       </div>
@@ -126,12 +121,8 @@
     </div>
 
     <div class="company-actions">
-      <button
-        class="btn-follow-large"
-        [class.following]="company.is_following"
-        [disabled]="isTogglingFollow"
-        (click)="toggleFollow()"
-      >
+      <button class="btn-follow-large" [class.following]="company.is_following" [disabled]="isTogglingFollow"
+        (click)="toggleFollow()">
         {{ isTogglingFollow ? 'جاري...' : (company.is_following ? 'إلغاء المتابعة' : 'متابعة الشركة') }}
       </button>
       <button class="btn-view-jobs-large" (click)="showTab('jobs')">
@@ -150,32 +141,16 @@
       <!-- Main Content -->
       <div class="main-content">
         <div class="content-tabs">
-          <button
-            class="tab-button"
-            [class.active]="activeTab === 'overview'"
-            (click)="showTab('overview')"
-          >
+          <button class="tab-button" [class.active]="activeTab === 'overview'" (click)="showTab('overview')">
             نظرة عامة
           </button>
-          <button
-            class="tab-button"
-            [class.active]="activeTab === 'jobs'"
-            (click)="showTab('jobs')"
-          >
+          <button class="tab-button" [class.active]="activeTab === 'jobs'" (click)="showTab('jobs')">
             الوظائف
           </button>
-          <button
-            class="tab-button"
-            [class.active]="activeTab === 'culture'"
-            (click)="showTab('culture')"
-          >
+          <button class="tab-button" [class.active]="activeTab === 'culture'" (click)="showTab('culture')">
             ثقافة العمل
           </button>
-          <button
-            class="tab-button"
-            [class.active]="activeTab === 'reviews'"
-            (click)="showTab('reviews')"
-          >
+          <button class="tab-button" [class.active]="activeTab === 'reviews'" (click)="showTab('reviews')">
             التقييمات
           </button>
         </div>
@@ -260,19 +235,12 @@
             } @else {
             @for (job of companyJobs; track job.id) {
             <article class="job-card-horizontal" [attr.data-job-id]="job.id">
-              <img
-                [src]="(job.company && job.company.logo) || company.logo || 'assets/images/company-placeholder.png'"
-                alt="شعار الشركة"
-                title="شعار الشركة"
-                class="company-logo"
-              />
+              <img [src]="(job.company && job.company.logo) || company.logo || 'assets/images/company-placeholder.png'"
+                alt="شعار الشركة" title="شعار الشركة" class="company-logo" />
 
               <div class="job-info">
                 <h3 class="job-title">
-                  <a
-                    [routerLink]="['/jobs/job-details', job.slug]"
-                    class="job-title-link"
-                  >
+                  <a [routerLink]="['/jobs/job-details', job.slug]" class="job-title-link">
                     {{ job.title }}
                   </a>
                 </h3>
@@ -280,10 +248,10 @@
                 <p class="company-name">{{ (job.company && job.company.name) || (company && company.name) || '-' }}</p>
 
                 <div class="job-meta">
-                  <span>📍 {{ cityLabel(job.city) }}</span>
-                  <span>🔥 {{ formatSalary(job) }}</span>
-                  <span>⏰ {{ getJobTypeLabel(job.job_type) }}</span>
-                  <span>📅 {{ timeAgo(job.created_at) }}</span>
+                  <span><i class="pi pi-map-marker ml-1"></i> {{ cityLabel(job.city) }}</span>
+                  <span><i class="pi pi-money-bill ml-1"></i> {{ formatSalary(job) }}</span>
+                  <span><i class="pi pi-clock ml-1"></i> {{ getJobTypeLabel(job.job_type) }}</span>
+                  <span><i class="pi pi-calendar ml-1"></i> {{ timeAgo(job.created_at) }}</span>
                 </div>
 
                 @if (job.description) {
@@ -292,7 +260,8 @@
                 </p>
                 } @else {
                 <p class="job-description">
-                  {{ (job.category && job.category.name) || '-' }} • {{ (job.company && job.company.city) || (company && company.city) || '-' }}
+                  {{ (job.category && job.category.name) || '-' }} • {{ (job.company && job.company.city) || (company &&
+                  company.city) || '-' }}
                 </p>
                 }
               </div>
@@ -312,7 +281,7 @@
               في {{ company.name }}، نؤمن بأن الموظفين هم أهم أصولنا.
             </p>
             <!-- ... keep static content or hide ... -->
-             <p>تفاصيل ثقافة العمل...</p>
+            <p>تفاصيل ثقافة العمل...</p>
           </div>
         </div>
         }
@@ -335,12 +304,8 @@
                 <label>التقييم (من 1 إلى 5 نجوم) *</label>
                 <div class="rating-input">
                   @for (star of [1,2,3,4,5]; track star) {
-                  <button
-                    type="button"
-                    class="star-button"
-                    [class.active]="reviewForm.rating >= star"
-                    (click)="reviewForm.rating = star"
-                  >
+                  <button type="button" class="star-button" [class.active]="reviewForm.rating >= star"
+                    (click)="reviewForm.rating = star">
                     ⭐
                   </button>
                   }
@@ -350,93 +315,47 @@
 
               <div class="form-group">
                 <label for="review-title">عنوان التقييم *</label>
-                <input
-                  type="text"
-                  id="review-title"
-                  [(ngModel)]="reviewForm.title"
-                  name="title"
-                  class="form-control"
-                  placeholder="اكتب عنواناً للتقييم"
-                  maxlength="200"
-                  required
-                />
+                <input type="text" id="review-title" [(ngModel)]="reviewForm.title" name="title" class="form-control"
+                  placeholder="اكتب عنواناً للتقييم" maxlength="200" required />
               </div>
 
               <div class="form-group">
                 <label for="review-text">نص التقييم *</label>
-                <textarea
-                  id="review-text"
-                  [(ngModel)]="reviewForm.review_text"
-                  name="review_text"
-                  class="form-control"
-                  rows="5"
-                  placeholder="اكتب تقييمك التفصيلي..."
-                  required
-                ></textarea>
+                <textarea id="review-text" [(ngModel)]="reviewForm.review_text" name="review_text" class="form-control"
+                  rows="5" placeholder="اكتب تقييمك التفصيلي..." required></textarea>
               </div>
 
               <div class="form-group">
                 <label for="review-pros">الإيجابيات</label>
-                <textarea
-                  id="review-pros"
-                  [(ngModel)]="reviewForm.pros"
-                  name="pros"
-                  class="form-control"
-                  rows="3"
-                  placeholder="ما الذي أعجبك في الشركة؟"
-                ></textarea>
+                <textarea id="review-pros" [(ngModel)]="reviewForm.pros" name="pros" class="form-control" rows="3"
+                  placeholder="ما الذي أعجبك في الشركة؟"></textarea>
               </div>
 
               <div class="form-group">
                 <label for="review-cons">السلبيات</label>
-                <textarea
-                  id="review-cons"
-                  [(ngModel)]="reviewForm.cons"
-                  name="cons"
-                  class="form-control"
-                  rows="3"
-                  placeholder="ما الذي يمكن تحسينه؟"
-                ></textarea>
+                <textarea id="review-cons" [(ngModel)]="reviewForm.cons" name="cons" class="form-control" rows="3"
+                  placeholder="ما الذي يمكن تحسينه؟"></textarea>
               </div>
 
               <div class="form-group">
                 <label for="review-job-title">المسمى الوظيفي</label>
-                <input
-                  type="text"
-                  id="review-job-title"
-                  [(ngModel)]="reviewForm.job_title"
-                  name="job_title"
-                  class="form-control"
-                  placeholder="مثال: مطور برمجيات"
-                  maxlength="100"
-                />
+                <input type="text" id="review-job-title" [(ngModel)]="reviewForm.job_title" name="job_title"
+                  class="form-control" placeholder="مثال: مطور برمجيات" maxlength="100" />
               </div>
 
               <div class="form-group checkbox-group">
                 <label class="checkbox-label">
-                  <input
-                    type="checkbox"
-                    [(ngModel)]="reviewForm.is_current_employee"
-                    name="is_current_employee"
-                  />
+                  <input type="checkbox" [(ngModel)]="reviewForm.is_current_employee" name="is_current_employee" />
                   <span>أنا موظف حالي في هذه الشركة</span>
                 </label>
               </div>
 
               <div class="form-actions">
-                <button
-                  type="submit"
-                  class="btn-submit-review"
-                  [disabled]="isSubmittingReview"
-                >
+                <button type="submit" class="btn-submit-review" [disabled]="isSubmittingReview">
                   {{ isSubmittingReview ? 'جاري الإرسال...' : 'إرسال التقييم' }}
                 </button>
-                <button
-                  type="button"
-                  class="btn-cancel-review"
-                  (click)="toggleReviewForm()"
-                  [disabled]="isSubmittingReview"
-                >
+                <button type="button" class="btn-cancel-review" (click)="toggleReviewForm()"
+                  [disabled]="isSubmittingReview">
                   إلغاء
                 </button>
               </div>
@@ -465,10 +384,8 @@
               <div class="distribution-item">
                 <span class="distribution-label">{{ rating }} نجوم</span>
                 <div class="distribution-bar">
-                  <div
-                    class="distribution-fill"
-                    [style.width.%]="(getRatingDistribution()[rating] / reviews.length) * 100"
-                  ></div>
+                  <div class="distribution-fill"
+                    [style.width.%]="(getRatingDistribution()[rating] / reviews.length) * 100"></div>
                 </div>
                 <span class="distribution-count">{{ getRatingDistribution()[rating] }}</span>
               </div>
@@ -587,7 +504,7 @@
             }
             @if (company.email) {
             <div class="contact-item">
-              <span class="contact-icon">📧</span>
+              <span class="contact-icon"><i class="pi pi-envelope"></i></span>
               <span>{{ company.email }}</span>
             </div>
             }
@@ -598,7 +515,7 @@
             </div>
             @if (company.address) {
             <div class="contact-item">
-              <span class="contact-icon">📍</span>
+              <span class="contact-icon"><i class="pi pi-map-marker"></i></span>
               <span>{{ company.address }}</span>
             </div>
             }

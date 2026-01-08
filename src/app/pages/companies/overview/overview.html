@@ -14,9 +14,7 @@
     <h1 class="employer-title">مرحباً بك في لوحة التحكم</h1>
     <div class="employer-actions">
       <a routerLink="/companies/post-job" class="btn btn-primary">نشر وظيفة جديدة</a>
-      <a routerLink="/companies/applicants" class="btn btn-secondary"
-        >البحث عن مرشحين</a
-      >
+      <a routerLink="/companies/applicants" class="btn btn-secondary">البحث عن مرشحين</a>
     </div>
   </div>
   }
@@ -48,113 +46,101 @@
       <div class="employer-stat-value">{{ activeJobsThisMonth() }}</div>
       <div class="employer-stat-change">
         @if (getJobsAddedThisMonth() > 0) {
-          +{{ getJobsAddedThisMonth() }} هذا الشهر
-        } @else if (getJobsAddedThisMonth() < 0) {
-          {{ getJobsAddedThisMonth() }} هذا الشهر
-        } @else {
-          لا يوجد تغيير
-        }
+        +{{ getJobsAddedThisMonth() }} هذا الشهر
+        } @else if (getJobsAddedThisMonth() < 0) { {{ getJobsAddedThisMonth() }} هذا الشهر } @else { لا يوجد تغيير }
+          </div>
       </div>
-    </div>
 
-    <div class="employer-stat-card">
-      <div class="employer-stat-header">
-        <span class="employer-stat-title">إجمالي المتقدمين</span>
+      <div class="employer-stat-card">
+        <div class="employer-stat-header">
+          <span class="employer-stat-title">إجمالي المتقدمين</span>
         <span class="employer-stat-icon">👥</span>
+        </div>
+        <div class="employer-stat-value">{{ totalApplicantsThisWeek() }}</div>
+        <div class="employer-stat-change">هذا الأسبوع</div>
       </div>
-      <div class="employer-stat-value">{{ totalApplicantsThisWeek() }}</div>
-      <div class="employer-stat-change">هذا الأسبوع</div>
-    </div>
 
-    <div class="employer-stat-card">
-      <div class="employer-stat-header">
-        <span class="employer-stat-title">متقدمون جدد</span>
-        <span class="employer-stat-icon">🆕</span>
+      <div class="employer-stat-card">
+        <div class="employer-stat-header">
+          <span class="employer-stat-title">متقدمون جدد</span>
+          <span class="employer-stat-icon">🆕</span>
+        </div>
+        <div class="employer-stat-value">{{ newApplicantsToday() }}</div>
+        <div class="employer-stat-change">اليوم</div>
       </div>
-      <div class="employer-stat-value">{{ newApplicantsToday() }}</div>
-      <div class="employer-stat-change">اليوم</div>
-    </div>
 
-    <div class="employer-stat-card">
-      <div class="employer-stat-header">
-        <span class="employer-stat-title">مشاهدات الوظائف</span>
+      <div class="employer-stat-card">
+        <div class="employer-stat-header">
+          <span class="employer-stat-title">مشاهدات الوظائف</span>
         <span class="employer-stat-icon">👁️</span>
+        </div>
+        <div class="employer-stat-value">{{ totalJobViews().toLocaleString() }}</div>
+        <div class="employer-stat-change">{{ getViewsChangeText() }}</div>
       </div>
-      <div class="employer-stat-value">{{ totalJobViews().toLocaleString() }}</div>
-      <div class="employer-stat-change">{{ getViewsChangeText() }}</div>
-    </div>
-  </div>
-  }
-
-  <!-- Quick Actions Skeleton -->
-  @if (loadingJobs() || loadingApplications()) {
-  <div class="quick-actions-grid">
-    @for (item of [1,2,3,4]; track item) {
-    <div class="quick-action-employer skeleton-quick-action">
-      <p-skeleton width="60px" height="60px" shape="circle" styleClass="mb-2"></p-skeleton>
-      <p-skeleton width="80%" height="1.5rem" styleClass="mb-2"></p-skeleton>
-      <p-skeleton width="100%" height="1rem"></p-skeleton>
     </div>
     }
-  </div>
-  }
 
-  <!-- Quick Actions -->
-  @if (!loadingJobs() && !loadingApplications()) {
-  <div class="quick-actions-grid">
-    <a routerLink="/companies/post-job" class="quick-action-employer">
-      <div class="quick-action-employer-icon">➕</div>
-      <h3 class="quick-action-employer-title">نشر وظيفة جديدة</h3>
-      <p class="quick-action-employer-desc">
-        أضف وظيفة جديدة واجذب أفضل المواهب
-      </p>
-    </a>
-
-    <a routerLink="/companies/applicants" class="quick-action-employer">
-      <div class="quick-action-employer-icon">🔍</div>
-      <h3 class="quick-action-employer-title">البحث عن مرشحين</h3>
-      <p class="quick-action-employer-desc">ابحث في قاعدة بيانات المرشحين</p>
-    </a>
-
-    <a routerLink="/companies/profile" class="quick-action-employer">
-      <div class="quick-action-employer-icon">🏢</div>
-      <h3 class="quick-action-employer-title">تحديث ملف الشركة</h3>
-      <p class="quick-action-employer-desc">حدث معلومات وصور الشركة</p>
-    </a>
-
-    <a
-    routerLink="/companies/analytics"
-      class="quick-action-employer"
-      onclick="switchEmployerTab('analytics')"
-    >
-      <div class="quick-action-employer-icon">📊</div>
-      <h3 class="quick-action-employer-title">عرض التحليلات</h3>
-      <p class="quick-action-employer-desc">تابع أداء وظائفك وإعلاناتك</p>
-    </a>
-  </div>
-  }
-
-  <!-- Content Grid -->
-  <div class="employer-content-grid">
-    <!-- Recent Job Postings -->
-    <div class="employer-content-card">
-      @if (loadingJobs()) {
-      <div class="card-header">
-        <p-skeleton width="200px" height="1.5rem" styleClass="skeleton-card-title"></p-skeleton>
-        <p-skeleton width="80px" height="1.2rem" styleClass="skeleton-card-action"></p-skeleton>
-      </div>
-      } @else {
-      <div class="card-header">
-        <h2 class="card-title">الوظائف المنشورة مؤخراً</h2>
-        <a 
-          (click)="viewAllJobs()"
-          class="card-action clickable"
-          >عرض الكل</a
-        >
+    <!-- Quick Actions Skeleton -->
+    @if (loadingJobs() || loadingApplications()) {
+    <div class="quick-actions-grid">
+      @for (item of [1,2,3,4]; track item) {
+      <div class="quick-action-employer skeleton-quick-action">
+        <p-skeleton width="60px" height="60px" shape="circle" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="80%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="100%" height="1rem"></p-skeleton>
       </div>
       }
+    </div>
+    }
 
-      @if (loadingJobs()) {
+    <!-- Quick Actions -->
+    @if (!loadingJobs() && !loadingApplications()) {
+    <div class="quick-actions-grid">
+      <a routerLink="/companies/post-job" class="quick-action-employer">
+        <div class="quick-action-employer-icon">➕</div>
+        <h3 class="quick-action-employer-title">نشر وظيفة جديدة</h3>
+        <p class="quick-action-employer-desc">
+          أضف وظيفة جديدة واجذب أفضل المواهب
+        </p>
+      </a>
+
+      <a routerLink="/companies/applicants" class="quick-action-employer">
+        <div class="quick-action-employer-icon">🔍</div>
+        <h3 class="quick-action-employer-title">البحث عن مرشحين</h3>
+        <p class="quick-action-employer-desc">ابحث في قاعدة بيانات المرشحين</p>
+      </a>
+
+      <a routerLink="/companies/profile" class="quick-action-employer">
+        <div class="quick-action-employer-icon">🏢</div>
+        <h3 class="quick-action-employer-title">تحديث ملف الشركة</h3>
+        <p class="quick-action-employer-desc">حدث معلومات وصور الشركة</p>
+      </a>
+
+      <a routerLink="/companies/analytics" class="quick-action-employer" onclick="switchEmployerTab('analytics')">
+        <div class="quick-action-employer-icon">📊</div>
+        <h3 class="quick-action-employer-title">عرض التحليلات</h3>
+        <p class="quick-action-employer-desc">تابع أداء وظائفك وإعلاناتك</p>
+      </a>
+    </div>
+    }
+
+    <!-- Content Grid -->
+    <div class="employer-content-grid">
+      <!-- Recent Job Postings -->
+      <div class="employer-content-card">
+        @if (loadingJobs()) {
+        <div class="card-header">
+          <p-skeleton width="200px" height="1.5rem" styleClass="skeleton-card-title"></p-skeleton>
+          <p-skeleton width="80px" height="1.2rem" styleClass="skeleton-card-action"></p-skeleton>
+        </div>
+        } @else {
+        <div class="card-header">
+          <h2 class="card-title">الوظائف المنشورة مؤخراً</h2>
+          <a (click)="viewAllJobs()" class="card-action clickable">عرض الكل</a>
+        </div>
+        }
+
+        @if (loadingJobs()) {
         <div class="jobs-skeleton">
           @for (item of [1,2,3]; track item) {
           <div class="job-posting-item">
@@ -175,57 +161,51 @@
           </div>
           }
         </div>
-      } @else if (recentJobs().length === 0) {
+        } @else if (recentJobs().length === 0) {
         <div class="empty-state">
           <p>لا توجد وظائف منشورة</p>
         </div>
-      } @else {
+        } @else {
         @for (job of recentJobs(); track job.id) {
-          <div class="job-posting-item">
-            <div class="job-posting-info">
-              <h4 class="job-posting-title">{{ job.title }}</h4>
-              <div class="job-posting-meta">
-                <span>نُشرت {{ getTimeAgoForJob(job.created_at) }}</span>
-                <span>{{ job.city || 'غير محدد' }}</span>
-                <span>{{ formatSalaryRange(job) }}</span>
-              </div>
-              <div class="job-posting-stats">
-                <span>{{ job.applications_count || 0 }} متقدم</span>
-                <span>{{ job.views_count || 0 }} مشاهدة</span>
-                @if (job.category) {
-                  <span>{{ job.category.name }}</span>
-                }
-              </div>
+        <div class="job-posting-item">
+          <div class="job-posting-info">
+            <h4 class="job-posting-title">{{ job.title }}</h4>
+            <div class="job-posting-meta">
+              <span>نُشرت {{ getTimeAgoForJob(job.created_at) }}</span>
+              <span>{{ job.city || 'غير محدد' }}</span>
+              <span>{{ formatSalaryRange(job) }}</span>
             </div>
-            <span 
-              class="job-status" 
-              [ngClass]="getJobStatusClass(job)">
-              {{ getJobStatusLabel(job) }}
-            </span>
+            <div class="job-posting-stats">
+              <span>{{ job.applications_count || 0 }} متقدم</span>
+              <span>{{ job.views_count || 0 }} مشاهدة</span>
+              @if (job.category) {
+              <span>{{ job.category.name }}</span>
+              }
+            </div>
           </div>
+          <span class="job-status" [ngClass]="getJobStatusClass(job)">
+            {{ getJobStatusLabel(job) }}
+          </span>
+        </div>
         }
-      }
-    </div>
-
-    <!-- Recent Candidates -->
-    <div class="employer-content-card">
-      @if (loadingApplications()) {
-      <div class="card-header">
-        <p-skeleton width="150px" height="1.5rem" styleClass="skeleton-card-title"></p-skeleton>
-        <p-skeleton width="80px" height="1.2rem" styleClass="skeleton-card-action"></p-skeleton>
+        }
       </div>
-      } @else {
-      <div class="card-header">
-        <h2 class="card-title">المتقدمون الجدد</h2>
-        <a
-          (click)="viewAllApplicants()"
-          class="card-action clickable"
-          >عرض الكل</a
-        >
-      </div>
-      }
 
-      @if (loadingApplications()) {
+      <!-- Recent Candidates -->
+      <div class="employer-content-card">
+        @if (loadingApplications()) {
+        <div class="card-header">
+          <p-skeleton width="150px" height="1.5rem" styleClass="skeleton-card-title"></p-skeleton>
+          <p-skeleton width="80px" height="1.2rem" styleClass="skeleton-card-action"></p-skeleton>
+        </div>
+        } @else {
+        <div class="card-header">
+          <h2 class="card-title">المتقدمون الجدد</h2>
+          <a (click)="viewAllApplicants()" class="card-action clickable">عرض الكل</a>
+        </div>
+        }
+
+        @if (loadingApplications()) {
         <div class="applications-skeleton">
           @for (item of [1,2,3,4]; track item) {
           <div class="candidate-item">
@@ -245,52 +225,43 @@
           </div>
           }
         </div>
-      } @else if (recentApplications().length === 0) {
+        } @else if (recentApplications().length === 0) {
         <div class="empty-state">
           <p>لا توجد طلبات متقدمة جديدة</p>
         </div>
-      } @else {
+        } @else {
         @for (app of recentApplications(); track app.id) {
-          <div class="candidate-item">
-            <div class="candidate-avatar">
-              @if (app.applicant?.profile_picture) {
-                <img
-                  [src]="app.applicant?.profile_picture || ''"
-                  [alt]="getApplicantName(app)"
-                  [title]="getApplicantName(app)"
-                  title="Applicant profile picture"
-                  (error)="handleImageError($event)"
-                />
+        <div class="candidate-item">
+          <div class="candidate-avatar">
+            @if (app.applicant?.profile_picture) {
+            <img [src]="app.applicant?.profile_picture || ''" [alt]="getApplicantName(app)"
+              [title]="getApplicantName(app)" title="Applicant profile picture" (error)="handleImageError($event)" />
+            }
+            <span [style.display]="app.applicant?.profile_picture ? 'none' : 'flex'">
+              {{ getApplicantInitials(app) }}
+            </span>
+          </div>
+          <div class="candidate-info">
+            <h4 class="candidate-name">{{ getApplicantName(app) }}</h4>
+            <p class="candidate-title">{{ getApplicantTitle(app) }}</p>
+            <div class="candidate-meta">
+              <span>تقدم {{ getTimeAgo(app.applied_at) }}</span>
+              @if (app.job.title) {
+              <span>{{ app.job.title }}</span>
               }
-              <span [style.display]="app.applicant?.profile_picture ? 'none' : 'flex'">
-                {{ getApplicantInitials(app) }}
-              </span>
-            </div>
-            <div class="candidate-info">
-              <h4 class="candidate-name">{{ getApplicantName(app) }}</h4>
-              <p class="candidate-title">{{ getApplicantTitle(app) }}</p>
-              <div class="candidate-meta">
-                <span>تقدم {{ getTimeAgo(app.applied_at) }}</span>
-                @if (app.job.title) {
-                  <span>{{ app.job.title }}</span>
-                }
-              </div>
-            </div>
-            <div class="candidate-actions">
-              <span 
-                class="application-status" 
-                [ngClass]="getStatusClass(app.status)">
-                {{ getStatusLabel(app.status) }}
-              </span>
-              <button 
-                class="btn btn-small btn-primary"
-                (click)="viewApplicantProfile(app)">
-                عرض الملف
-              </button>
             </div>
           </div>
+          <div class="candidate-actions">
+            <span class="application-status" [ngClass]="getStatusClass(app.status)">
+              {{ getStatusLabel(app.status) }}
+            </span>
+            <button class="btn btn-small btn-primary" (click)="viewApplicantProfile(app)">
+              عرض الملف
+            </button>
+          </div>
+        </div>
         }
-      }
+        }
+      </div>
     </div>
   </div>
-</div>

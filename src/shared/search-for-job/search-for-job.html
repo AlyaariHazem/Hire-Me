@@ -1,4 +1,3 @@
-
 <!-- Hero Section -->
 <section class="companies-hero">
   <div class="container">
@@ -10,21 +9,10 @@
         <p-inputicon>
           <i class="pi pi-search"></i>
         </p-inputicon>
-        <input 
-          type="text" 
-          pInputText 
-          placeholder="ابحث عن الشركات..." 
-          [(ngModel)]="searchTerm" 
-          (input)="applyFilters()"
-          class="w-full"
-        />
+        <input type="text" pInputText placeholder="ابحث عن الشركات..." [(ngModel)]="searchTerm" (input)="applyFilters()"
+          class="w-full" />
       </p-iconfield>
-      <p-button 
-        label="بحث" 
-        icon="pi pi-search" 
-        (onClick)="applyFilters()"
-        styleClass="p-button-primary"
-      ></p-button>
+      <p-button label="بحث" icon="pi pi-search" (onClick)="applyFilters()" styleClass="p-button-primary"></p-button>
     </div>
   </div>
 </section>
@@ -35,52 +23,24 @@
     <div class="filters-container">
       <div class="filter-group">
         <label>القطاع:</label>
-        <p-select
-          [options]="industryOptions"
-          [(ngModel)]="industryFilter"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="جميع القطاعات"
-          (onChange)="applyFilters()"
-          [showClear]="true"
-          styleClass="w-full"
-        ></p-select>
+        <p-select [options]="industryOptions" [(ngModel)]="industryFilter" optionLabel="label" optionValue="value"
+          placeholder="جميع القطاعات" (onChange)="applyFilters()" [showClear]="true" styleClass="w-full"></p-select>
       </div>
 
       <div class="filter-group">
         <label>المدينة:</label>
-        <p-select
-          [options]="cityOptions"
-          [(ngModel)]="locationFilter"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="جميع المدن"
-          (onChange)="applyFilters()"
-          [showClear]="true"
-          styleClass="w-full"
-        ></p-select>
+        <p-select [options]="cityOptions" [(ngModel)]="locationFilter" optionLabel="label" optionValue="value"
+          placeholder="جميع المدن" (onChange)="applyFilters()" [showClear]="true" styleClass="w-full"></p-select>
       </div>
 
       <div class="filter-group">
         <label>حجم الشركة:</label>
-        <p-select
-          [options]="sizeOptions"
-          [(ngModel)]="sizeFilter"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="جميع الأحجام"
-          (onChange)="applyFilters()"
-          [showClear]="true"
-          styleClass="w-full"
-        ></p-select>
+        <p-select [options]="sizeOptions" [(ngModel)]="sizeFilter" optionLabel="label" optionValue="value"
+          placeholder="جميع الأحجام" (onChange)="applyFilters()" [showClear]="true" styleClass="w-full"></p-select>
       </div>
 
-      <p-button 
-        label="تطبيق الفلاتر" 
-        icon="pi pi-filter" 
-        (onClick)="applyFilters()"
-        styleClass="p-button-primary"
-      ></p-button>
+      <p-button label="تطبيق الفلاتر" icon="pi pi-filter" (onClick)="applyFilters()"
+        styleClass="p-button-primary"></p-button>
     </div>
   </div>
 </section>
@@ -92,9 +52,9 @@
       <div class="stat-item">
         <div class="stat-number">
           @if (loadingStats) {
-            <p-skeleton width="60px" height="2rem"></p-skeleton>
+          <p-skeleton width="60px" height="2rem"></p-skeleton>
           } @else {
-            {{ statistics.totalCompanies }}+
+          {{ statistics.totalCompanies }}+
           }
         </div>
         <div class="stat-label">شركة مسجلة</div>
@@ -102,9 +62,9 @@
       <div class="stat-item">
         <div class="stat-number">
           @if (loadingStats) {
-            <p-skeleton width="80px" height="2rem"></p-skeleton>
+          <p-skeleton width="80px" height="2rem"></p-skeleton>
           } @else {
-            {{ statistics.totalJobs | number }}+
+          {{ statistics.totalJobs | number }}+
           }
         </div>
         <div class="stat-label">وظيفة متاحة</div>
@@ -112,9 +72,9 @@
       <div class="stat-item">
         <div class="stat-number">
           @if (loadingStats) {
-            <p-skeleton width="40px" height="2rem"></p-skeleton>
+          <p-skeleton width="40px" height="2rem"></p-skeleton>
           } @else {
-            {{ statistics.totalSectors }}
+          {{ statistics.totalSectors }}
           }
         </div>
         <div class="stat-label">قطاع مختلف</div>
@@ -122,9 +82,9 @@
       <div class="stat-item">
         <div class="stat-number">
           @if (loadingStats) {
-            <p-skeleton width="40px" height="2rem"></p-skeleton>
+          <p-skeleton width="40px" height="2rem"></p-skeleton>
           } @else {
-            {{ statistics.totalGovernorates }}
+          {{ statistics.totalGovernorates }}
           }
         </div>
         <div class="stat-label">محافظة</div>
@@ -159,131 +119,109 @@
 
 <!-- Loading State -->
 @if (loading) {
-  <section class="companies-section">
-    <div class="container">
-      <div class="loading-state">
-        <p>جاري تحميل الشركات...</p>
-      </div>
-      <div class="companies-grid">
-        @for (item of [1,2,3,4,5,6]; track item) {
-          <p-card styleClass="company-card-skeleton">
-            <div class="skeleton-content">
-              <p-skeleton width="80px" height="80px" shape="circle"></p-skeleton>
-              <div class="skeleton-text">
-                <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
-                <p-skeleton width="40%" height="1rem"></p-skeleton>
-              </div>
-            </div>
-            <p-skeleton width="100%" height="3rem" styleClass="mb-2"></p-skeleton>
-            <p-skeleton width="100%" height="3rem"></p-skeleton>
-          </p-card>
-        }
-      </div>
+<section class="companies-section">
+  <div class="container">
+    <div class="loading-state">
+      <p>جاري تحميل الشركات...</p>
     </div>
-  </section>
+    <div class="companies-grid">
+      @for (item of [1,2,3,4,5,6]; track item) {
+      <p-card styleClass="company-card-skeleton">
+        <div class="skeleton-content">
+          <p-skeleton width="80px" height="80px" shape="circle"></p-skeleton>
+          <div class="skeleton-text">
+            <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+            <p-skeleton width="40%" height="1rem"></p-skeleton>
+          </div>
+        </div>
+        <p-skeleton width="100%" height="3rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="100%" height="3rem"></p-skeleton>
+      </p-card>
+      }
+    </div>
+  </div>
+</section>
 }
 
 <!-- Companies Grid -->
 @if (!loading && companiesData.length > 0) {
-  <section class="companies-section">
-    <div class="container">
-      <div class="companies-grid">
-        @for (company of companiesData; track company.id || company.slug) {
-          <p-card 
-            styleClass="company-card"
-            (click)="viewCompany(company.slug || company.id)"
-            [style.cursor]="'pointer'"
-          >
-            <div class="company-header">
-              <div class="company-info">
-                <img 
-                  [src]="company.logo" 
-                  [alt]="company.name"
-                  [title]="company.name"
-                  class="company-logo"
-                  (error)="handleImageError($event)"
-                >
-                <div class="company-details">
-                  <h3>{{ company.name }}</h3>
-                  <p-tag [value]="company.industry" severity="info" styleClass="mb-2"></p-tag>
-                  <div class="company-location">📍 {{ company.location }}</div>
-                </div>
-              </div>
+<section class="companies-section">
+  <div class="container">
+    <div class="companies-grid">
+      @for (company of companiesData; track company.id || company.slug) {
+      <p-card styleClass="company-card" (click)="viewCompany(company.slug || company.id)" [style.cursor]="'pointer'">
+        <div class="company-header">
+          <div class="company-info">
+            <img [src]="company.logo" [alt]="company.name" [title]="company.name" class="company-logo"
+              (error)="handleImageError($event)">
+            <div class="company-details">
+              <h3>{{ company.name }}</h3>
+              <p-tag [value]="company.industry" severity="info" styleClass="mb-2"></p-tag>
+              <div class="company-location"><i class="pi pi-map-marker ml-1"></i> {{ company.location }}</div>
             </div>
+          </div>
+        </div>
 
-            <div class="company-body">
-              <p class="company-description">{{ company.description }}</p>
-              @if (company.tags && company.tags.length > 0) {
-                <div class="company-tags">
-                  @for (tag of company.tags; track tag) {
-                    <p-tag [value]="tag" severity="secondary"></p-tag>
-                  }
-                </div>
-              }
+        <div class="company-body">
+          <p class="company-description">{{ company.description }}</p>
+          @if (company.tags && company.tags.length > 0) {
+          <div class="company-tags">
+            @for (tag of company.tags; track tag) {
+            <p-tag [value]="tag" severity="secondary"></p-tag>
+            }
+          </div>
+          }
 
-              <div class="company-stats-row">
-                @if (company.employees) {
-                  <div class="company-stat">
-                    <div class="company-stat-number">{{ company.employees }}</div>
-                    <div class="company-stat-label">موظف</div>
-                  </div>
-                }
-                <div class="company-stat">
-                  <div class="company-stat-number">{{ company.openJobs }}</div>
-                  <div class="company-stat-label">وظيفة متاحة</div>
-                </div>
-                @if (company.followers > 0) {
-                  <div class="company-stat">
-                    <div class="company-stat-number">{{ company.followers }}</div>
-                    <div class="company-stat-label">متابع</div>
-                  </div>
-                }
-              </div>
-
-              <div class="company-actions" (click)="$event.stopPropagation()">
-                <p-button
-                  [label]="company.following ? 'متابع' : 'متابعة'"
-                  [icon]="company.following ? 'pi pi-check' : 'pi pi-plus'"
-                  [severity]="company.following ? 'success' : 'secondary'"
-                  [outlined]="!company.following"
-                  (onClick)="toggleFollow(company.slug || company.id)"
-                  styleClass="p-button-sm"
-                ></p-button>
-                <p-button
-                  label="عرض الوظائف"
-                  icon="pi pi-briefcase"
-                  (onClick)="viewCompany(company.slug || company.id)"
-                  styleClass="p-button-primary p-button-sm"
-                ></p-button>
-              </div>
+          <div class="company-stats-row">
+            @if (company.employees) {
+            <div class="company-stat">
+              <div class="company-stat-number">{{ company.employees }}</div>
+              <div class="company-stat-label">موظف</div>
             </div>
-          </p-card>
-        }
-      </div>
-      
-      <!-- Pagination -->
-      <div class="pagination-container">
-        <p-paginator
-          [rows]="page_size"
-          [totalRecords]="totalCount"
-          [first]="(currentPage - 1) * page_size"
-          (onPageChange)="onPageChange($event)"
-          [rowsPerPageOptions]="[6, 12, 24, 48]"
-        ></p-paginator>
-      </div>
+            }
+            <div class="company-stat">
+              <div class="company-stat-number">{{ company.openJobs }}</div>
+              <div class="company-stat-label">وظيفة متاحة</div>
+            </div>
+            @if (company.followers > 0) {
+            <div class="company-stat">
+              <div class="company-stat-number">{{ company.followers }}</div>
+              <div class="company-stat-label">متابع</div>
+            </div>
+            }
+          </div>
+
+          <div class="company-actions" (click)="$event.stopPropagation()">
+            <p-button [label]="company.following ? 'متابع' : 'متابعة'"
+              [icon]="company.following ? 'pi pi-check' : 'pi pi-plus'"
+              [severity]="company.following ? 'success' : 'secondary'" [outlined]="!company.following"
+              (onClick)="toggleFollow(company.slug || company.id)" styleClass="p-button-sm"></p-button>
+            <p-button label="عرض الوظائف" icon="pi pi-briefcase" (onClick)="viewCompany(company.slug || company.id)"
+              styleClass="p-button-primary p-button-sm"></p-button>
+          </div>
+        </div>
+      </p-card>
+      }
     </div>
-  </section>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <p-paginator [rows]="page_size" [totalRecords]="totalCount" [first]="(currentPage - 1) * page_size"
+        (onPageChange)="onPageChange($event)" [rowsPerPageOptions]="[6, 12, 24, 48]"></p-paginator>
+    </div>
+  </div>
+</section>
 }
 
 <!-- Empty State -->
 @if (!loading && companiesData.length === 0) {
-  <section class="companies-section">
-    <div class="container">
-      <div class="empty-state">
-        <p>لا توجد شركات متاحة</p>
-      </div>
+<section class="companies-section">
+  <div class="container">
+    <div class="empty-state">
+      <p>لا توجد شركات متاحة</p>
     </div>
-  </section>
+  </div>
+</section>
 }
 
 <!-- Footer -->

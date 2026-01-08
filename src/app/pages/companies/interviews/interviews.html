@@ -48,50 +48,31 @@
     @if (!loading()) {
     <div class="filters-section">
       <div class="tab-navigation">
-        <button 
-          class="tab" 
-          [class.active]="statusFilter() === 'all'"
-          (click)="setStatusFilter('all')">
+        <button class="tab" [class.active]="statusFilter() === 'all'" (click)="setStatusFilter('all')">
           الكل ({{ statusCounts().all }})
         </button>
-        <button 
-          class="tab" 
-          [class.active]="statusFilter() === 'scheduled'"
-          (click)="setStatusFilter('scheduled')">
+        <button class="tab" [class.active]="statusFilter() === 'scheduled'" (click)="setStatusFilter('scheduled')">
           مجدولة ({{ statusCounts().scheduled }})
         </button>
-        <button 
-          class="tab" 
-          [class.active]="statusFilter() === 'completed'"
-          (click)="setStatusFilter('completed')">
+        <button class="tab" [class.active]="statusFilter() === 'completed'" (click)="setStatusFilter('completed')">
           مكتملة ({{ statusCounts().completed }})
         </button>
-        <button 
-          class="tab" 
-          [class.active]="statusFilter() === 'cancelled'"
-          (click)="setStatusFilter('cancelled')">
+        <button class="tab" [class.active]="statusFilter() === 'cancelled'" (click)="setStatusFilter('cancelled')">
           ملغاة ({{ statusCounts().cancelled }})
         </button>
-        <button 
-          class="tab" 
-          [class.active]="statusFilter() === 'rescheduled'"
-          (click)="setStatusFilter('rescheduled')">
+        <button class="tab" [class.active]="statusFilter() === 'rescheduled'" (click)="setStatusFilter('rescheduled')">
           إعادة جدولة ({{ statusCounts().rescheduled }})
         </button>
       </div>
 
-          <!-- Interview Type Filter -->
+      <!-- Interview Type Filter -->
       <div class="job-filter">
         <label>تصفية حسب النوع:</label>
-        <select 
-          class="form-select"
-          [value]="interviewTypeFilter()"
-          title="تصفية حسب نوع المقابلة"
-          aria-label="تصفية حسب نوع المقابلة"
-          (change)="setInterviewTypeFilter($any($event.target).value)">
+        <select class="form-select" [value]="interviewTypeFilter()" title="تصفية حسب نوع المقابلة"
+          aria-label="تصفية حسب نوع المقابلة" (change)="setInterviewTypeFilter($any($event.target).value)">
           <option value="all">جميع الأنواع</option>
           @for (type of interviewTypes; track type.value) {
-            <option [value]="type.value">{{ type.label }}</option>
+          <option [value]="type.value">{{ type.label }}</option>
           }
         </select>
       </div>
@@ -100,509 +81,425 @@
 
     <!-- Loading State Skeleton -->
     @if (loading()) {
-      <div class="tab-content">
-        @for (item of [1,2,3]; track item) {
-        <div class="interview-item">
-          <div class="interview-info">
-            <div class="candidate-header">
-              <p-skeleton width="60px" height="60px" shape="circle" styleClass="skeleton-avatar"></p-skeleton>
-              <div class="candidate-details">
-                <p-skeleton width="200px" height="1.5rem" styleClass="mb-2"></p-skeleton>
-                <p-skeleton width="250px" height="1rem" styleClass="mb-2"></p-skeleton>
-                <p-skeleton width="60%" height="1rem" styleClass="mb-2"></p-skeleton>
-                <div class="candidate-meta">
-                  <p-skeleton width="150px" height="1rem" styleClass="mb-0"></p-skeleton>
-                  <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
-                  <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
-                </div>
+    <div class="tab-content">
+      @for (item of [1,2,3]; track item) {
+      <div class="interview-item">
+        <div class="interview-info">
+          <div class="candidate-header">
+            <p-skeleton width="60px" height="60px" shape="circle" styleClass="skeleton-avatar"></p-skeleton>
+            <div class="candidate-details">
+              <p-skeleton width="200px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="250px" height="1rem" styleClass="mb-2"></p-skeleton>
+              <p-skeleton width="60%" height="1rem" styleClass="mb-2"></p-skeleton>
+              <div class="candidate-meta">
+                <p-skeleton width="150px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="120px" height="1rem" styleClass="mb-0"></p-skeleton>
+                <p-skeleton width="100px" height="1rem" styleClass="mb-0"></p-skeleton>
               </div>
             </div>
           </div>
-          <div class="interview-actions">
-            <p-skeleton width="100px" height="1.5rem" styleClass="mb-2"></p-skeleton>
-            <div class="action-buttons">
-              <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
-            </div>
+        </div>
+        <div class="interview-actions">
+          <p-skeleton width="100px" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          <div class="action-buttons">
+            <p-skeleton width="100%" height="2.5rem" styleClass="mb-0"></p-skeleton>
           </div>
         </div>
-        }
       </div>
+      }
+    </div>
     }
 
     <!-- Empty State -->
     @if (!loading() && filteredInterviews().length === 0) {
-      <div class="tab-content">
-        <div class="empty">
-          <p>لا توجد مقابلات</p>
-          <button class="btn btn-primary mt-3" (click)="openScheduleModal()">
-            جدولة مقابلة جديدة
-          </button>
-        </div>
+    <div class="tab-content">
+      <div class="empty">
+        <p>لا توجد مقابلات</p>
+        <button class="btn btn-primary mt-3" (click)="openScheduleModal()">
+          جدولة مقابلة جديدة
+        </button>
       </div>
+    </div>
     }
 
     <!-- Interviews List -->
     @if (!loading() && filteredInterviews().length > 0) {
-      <div class="tab-content">
-        @for (interview of filteredInterviews(); track interview.id) {
-          <div class="interview-item">
-            <div class="interview-info">
-              <div class="candidate-header">
-                <div class="candidate-avatar">
-                  @if (typeof interview.application === 'object' && interview.application.applicant?.profile_picture) {
-                    <img 
-                      [src]="interview.application.applicant?.profile_picture || ''" 
-                      [alt]="getApplicationName(interview)"
-                      [title]="getApplicationName(interview)"
-                      title="صورة المتقدم"
-                      (error)="handleImageError($event)">
-                  }
-                  <span [style.display]="(typeof interview.application === 'object' && interview.application.applicant?.profile_picture) ? 'none' : 'flex'">
-                    {{ (getApplicationName(interview) || '?').charAt(0) }}
-                  </span>
-                </div>
-                <div class="candidate-details">
-                  <h4 class="candidate-name">{{ getApplicationName(interview) }}</h4>
-                  <p class="job-applied-for">
-                    <strong>الوظيفة:</strong> {{ getJobTitle(interview) }}
-                  </p>
-                  <div class="candidate-meta">
-                    <span>📅 {{ formatDateTime(interview.scheduled_date) }}</span>
-                    @if (interview.interview_type === 'video' && interview.duration_minutes) {
-                      <span>⏱️ {{ formatDuration(interview.duration_minutes) }}</span>
-                    }
-                    <span>📋 {{ getInterviewTypeLabel(interview.interview_type) }}</span>
-                  </div>
-                  @if (interview.location) {
-                    <p class="interview-location">📍 {{ interview.location }}</p>
-                  }
-                  @if (interview.meeting_link) {
-                    <p class="interview-link">
-                      <a [href]="interview.meeting_link" target="_blank" rel="noopener noreferrer">
-                        🔗 رابط الاجتماع
-                      </a>
-                    </p>
-                  }
-                  @if (interview.notes) {
-                    <div class="interview-notes">
-                      <p>{{ interview.notes }}</p>
-                    </div>
-                  }
-                </div>
-              </div>
-            </div>
-
-            <div class="interview-actions">
-              <span 
-                class="interview-status" 
-                [ngClass]="getStatusClass(interview.status)">
-                {{ getStatusLabel(interview.status) }}
+    <div class="tab-content">
+      @for (interview of filteredInterviews(); track interview.id) {
+      <div class="interview-item">
+        <div class="interview-info">
+          <div class="candidate-header">
+            <div class="candidate-avatar">
+              @if (typeof interview.application === 'object' && interview.application.applicant?.profile_picture) {
+              <img [src]="interview.application.applicant?.profile_picture || ''" [alt]="getApplicationName(interview)"
+                [title]="getApplicationName(interview)" title="صورة المتقدم" (error)="handleImageError($event)">
+              }
+              <span
+                [style.display]="(typeof interview.application === 'object' && interview.application.applicant?.profile_picture) ? 'none' : 'flex'">
+                {{ (getApplicationName(interview) || '?').charAt(0) }}
               </span>
-              <div class="action-buttons">
-                <button 
-                  class="btn btn-small btn-primary"
-                  (click)="viewInterview(interview)">
-                  عرض التفاصيل
-                </button>
-                <button 
-                  class="btn btn-small btn-secondary"
-                  (click)="openEditModal(interview)">
-                  <i class="pi pi-pencil"></i>
-                  تعديل
-                </button>
+            </div>
+            <div class="candidate-details">
+              <h4 class="candidate-name">{{ getApplicationName(interview) }}</h4>
+              <p class="job-applied-for">
+                <strong>الوظيفة:</strong> {{ getJobTitle(interview) }}
+              </p>
+              <div class="candidate-meta">
+                <span><i class="pi pi-calendar ml-1"></i> {{ formatDateTime(interview.scheduled_date) }}</span>
+                @if (interview.interview_type === 'video' && interview.duration_minutes) {
+                <span><i class="pi pi-stopwatch ml-1"></i> {{ formatDuration(interview.duration_minutes) }}</span>
+                }
+                <span>📋 {{ getInterviewTypeLabel(interview.interview_type) }}</span>
               </div>
-              <div class="interview-meta">
-                <p><strong>المحاور:</strong> {{ interview.interviewer_name }}</p>
-                <p><strong>البريد:</strong> {{ interview.interviewer_email }}</p>
+              @if (interview.location) {
+              <p class="interview-location"><i class="pi pi-map-marker ml-1"></i> {{ interview.location }}</p>
+              }
+              @if (interview.meeting_link) {
+              <p class="interview-link">
+                <a [href]="interview.meeting_link" target="_blank" rel="noopener noreferrer">
+                  <i class="pi pi-link ml-1"></i> رابط الاجتماع
+                </a>
+              </p>
+              }
+              @if (interview.notes) {
+              <div class="interview-notes">
+                <p>{{ interview.notes }}</p>
               </div>
+              }
             </div>
           </div>
-        }
+        </div>
+
+        <div class="interview-actions">
+          <span class="interview-status" [ngClass]="getStatusClass(interview.status)">
+            {{ getStatusLabel(interview.status) }}
+          </span>
+          <div class="action-buttons">
+            <button class="btn btn-small btn-primary" (click)="viewInterview(interview)">
+              عرض التفاصيل
+            </button>
+            <button class="btn btn-small btn-secondary" (click)="openEditModal(interview)">
+              <i class="pi pi-pencil"></i>
+              تعديل
+            </button>
+          </div>
+          <div class="interview-meta">
+            <p><strong>المحاور:</strong> {{ interview.interviewer_name }}</p>
+            <p><strong>البريد:</strong> {{ interview.interviewer_email }}</p>
+          </div>
+        </div>
       </div>
+      }
+    </div>
     }
 
     <!-- Pagination -->
     @if (!loading() && totalPages() > 1) {
-      <div class="pagination-wrapper">
-        <p-paginator
-          [rows]="page_size()"
-          [totalRecords]="totalCount()"
-          [first]="(currentPage() - 1) * page_size()"
-          [rowsPerPageOptions]="[5, 10, 20, 50]"
-          (onPageChange)="onPageChange($event)"
-          [showFirstLastIcon]="true"
-          [showPageLinks]="true"
-          appendTo="body"
-          [alwaysShow]="true">
-        </p-paginator>
-        <div class="pagination-info">
-          <p>عرض {{ ((currentPage() - 1) * page_size()) + 1 }} - {{ Math.min(currentPage() * page_size(), totalCount()) }} من {{ totalCount() }} مقابلة</p>
-        </div>
+    <div class="pagination-wrapper">
+      <p-paginator [rows]="page_size()" [totalRecords]="totalCount()" [first]="(currentPage() - 1) * page_size()"
+        [rowsPerPageOptions]="[5, 10, 20, 50]" (onPageChange)="onPageChange($event)" [showFirstLastIcon]="true"
+        [showPageLinks]="true" appendTo="body" [alwaysShow]="true">
+      </p-paginator>
+      <div class="pagination-info">
+        <p>عرض {{ ((currentPage() - 1) * page_size()) + 1 }} - {{ Math.min(currentPage() * page_size(), totalCount()) }}
+          من {{ totalCount() }} مقابلة</p>
       </div>
+    </div>
     }
   </div>
 </div>
 
 <!-- Schedule Interview Modal -->
 @if (showScheduleModal()) {
-  <div class="modal-backdrop" (click)="closeScheduleModal()">
-    <div class="modal-dialog modal-dialog-large" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>{{ isEditMode() ? 'تعديل المقابلة' : 'جدولة مقابلة جديدة' }}</h2>
-        <button class="modal-close" (click)="closeScheduleModal()">×</button>
+<div class="modal-backdrop" (click)="closeScheduleModal()">
+  <div class="modal-dialog modal-dialog-large" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isEditMode() ? 'تعديل المقابلة' : 'جدولة مقابلة جديدة' }}</h2>
+      <button class="modal-close" (click)="closeScheduleModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Loading state while fetching edit data -->
+      @if (loadingEditData()) {
+      <div class="loading-state">
+        <p-progressSpinner strokeWidth="6" [style]="{ 'width': '60px', 'height': '60px' }" ariaLabel="Loading">
+        </p-progressSpinner>
+        <p class="loading-text">جاري تحميل بيانات المقابلة...</p>
       </div>
-
-      <div class="modal-body">
-        <!-- Loading state while fetching edit data -->
-        @if (loadingEditData()) {
-          <div class="loading-state">
-            <p-progressSpinner 
-              strokeWidth="6" 
-              [style]="{ 'width': '60px', 'height': '60px' }" 
-              ariaLabel="Loading">
-            </p-progressSpinner>
-            <p class="loading-text">جاري تحميل بيانات المقابلة...</p>
-          </div>
-        } @else {
-        <form [formGroup]="interviewForm" (ngSubmit)="scheduleInterview()">
-          <!-- Application Selection and Interview Type -->
-          <div class="form-row">
-            <div class="form-group">
-              <label for="application">
-                المتقدم <span class="required">*</span>
-              </label>
-              <p-select
-                id="application"
-                formControlName="application"
-                [options]="applications()"
-                optionLabel="label"
-                optionValue="id"
-                appendTo="body"
-                placeholder="اختر المتقدم"
-                [showClear]="true"
-                [disabled]="isEditMode() || applications().length === 0"
-                styleClass="w-full"
-                [class.p-invalid]="interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched">
-              </p-select>
-              @if (applications().length === 0 && !loading() && !isEditMode()) {
-                <small class="p-error block mt-1">لا توجد طلبات متقدمة متاحة</small>
-              }
-              @if (interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched) {
-                <small class="p-error block mt-1">يرجى اختيار المتقدم</small>
-              }
-            </div>
-
-            <div class="form-group">
-              <label for="interview_type">
-                نوع المقابلة <span class="required">*</span>
-              </label>
-              <p-select
-                id="interview_type"
-                formControlName="interview_type"
-                [options]="interviewTypes"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="اختر نوع المقابلة"
-                styleClass="w-full"
-                [class.p-invalid]="interviewForm.get('interview_type')?.invalid && interviewForm.get('interview_type')?.touched">
-              </p-select>
-              @if (interviewForm.get('interview_type')?.invalid && interviewForm.get('interview_type')?.touched) {
-                <small class="p-error block mt-1">يرجى اختيار نوع المقابلة</small>
-              }
-            </div>
-          </div>
-
-          <!-- Date and Time -->
-          <div class="form-row">
-            <div class="form-group">
-              <label for="scheduled_date">
-                التاريخ <span class="required">*</span>
-              </label>
-              <p-datepicker 
-                showIcon iconDisplay="input"
-                id="scheduled_date"
-                appendTo="body"
-                formControlName="scheduled_date"
-                styleClass="w-full"
-                [class.p-invalid]="interviewForm.get('scheduled_date')?.invalid && interviewForm.get('scheduled_date')?.touched"
-                />
-              @if (interviewForm.get('scheduled_date')?.invalid && interviewForm.get('scheduled_date')?.touched) {
-                <small class="p-error block mt-1">يرجى اختيار التاريخ</small>
-              }
-            </div>
-            <div class="form-group">
-              <label for="scheduled_time">
-                الوقت <span class="required">*</span>
-              </label>
-              <p-datepicker
-                id="scheduled_time"
-                formControlName="scheduled_time"
-                [timeOnly]="true"
-                hourFormat="24"
-                [showSeconds]="false"
-                styleClass="w-full"
-                [class.p-invalid]="interviewForm.get('scheduled_time')?.invalid && interviewForm.get('scheduled_time')?.touched"
-                placeholder="اختر الوقت">
-              </p-datepicker>
-              @if (interviewForm.get('scheduled_time')?.invalid && interviewForm.get('scheduled_time')?.touched) {
-                <small class="p-error block mt-1">يرجى اختيار الوقت</small>
-              }
-            </div>
-          </div>
-
-          <!-- Duration (only for video interviews) -->
-          @if (currentInterviewType() === 'video') {
-            <div class="form-group">
-              <label for="duration_minutes">
-                المدة (بالدقائق) <span class="required">*</span>
-              </label>
-              <p-inputNumber
-                id="duration_minutes"
-                formControlName="duration_minutes"
-                [min]="15"
-                [max]="480"
-                [showButtons]="true"
-                placeholder="30"
-                styleClass="w-full"
-                [class.p-invalid]="interviewForm.get('duration_minutes')?.invalid && interviewForm.get('duration_minutes')?.touched">
-              </p-inputNumber>
-              @if (interviewForm.get('duration_minutes')?.invalid && interviewForm.get('duration_minutes')?.touched) {
-                <small class="p-error block mt-1">المدة يجب أن تكون بين 15 و 480 دقيقة</small>
-              }
-            </div>
-          }
-
-          <!-- Location (for in-person interviews only) -->
-          @if (currentInterviewType() === 'in_person') {
-            <div class="form-group">
-              <label for="location">الموقع</label>
-              <input 
-                pInputText
-                type="text"
-                id="location"
-                formControlName="location"
-                class="w-full"
-                placeholder="عنوان المقابلة (للمقابلات الشخصية)">
-            </div>
-          }
-
-          <!-- Meeting Link (for video interviews only) -->
-          @if (currentInterviewType() === 'video') {
-            <div class="form-group">
-              <label for="meeting_link">رابط الاجتماع <span class="required">*</span></label>
-              <input 
-                pInputText
-                type="url"
-                id="meeting_link"
-                formControlName="meeting_link"
-                class="w-full"
-                [class.p-invalid]="interviewForm.get('meeting_link')?.invalid && interviewForm.get('meeting_link')?.touched"
-                placeholder="رابط Zoom أو Google Meet">
-              @if (interviewForm.get('meeting_link')?.invalid && interviewForm.get('meeting_link')?.touched) {
-                <small class="p-error block mt-1">يرجى إدخال رابط الاجتماع</small>
-              }
-            </div>
-          }
-
-          <!-- Interviewer Info -->
-          <div class="form-row">
-            <div class="form-group">
-              <label for="interviewer_name">
-                اسم المحاور <span class="required">*</span>
-              </label>
-              <input 
-                pInputText
-                type="text"
-                id="interviewer_name"
-                formControlName="interviewer_name"
-                class="w-full"
-                [class.p-invalid]="interviewForm.get('interviewer_name')?.invalid && interviewForm.get('interviewer_name')?.touched"
-                placeholder="اسم المحاور">
-              @if (interviewForm.get('interviewer_name')?.invalid && interviewForm.get('interviewer_name')?.touched) {
-                <small class="p-error block mt-1">يرجى إدخال اسم المحاور</small>
-              }
-            </div>
-            <div class="form-group">
-              <label for="interviewer_email">
-                بريد المحاور <span class="required">*</span>
-              </label>
-              <input 
-                pInputText
-                type="email"
-                id="interviewer_email"
-                formControlName="interviewer_email"
-                class="w-full"
-                [class.p-invalid]="interviewForm.get('interviewer_email')?.invalid && interviewForm.get('interviewer_email')?.touched"
-                placeholder="بريد المحاور">
-              @if (interviewForm.get('interviewer_email')?.invalid && interviewForm.get('interviewer_email')?.touched) {
-                <small class="p-error block mt-1">يرجى إدخال بريد إلكتروني صحيح</small>
-              }
-            </div>
-          </div>
-
-          <!-- Notes -->
+      } @else {
+      <form [formGroup]="interviewForm" (ngSubmit)="scheduleInterview()">
+        <!-- Application Selection and Interview Type -->
+        <div class="form-row">
           <div class="form-group">
-            <label for="notes">ملاحظات</label>
-            <textarea 
-              pInputTextarea
-              id="notes"
-              formControlName="notes"
-              class="w-full"
-              rows="4"
-              placeholder="أي ملاحظات إضافية حول المقابلة"></textarea>
+            <label for="application">
+              المتقدم <span class="required">*</span>
+            </label>
+            <p-select id="application" formControlName="application" [options]="applications()" optionLabel="label"
+              optionValue="id" appendTo="body" placeholder="اختر المتقدم" [showClear]="true"
+              [disabled]="isEditMode() || applications().length === 0" styleClass="w-full"
+              [class.p-invalid]="interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched">
+            </p-select>
+            @if (applications().length === 0 && !loading() && !isEditMode()) {
+            <small class="p-error block mt-1">لا توجد طلبات متقدمة متاحة</small>
+            }
+            @if (interviewForm.get('application')?.invalid && interviewForm.get('application')?.touched) {
+            <small class="p-error block mt-1">يرجى اختيار المتقدم</small>
+            }
           </div>
 
-          <!-- Form Actions -->
-          <div class="modal-actions">
-            <button 
-              type="button"
-              class="btn btn-secondary"
-              (click)="closeScheduleModal()"
-              [disabled]="isSubmitting()">
-              إلغاء
-            </button>
-            <button 
-              type="button"
-              class="btn btn-primary"
-              [disabled]="isSubmitting()"
-              (click)="scheduleInterview()">
-              @if (isSubmitting()) {
-                {{ isEditMode() ? 'جاري التحديث...' : 'جاري الجدولة...' }}
-              } @else {
-                {{ isEditMode() ? 'حفظ التعديلات' : 'جدولة المقابلة' }}
-              }
-            </button>
+          <div class="form-group">
+            <label for="interview_type">
+              نوع المقابلة <span class="required">*</span>
+            </label>
+            <p-select id="interview_type" formControlName="interview_type" [options]="interviewTypes"
+              optionLabel="label" optionValue="value" placeholder="اختر نوع المقابلة" styleClass="w-full"
+              [class.p-invalid]="interviewForm.get('interview_type')?.invalid && interviewForm.get('interview_type')?.touched">
+            </p-select>
+            @if (interviewForm.get('interview_type')?.invalid && interviewForm.get('interview_type')?.touched) {
+            <small class="p-error block mt-1">يرجى اختيار نوع المقابلة</small>
+            }
           </div>
-        </form>
+        </div>
+
+        <!-- Date and Time -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="scheduled_date">
+              التاريخ <span class="required">*</span>
+            </label>
+            <p-datepicker showIcon iconDisplay="input" id="scheduled_date" appendTo="body"
+              formControlName="scheduled_date" styleClass="w-full"
+              [class.p-invalid]="interviewForm.get('scheduled_date')?.invalid && interviewForm.get('scheduled_date')?.touched" />
+            @if (interviewForm.get('scheduled_date')?.invalid && interviewForm.get('scheduled_date')?.touched) {
+            <small class="p-error block mt-1">يرجى اختيار التاريخ</small>
+            }
+          </div>
+          <div class="form-group">
+            <label for="scheduled_time">
+              الوقت <span class="required">*</span>
+            </label>
+            <p-datepicker id="scheduled_time" formControlName="scheduled_time" [timeOnly]="true" hourFormat="24"
+              [showSeconds]="false" styleClass="w-full"
+              [class.p-invalid]="interviewForm.get('scheduled_time')?.invalid && interviewForm.get('scheduled_time')?.touched"
+              placeholder="اختر الوقت">
+            </p-datepicker>
+            @if (interviewForm.get('scheduled_time')?.invalid && interviewForm.get('scheduled_time')?.touched) {
+            <small class="p-error block mt-1">يرجى اختيار الوقت</small>
+            }
+          </div>
+        </div>
+
+        <!-- Duration (only for video interviews) -->
+        @if (currentInterviewType() === 'video') {
+        <div class="form-group">
+          <label for="duration_minutes">
+            المدة (بالدقائق) <span class="required">*</span>
+          </label>
+          <p-inputNumber id="duration_minutes" formControlName="duration_minutes" [min]="15" [max]="480"
+            [showButtons]="true" placeholder="30" styleClass="w-full"
+            [class.p-invalid]="interviewForm.get('duration_minutes')?.invalid && interviewForm.get('duration_minutes')?.touched">
+          </p-inputNumber>
+          @if (interviewForm.get('duration_minutes')?.invalid && interviewForm.get('duration_minutes')?.touched) {
+          <small class="p-error block mt-1">المدة يجب أن تكون بين 15 و 480 دقيقة</small>
+          }
+        </div>
         }
-      </div>
+
+        <!-- Location (for in-person interviews only) -->
+        @if (currentInterviewType() === 'in_person') {
+        <div class="form-group">
+          <label for="location">الموقع</label>
+          <input pInputText type="text" id="location" formControlName="location" class="w-full"
+            placeholder="عنوان المقابلة (للمقابلات الشخصية)">
+        </div>
+        }
+
+        <!-- Meeting Link (for video interviews only) -->
+        @if (currentInterviewType() === 'video') {
+        <div class="form-group">
+          <label for="meeting_link">رابط الاجتماع <span class="required">*</span></label>
+          <input pInputText type="url" id="meeting_link" formControlName="meeting_link" class="w-full"
+            [class.p-invalid]="interviewForm.get('meeting_link')?.invalid && interviewForm.get('meeting_link')?.touched"
+            placeholder="رابط Zoom أو Google Meet">
+          @if (interviewForm.get('meeting_link')?.invalid && interviewForm.get('meeting_link')?.touched) {
+          <small class="p-error block mt-1">يرجى إدخال رابط الاجتماع</small>
+          }
+        </div>
+        }
+
+        <!-- Interviewer Info -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="interviewer_name">
+              اسم المحاور <span class="required">*</span>
+            </label>
+            <input pInputText type="text" id="interviewer_name" formControlName="interviewer_name" class="w-full"
+              [class.p-invalid]="interviewForm.get('interviewer_name')?.invalid && interviewForm.get('interviewer_name')?.touched"
+              placeholder="اسم المحاور">
+            @if (interviewForm.get('interviewer_name')?.invalid && interviewForm.get('interviewer_name')?.touched) {
+            <small class="p-error block mt-1">يرجى إدخال اسم المحاور</small>
+            }
+          </div>
+          <div class="form-group">
+            <label for="interviewer_email">
+              بريد المحاور <span class="required">*</span>
+            </label>
+            <input pInputText type="email" id="interviewer_email" formControlName="interviewer_email" class="w-full"
+              [class.p-invalid]="interviewForm.get('interviewer_email')?.invalid && interviewForm.get('interviewer_email')?.touched"
+              placeholder="بريد المحاور">
+            @if (interviewForm.get('interviewer_email')?.invalid && interviewForm.get('interviewer_email')?.touched) {
+            <small class="p-error block mt-1">يرجى إدخال بريد إلكتروني صحيح</small>
+            }
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label for="notes">ملاحظات</label>
+          <textarea pInputTextarea id="notes" formControlName="notes" class="w-full" rows="4"
+            placeholder="أي ملاحظات إضافية حول المقابلة"></textarea>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeScheduleModal()" [disabled]="isSubmitting()">
+            إلغاء
+          </button>
+          <button type="button" class="btn btn-primary" [disabled]="isSubmitting()" (click)="scheduleInterview()">
+            @if (isSubmitting()) {
+            {{ isEditMode() ? 'جاري التحديث...' : 'جاري الجدولة...' }}
+            } @else {
+            {{ isEditMode() ? 'حفظ التعديلات' : 'جدولة المقابلة' }}
+            }
+          </button>
+        </div>
+      </form>
+      }
     </div>
   </div>
+</div>
 }
 
 <!-- Interview Details Modal -->
 @if (showDetailsModal()) {
-  <div class="modal-backdrop" (click)="closeDetailsModal()">
-    <div class="modal-dialog" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>تفاصيل المقابلة</h2>
-        <button class="modal-close" (click)="closeDetailsModal()">×</button>
+<div class="modal-backdrop" (click)="closeDetailsModal()">
+  <div class="modal-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>تفاصيل المقابلة</h2>
+      <button class="modal-close" (click)="closeDetailsModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      @if (loadingDetails()) {
+      <div class="loading-state">
+        <div class="skeleton-details">
+          <p-skeleton width="100%" height="1.5rem" styleClass="mb-3"></p-skeleton>
+          <p-skeleton width="100%" height="1rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="80%" height="1rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="90%" height="1rem" styleClass="mb-4"></p-skeleton>
+        </div>
+      </div>
+      } @else if (selectedInterview()) {
+      <!-- Interview Information -->
+      <div class="detail-section">
+        <h3>معلومات المقابلة</h3>
+        <div class="detail-content">
+          <div class="detail-item">
+            <span class="detail-label">المتقدم:</span>
+            <span class="detail-value">{{ getApplicationName(selectedInterview()!) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">الوظيفة:</span>
+            <span class="detail-value">{{ getJobTitle(selectedInterview()!) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">نوع المقابلة:</span>
+            <span class="detail-value">{{ getInterviewTypeLabel(selectedInterview()!.interview_type) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">التاريخ والوقت:</span>
+            <span class="detail-value">{{ formatDateTime(selectedInterview()!.scheduled_date) }}</span>
+          </div>
+          @if (selectedInterview()!.interview_type === 'video' && selectedInterview()!.duration_minutes) {
+          <div class="detail-item">
+            <span class="detail-label">المدة:</span>
+            <span class="detail-value">{{ formatDuration(selectedInterview()!.duration_minutes) }}</span>
+          </div>
+          }
+          <div class="detail-item">
+            <span class="detail-label">الحالة:</span>
+            <span class="detail-value status-badge" [ngClass]="getStatusClass(selectedInterview()!.status)">
+              {{ getStatusLabel(selectedInterview()!.status) }}
+            </span>
+          </div>
+          @if (selectedInterview()!.location) {
+          <div class="detail-item">
+            <span class="detail-label">الموقع:</span>
+            <span class="detail-value">{{ selectedInterview()!.location }}</span>
+          </div>
+          }
+          @if (selectedInterview()!.meeting_link) {
+          <div class="detail-item">
+            <span class="detail-label">رابط الاجتماع:</span>
+            <a [href]="selectedInterview()!.meeting_link" target="_blank" class="detail-link" rel="noopener noreferrer">
+              {{ selectedInterview()!.meeting_link }}
+            </a>
+          </div>
+          }
+        </div>
       </div>
 
-      <div class="modal-body">
-        @if (loadingDetails()) {
-          <div class="loading-state">
-            <div class="skeleton-details">
-              <p-skeleton width="100%" height="1.5rem" styleClass="mb-3"></p-skeleton>
-              <p-skeleton width="100%" height="1rem" styleClass="mb-2"></p-skeleton>
-              <p-skeleton width="80%" height="1rem" styleClass="mb-2"></p-skeleton>
-              <p-skeleton width="90%" height="1rem" styleClass="mb-4"></p-skeleton>
-            </div>
+      <!-- Interviewer Information -->
+      <div class="detail-section">
+        <h3>معلومات المحاور</h3>
+        <div class="detail-content">
+          <div class="detail-item">
+            <span class="detail-label">الاسم:</span>
+            <span class="detail-value">{{ selectedInterview()!.interviewer_name }}</span>
           </div>
-        } @else if (selectedInterview()) {
-          <!-- Interview Information -->
-          <div class="detail-section">
-            <h3>معلومات المقابلة</h3>
-            <div class="detail-content">
-              <div class="detail-item">
-                <span class="detail-label">المتقدم:</span>
-                <span class="detail-value">{{ getApplicationName(selectedInterview()!) }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">الوظيفة:</span>
-                <span class="detail-value">{{ getJobTitle(selectedInterview()!) }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">نوع المقابلة:</span>
-                <span class="detail-value">{{ getInterviewTypeLabel(selectedInterview()!.interview_type) }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">التاريخ والوقت:</span>
-                <span class="detail-value">{{ formatDateTime(selectedInterview()!.scheduled_date) }}</span>
-              </div>
-              @if (selectedInterview()!.interview_type === 'video' && selectedInterview()!.duration_minutes) {
-                <div class="detail-item">
-                  <span class="detail-label">المدة:</span>
-                  <span class="detail-value">{{ formatDuration(selectedInterview()!.duration_minutes) }}</span>
-                </div>
-              }
-              <div class="detail-item">
-                <span class="detail-label">الحالة:</span>
-                <span class="detail-value status-badge" [ngClass]="getStatusClass(selectedInterview()!.status)">
-                  {{ getStatusLabel(selectedInterview()!.status) }}
-                </span>
-              </div>
-              @if (selectedInterview()!.location) {
-                <div class="detail-item">
-                  <span class="detail-label">الموقع:</span>
-                  <span class="detail-value">{{ selectedInterview()!.location }}</span>
-                </div>
-              }
-              @if (selectedInterview()!.meeting_link) {
-                <div class="detail-item">
-                  <span class="detail-label">رابط الاجتماع:</span>
-                  <a [href]="selectedInterview()!.meeting_link" target="_blank" class="detail-link" rel="noopener noreferrer">
-                    {{ selectedInterview()!.meeting_link }}
-                  </a>
-                </div>
-              }
-            </div>
+          <div class="detail-item">
+            <span class="detail-label">البريد الإلكتروني:</span>
+            <span class="detail-value">{{ selectedInterview()!.interviewer_email }}</span>
           </div>
-
-          <!-- Interviewer Information -->
-          <div class="detail-section">
-            <h3>معلومات المحاور</h3>
-            <div class="detail-content">
-              <div class="detail-item">
-                <span class="detail-label">الاسم:</span>
-                <span class="detail-value">{{ selectedInterview()!.interviewer_name }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">البريد الإلكتروني:</span>
-                <span class="detail-value">{{ selectedInterview()!.interviewer_email }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Applicant Information -->
-          @if (typeof selectedInterview()!.application === 'object') {
-            <div class="detail-section">
-              <h3>معلومات المتقدم</h3>
-              <div class="detail-content">
-                <div class="detail-item">
-                  <span class="detail-label">البريد الإلكتروني:</span>
-                  <span class="detail-value">{{ getApplicantEmail(selectedInterview()!) }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">رقم الهاتف:</span>
-                  <span class="detail-value">{{ getApplicantPhone(selectedInterview()!) }}</span>
-                </div>
-              </div>
-            </div>
-          }
-
-          <!-- Notes -->
-          @if (selectedInterview()!.notes) {
-            <div class="detail-section">
-              <h3>ملاحظات</h3>
-              <div class="notes-content">
-                <p>{{ selectedInterview()!.notes }}</p>
-              </div>
-            </div>
-          }
-
-          <!-- Action Buttons -->
-          <div class="modal-actions">
-            <button 
-              class="btn btn-primary"
-              (click)="openEditModal(selectedInterview()!); closeDetailsModal();">
-              <i class="pi pi-pencil"></i>
-              تعديل المقابلة
-            </button>
-          </div>
-        }
+        </div>
       </div>
+
+      <!-- Applicant Information -->
+      @if (typeof selectedInterview()!.application === 'object') {
+      <div class="detail-section">
+        <h3>معلومات المتقدم</h3>
+        <div class="detail-content">
+          <div class="detail-item">
+            <span class="detail-label">البريد الإلكتروني:</span>
+            <span class="detail-value">{{ getApplicantEmail(selectedInterview()!) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">رقم الهاتف:</span>
+            <span class="detail-value">{{ getApplicantPhone(selectedInterview()!) }}</span>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Notes -->
+      @if (selectedInterview()!.notes) {
+      <div class="detail-section">
+        <h3>ملاحظات</h3>
+        <div class="notes-content">
+          <p>{{ selectedInterview()!.notes }}</p>
+        </div>
+      </div>
+      }
+
+      <!-- Action Buttons -->
+      <div class="modal-actions">
+        <button class="btn btn-primary" (click)="openEditModal(selectedInterview()!); closeDetailsModal();">
+          <i class="pi pi-pencil"></i>
+          تعديل المقابلة
+        </button>
+      </div>
+      }
     </div>
   </div>
+</div>
 }
-
