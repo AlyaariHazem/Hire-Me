@@ -96,6 +96,7 @@ export class Applications extends Base implements OnInit {
       reviewed: 'status-reviewed',
       accepted: 'status-accepted',
       rejected: 'status-rejected',
+      external_redirect: 'status-external-redirect',
     };
     return statusMap[status] || 'status-pending';
   }
@@ -106,6 +107,7 @@ export class Applications extends Base implements OnInit {
       reviewed: 'تمت المراجعة',
       accepted: 'مقبولة',
       rejected: 'مرفوضة',
+      external_redirect: 'تم التوجيه لتقديم خارجي',
     };
     return statusMap[status] || status;
   }

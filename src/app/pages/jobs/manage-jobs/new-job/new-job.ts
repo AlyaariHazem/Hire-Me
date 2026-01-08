@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { ManageJobsStoreService } from '../../services/manage-jobs.store';
 import { JobFormService, JobForm } from 'shared/services/job-form.service';
+import { Base } from 'shared/base/base';
 
 @Component({
   selector: 'app-new-job',
@@ -20,7 +21,7 @@ import { JobFormService, JobForm } from 'shared/services/job-form.service';
   templateUrl: './new-job.html',
   styleUrls: ['./new-job.scss','./../post-job/post-job.scss'],
 })
-export class NewJob implements OnInit, OnChanges {
+export class NewJob extends Base implements OnInit, OnChanges {
   @Input() editSlug: string | null = null;
   @Output() saved = new EventEmitter<JobItem>();
 
@@ -55,7 +56,7 @@ export class NewJob implements OnInit, OnChanges {
   private api = inject(JobService);
   private companyService = inject(CompanyService);
   private jobFormService = inject(JobFormService);
-  private toastr = inject(ToastrService);
+  // private toastr = inject(ToastrService);
   private router = inject(Router);
   private store = inject(ManageJobsStoreService);
   private cdr = inject(ChangeDetectorRef);
@@ -64,6 +65,7 @@ export class NewJob implements OnInit, OnChanges {
   get selectedApplicationMethod() { return this.form.get('application_method')?.value; }
 
   constructor(private fb: FormBuilder) {
+    super();
     this.form = this.fb.group({
       title: ['', Validators.required],
       category: [null, Validators.required],
@@ -260,7 +262,7 @@ export class NewJob implements OnInit, OnChanges {
       },
       error: (err) => {
         console.error('Failed to load job', err);
-        this.toastr.error('فشل في تحميل بيانات الوظيفة');
+        this.errors.error(err, { join: true });
         this.jobLoaded = true; // Mark as loaded even on error to prevent retry loops
         this.jobLoading = false;
         // Still check loading complete so form can be shown even if job load failed
@@ -301,7 +303,7 @@ export class NewJob implements OnInit, OnChanges {
       },
       error: (err) => {
         console.error('Failed to load categories', err);
-        this.toastr.error('فشل في تحميل فئات الوظائف');
+        this.errors.error(err, { join: true });
         this.categoriesLoaded = true;
         this.checkLoadingComplete();
       },
@@ -337,6 +339,7 @@ export class NewJob implements OnInit, OnChanges {
       },
       error: (err) => {
         console.error('Failed to load custom forms', err);
+        this.errors.error(err, { join: true });
         this.customForms = [];
       },
     });
@@ -565,7 +568,7 @@ export class NewJob implements OnInit, OnChanges {
           },
           error: (err) => { 
             console.error(err); 
-            this.toastr.error(err?.error?.message || 'تعذر نشر الوظيفة');
+            this.errors.error(err, { join: true });
             this.isSubmitting = false;
           },
         });
@@ -580,7 +583,7 @@ export class NewJob implements OnInit, OnChanges {
           },
           error: (err) => { 
             console.error(err); 
-            this.toastr.error(err?.error?.message || 'تعذر تحديث الوظيفة');
+            this.errors.error(err, { join: true });
             this.isSubmitting = false;
           },
         });
@@ -600,7 +603,7 @@ export class NewJob implements OnInit, OnChanges {
         },
         error: (err) => { 
           console.error(err); 
-          this.toastr.error(err?.error?.message || 'تعذر نشر الوظيفة');
+          this.errors.error(err, { join: true });
           this.isSubmitting = false;
         },
       });
@@ -615,7 +618,7 @@ export class NewJob implements OnInit, OnChanges {
         },
         error: (err) => { 
           console.error(err); 
-          this.toastr.error(err?.error?.message || 'تعذر تحديث الوظيفة');
+          this.errors.error(err, { join: true });
           this.isSubmitting = false;
         },
       });
