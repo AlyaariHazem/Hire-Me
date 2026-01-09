@@ -221,10 +221,20 @@ export class ApplyJobComponent extends Base implements OnInit {
     if (this.applicationMethod === 'custom_form') {
       for (const question of this.customFormQuestions) {
         if (question.required) {
-          const response = this.customFormResponses.get(question.id);
-          if (!response || !response.answer_text?.trim()) {
-            this.toastr.error(`يرجى الإجابة على السؤال: ${question.label}`);
-            return;
+          const textResponse = this.customFormResponses.get(question.id);
+          const fileResponse = this.responseFiles.get(question.id);
+          
+          const hasText = textResponse && textResponse.answer_text?.trim();
+          const hasFile = !!fileResponse;
+          
+          if (question.question_type === 'file') {
+             if (!hasFile) {
+                this.toastr.error(`يرجى رفع ملف للسؤال: ${question.label}`);
+                return;
+             }
+          } else if (!hasText) {
+             this.toastr.error(`يرجى الإجابة على السؤال: ${question.label}`);
+             return;
           }
         }
       }
@@ -265,27 +275,41 @@ export class ApplyJobComponent extends Base implements OnInit {
         payload.custom_form = this.job.custom_form.id;
       }
       
-      // Add responses - only include non-null fields
-      if (this.customFormResponses.size > 0) {
-        const responsesData: any[] = [];
-        this.customFormResponses.forEach((response, questionId) => {
-          const responseObj: any = {
-            question: questionId,
-          };
-          
-          // Only add answer_text if it has a value (not null/empty)
-          if (response.answer_text && response.answer_text.trim()) {
-            responseObj.answer_text = response.answer_text.trim();
-          }
-          
-          // Only add the response if it has at least answer_text
-          if (responseObj.answer_text) {
-            responsesData.push(responseObj);
-          }
-        });
-        if (responsesData.length > 0) {
-          payload.responses = responsesData;
-        }
+      // Add responses construction logic helper
+      const buildResponses = () => {
+         const responsesData: any[] = [];
+         
+         // Iterate over ALL questions to ensure we catch everything
+         this.customFormQuestions.forEach(question => {
+            const questionId = question.id;
+            const textResponse = this.customFormResponses.get(questionId);
+            const fileResponse = this.responseFiles.get(questionId);
+            
+            const responseObj: any = {
+               question: questionId
+            };
+            
+            let hasContent = false;
+            
+            if (textResponse && textResponse.answer_text && textResponse.answer_text.trim()) {
+               responseObj.answer_text = textResponse.answer_text.trim();
+               hasContent = true;
+            }
+            
+            // For JSON payload (no files), we skip files here. 
+            // Files are handled in FormData section below.
+            // But we need to know if we have content to add to payload.responses
+            
+            if (hasContent) {
+               responsesData.push(responseObj);
+            }
+         });
+         return responsesData;
+      };
+
+      const responses = buildResponses();
+       if (responses.length > 0) {
+        payload.responses = responses;
       }
     } else if (this.applicationForm.responses.length > 0) {
       // Add regular responses - only include non-null fields
@@ -341,50 +365,55 @@ export class ApplyJobComponent extends Base implements OnInit {
       // Add response files - need to handle them in responses array
       // For custom form responses with files
       if (this.applicationMethod === 'custom_form') {
-        const responsesData: any[] = [];
-        this.customFormResponses.forEach((response, questionId) => {
-          const responseObj: any = {
-            question: questionId,
-          };
-          
-          if (response.answer_text && response.answer_text.trim()) {
-            responseObj.answer_text = response.answer_text.trim();
-          }
-          
-          // Add file if exists for this question
-          if (this.responseFiles.has(questionId)) {
-            const file = this.responseFiles.get(questionId);
-            if (file) {
-              requestData.append(`response_file_${questionId}`, file);
-              responseObj.answer_file = `response_file_${questionId}`; // Reference to the file
-            }
-          }
-          
-          if (responseObj.answer_text || responseObj.answer_file) {
-            responsesData.push(responseObj);
-          }
+        let index = 0;
+        this.customFormQuestions.forEach(question => {
+           const questionId = question.id;
+           const textResponse = this.customFormResponses.get(questionId);
+           const fileResponse = this.responseFiles.get(questionId);
+           
+           let hasContent = false;
+           // Check if we have any content to send for this question
+           if ((textResponse && textResponse.answer_text && textResponse.answer_text.trim()) || fileResponse) {
+             
+             requestData.append(`responses[${index}]question`, String(questionId));
+             
+             // Add text if exists (or empty string if file exists to ensure field presence if required)
+             if (textResponse && textResponse.answer_text && textResponse.answer_text.trim()) {
+               requestData.append(`responses[${index}]answer_text`, textResponse.answer_text.trim());
+             } else {
+               // If there is a file but no text, we might want to send empty string or null depending on backend
+               // sending empty string to be safe based on previous attempts
+               requestData.append(`responses[${index}]answer_text`, "");
+             }
+
+             // Add file if exists
+             if (fileResponse) {
+               requestData.append(`responses[${index}]answer_file`, fileResponse);
+             }
+             
+             hasContent = true;
+             index++;
+           }
         });
-        if (responsesData.length > 0) {
-          requestData.append('responses', JSON.stringify(responsesData));
-        }
       } else if (payload.responses && payload.responses.length > 0) {
         // For regular responses with files
-        const responsesWithFiles = payload.responses.map((response: any) => {
-          const responseObj: any = { question: response.question };
-          if (response.answer_text) responseObj.answer_text = response.answer_text;
+        payload.responses.forEach((response: any, index: number) => {
+          requestData.append(`responses[${index}]question`, String(response.question));
+          
+          if (response.answer_text) {
+             requestData.append(`responses[${index}]answer_text`, response.answer_text);
+          } else {
+             requestData.append(`responses[${index}]answer_text`, "");
+          }
           
           // Add file if exists
           if (this.responseFiles.has(response.question)) {
             const file = this.responseFiles.get(response.question);
             if (file) {
-              requestData.append(`response_file_${response.question}`, file);
-              responseObj.answer_file = `response_file_${response.question}`;
+              requestData.append(`responses[${index}]answer_file`, file);
             }
           }
-          
-          return responseObj;
         });
-        requestData.append('responses', JSON.stringify(responsesWithFiles));
       }
     } else {
       // Use JSON payload when no files
