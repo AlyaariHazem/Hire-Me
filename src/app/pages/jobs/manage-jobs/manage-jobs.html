@@ -49,21 +49,21 @@
           <span>الوظائف النشطة</span>
           <span class="tab-count">({{ countActive() }})</span>
         </button>
-        <button class="tab" [class.active]="activeTab() === 'paused'" (click)="selectTab('paused')">
+        <!-- <button class="tab" [class.active]="activeTab() === 'paused'" (click)="selectTab('paused')">
           <span class="tab-icon">⏸</span>
           <span>متوقفة</span>
           <span class="tab-count">({{ countPaused() }})</span>
-        </button>
+        </button> -->
         <button class="tab" [class.active]="activeTab() === 'closed'" (click)="selectTab('closed')">
           <span class="tab-icon">✕</span>
           <span>مغلقة</span>
           <span class="tab-count">({{ countClosed() }})</span>
         </button>
-        <button class="tab" [class.active]="activeTab() === 'draft'" (click)="selectTab('draft')">
+        <!-- <button class="tab" [class.active]="activeTab() === 'draft'" (click)="selectTab('draft')">
           <span class="tab-icon"><i class="pi pi-file-edit"></i></span>
           <span>مسودات</span>
           <span class="tab-count">({{ countDraft() }})</span>
-        </button>
+        </button> -->
       </div>
     </div>
     }

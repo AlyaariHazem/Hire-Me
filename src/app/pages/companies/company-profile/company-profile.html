@@ -301,7 +301,7 @@
           <div class="review-form-container">
             <form (ngSubmit)="submitReview()" class="review-form">
               <div class="form-group">
-                <label>التقييم (من 1 إلى 5 نجوم) *</label>
+                <label>التقييم (من 1 إلى 5 نجوم) <span class="text-red-500 text-lg">*</span></label>
                 <div class="rating-input">
                   @for (star of [1,2,3,4,5]; track star) {
                   <button type="button" class="star-button" [class.active]="reviewForm.rating >= star"
@@ -314,13 +314,13 @@
               </div>
 
               <div class="form-group">
-                <label for="review-title">عنوان التقييم *</label>
+                <label for="review-title">عنوان التقييم <span class="text-red-500 text-lg">*</span></label>
                 <input type="text" id="review-title" [(ngModel)]="reviewForm.title" name="title" class="form-control"
                   placeholder="اكتب عنواناً للتقييم" maxlength="200" required />
               </div>
 
               <div class="form-group">
-                <label for="review-text">نص التقييم *</label>
+                <label for="review-text">نص التقييم <span class="text-red-500 text-lg">*</span></label>
                 <textarea id="review-text" [(ngModel)]="reviewForm.review_text" name="review_text" class="form-control"
                   rows="5" placeholder="اكتب تقييمك التفصيلي..." required></textarea>
               </div>
