@@ -127,9 +127,6 @@
               @if (getJobStatus(j) === 'active') {
               <span class="badge-icon">✓</span>
               <span>نشطة</span>
-              } @else if (getJobStatus(j) === 'paused') {
-              <span class="badge-icon">⏸</span>
-              <span>متوقفة</span>
               } @else {
               <span class="badge-icon">✕</span>
               <span>مغلقة</span>
@@ -178,7 +175,6 @@
             <select id="status-{{ j.id }}" class="status-select" [value]="getJobStatus(j)" [disabled]="isUpdating(j.id)"
               (change)="updateJobStatus(j, $any($event.target).value)" title="تغيير حالة الوظيفة">
               <option value="active">نشطة</option>
-              <option value="paused">متوقفة</option>
               <option value="closed">مغلقة</option>
             </select>
             @if (isUpdating(j.id)) {
