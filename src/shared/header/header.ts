@@ -71,6 +71,14 @@ export class Header implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     return this.toAbsolute(p?.company_logo ?? p?.profile?.company_logo);
   });
 
+  homeLink = computed(() => {
+    if (!this.isLoggedIn()) return ['/'];
+    const r = this.role();
+    if (r === 'employer') return ['/companies/dashboard'];
+    if (r === 'jobseeker') return ['/jobseeker/dashboard'];
+    return ['/'];
+  });
+
   private toAbsolute(path?: string | null): string {
     if (!path) return '';
     if (/^(https?:|blob:|data:)/i.test(path)) return path;

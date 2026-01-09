@@ -4,9 +4,9 @@
     <div class="container">
       <!-- Brand -->
       <div class="navbar-brand">
-        <a routerLink="/">
+        <a [routerLink]="homeLink()">
           <img 
-            [src]="logoUrl() || 'images/HireMe.png'" 
+            [src]="'images/HireMe.png'" 
             alt="منصة التوظيف" 
             class="logo"
             (error)="handleLogoError($event)"
