@@ -45,7 +45,7 @@ export class Profile extends Base implements OnInit, OnDestroy {
     { label: 'مبتدئ', value: 'entry' },
     { label: 'متوسط', value: 'mid' },
     { label: 'متقدم', value: 'senior' },
-    { label: 'خبير', value: 'lead' },
+    { label: 'خبير', value: 'expert' },
   ];
 
   educationLevelOptions = [
