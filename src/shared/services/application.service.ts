@@ -49,6 +49,17 @@ export interface Application {
     is_salary_negotiable?: boolean;
     application_deadline?: string | null;
     application_method?: 'platform' | 'custom_form' | 'template_file' | 'external_link' | 'email';
+    custom_form?: {
+      id: number;
+      name: string;
+      questions?: Array<{
+        id: number;
+        label: string;
+        question_type: string;
+        required: boolean;
+        options?: string | null;
+      }>;
+    } | null;
   };
   applicant?: {
     id: number;

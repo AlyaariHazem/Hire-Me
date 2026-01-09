@@ -425,14 +425,35 @@ export class Applicants implements OnInit {
     return questions.find(q => q.id === questionId) || null;
   }
 
-  getQuestionLabel(questions: Array<{id: number; label: string; question_type: string; required: boolean; options?: string | null}>, questionId: number): string {
-    const question = this.getQuestionById(questions, questionId);
-    return question?.label || `سؤال رقم ${questionId}`;
+  getQuestionLabel(questions: Array<any>, questionId: number, response?: any): string {
+    // Priority 1: Use question details from response if available
+    if (response && response.question_details && response.question_details.label) {
+      return response.question_details.label;
+    }
+
+    // Priority 2: Look up in questions array
+    if (questions && questions.length > 0) {
+      const question = questions.find(q => q.id === questionId);
+      if (question && question.label) {
+        return question.label;
+      }
+    }
+    
+    // Fallback
+    return `سؤال رقم ${questionId}`;
   }
 
-  getQuestionRequired(questions: Array<{id: number; label: string; question_type: string; required: boolean; options?: string | null}>, questionId: number): boolean {
+  getQuestionRequired(questions: Array<any>, questionId: number, response?: any): boolean {
+    if (response && response.question_details) {
+      return response.question_details.required;
+    }
     const question = this.getQuestionById(questions, questionId);
     return question?.required || false;
+  }
+
+  // Helper to get custom form from application or job
+  getCustomForm(application: Application): any {
+    return application.custom_form || application.job?.custom_form || null;
   }
 
   closeDetailsModal(): void {

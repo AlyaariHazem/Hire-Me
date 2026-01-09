@@ -227,7 +227,9 @@ export class JobseekerMessages implements OnInit {
       pending: 'قيد المراجعة',
       reviewed: 'تم المراجعة',
       accepted: 'مقبول',
-      rejected: 'مرفوض'
+      rejected: 'مرفوض',
+      external_redirect: ' تم التوجيه إلى تقديم خارجي',
+      interview_scheduled: 'مجدولة'
     };
     return labels[status] || status;
   }

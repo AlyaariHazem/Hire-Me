@@ -1893,3 +1893,217 @@
   }
 }
 
+
+
+/* Questionnaire Styles - Enhanced Premium Look */
+.questionnaire-content {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-color, #e0e0e0);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  margin-top: 1rem;
+}
+
+.questionnaire-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  background: linear-gradient(to right, #f8f9fa, #ffffff);
+
+  h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary, #1a1a1a);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .form-description {
+    margin: 0;
+    color: var(--text-secondary, #666);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+.questionnaire-questions {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 1.5rem;
+  background: #fff;
+}
+
+.questionnaire-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color, #007bff);
+    opacity: 0.7;
+  }
+
+  &:hover {
+    background: #ffffff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+    border-color: var(--primary-color, #007bff);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.question-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #1a1a1a);
+  font-size: 1.05rem;
+  line-height: 1.5;
+
+  .question-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 123, 255, 0.1);
+    color: var(--primary-color, #007bff);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    font-family: monospace;
+    flex-shrink: 0;
+    margin-top: 0px; 
+  }
+
+  .question-text {
+    flex: 1;
+  }
+
+  .required-badge {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 1.2rem;
+    line-height: 1;
+    margin-right: 0.25rem;
+  }
+}
+
+.question-answer {
+  padding-right: 2.5rem; 
+  
+  .answer-text-wrapper {
+    background: #ffffff;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    
+    .answer-text {
+      margin: 0;
+      line-height: 1.6;
+      color: var(--text-primary, #333);
+      white-space: pre-wrap;
+      font-size: 1rem;
+    }
+  }
+
+  .no-answer {
+    color: var(--text-secondary, #999);
+    font-style: italic;
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+  }
+}
+
+.answer-file-link-enhanced {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 100%;
+  width: fit-content;
+
+  .file-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: rgba(0, 123, 255, 0.08);
+    color: var(--primary-color, #007bff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .file-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .file-action {
+      font-weight: 700;
+      color: var(--text-primary, #1a1a1a);
+      font-size: 1rem;
+    }
+
+    .file-name {
+      font-size: 0.85rem;
+      color: var(--primary-color, #007bff);
+      font-weight: 500;
+    }
+  }
+
+  .action-icon {
+    color: #adb5bd;
+    font-size: 1rem;
+    margin-right: 1rem;
+    transition: transform 0.2s;
+  }
+
+  &:hover {
+    border-color: var(--primary-color, #007bff);
+    box-shadow: 0 8px 16px rgba(0, 123, 255, 0.12);
+    transform: translateY(-2px);
+
+    .file-icon {
+      background: var(--primary-color, #007bff);
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+    
+    .file-info .file-action {
+        color: var(--primary-color, #007bff);
+    }
+
+    .action-icon {
+      color: var(--primary-color, #007bff);
+      transform: translate(-3px, -3px); 
+    }
+  }
+}
+
+

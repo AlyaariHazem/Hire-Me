@@ -169,6 +169,16 @@
     background: #f8d7da;
     color: #721c24;
   }
+
+  &.status-external_redirect {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  &.status-interview_scheduled {
+    background: #daf8d7;
+    color: #721c24;
+  }
 }
 
 .unread-badge {
