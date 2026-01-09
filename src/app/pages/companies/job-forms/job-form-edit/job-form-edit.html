@@ -98,13 +98,6 @@
     <div class="form-section">
       <div class="section-header">
         <h2 class="section-title">الأسئلة</h2>
-        <p-button
-          type="button"
-          label="إضافة سؤال"
-          icon="pi pi-plus"
-          styleClass="p-button-sm p-button-primary"
-          (onClick)="addQuestion()"
-        ></p-button>
       </div>
 
       @if (questions.length === 0) {
@@ -267,6 +260,13 @@
         </div>
       </div>
       }
+      <p-button
+      type="button"
+      label="إضافة سؤال"
+      icon="pi pi-plus"
+      styleClass="p-button-sm p-button-primary"
+      (onClick)="addQuestion()"
+    ></p-button>
     </div>
 
     <!-- Form Actions -->
