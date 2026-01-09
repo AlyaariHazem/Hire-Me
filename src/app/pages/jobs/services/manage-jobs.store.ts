@@ -34,6 +34,8 @@ export interface ManageJobsState {
   page: number;
   page_size: number;
   totalCount: number;
+  countActive: number;
+  countClosed: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -48,7 +50,9 @@ export class ManageJobsStoreService {
     loaded: false,
     page: 1,
     page_size: 5,
-    totalCount: 0
+    totalCount: 0,
+    countActive: 0,
+    countClosed: 0
   };
 
   // State signal
@@ -63,27 +67,14 @@ export class ManageJobsStoreService {
   readonly totalCount = computed(() => this.state().totalCount);
   readonly totalPages = computed(() => Math.ceil(this.state().totalCount / this.state().page_size));
   
-  // Computed groups
-  readonly jobsActive = computed(() => this.jobs().filter(j => j.is_active === true));
-  readonly jobsClosed = computed(() => this.jobs().filter(j => j.is_active === false));
-  readonly jobsPaused = computed(() => [] as JobItem[]); 
-  readonly jobsDraft = computed(() => [] as JobItem[]);
+  // Counts from state (populated from API response)
+  readonly countActive = computed(() => this.state().countActive);
+  readonly countClosed = computed(() => this.state().countClosed);
+  readonly countPaused = computed(() => 0); // Not supported by API yet
+  readonly countDraft = computed(() => 0); // Not supported by API yet
 
-  // Counts
-  readonly countActive = computed(() => this.jobsActive().length);
-  readonly countClosed = computed(() => this.jobsClosed().length);
-  readonly countPaused = computed(() => this.jobsPaused().length);
-  readonly countDraft = computed(() => this.jobsDraft().length);
-
-  // Visible jobs based on tab
-  readonly visibleJobs = computed(() => {
-    switch (this.activeTab()) {
-      case 'active': return this.jobsActive();
-      case 'closed': return this.jobsClosed();
-      case 'paused': return this.jobsPaused();
-      case 'draft':  return this.jobsDraft();
-    }
-  });
+  // Visible jobs - now just returns the jobs in state because they are already filtered by backend
+  readonly visibleJobs = computed(() => this.state().jobs);
 
   constructor() {}
 
@@ -98,10 +89,22 @@ export class ManageJobsStoreService {
   loadJobs(): void {
     const currentState = this.state();
     this.patchState({ loading: true });
+
+    // Determine filter based on tab
+    let is_active: boolean | undefined = undefined;
+    if (currentState.activeTab === 'active') is_active = true;
+    else if (currentState.activeTab === 'closed') is_active = false;
+    // 'paused' and 'draft' currently map to nothing or false depending on requirements,
+    // assuming 'paused' might mean inactive for now or not handled.
+    // For now, let's stick to the user's current logic where 'paused' isn't fully implemented in API
+    // but the UI has logic for it.
+    
+    // API request with filter
     this.jobService.getMyJobs({ 
       page: currentState.page, 
       page_size: currentState.page_size, 
-      ordering: '-created_at' 
+      ordering: '-created_at',
+      ...((is_active !== undefined) && { is_active }) // Only add is_active if defined
     }).subscribe({
       next: res => {
         const list = (res?.results ?? []).map((j: any) => ({
@@ -109,11 +112,15 @@ export class ManageJobsStoreService {
           company: j.company ?? { id: 0, name: '-', logo: null, city: '-' },
           category: j.category ?? { id: 0, name: '-' },
         }));
+
         this.patchState({
           jobs: list,
           loading: false,
           loaded: true,
-          totalCount: res?.count || 0
+          totalCount: res?.count || 0,
+          // Update global counts from response if available
+          countActive: res?.active ?? currentState.countActive,
+          countClosed: res?.inactive ?? currentState.countClosed
         });
       },
       error: err => {
@@ -128,7 +135,11 @@ export class ManageJobsStoreService {
   }
 
   setTab(tab: TabKey): void {
-    this.patchState({ activeTab: tab, page: 1 });
+    // When switching tabs, reset page to 1
+    if (this.state().activeTab !== tab) {
+      this.patchState({ activeTab: tab, page: 1 });
+      this.loadJobs();
+    }
   }
 
   setPage(page: number): void {
@@ -150,13 +161,9 @@ export class ManageJobsStoreService {
      // Optimistic update could happen, but let's wait for API
      return this.jobService.patchJob(slug, { is_active: isActive }).pipe(
        tap((updatedJob: any) => {
-         const currentJobs = this.state().jobs;
-         const index = currentJobs.findIndex(j => j.id === id);
-         if (index !== -1) {
-           const updatedList = [...currentJobs];
-           updatedList[index] = { ...updatedList[index], is_active: updatedJob.is_active };
-           this.patchState({ jobs: updatedList });
-         }
+         // After update, reload jobs to refresh list and counts
+         // This is safer than optimistic updates when moving between tabs (e.g. active -> closed)
+         this.loadJobs();
        })
      );
   }

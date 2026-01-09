@@ -35,6 +35,8 @@ export interface JobListResponse {
   count: number;
   next: string | null;
   previous: string | null;
+  active?: number;
+  inactive?: number;
   results: JobItem[];
 }
 export interface JobAlert {

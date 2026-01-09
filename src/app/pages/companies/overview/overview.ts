@@ -105,7 +105,8 @@ export class Overview implements OnInit {
       reviewed: 'تم المراجعة',
       accepted: 'مقبول',
       rejected: 'مرفوض',
-      interview_scheduled: 'مقابلة مجدولة'
+      interview_scheduled: 'مقابلة مجدولة',
+      external_redirect: 'إعادة توجيه خارجية'
     };
     return labels[status] || status;
   }

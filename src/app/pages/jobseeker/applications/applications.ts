@@ -97,6 +97,7 @@ export class Applications extends Base implements OnInit {
       accepted: 'status-accepted',
       rejected: 'status-rejected',
       external_redirect: 'status-external-redirect',
+      interview_scheduled: 'status-interview-scheduled'
     };
     return statusMap[status] || 'status-pending';
   }
@@ -108,6 +109,7 @@ export class Applications extends Base implements OnInit {
       accepted: 'مقبولة',
       rejected: 'مرفوضة',
       external_redirect: 'تم التوجيه لتقديم خارجي',
+      interview_scheduled: 'تم جدولة مقابلة'
     };
     return statusMap[status] || status;
   }
