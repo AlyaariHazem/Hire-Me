@@ -164,7 +164,7 @@ export class JobService {
   // if backend supports delete bookmark separate:
   unbookmarkJob(jobId: number): Observable<any> {
     const url = environment.getUrl(`${jobId}/bookmark`, 'jobs'); // DELETE /api/jobs/{job_id}/bookmark/
-    return this.http.delete(url);
+    return this.http.post(url, {});
   }
 
   getBookmarkedJobs(filters: JobFilters = {}): Observable<JobListResponse> {
