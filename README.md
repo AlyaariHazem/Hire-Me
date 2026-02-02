@@ -127,9 +127,12 @@ Hire-Me/
 │   │   ├── core/              # Core services and interceptors
 │   │   │   ├── services/
 │   │   │   └── interceptors/
-│   │   └── shared/            # Shared components and utilities
-│   │       ├── components/    # Reusable UI components
-│   │       └── models/        # TypeScript interfaces
+│   │   ├── shared/            # Shared components and utilities
+│   │   │   ├── components/    # Reusable UI components
+│   │   │   └── models/        # TypeScript interfaces
+│   │   ├── app.ts             # Root component
+│   │   ├── app.routes.ts      # Application routing
+│   │   └── prime-ng-theme.ts  # PrimeNG theme configuration
 │   ├── environments/          # Environment configurations
 │   └── styles.scss            # Global styles
 ├── public/
