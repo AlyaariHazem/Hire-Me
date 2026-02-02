@@ -10,7 +10,7 @@
   [![PrimeNG](https://img.shields.io/badge/PrimeNG-20-blue)](https://primeng.org/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)](https://www.typescriptlang.org/)
   
-  **[Live Demo](https://alyaarihazem.github.io/Hire-Me/)** | **[Documentation](INTEGRATION_GUIDE.md)** | **[Report Bug](https://github.com/AlyaariHazem/Hire-Me/issues)**
+  **[Live Demo](https://alyaarihazem.github.io/Hire-Me/)** | **[Quick Start](QUICKSTART.md)** | **[Documentation](INTEGRATION_GUIDE.md)** | **[Report Bug](https://github.com/AlyaariHazem/Hire-Me/issues)**
   
 </div>
 
