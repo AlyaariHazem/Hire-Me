@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:0.3" />
+    </linearGradient>
+    <style>
+      .hero-title { fill: white; font-family: 'Arial', sans-serif; font-size: 72px; font-weight: bold; text-anchor: middle; }
+      .hero-subtitle { fill: #E0E7FF; font-family: 'Arial', sans-serif; font-size: 28px; text-anchor: middle; }
+      .badge { fill: white; font-family: 'Arial', sans-serif; font-size: 14px; font-weight: bold; text-anchor: middle; }
+      .icon-text { fill: white; font-family: 'Arial', sans-serif; font-size: 18px; text-anchor: middle; }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="300" fill="url(#grad1)"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="100" cy="50" r="80" fill="url(#grad2)" opacity="0.3"/>
+  <circle cx="1100" cy="250" r="100" fill="url(#grad2)" opacity="0.3"/>
+  <circle cx="900" cy="100" r="60" fill="url(#grad2)" opacity="0.2"/>
+  <circle cx="200" cy="200" r="50" fill="url(#grad2)" opacity="0.2"/>
+  
+  <!-- Main Title -->
+  <text x="600" y="110" class="hero-title">HireMe</text>
+  <text x="600" y="150" class="hero-subtitle">منصة التوظيف الذكية</text>
+  <text x="600" y="185" class="hero-subtitle" style="font-size: 24px;">Smart Recruitment Platform</text>
+  
+  <!-- Feature Badges -->
+  <g transform="translate(250, 230)">
+    <rect width="180" height="40" rx="20" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+    <text x="90" y="26" class="badge" style="font-size: 16px;">🎯 Job Seekers</text>
+  </g>
+  
+  <g transform="translate(450, 230)">
+    <rect width="180" height="40" rx="20" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+    <text x="90" y="26" class="badge" style="font-size: 16px;">🏢 Employers</text>
+  </g>
+  
+  <g transform="translate(650, 230)">
+    <rect width="180" height="40" rx="20" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+    <text x="90" y="26" class="badge" style="font-size: 16px;">⚡ Angular 20</text>
+  </g>
+  
+  <!-- Decorative lines -->
+  <line x1="0" y1="295" x2="1200" y2="295" stroke="white" stroke-width="3" opacity="0.3"/>
+  <line x1="0" y1="5" x2="1200" y2="5" stroke="white" stroke-width="3" opacity="0.3"/>
+</svg>
