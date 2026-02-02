@@ -30,7 +30,7 @@
   <rect x="70" y="130" width="160" height="70" class="feature-box" rx="5"/>
   <text x="150" y="155" class="emoji">🔍</text>
   <text x="150" y="180" class="text" style="font-weight: bold;">Job Search</text>
-  <text x="150" y="195" class="text" style="font-size: 11px;">Filter by category,</text>
+  <text x="150" y="195" class="text" style="font-size: 11px;">Advanced filters</text>
   
   <!-- Job Seeker Feature 2 -->
   <rect x="70" y="210" width="160" height="70" class="feature-box" rx="5"/>

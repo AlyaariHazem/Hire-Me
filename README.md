@@ -143,6 +143,7 @@ Hire-Me/
 ├── tsconfig.json             # TypeScript config
 ├── Dockerfile                # Docker configuration
 └── INTEGRATION_GUIDE.md      # Integration documentation
+```
 
 
 ---
@@ -339,6 +340,6 @@ If you have any questions or need help, please:
   
   **Made with ❤️ using Angular 20**
   
-  [⬆ Back to Top](#hire-me---منصة-التوظيف)
+  [⬆ Back to Top](#)
   
 </div>
