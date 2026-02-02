@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .box { fill: #4F46E5; stroke: #312E81; stroke-width: 2; }
+      .box-light { fill: #818CF8; stroke: #4F46E5; stroke-width: 2; }
+      .box-accent { fill: #10B981; stroke: #047857; stroke-width: 2; }
+      .text { fill: white; font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .title { fill: #1F2937; font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; text-anchor: middle; }
+      .arrow { stroke: #6B7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .label { fill: #6B7280; font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" class="title">HireMe Application Architecture</text>
+  
+  <!-- Frontend Layer -->
+  <rect x="50" y="60" width="700" height="200" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="2" rx="5"/>
+  <text x="400" y="85" class="title" style="font-size: 16px; fill: #374151;">Frontend - Angular 20</text>
+  
+  <!-- Auth Components -->
+  <rect x="80" y="100" width="140" height="60" class="box" rx="5"/>
+  <text x="150" y="125" class="text">Authentication</text>
+  <text x="150" y="145" class="text" style="font-size: 11px;">Login/Register/Logout</text>
+  
+  <!-- Job Seeker -->
+  <rect x="240" y="100" width="140" height="60" class="box-light" rx="5"/>
+  <text x="310" y="125" class="text">Job Seeker</text>
+  <text x="310" y="145" class="text" style="font-size: 11px;">Browse/Apply/CV</text>
+  
+  <!-- Employer -->
+  <rect x="400" y="100" width="140" height="60" class="box-light" rx="5"/>
+  <text x="470" y="125" class="text">Employer</text>
+  <text x="470" y="145" class="text" style="font-size: 11px;">Post/Manage Jobs</text>
+  
+  <!-- Shared -->
+  <rect x="560" y="100" width="140" height="60" class="box-accent" rx="5"/>
+  <text x="630" y="125" class="text">Shared Components</text>
+  <text x="630" y="145" class="text" style="font-size: 11px;">UI/Services/Guards</text>
+  
+  <!-- PrimeNG & Libraries -->
+  <rect x="80" y="180" width="620" height="60" class="box" rx="5" style="fill: #8B5CF6; stroke: #6D28D9;"/>
+  <text x="390" y="205" class="text">UI Libraries & Tools</text>
+  <text x="390" y="225" class="text" style="font-size: 11px;">PrimeNG | Chart.js | ngx-toastr | RxJS | html2pdf</text>
+  
+  <!-- Core Services Layer -->
+  <rect x="50" y="280" width="700" height="120" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" rx="5"/>
+  <text x="400" y="305" class="title" style="font-size: 16px; fill: #92400E;">Core Services & Interceptors</text>
+  
+  <rect x="80" y="320" width="140" height="60" class="box" rx="5" style="fill: #F59E0B; stroke: #D97706;"/>
+  <text x="150" y="345" class="text">HTTP Service</text>
+  <text x="150" y="365" class="text" style="font-size: 11px;">API Calls</text>
+  
+  <rect x="240" y="320" width="140" height="60" class="box" rx="5" style="fill: #F59E0B; stroke: #D97706;"/>
+  <text x="310" y="345" class="text">Auth Service</text>
+  <text x="310" y="365" class="text" style="font-size: 11px;">Token Management</text>
+  
+  <rect x="400" y="320" width="140" height="60" class="box" rx="5" style="fill: #F59E0B; stroke: #D97706;"/>
+  <text x="470" y="345" class="text">Job Service</text>
+  <text x="470" y="365" class="text" style="font-size: 11px;">Job CRUD</text>
+  
+  <rect x="560" y="320" width="140" height="60" class="box" rx="5" style="fill: #F59E0B; stroke: #D97706;"/>
+  <text x="630" y="345" class="text">Interceptors</text>
+  <text x="630" y="365" class="text" style="font-size: 11px;">Auth/Error Handling</text>
+  
+  <!-- Backend API -->
+  <rect x="250" y="440" width="300" height="80" class="box-accent" rx="5" style="fill: #059669; stroke: #047857;"/>
+  <text x="400" y="470" class="text" style="font-size: 16px;">Backend REST API</text>
+  <text x="400" y="495" class="text" style="font-size: 12px;">Jobs | Applications | Users | Companies</text>
+  
+  <!-- Arrows -->
+  <line x1="400" y1="260" x2="400" y2="280" class="arrow"/>
+  <line x1="400" y1="400" x2="400" y2="440" class="arrow"/>
+  
+  <!-- Labels -->
+  <text x="420" y="270" class="label">API Requests</text>
+  <text x="420" y="425" class="label">HTTP/REST</text>
+  
+  <!-- Deployment -->
+  <rect x="50" y="540" width="700" height="40" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" rx="5"/>
+  <text x="400" y="565" class="title" style="font-size: 14px; fill: #1E40AF;">Deployment: GitHub Pages | Docker | Cloud Platforms</text>
+</svg>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .feature-box { fill: #EEF2FF; stroke: #4F46E5; stroke-width: 2; }
+      .center-box { fill: #4F46E5; stroke: #312E81; stroke-width: 3; }
+      .icon-circle { fill: #10B981; stroke: #047857; stroke-width: 2; }
+      .text { fill: #1F2937; font-family: Arial, sans-serif; font-size: 13px; text-anchor: middle; }
+      .text-white { fill: white; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; text-anchor: middle; }
+      .title { fill: #1F2937; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; text-anchor: middle; }
+      .line { stroke: #9CA3AF; stroke-width: 2; stroke-dasharray: 5,5; }
+      .emoji { font-size: 24px; text-anchor: middle; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="450" y="40" class="title">HireMe - Feature Overview</text>
+  
+  <!-- Center Platform -->
+  <rect x="325" y="300" width="250" height="100" class="center-box" rx="10"/>
+  <text x="450" y="335" class="text-white" style="font-size: 20px;">HireMe Platform</text>
+  <text x="450" y="360" class="text-white" style="font-size: 14px;">Angular 20 • PrimeNG</text>
+  <text x="450" y="380" class="text-white" style="font-size: 14px;">TypeScript • RxJS</text>
+  
+  <!-- Job Seeker Features (Left) -->
+  <rect x="50" y="80" width="200" height="520" fill="#F0FDF4" stroke="#10B981" stroke-width="2" rx="10"/>
+  <text x="150" y="110" class="text" style="font-size: 16px; font-weight: bold; fill: #047857;">👤 Job Seekers</text>
+  
+  <!-- Job Seeker Feature 1 -->
+  <rect x="70" y="130" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="150" y="155" class="emoji">🔍</text>
+  <text x="150" y="180" class="text" style="font-weight: bold;">Job Search</text>
+  <text x="150" y="195" class="text" style="font-size: 11px;">Filter by category,</text>
+  
+  <!-- Job Seeker Feature 2 -->
+  <rect x="70" y="210" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="150" y="235" class="emoji">📝</text>
+  <text x="150" y="260" class="text" style="font-weight: bold;">Apply to Jobs</text>
+  <text x="150" y="275" class="text" style="font-size: 11px;">Custom forms</text>
+  
+  <!-- Job Seeker Feature 3 -->
+  <rect x="70" y="290" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="150" y="315" class="emoji">📄</text>
+  <text x="150" y="340" class="text" style="font-weight: bold;">CV Builder</text>
+  <text x="150" y="355" class="text" style="font-size: 11px;">Professional resume</text>
+  
+  <!-- Job Seeker Feature 4 -->
+  <rect x="70" y="370" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="150" y="395" class="emoji">📊</text>
+  <text x="150" y="420" class="text" style="font-weight: bold;">Track Applications</text>
+  <text x="150" y="435" class="text" style="font-size: 11px;">Monitor status</text>
+  
+  <!-- Job Seeker Feature 5 -->
+  <rect x="70" y="450" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="150" y="475" class="emoji">🏢</text>
+  <text x="150" y="500" class="text" style="font-weight: bold;">Browse Companies</text>
+  <text x="150" y="515" class="text" style="font-size: 11px;">Company profiles</text>
+  
+  <!-- Employer Features (Right) -->
+  <rect x="650" y="80" width="200" height="520" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" rx="10"/>
+  <text x="750" y="110" class="text" style="font-size: 16px; font-weight: bold; fill: #92400E;">🏢 Employers</text>
+  
+  <!-- Employer Feature 1 -->
+  <rect x="670" y="130" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="750" y="155" class="emoji">➕</text>
+  <text x="750" y="180" class="text" style="font-weight: bold;">Post Jobs</text>
+  <text x="750" y="195" class="text" style="font-size: 11px;">Create listings</text>
+  
+  <!-- Employer Feature 2 -->
+  <rect x="670" y="210" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="750" y="235" class="emoji">📋</text>
+  <text x="750" y="260" class="text" style="font-weight: bold;">Custom Forms</text>
+  <text x="750" y="275" class="text" style="font-size: 11px;">Application builder</text>
+  
+  <!-- Employer Feature 3 -->
+  <rect x="670" y="290" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="750" y="315" class="emoji">👥</text>
+  <text x="750" y="340" class="text" style="font-weight: bold;">Manage Applicants</text>
+  <text x="750" y="355" class="text" style="font-size: 11px;">Review candidates</text>
+  
+  <!-- Employer Feature 4 -->
+  <rect x="670" y="370" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="750" y="395" class="emoji">📈</text>
+  <text x="750" y="420" class="text" style="font-weight: bold;">Analytics</text>
+  <text x="750" y="435" class="text" style="font-size: 11px;">Track metrics</text>
+  
+  <!-- Employer Feature 5 -->
+  <rect x="670" y="450" width="160" height="70" class="feature-box" rx="5"/>
+  <text x="750" y="475" class="emoji">📄</text>
+  <text x="750" y="500" class="text" style="font-weight: bold;">Export PDF</text>
+  <text x="750" y="515" class="text" style="font-size: 11px;">Download reports</text>
+  
+  <!-- Common Features (Bottom) -->
+  <rect x="280" y="450" width="340" height="120" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" rx="10"/>
+  <text x="450" y="475" class="text" style="font-size: 16px; font-weight: bold; fill: #1E40AF;">🔒 Shared Features</text>
+  
+  <text x="310" y="500" class="text" style="font-size: 12px;">✓ Token-based Authentication</text>
+  <text x="310" y="520" class="text" style="font-size: 12px;">✓ Role-based Access Control</text>
+  <text x="310" y="540" class="text" style="font-size: 12px;">✓ Responsive Design (Mobile/Desktop)</text>
+  
+  <text x="590" y="500" class="text" style="font-size: 12px;">✓ RTL/LTR Support (Arabic/English)</text>
+  <text x="590" y="520" class="text" style="font-size: 12px;">✓ Real-time Notifications</text>
+  <text x="590" y="540" class="text" style="font-size: 12px;">✓ Dark/Light Theme Support</text>
+  
+  <!-- Connection Lines -->
+  <line x1="250" y1="350" x2="325" y2="350" class="line"/>
+  <line x1="575" y1="350" x2="650" y2="350" class="line"/>
+  <line x1="450" y1="400" x2="450" y2="450" class="line"/>
+  
+  <!-- Technology Badges -->
+  <rect x="300" y="620" width="300" height="50" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1" rx="5"/>
+  <text x="450" y="640" class="text" style="font-size: 11px; fill: #6B7280;">Built with:</text>
+  <text x="450" y="658" class="text" style="font-size: 11px; font-weight: bold;">Angular 20 • PrimeNG • TypeScript • RxJS • Chart.js</text>
+</svg>
