@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1100" height="900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EEF2FF"/>
+      <stop offset="100%" style="stop-color:#F0FDF4"/>
+    </linearGradient>
+    <linearGradient id="hdr" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4F46E5"/>
+      <stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="frontendGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#DBEAFE"/>
+      <stop offset="100%" style="stop-color:#EDE9FE"/>
+    </linearGradient>
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FEF3C7"/>
+      <stop offset="100%" style="stop-color:#FDE68A"/>
+    </linearGradient>
+    <linearGradient id="apiGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#D1FAE5"/>
+      <stop offset="100%" style="stop-color:#A7F3D0"/>
+    </linearGradient>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0,10 3.5,0 7" fill="#6B7280"/>
+    </marker>
+    <style>
+      text { font-family: Arial, sans-serif; }
+      .t-title   { font-size: 26px; font-weight: bold; fill: white; text-anchor: middle; dominant-baseline: middle; }
+      .t-layer   { font-size: 14px; font-weight: bold; text-anchor: middle; dominant-baseline: middle; }
+      .t-box     { font-size: 12px; font-weight: bold; text-anchor: middle; dominant-baseline: middle; }
+      .t-sub     { font-size: 10px; text-anchor: middle; dominant-baseline: middle; }
+      .t-lbl     { font-size: 10px; fill: #6B7280; text-anchor: middle; dominant-baseline: middle; }
+      .t-badge   { font-size: 10px; text-anchor: middle; dominant-baseline: middle; }
+    </style>
+  </defs>
+
+  <!-- ░░ BACKGROUND ░░ -->
+  <rect width="1100" height="900" fill="url(#bg)" rx="12"/>
+
+  <!-- ░░ HEADER ░░ -->
+  <rect x="0" y="0" width="1100" height="64" fill="url(#hdr)" rx="12"/>
+  <rect x="0" y="48" width="1100" height="16" fill="url(#hdr)"/>
+  <text x="550" y="32" class="t-title">HireMe — Complete System Overview</text>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LAYER 1 — USERS
+  ═══════════════════════════════════════════════════════ -->
+  <rect x="30" y="82" width="1040" height="100" rx="10" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/>
+  <text x="75" y="132" class="t-layer" fill="#475569" style="writing-mode:horizontal-tb;">Users</text>
+
+  <!-- Job Seeker user -->
+  <rect x="110" y="96" width="200" height="72" rx="8" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+  <text x="210" y="123" class="t-box" fill="#065F46">👤 Job Seeker</text>
+  <text x="210" y="143" class="t-sub" fill="#065F46">Finds &amp; applies for jobs</text>
+  <text x="210" y="158" class="t-sub" fill="#6B7280">Builds CV • Tracks status</text>
+
+  <!-- Employer user -->
+  <rect x="790" y="96" width="200" height="72" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="890" y="123" class="t-box" fill="#92400E">🏢 Employer</text>
+  <text x="890" y="143" class="t-sub" fill="#92400E">Posts jobs • Reviews apps</text>
+  <text x="890" y="158" class="t-sub" fill="#6B7280">Forms • Analytics • PDF</text>
+
+  <!-- Browser icon in center -->
+  <rect x="450" y="100" width="200" height="64" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+  <text x="550" y="122" class="t-box" fill="#5B21B6">🌐 Browser / Mobile</text>
+  <text x="550" y="144" class="t-sub" fill="#6B7280">Responsive • RTL &amp; LTR</text>
+  <text x="550" y="158" class="t-sub" fill="#6B7280">Desktop • Tablet • Phone</text>
+
+  <!-- Arrows users → browser -->
+  <line x1="310" y1="132" x2="450" y2="132" stroke="#10B981" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="790" y1="132" x2="650" y2="132" stroke="#F59E0B" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LAYER 2 — FRONTEND (Angular 20)
+  ═══════════════════════════════════════════════════════ -->
+  <!-- Arrow from browser down -->
+  <line x1="550" y1="164" x2="550" y2="198" stroke="#7C3AED" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="565" y="184" class="t-lbl">HTTP / HTTPS</text>
+
+  <rect x="30" y="200" width="1040" height="170" rx="10" fill="url(#frontendGrad)" stroke="#6366F1" stroke-width="2"/>
+  <text x="550" y="222" class="t-layer" fill="#3730A3" style="font-size:15px;">⚡ Frontend — Angular 20 (Standalone + Zoneless)</text>
+
+  <!-- Auth module -->
+  <rect x="55" y="238" width="170" height="114" rx="8" fill="#4F46E5" stroke="#312E81" stroke-width="1.5"/>
+  <text x="140" y="262" class="t-box" fill="white">🔐 Auth Module</text>
+  <text x="140" y="282" class="t-sub" fill="#C7D2FE">Login</text>
+  <text x="140" y="297" class="t-sub" fill="#C7D2FE">Register</text>
+  <text x="140" y="312" class="t-sub" fill="#C7D2FE">Logout</text>
+  <text x="140" y="327" class="t-sub" fill="#C7D2FE">Route Guards</text>
+  <text x="140" y="342" class="t-sub" fill="#C7D2FE">JWT Interceptor</text>
+
+  <!-- Job Seeker module -->
+  <rect x="240" y="238" width="170" height="114" rx="8" fill="#10B981" stroke="#047857" stroke-width="1.5"/>
+  <text x="325" y="262" class="t-box" fill="white">👤 Seeker Module</text>
+  <text x="325" y="282" class="t-sub" fill="#D1FAE5">Job Search &amp; Filter</text>
+  <text x="325" y="297" class="t-sub" fill="#D1FAE5">Job Details</text>
+  <text x="325" y="312" class="t-sub" fill="#D1FAE5">Apply (Dynamic Form)</text>
+  <text x="325" y="327" class="t-sub" fill="#D1FAE5">Application Tracking</text>
+  <text x="325" y="342" class="t-sub" fill="#D1FAE5">CV Builder</text>
+
+  <!-- Employer module -->
+  <rect x="425" y="238" width="170" height="114" rx="8" fill="#F59E0B" stroke="#D97706" stroke-width="1.5"/>
+  <text x="510" y="262" class="t-box" fill="white">🏢 Employer Module</text>
+  <text x="510" y="282" class="t-sub" fill="#FEF3C7">Post &amp; Manage Jobs</text>
+  <text x="510" y="297" class="t-sub" fill="#FEF3C7">Form Builder</text>
+  <text x="510" y="312" class="t-sub" fill="#FEF3C7">Applicant Review</text>
+  <text x="510" y="327" class="t-sub" fill="#FEF3C7">Analytics Dashboard</text>
+  <text x="510" y="342" class="t-sub" fill="#FEF3C7">PDF Export</text>
+
+  <!-- Shared module -->
+  <rect x="610" y="238" width="170" height="114" rx="8" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.5"/>
+  <text x="695" y="262" class="t-box" fill="white">🔧 Shared Module</text>
+  <text x="695" y="282" class="t-sub" fill="#EDE9FE">Reusable Components</text>
+  <text x="695" y="297" class="t-sub" fill="#EDE9FE">TypeScript Models</text>
+  <text x="695" y="312" class="t-sub" fill="#EDE9FE">Pipes &amp; Directives</text>
+  <text x="695" y="327" class="t-sub" fill="#EDE9FE">Layout &amp; Navigation</text>
+  <text x="695" y="342" class="t-sub" fill="#EDE9FE">Theme Config</text>
+
+  <!-- Pages module -->
+  <rect x="795" y="238" width="250" height="114" rx="8" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1.5"/>
+  <text x="920" y="262" class="t-box" fill="white">📦 UI Libraries</text>
+  <text x="920" y="282" class="t-sub" fill="#DBEAFE">PrimeNG 20 (Aura Theme)</text>
+  <text x="920" y="297" class="t-sub" fill="#DBEAFE">Chart.js 4.5</text>
+  <text x="920" y="312" class="t-sub" fill="#DBEAFE">ngx-toastr 19</text>
+  <text x="920" y="327" class="t-sub" fill="#DBEAFE">html2pdf.js 0.12</text>
+  <text x="920" y="342" class="t-sub" fill="#DBEAFE">RxJS 7.8 • PrimeFlex</text>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LAYER 3 — CORE SERVICES
+  ═══════════════════════════════════════════════════════ -->
+  <!-- Arrow -->
+  <line x1="550" y1="370" x2="550" y2="400" stroke="#6B7280" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="570" y="387" class="t-lbl">Services / Interceptors</text>
+
+  <rect x="30" y="402" width="1040" height="100" rx="10" fill="url(#coreGrad)" stroke="#F59E0B" stroke-width="2"/>
+  <text x="550" y="422" class="t-layer" fill="#92400E" style="font-size:15px;">🔄 Core Layer — Services &amp; Interceptors</text>
+
+  <!-- Service boxes -->
+  <rect x="60" y="438" width="170" height="48" rx="6" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="145" y="459" class="t-box" fill="#92400E">🔑 Auth Service</text>
+  <text x="145" y="476" class="t-sub" fill="#6B7280">Token • Session • Roles</text>
+
+  <rect x="250" y="438" width="170" height="48" rx="6" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="335" y="459" class="t-box" fill="#92400E">💼 Job Service</text>
+  <text x="335" y="476" class="t-sub" fill="#6B7280">CRUD • Search • Filter</text>
+
+  <rect x="440" y="438" width="170" height="48" rx="6" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="525" y="459" class="t-box" fill="#92400E">📋 Application Service</text>
+  <text x="525" y="476" class="t-sub" fill="#6B7280">Submit • Track • Manage</text>
+
+  <rect x="630" y="438" width="170" height="48" rx="6" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="715" y="459" class="t-box" fill="#92400E">🛡️ HTTP Interceptors</text>
+  <text x="715" y="476" class="t-sub" fill="#6B7280">Auth header • Error handler</text>
+
+  <rect x="820" y="438" width="220" height="48" rx="6" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="930" y="459" class="t-box" fill="#92400E">🏢 Company Service</text>
+  <text x="930" y="476" class="t-sub" fill="#6B7280">Profiles • Listings • Branding</text>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LAYER 4 — BACKEND API
+  ═══════════════════════════════════════════════════════ -->
+  <!-- Arrow -->
+  <line x1="550" y1="502" x2="550" y2="532" stroke="#6B7280" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="575" y="519" class="t-lbl">REST API calls</text>
+
+  <rect x="30" y="534" width="1040" height="100" rx="10" fill="url(#apiGrad)" stroke="#10B981" stroke-width="2"/>
+  <text x="550" y="554" class="t-layer" fill="#065F46" style="font-size:15px;">🌐 Backend REST API</text>
+
+  <rect x="60" y="570" width="180" height="48" rx="6" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="150" y="591" class="t-box" fill="#065F46">👤 /users</text>
+  <text x="150" y="608" class="t-sub" fill="#6B7280">Auth • Profiles • Roles</text>
+
+  <rect x="260" y="570" width="180" height="48" rx="6" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="350" y="591" class="t-box" fill="#065F46">💼 /jobs</text>
+  <text x="350" y="608" class="t-sub" fill="#6B7280">List • Create • Update • Delete</text>
+
+  <rect x="460" y="570" width="180" height="48" rx="6" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="550" y="591" class="t-box" fill="#065F46">📝 /applications</text>
+  <text x="550" y="608" class="t-sub" fill="#6B7280">Submit • Review • Status</text>
+
+  <rect x="660" y="570" width="180" height="48" rx="6" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="750" y="591" class="t-box" fill="#065F46">🏢 /companies</text>
+  <text x="750" y="608" class="t-sub" fill="#6B7280">Profiles • Branding</text>
+
+  <rect x="860" y="570" width="180" height="48" rx="6" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="950" y="591" class="t-box" fill="#065F46">📋 /forms</text>
+  <text x="950" y="608" class="t-sub" fill="#6B7280">Custom form builder</text>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LAYER 5 — DEPLOYMENT + TECH STACK
+  ═══════════════════════════════════════════════════════ -->
+  <line x1="550" y1="634" x2="550" y2="660" stroke="#6B7280" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Deployment -->
+  <rect x="30" y="662" width="500" height="80" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+  <text x="280" y="685" class="t-layer" fill="#1E40AF">🚀 Deployment</text>
+  <text x="140" y="712" class="t-box" fill="#1E40AF" style="font-size:12px;">🐙 GitHub Pages</text>
+  <text x="280" y="712" class="t-box" fill="#1E40AF" style="font-size:12px;">🐳 Docker</text>
+  <text x="420" y="712" class="t-box" fill="#1E40AF" style="font-size:12px;">☁️ Cloud Platforms</text>
+  <text x="280" y="730" class="t-sub" fill="#6B7280">Live demo at alyaarihazem.github.io/Hire-Me</text>
+
+  <!-- Tech Stack -->
+  <rect x="570" y="662" width="500" height="80" rx="10" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2"/>
+  <text x="820" y="685" class="t-layer" fill="#5B21B6">🛠️ Technology Stack</text>
+
+  <rect x="590" y="700" width="90" height="28" rx="5" fill="#EF4444"/>
+  <text x="635" y="714" class="t-badge" fill="white" style="font-weight:bold;">Angular 20</text>
+
+  <rect x="695" y="700" width="90" height="28" rx="5" fill="#3B82F6"/>
+  <text x="740" y="714" class="t-badge" fill="white" style="font-weight:bold;">TypeScript</text>
+
+  <rect x="800" y="700" width="90" height="28" rx="5" fill="#8B5CF6"/>
+  <text x="845" y="714" class="t-badge" fill="white" style="font-weight:bold;">PrimeNG 20</text>
+
+  <rect x="905" y="700" width="90" height="28" rx="5" fill="#10B981"/>
+  <text x="950" y="714" class="t-badge" fill="white" style="font-weight:bold;">RxJS 7.8</text>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECURITY & PERFORMANCE BANNER
+  ═══════════════════════════════════════════════════════ -->
+  <rect x="30" y="760" width="1040" height="80" rx="10" fill="#1F2937" stroke="#374151" stroke-width="1.5"/>
+  <text x="550" y="785" class="t-layer" fill="white" style="font-size:15px;">🔒 Security &amp; Performance</text>
+
+  <text x="140" y="815" class="t-sub" fill="#9CA3AF">✅ JWT Auth</text>
+  <text x="260" y="815" class="t-sub" fill="#9CA3AF">✅ Role-Based Access</text>
+  <text x="400" y="815" class="t-sub" fill="#9CA3AF">✅ Lazy Loading</text>
+  <text x="530" y="815" class="t-sub" fill="#9CA3AF">✅ HTTP Interceptors</text>
+  <text x="680" y="815" class="t-sub" fill="#9CA3AF">✅ RTL &amp; i18n</text>
+  <text x="800" y="815" class="t-sub" fill="#9CA3AF">✅ Responsive Design</text>
+  <text x="960" y="815" class="t-sub" fill="#9CA3AF">✅ Zoneless CD</text>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER BRAND
+  ═══════════════════════════════════════════════════════ -->
+  <text x="550" y="875" class="t-lbl" style="font-size:11px;">© HireMe — Smart Recruitment Platform — Built with Angular 20</text>
+</svg>
