@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1100" height="820" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="seekerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D1FAE5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A7F3D0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="employerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FEF3C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FDE68A;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6B7280"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10B981"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B"/>
+    </marker>
+    <style>
+      .title      { font-family: Arial, sans-serif; font-size: 26px; font-weight: bold; fill: white; text-anchor: middle; dominant-baseline: middle; }
+      .section    { font-family: Arial, sans-serif; font-size: 15px; font-weight: bold; text-anchor: middle; dominant-baseline: middle; }
+      .step-title { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; text-anchor: middle; dominant-baseline: middle; }
+      .step-sub   { font-family: Arial, sans-serif; font-size: 11px; text-anchor: middle; dominant-baseline: middle; }
+      .label      { font-family: Arial, sans-serif; font-size: 11px; fill: #6B7280; text-anchor: middle; dominant-baseline: middle; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="820" fill="#F9FAFB" rx="12"/>
+
+  <!-- ══════════════════ HEADER ══════════════════ -->
+  <rect x="0" y="0" width="1100" height="64" fill="url(#headerGrad)" rx="12"/>
+  <rect x="0" y="48" width="1100" height="16" fill="url(#headerGrad)"/>
+  <text x="550" y="32" class="title">HireMe — How It Works</text>
+
+  <!-- ══════════════════ STEP 1 — ENTRY ══════════════════ -->
+  <!-- Box -->
+  <rect x="425" y="90" width="250" height="72" rx="10" fill="#4F46E5" stroke="#312E81" stroke-width="2"/>
+  <text x="550" y="120" class="step-title" fill="white" style="font-size:15px;">🌐  Visit HireMe</text>
+  <text x="550" y="143" class="step-sub" fill="#C7D2FE">Discover the Smart Recruitment Platform</text>
+
+  <!-- Arrow down -->
+  <line x1="550" y1="162" x2="550" y2="190" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ══════════════════ STEP 2 — AUTH ══════════════════ -->
+  <rect x="395" y="192" width="310" height="72" rx="10" fill="#7C3AED" stroke="#5B21B6" stroke-width="2"/>
+  <text x="550" y="222" class="step-title" fill="white" style="font-size:15px;">🔑  Register / Login</text>
+  <text x="550" y="245" class="step-sub" fill="#DDD6FE">Choose your role: Job Seeker or Employer</text>
+
+  <!-- Branch arrows -->
+  <!-- Left to seeker -->
+  <path d="M 395 228 Q 280 228 280 296" stroke="#10B981" stroke-width="2" fill="none" marker-end="url(#arrowGreen)"/>
+  <text x="320" y="260" class="label" fill="#10B981">Job Seeker</text>
+  <!-- Right to employer -->
+  <path d="M 705 228 Q 820 228 820 296" stroke="#F59E0B" stroke-width="2" fill="none" marker-end="url(#arrowAmber)"/>
+  <text x="776" y="260" class="label" fill="#F59E0B">Employer</text>
+
+  <!-- ══════════════════ JOB SEEKER COLUMN ══════════════════ -->
+  <rect x="60" y="280" width="440" height="490" rx="12" fill="url(#seekerGrad)" stroke="#10B981" stroke-width="2"/>
+  <text x="280" y="308" class="section" fill="#065F46" style="font-size:16px;">👤  Job Seeker Journey</text>
+
+  <!-- Step A -->
+  <rect x="90" y="326" width="380" height="64" rx="8" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="280" y="351" class="step-title" fill="#065F46">🔍  Browse &amp; Search Jobs</text>
+  <text x="280" y="372" class="step-sub" fill="#6B7280">Filter by category, location, experience, job type</text>
+
+  <!-- Arrow -->
+  <line x1="280" y1="390" x2="280" y2="415" stroke="#10B981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- Step B -->
+  <rect x="90" y="416" width="380" height="64" rx="8" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="280" y="441" class="step-title" fill="#065F46">📄  View Job Details</text>
+  <text x="280" y="462" class="step-sub" fill="#6B7280">Read description, requirements &amp; company profile</text>
+
+  <!-- Arrow -->
+  <line x1="280" y1="480" x2="280" y2="505" stroke="#10B981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- Step C -->
+  <rect x="90" y="506" width="380" height="64" rx="8" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="280" y="531" class="step-title" fill="#065F46">📝  Apply with Custom Form</text>
+  <text x="280" y="552" class="step-sub" fill="#6B7280">Fill dynamic application form defined by employer</text>
+
+  <!-- Arrow -->
+  <line x1="280" y1="570" x2="280" y2="595" stroke="#10B981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- Step D -->
+  <rect x="90" y="596" width="380" height="64" rx="8" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="280" y="621" class="step-title" fill="#065F46">📊  Track Applications</text>
+  <text x="280" y="642" class="step-sub" fill="#6B7280">Monitor status &amp; updates from your dashboard</text>
+
+  <!-- Arrow -->
+  <line x1="280" y1="660" x2="280" y2="685" stroke="#10B981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- Step E -->
+  <rect x="90" y="686" width="380" height="64" rx="8" fill="white" stroke="#10B981" stroke-width="1.5"/>
+  <text x="280" y="711" class="step-title" fill="#065F46">🏗️  Build Your CV</text>
+  <text x="280" y="732" class="step-sub" fill="#6B7280">Create a professional resume using CV Builder</text>
+
+  <!-- ══════════════════ EMPLOYER COLUMN ══════════════════ -->
+  <rect x="600" y="280" width="440" height="490" rx="12" fill="url(#employerGrad)" stroke="#F59E0B" stroke-width="2"/>
+  <text x="820" y="308" class="section" fill="#92400E" style="font-size:16px;">🏢  Employer Journey</text>
+
+  <!-- Step A -->
+  <rect x="630" y="326" width="380" height="64" rx="8" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="820" y="351" class="step-title" fill="#92400E">➕  Post Job Listings</text>
+  <text x="820" y="372" class="step-sub" fill="#6B7280">Create detailed job postings with requirements</text>
+
+  <!-- Arrow -->
+  <line x1="820" y1="390" x2="820" y2="415" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowAmber)"/>
+
+  <!-- Step B -->
+  <rect x="630" y="416" width="380" height="64" rx="8" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="820" y="441" class="step-title" fill="#92400E">📋  Design Application Form</text>
+  <text x="820" y="462" class="step-sub" fill="#6B7280">Build custom forms with varied question types</text>
+
+  <!-- Arrow -->
+  <line x1="820" y1="480" x2="820" y2="505" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowAmber)"/>
+
+  <!-- Step C -->
+  <rect x="630" y="506" width="380" height="64" rx="8" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="820" y="531" class="step-title" fill="#92400E">👥  Review Applicants</text>
+  <text x="820" y="552" class="step-sub" fill="#6B7280">Filter, sort &amp; evaluate candidate submissions</text>
+
+  <!-- Arrow -->
+  <line x1="820" y1="570" x2="820" y2="595" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowAmber)"/>
+
+  <!-- Step D -->
+  <rect x="630" y="596" width="380" height="64" rx="8" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="820" y="621" class="step-title" fill="#92400E">📈  Analytics Dashboard</text>
+  <text x="820" y="642" class="step-sub" fill="#6B7280">View charts &amp; real-time hiring metrics</text>
+
+  <!-- Arrow -->
+  <line x1="820" y1="660" x2="820" y2="685" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowAmber)"/>
+
+  <!-- Step E -->
+  <rect x="630" y="686" width="380" height="64" rx="8" fill="white" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="820" y="711" class="step-title" fill="#92400E">📄  Export PDF Reports</text>
+  <text x="820" y="732" class="step-sub" fill="#6B7280">Download applicant data for offline review</text>
+
+  <!-- ══════════════════ BACKEND ══════════════════ -->
+  <!-- Arrows pointing to backend -->
+  <line x1="280" y1="770" x2="410" y2="790" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <line x1="820" y1="770" x2="690" y2="790" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+  <rect x="350" y="784" width="400" height="24" rx="8" fill="#1F2937"/>
+  <text x="550" y="796" class="label" fill="white" style="font-size:11px; font-weight:bold;">🔗  REST API Backend — Jobs | Users | Applications | Companies</text>
+</svg>

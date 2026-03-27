@@ -60,18 +60,21 @@
 
 ---
 
-## 🖼️ Screenshots
+## 🗺️ System Overview
 
 <div align="center">
 
-### Job Listings Page
-![Job Listings](https://github.com/user-attachments/assets/4b8ddb30-c345-46b5-8450-476159a3474a)
+![System Overview](docs/system-overview.svg)
 
-### Login Page
-![Login Page](https://github.com/user-attachments/assets/a7c2c6d5-6549-408f-aa41-8a36a36d2f6f)
+</div>
 
-### Registration Page
-![Register Page](https://github.com/user-attachments/assets/f8519d5c-1ed9-4480-91f1-a62716d38c64)
+---
+
+## ⚙️ How It Works
+
+<div align="center">
+
+![How It Works](docs/how-it-works.svg)
 
 </div>
 
@@ -81,7 +84,7 @@
 
 <div align="center">
 
-### System Architecture
+### Application Architecture
 ![Architecture](docs/architecture.svg)
 
 ### Feature Overview
