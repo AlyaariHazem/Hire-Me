@@ -4,7 +4,6 @@ import { Application } from 'shared/services/application.service';
 import { JobItem } from '../core/models/job-item.model';
 import { ToastrService } from 'ngx-toastr';
 import { OverviewStoreService } from '../services/overview.store';
-import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-overview',
@@ -140,12 +139,6 @@ export class Overview implements OnInit {
         span.style.display = 'flex';
       }
     }
-  }
-
-  getApplicantImage(profilePicture: string | null | undefined): string {
-    if (!profilePicture) return '';
-    if (/^(https?:|blob:|data:)/i.test(profilePicture)) return profilePicture;
-    return `${environment.apiBaseUrl.replace(/\/+$/, '')}/${profilePicture.replace(/^\/+/, '')}`;
   }
 
   // loadRecentJobs removed - handled by store

@@ -8,7 +8,7 @@
         <!-- Job Header -->
         <div class="job-header">
           <div class="job-header-top">
-            <img class="company-logo-large" [src]="getCompanyLogo(job.company.logo)"
+            <img class="company-logo-large" [src]="job.company.logo || 'images/company-logo-1.jpg'"
               [alt]="job.company.name || 'شعار الشركة'" title="شعار الشركة" />
 
             <div style="flex-grow: 1">
@@ -219,7 +219,7 @@
         <div class="sidebar-card">
           <h3 class="sidebar-title">معلومات الشركة</h3>
           <div style="text-align: center; margin-bottom: 1rem">
-            <img [src]="getCompanyLogo(job.company.logo)" [alt]="job.company.name || 'شعار الشركة'"
+            <img [src]="job.company.logo || 'images/company-logo-1.jpg'" [alt]="job.company.name || 'شعار الشركة'"
               title="شعار الشركة"
               style="width: 80px; height: 80px; border-radius: var(--radius-lg); object-fit: cover;" />
           </div>
@@ -264,7 +264,7 @@
             @for (job of similarJobs; track job.id) {
             <a (click)="navigateToJob(job.slug)" class="similar-job-card"
               style="text-decoration: none; color: inherit; display: block;">
-              <img [src]="getCompanyLogo(job.company.logo)"
+              <img [src]="job.company.logo || 'assets/images/company-placeholder.png'"
                 [alt]="job.company.name || 'شعار الشركة'" title="شعار الشركة" class="similar-job-logo" />
               <div class="similar-job-info">
                 <h4>{{ job.title }}</h4>

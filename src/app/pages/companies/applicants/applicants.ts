@@ -275,12 +275,6 @@ export class Applicants implements OnInit {
     }
   }
 
-  getApplicantImage(profilePicture: string | null | undefined): string {
-    if (!profilePicture) return '';
-    if (/^(https?:|blob:|data:)/i.test(profilePicture)) return profilePicture;
-    return `${environment.apiBaseUrl.replace(/\/+$/, '')}/${profilePicture.replace(/^\/+/, '')}`;
-  }
-
   viewApplication(application: Application): void {
     this.selectedApplication = application;
     this.showDetailsModal = true;

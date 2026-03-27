@@ -194,7 +194,7 @@ export class JobseekerMessages implements OnInit {
   }
 
   getCompanyLogo(logo: string | null): string {
-    if (!logo) return 'images/company-placeholder.png';
+    if (!logo) return 'assets/images/company-placeholder.png';
     if (logo.startsWith('http')) return logo;
     return `${environment.apiBaseUrl.replace(/\/+$/, '')}/${logo.replace(/^\/+/, '')}`;
   }

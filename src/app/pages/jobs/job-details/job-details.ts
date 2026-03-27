@@ -12,7 +12,6 @@ import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ApplyJobComponent } from '../apply-job/apply-job';
-import { environment } from 'environments/environment';
 
 interface Company {
   id: number;
@@ -454,11 +453,5 @@ export class JobDetails extends Base implements OnInit {
 
   formatSimilarJobSalary(job: JobItem): string {
     return this.formatSalary(job.salary_min, job.salary_max);
-  }
-
-  getCompanyLogo(logo: string | null | undefined): string {
-    if (!logo) return 'images/company-placeholder.png';
-    if (/^(https?:|blob:|data:)/i.test(logo)) return logo;
-    return `${environment.apiBaseUrl.replace(/\/+$/, '')}/${logo.replace(/^\/+/, '')}`;
   }
 }

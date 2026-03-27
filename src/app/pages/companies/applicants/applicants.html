@@ -135,7 +135,7 @@
           <div class="candidate-header">
             <div class="candidate-avatar">
               @if (app.applicant?.profile_picture) {
-              <img [src]="getApplicantImage(app.applicant?.profile_picture)" [alt]="getApplicantName(app)"
+              <img [src]="app.applicant?.profile_picture || ''" [alt]="getApplicantName(app)"
                 [title]="getApplicantName(app)" title="Applicant profile picture" (error)="handleImageError($event)">
               }
               <span [style.display]="app.applicant?.profile_picture ? 'none' : 'flex'">
@@ -269,7 +269,7 @@
       <div class="applicant-profile-header">
         <div class="profile-avatar-large">
           @if (selectedApplication.applicant?.profile_picture) {
-          <img [src]="getApplicantImage(selectedApplication.applicant?.profile_picture)"
+          <img [src]="selectedApplication.applicant?.profile_picture || ''"
             [alt]="getApplicantName(selectedApplication)" [title]="getApplicantName(selectedApplication)"
             title="صورة المتقدم" (error)="handleImageError($event)">
           }

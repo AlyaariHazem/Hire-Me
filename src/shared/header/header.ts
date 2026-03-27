@@ -184,6 +184,7 @@ private teardownDataBindings(): void {
 }
 
   private syncToken = (e: StorageEvent) => {
+    debugger;
     if (e.key === 'access') {
       this.updateMode(this.router.url);
     }

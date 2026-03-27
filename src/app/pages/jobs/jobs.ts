@@ -19,7 +19,6 @@ import { AuthStateService } from 'app/auth/auth-state.service';
 import { JobsStoreService } from 'app/pages/jobseeker/services/jobs.service';
 import { SavedJobsStoreService } from 'app/pages/jobseeker/services/saved-jobs.service';
 import { JOB_CITIES } from '@app/companies/enums';
-import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-jobs',
@@ -569,17 +568,4 @@ timeAgo(dateStr: string): string {
 
   return `منذ ${weeks} أسابيع`;
 }
-
-  getCompanyLogo(logo: string | null | undefined): string {
-    if (!logo) return 'images/company-placeholder.png';
-    if (/^(https?:|blob:|data:)/i.test(logo)) return logo;
-    return `${environment.apiBaseUrl.replace(/\/+$/, '')}/${logo.replace(/^\/+/, '')}`;
-  }
-
-  handleImageError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    if (img) {
-      img.src = 'images/company-placeholder.png';
-    }
-  }
 }

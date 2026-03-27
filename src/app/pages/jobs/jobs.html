@@ -221,9 +221,9 @@
         <div class="job-results">
           @for(job of jobs; track job){
           <article class="job-card-horizontal" [attr.data-job-id]="job.id">
-            <img [src]="getCompanyLogo(job.company.logo)"
+            <img [src]="job.company.logo || 'assets/images/company-placeholder.png'"
               [alt]="job.company.name || 'شعار الشركة'" [title]="job.company.name || 'شعار الشركة'" title="Company logo"
-              class="company-logo" (error)="handleImageError($event)" />
+              class="company-logo" />
 
             <div class="job-info">
               <h3 class="job-title">

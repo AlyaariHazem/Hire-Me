@@ -17,7 +17,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DatePicker } from 'primeng/datepicker';
 import { PaginatorModule } from 'primeng/paginator';
 import { InterviewsStoreService } from '../services/interviews.store';
-import { environment } from 'environments/environment';
 
 type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
 
@@ -650,11 +649,5 @@ export class Interviews extends Base implements OnInit {
         span.style.display = 'flex';
       }
     }
-  }
-
-  getApplicantImage(profilePicture: string | null | undefined): string {
-    if (!profilePicture) return '';
-    if (/^(https?:|blob:|data:)/i.test(profilePicture)) return profilePicture;
-    return `${environment.apiBaseUrl.replace(/\/+$/, '')}/${profilePicture.replace(/^\/+/, '')}`;
   }
 }

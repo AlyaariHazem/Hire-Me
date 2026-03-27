@@ -131,7 +131,7 @@
           <div class="candidate-header">
             <div class="candidate-avatar">
               @if (typeof interview.application === 'object' && interview.application.applicant?.profile_picture) {
-              <img [src]="getApplicantImage(interview.application.applicant?.profile_picture)" [alt]="getApplicationName(interview)"
+              <img [src]="interview.application.applicant?.profile_picture || ''" [alt]="getApplicationName(interview)"
                 [title]="getApplicationName(interview)" title="صورة المتقدم" (error)="handleImageError($event)">
               }
               <span
