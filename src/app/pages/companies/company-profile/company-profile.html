@@ -235,7 +235,7 @@
             } @else {
             @for (job of companyJobs; track job.id) {
             <article class="job-card-horizontal" [attr.data-job-id]="job.id">
-              <img [src]="(job.company && job.company.logo) || company.logo || 'assets/images/company-placeholder.png'"
+              <img [src]="(job.company && job.company.logo) || company.logo || 'images/company-placeholder.png'"
                 alt="شعار الشركة" title="شعار الشركة" class="company-logo" />
 
               <div class="job-info">
