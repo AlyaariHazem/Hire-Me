@@ -66,8 +66,7 @@ export class ProfileComponent extends Base implements OnInit, OnDestroy {
       .subscribe((p) => {
         // English: build absolute logo preview
         this.logo$ = p.company_logo ? this.toAbsolute(p.company_logo) : null;
-        debugger;
-        // English: patch values without replacing the reference
+        // patch values without replacing the reference
         this.form.company_name = p.company_name ?? '';
         this.form.company_description = (p as any).company_description ?? '';
         this.form.company_logo = p.company_logo ?? '';

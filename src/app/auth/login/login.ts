@@ -58,7 +58,6 @@ export class Login extends Base implements OnInit {
   isResendingReset = false;
 
   ngOnInit(): void {
-    debugger;
     const token = localStorage.getItem('access');
     // Clear profile store if user is not logged in (remove stale data)
     if (!this.auth.isLoggedIn()) {

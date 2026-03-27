@@ -99,7 +99,6 @@ export class PostJob extends Base implements OnInit {
   }
   // ---- Stepper logic ----
   nextStep() {
-    debugger;
     const groupValid = this.currentStepGroupValid();
     if (!groupValid) {
       this.markStepAsTouched();

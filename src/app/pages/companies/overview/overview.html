@@ -234,7 +234,7 @@
         <div class="candidate-item">
           <div class="candidate-avatar">
             @if (app.applicant?.profile_picture) {
-            <img [src]="app.applicant?.profile_picture || ''" [alt]="getApplicantName(app)"
+            <img [src]="getApplicantImage(app.applicant?.profile_picture)" [alt]="getApplicantName(app)"
               [title]="getApplicantName(app)" title="Applicant profile picture" (error)="handleImageError($event)" />
             }
             <span [style.display]="app.applicant?.profile_picture ? 'none' : 'flex'">
